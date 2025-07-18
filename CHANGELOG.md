@@ -6,6 +6,7 @@
 - websocket功能(默认关闭)
 - useVbenForm 增加 TimeRangePicker(时间区间选择) 组件
 - 字典(DictTag)支持fallback属性(未匹配到字典项时的回显)
+- 微服务版本 logout接口在配置错误的情况返回401的提示(解决死循环调用logout接口)
 
 **REFACTOR**
 

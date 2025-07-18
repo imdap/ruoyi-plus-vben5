@@ -12,6 +12,10 @@ import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
 import { doLogout, getUserInfoApi, loginApi, seeConnectionClose } from '#/api';
+import {
+  ImpossibleReturn401Exception,
+  UnauthorizedException,
+} from '#/api/helper';
 import { $t } from '#/locales';
 
 import { useDictStore } from './dict';
@@ -83,6 +87,14 @@ export const useAuthStore = defineStore('auth', () => {
       await Promise.all([seeConnectionClose(), doLogout()]);
     } catch (error) {
       console.error(error);
+      /**
+       * 这两个接口按正常逻辑不可能返回401
+       * 在微服务版本配置错误的情况下 这里会抛出401
+       * 在这里抛出自定义异常供上层处理
+       */
+      if (error instanceof UnauthorizedException) {
+        throw new ImpossibleReturn401Exception(error.message);
+      }
     } finally {
       resetAllStores();
       accessStore.setLoginExpired(false);
