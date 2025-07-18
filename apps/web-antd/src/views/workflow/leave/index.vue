@@ -60,11 +60,27 @@ const gridOptions: VxeGridProps = {
   },
   // 表格全局唯一表示 保存列配置需要用到
   id: 'workflow-leave-index',
+  cellClassName: ({ row }) => {
+    // 草稿状态 可点击
+    if (row.status === 'draft') {
+      return 'cursor-pointer';
+    }
+  },
 };
 
 const [BasicTable, tableApi] = useVbenVxeGrid({
   formOptions,
   gridOptions,
+  gridEvents: {
+    cellClick: ({ row }) => {
+      // 非草稿状态 不做处理
+      if (row.status !== 'draft') {
+        return;
+      }
+      // 查看详情
+      handleInfo(row);
+    },
+  },
 });
 
 const router = useRouter();
@@ -152,47 +168,50 @@ function handleInfo(row: Required<LeaveForm>) {
         </Space>
       </template>
       <template #action="{ row }">
-        <Space>
-          <ghost-button
-            v-if="['draft', 'cancel', 'back'].includes(row.status)"
+        <a-button
+          size="small"
+          type="link"
+          :disabled="!['draft', 'cancel', 'back'].includes(row.status)"
+          v-access:code="['workflow:leave:edit']"
+          @click.stop="handleEdit(row)"
+        >
+          {{ $t('pages.common.edit') }}
+        </a-button>
+        <Popconfirm
+          :get-popup-container="getVxePopupContainer"
+          placement="left"
+          title="确认撤销？"
+          @confirm.stop="handleRevoke(row)"
+          @cancel.stop=""
+        >
+          <a-button
+            size="small"
+            type="link"
+            :disbaled="!['waiting'].includes(row.status)"
             v-access:code="['workflow:leave:edit']"
-            @click.stop="handleEdit(row)"
+            @click.stop=""
           >
-            {{ $t('pages.common.edit') }}
-          </ghost-button>
-          <Popconfirm
-            :get-popup-container="getVxePopupContainer"
-            placement="left"
-            title="确认撤销？"
-            @confirm="handleRevoke(row)"
+            撤销
+          </a-button>
+        </Popconfirm>
+        <Popconfirm
+          :get-popup-container="getVxePopupContainer"
+          placement="left"
+          title="确认删除？"
+          @confirm.stop="handleDelete(row)"
+          @cancel.stop=""
+        >
+          <a-button
+            size="small"
+            type="link"
+            :disabled="!['draft', 'cancel', 'back'].includes(row.status)"
+            danger
+            v-access:code="['workflow:leave:remove']"
+            @click.stop=""
           >
-            <ghost-button
-              v-if="['waiting'].includes(row.status)"
-              v-access:code="['workflow:leave:edit']"
-              @click.stop=""
-            >
-              撤销
-            </ghost-button>
-          </Popconfirm>
-          <ghost-button v-if="row.status !== 'draft'" @click="handleInfo(row)">
-            详情
-          </ghost-button>
-          <Popconfirm
-            :get-popup-container="getVxePopupContainer"
-            placement="left"
-            title="确认删除？"
-            @confirm="handleDelete(row)"
-          >
-            <ghost-button
-              v-if="['draft', 'cancel', 'back'].includes(row.status)"
-              danger
-              v-access:code="['workflow:leave:remove']"
-              @click.stop=""
-            >
-              {{ $t('pages.common.delete') }}
-            </ghost-button>
-          </Popconfirm>
-        </Space>
+            {{ $t('pages.common.delete') }}
+          </a-button>
+        </Popconfirm>
       </template>
     </BasicTable>
     <FlowInfoModal />
