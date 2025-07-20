@@ -303,7 +303,7 @@ async function init() {
   if (enableProxyConfig && autoLoad) {
     // 第一次拿到的是readonly的数据 如果需要修改 需要cloneDeep
     props.api.grid.commitProxy?.(
-      'initial',
+      'query',
       cloneDeep(formOptions.value)
         ? (cloneDeep(await formApi.getValues()) ?? {})
         : {},
