@@ -15,7 +15,7 @@ export const querySchema: FormSchemaGetter = () => [
   },
   {
     component: 'Input',
-    fieldName: 'createBy',
+    fieldName: 'createByName',
     label: '创建人',
   },
   {
