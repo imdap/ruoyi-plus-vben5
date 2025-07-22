@@ -9,6 +9,7 @@ import { useVbenForm } from '#/adapter/form';
 import { spelAdd, spelInfo, spelUpdate } from '#/api/workflow/spel';
 import { defaultFormValueGetter, useBeforeCloseDiff } from '#/utils/popup';
 
+import { generateSpel } from './common';
 import { drawerSchema } from './data';
 import SpelPreviewer from './spel-previewer.vue';
 
@@ -69,7 +70,13 @@ async function handleConfirm() {
       return;
     }
     const data = cloneDeep(await formApi.getValues());
-    await (isUpdate.value ? spelUpdate(data) : spelAdd(data));
+    if (isUpdate.value) {
+      await spelUpdate(data);
+    } else {
+      // 新增需要生成
+      data.viewSpel = generateSpel(data);
+      await spelAdd(data);
+    }
     resetInitialized();
     emit('reload');
     drawerApi.close();
