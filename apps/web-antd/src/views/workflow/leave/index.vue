@@ -72,9 +72,10 @@ const [BasicTable, tableApi] = useVbenVxeGrid({
   formOptions,
   gridOptions,
   gridEvents: {
-    cellClick: ({ row }) => {
+    cellClick: ({ row, column }) => {
       // 草稿状态 不做处理
-      if (row.status === 'draft') {
+      // 操作列 不做处理
+      if (row.status === 'draft' || column.field === 'action') {
         return;
       }
       // 查看详情
@@ -198,6 +199,7 @@ function handleInfo(row: Required<LeaveForm>) {
           :get-popup-container="getVxePopupContainer"
           placement="left"
           title="确认删除？"
+          :disabled="!['draft', 'cancel', 'back'].includes(row.status)"
           @confirm.stop="handleDelete(row)"
           @cancel.stop=""
         >
