@@ -165,6 +165,10 @@ function createRequestClient(baseURL: string) {
       // 不进行任何处理，直接返回
       // 用于页面代码可能需要直接获取code，data，message这些信息时开启
       if (!isTransformResponse) {
+        /**
+         * @warning 注意 微服务版本在401(网关)会返回text/plain的头 所以这里代码会无效
+         * 我建议你改后端而不是前端来做兼容
+         */
         // json数据的判断
         if (response.headers['content-type']?.includes?.('application/json')) {
           /**
