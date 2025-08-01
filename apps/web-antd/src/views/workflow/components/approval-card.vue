@@ -62,7 +62,7 @@ const diffUpdateTimeString = computed(() => {
     <div class="flex w-full items-center justify-between text-[14px]">
       <div class="flex items-center gap-1 overflow-hidden whitespace-nowrap">
         <VbenAvatar
-          :alt="info.createByName"
+          :alt="info?.createByName"
           class="bg-primary size-[24px] rounded-full text-[10px] text-white"
           src=""
         />

@@ -49,7 +49,7 @@ function handleOpen() {
 
 function handleFinish(userList: User[]) {
   // 清空 直接赋值[]会丢失响应性
-  userListModel.value.splice(0, userListModel.value.length);
+  userListModel.value.splice(0);
   userListModel.value.push(...userList);
   emit('finish', userList);
 }
@@ -70,7 +70,7 @@ const displayedList = computed(() => {
       >
         <div>
           <VbenAvatar
-            :alt="user.nickName"
+            :alt="user?.nickName ?? ''"
             class="bg-primary size-[36px] cursor-pointer rounded-full border text-white"
             src=""
           />

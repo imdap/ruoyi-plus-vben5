@@ -51,7 +51,6 @@ defineOptions({
   inheritAttrs: false,
 });
 
-// eslint-disable-next-line no-use-before-define
 const props = defineProps<{ task?: TaskInfo; type: ApprovalType }>();
 
 /**
@@ -415,7 +414,7 @@ async function handleCopy(text: string) {
         </div>
         <div class="flex items-center gap-2">
           <VbenAvatar
-            :alt="task.createByName"
+            :alt="task?.createByName ?? ''"
             class="bg-primary size-[28px] rounded-full text-white"
             src=""
           />

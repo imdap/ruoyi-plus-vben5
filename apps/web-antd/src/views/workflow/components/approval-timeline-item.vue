@@ -45,7 +45,7 @@ onMounted(async () => {
     <template #dot>
       <div class="relative rounded-full border">
         <VbenAvatar
-          :alt="item.approveName"
+          :alt="item?.approveName ?? 'unknown'"
           class="bg-primary size-[36px] rounded-full text-white"
           src=""
         />
