@@ -129,7 +129,6 @@ function createRequestClient(baseURL: string) {
           typeof config.data === 'object'
             ? encryptWithAes(JSON.stringify(config.data), aesKey)
             : encryptWithAes(config.data, aesKey);
-        config.headers['Content-Type'] = 'text/plain';
       }
       return config;
     },
