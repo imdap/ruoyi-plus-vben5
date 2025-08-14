@@ -9,7 +9,7 @@ import { useRouter } from 'vue-router';
 
 import { Fallback, useVbenModal, VbenAvatar } from '@vben/common-ui';
 import { DictEnum } from '@vben/constants';
-import { getPopupContainer } from '@vben/utils';
+import { cn, getPopupContainer } from '@vben/utils';
 
 import {
   ArrowLeftOutlined,
@@ -393,7 +393,7 @@ async function handleCopy(text: string) {
 </script>
 
 <template>
-  <div class="w-full">
+  <div :class="cn('thin-scrollbar', 'flex flex-1 overflow-y-hidden')">
     <Card
       v-if="task"
       :body-style="{ overflowY: 'auto', height: '100%' }"
@@ -459,10 +459,16 @@ async function handleCopy(text: string) {
         </Tabs>
       </div>
       <!-- 固定底部 -->
-      <div class="h-[57px]"></div>
+      <div class="h-[58px]"></div>
       <div
         v-if="showFooter"
-        class="border-t-solid bg-background absolute bottom-0 left-0 w-full border-t-[1px] p-3"
+        :class="
+          cn(
+            'absolute bottom-0 left-0',
+            'border-t-solid border-t-[1px]',
+            'bg-background w-full p-3',
+          )
+        "
       >
         <div class="flex justify-end">
           <Space v-if="type === 'myself'">
