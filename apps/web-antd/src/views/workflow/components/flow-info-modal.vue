@@ -38,8 +38,7 @@ const [BasicModal, modalApi] = useVbenModal({
 
 <template>
   <BasicModal>
-    <!-- :task="taskInfo" -->
-    <ApprovalPanel type="readonly">
+    <ApprovalPanel :task="taskInfo" type="readonly">
       <template #empty>
         <Spin
           class="flex h-[200px] w-full items-center justify-center"
