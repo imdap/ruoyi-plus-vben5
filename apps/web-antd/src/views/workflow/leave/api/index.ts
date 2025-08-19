@@ -60,3 +60,15 @@ export function leaveUpdate(data: LeaveForm) {
 export function leaveRemove(id: ID | IDS) {
   return requestClient.deleteWithMsg<void>(`/workflow/leave/${id}`);
 }
+
+/**
+ * 提交 & 发起流程(后端发起)
+ * @param data data
+ * @returns void
+ */
+export function submitAndStartWorkflow(data: LeaveForm) {
+  return requestClient.postWithMsg<void>(
+    '/workflow/leave/submitAndFlowStart',
+    data,
+  );
+}

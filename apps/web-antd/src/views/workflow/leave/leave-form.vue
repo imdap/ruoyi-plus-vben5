@@ -15,7 +15,12 @@ import { useVbenForm } from '#/adapter/form';
 import { startWorkFlow } from '#/api/workflow/task';
 
 import { applyModal } from '../components';
-import { leaveAdd, leaveInfo, leaveUpdate } from './api';
+import {
+  leaveAdd,
+  leaveInfo,
+  leaveUpdate,
+  submitAndStartWorkflow,
+} from './api';
 import { modalSchema } from './data';
 
 const route = useRoute();
@@ -58,10 +63,6 @@ const router = useRouter();
  * 提取通用逻辑
  */
 async function handleSaveOrUpdate() {
-  const { valid } = await formApi.validate();
-  if (!valid) {
-    return;
-  }
   let data = cloneDeep(await formApi.getValues()) as any;
   data = omit(data, 'flowType');
   // 处理日期
@@ -96,28 +97,44 @@ async function handleTempSave() {
 async function handleStartWorkFlow() {
   loading.value = true;
   try {
-    // 保存业务
-    const leaveResp = await handleSaveOrUpdate();
-    // 启动流程
-    const taskVariables = {
-      leaveDays: leaveResp!.leaveDays,
-      userList: ['1', '3', '4'],
-    };
-    const formValues = await formApi.getValues();
-    const flowCode = formValues?.flowType ?? 'leave1';
-    const startWorkFlowData: StartWorkFlowReqData = {
-      businessId: leaveResp!.id,
-      flowCode,
-      variables: taskVariables,
-    };
-    const { taskId } = await startWorkFlow(startWorkFlowData);
-    // 打开窗口
-    applyModalApi.setData({
-      taskId,
-      taskVariables,
-      variables: {},
-    });
-    applyModalApi.open();
+    const { valid } = await formApi.validate();
+    if (!valid) {
+      return;
+    }
+    // 获取发起类型
+    const { type } = await formApi.getValues();
+    if (type === 'backend') {
+      let data = cloneDeep(await formApi.getValues()) as any;
+      data = omit(data, 'flowType', 'type');
+      // 处理日期
+      data.startDate = dayjs(data.dateRange[0]).format('YYYY-MM-DD HH:mm:ss');
+      data.endDate = dayjs(data.dateRange[1]).format('YYYY-MM-DD HH:mm:ss');
+      await submitAndStartWorkflow(data);
+      await handleCompleteOrCancel();
+    } else {
+      // 保存业务
+      const leaveResp = await handleSaveOrUpdate();
+      // 启动流程
+      const taskVariables = {
+        leaveDays: leaveResp!.leaveDays,
+        userList: ['1', '3', '4'],
+      };
+      const formValues = await formApi.getValues();
+      const flowCode = formValues?.flowType ?? 'leave1';
+      const startWorkFlowData: StartWorkFlowReqData = {
+        businessId: leaveResp!.id,
+        flowCode,
+        variables: taskVariables,
+      };
+      const { taskId } = await startWorkFlow(startWorkFlowData);
+      // 打开窗口
+      applyModalApi.setData({
+        taskId,
+        taskVariables,
+        variables: {},
+      });
+      applyModalApi.open();
+    }
   } catch (error) {
     console.error(error);
   } finally {

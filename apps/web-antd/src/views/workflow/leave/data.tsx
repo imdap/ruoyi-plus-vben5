@@ -122,6 +122,22 @@ export const modalSchema: () => VbenFormSchema[] = () => [
     },
   },
   {
+    label: '发起类型',
+    fieldName: 'type',
+    component: 'Select',
+    help: '这里仅仅为了测试, 实际不应该包含此字段',
+    componentProps: {
+      options: [
+        {
+          label: '前端发起(可选审批人, 选抄送人, 上传附件)',
+          value: 'frontend',
+        },
+        { label: '后端发起(自行编写构造发起参数)', value: 'backend' },
+      ],
+    },
+    defaultValue: 'frontend',
+  },
+  {
     label: '请假类型',
     fieldName: 'leaveType',
     component: 'Select',

@@ -62,6 +62,10 @@ export interface StartWorkFlowReqData {
    * 流程变量
    */
   variables: Record<string, any>;
+  /**
+   * 流程实例业务扩展业务对象
+   */
+  flowInstanceBizExtBo?: Record<string, any>;
 }
 
 export interface TaskOperationData {
