@@ -65,6 +65,8 @@ async function initDeptSelect(deptId?: number | string) {
         treeData,
         treeDefaultExpandAll: true,
         treeLine: { showLeafIcon: false },
+        // 筛选的字段
+        treeNodeFilterProp: 'deptName',
         // 选中后显示在输入框的值
         treeNodeLabelProp: 'fullName',
       },
