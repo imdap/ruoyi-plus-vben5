@@ -34,6 +34,7 @@
 **BUG FIX**
 
 - 解决热更新Cannot read properties of null (reading 'nextSibling')报错
+- OAuth登录 菜单打开后会折叠一次(路由重复跳转导致)
 
 # 1.4.1
 
