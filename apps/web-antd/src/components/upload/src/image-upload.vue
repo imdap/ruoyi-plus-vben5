@@ -119,7 +119,7 @@ function currentPreview(file: UploadFile) {
         scope="global"
         keypath="component.upload.uploadHelpMessage"
         tag="div"
-        class="text-[14px] leading-[1.5] text-black/45"
+        class="text-[14px] leading-[1.5] text-black/45 dark:text-white/45"
         :class="{
           'upload-text__disabled': disabled,
           'mt-2': listType !== 'picture-card',

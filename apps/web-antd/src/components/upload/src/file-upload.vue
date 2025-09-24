@@ -113,7 +113,7 @@ Upload.Dragger只会影响样式
         scope="global"
         keypath="component.upload.uploadHelpMessage"
         tag="div"
-        class="mt-2 text-[14px] leading-[1.5] text-black/45"
+        class="mt-2 text-[14px] leading-[1.5] text-black/45 dark:text-white/45"
         :class="{ 'upload-text__disabled': disabled }"
       >
         <template #size>
