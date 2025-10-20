@@ -1,11 +1,14 @@
-<!-- 该文件需要重构 但我没空 -->
+<!--
+TODO: 优化项
+会先加载流程信息 再加载业务表单信息
+-->
 <script setup lang="ts">
 import type { ApprovalType } from './type';
 
 import type { FlowInfoResponse } from '#/api/workflow/instance/model';
 import type { TaskInfo } from '#/api/workflow/task/model';
 
-import { computed, onUnmounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { Fallback, VbenAvatar } from '@vben/common-ui';
 import { DictEnum } from '@vben/constants';
@@ -46,17 +49,19 @@ interface Props {
   type: ApprovalType;
 }
 
-const currentTask = ref<TaskInfo>();
-
+/**
+ * 目前的作用只为了获取按钮权限 因为list接口(行数据)获取为空
+ */
+const onlyForBtnPermissionTask = ref<TaskInfo>();
 /**
  * 按钮权限
  */
 const buttonPermissions = computed(() => {
   const record: Record<string, boolean> = {};
-  if (!currentTask.value) {
+  if (!onlyForBtnPermissionTask.value) {
     return record;
   }
-  currentTask.value.buttonList.forEach((item) => {
+  onlyForBtnPermissionTask.value.buttonList.forEach((item) => {
     record[item.code] = item.show;
   });
   return record;
@@ -83,19 +88,32 @@ const currentFlowInfo = ref<FlowInfoResponse>();
 const loading = ref(false);
 
 async function handleLoadInfo(task: TaskInfo | undefined) {
+  if (!task) {
+    return null;
+  }
   try {
-    if (!task) {
-      return null;
-    }
     loading.value = true;
 
+    /**
+     * 不为审批不需要调用`getTaskByTaskId`接口
+     */
+    if (props.type !== 'approve') {
+      const flowResp = await flowInfo(task.businessId);
+      currentFlowInfo.value = flowResp;
+      return;
+    }
+
+    /**
+     * getTaskByTaskId主要为了获取按钮权限 目前没有其他功能
+     * 行数据(即props.task)获取的是没有按钮权限的
+     */
     const [flowResp, taskResp] = await Promise.all([
       flowInfo(task.businessId),
       getTaskByTaskId(task.id),
     ]);
 
     currentFlowInfo.value = flowResp;
-    currentTask.value = taskResp;
+    onlyForBtnPermissionTask.value = taskResp;
   } catch (error) {
     console.error(error);
   } finally {
@@ -104,8 +122,6 @@ async function handleLoadInfo(task: TaskInfo | undefined) {
 }
 
 watch(() => props.task, handleLoadInfo);
-
-onUnmounted(() => (currentFlowInfo.value = undefined));
 
 /**
  * 不加legacy在本地开发没有问题
