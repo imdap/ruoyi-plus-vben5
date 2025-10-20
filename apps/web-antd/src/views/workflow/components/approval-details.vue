@@ -20,8 +20,6 @@ defineOptions({
 
 defineProps<{
   currentFlowInfo: FlowInfoResponse;
-  iframeHeight: number;
-  iframeLoaded: boolean;
   task: TaskInfo;
 }>();
 </script>
