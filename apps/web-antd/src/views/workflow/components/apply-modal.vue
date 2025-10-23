@@ -43,6 +43,8 @@ const [BasicModal, modalApi] = useVbenModal({
     if (!isOpen) {
       return null;
     }
+    modalApi.modalLoading(true);
+
     const { taskId } = modalApi.getData() as ModalProps;
 
     // 查询是否有按钮权限
@@ -63,6 +65,8 @@ const [BasicModal, modalApi] = useVbenModal({
         },
       },
     ]);
+
+    modalApi.modalLoading(false);
   },
 });
 
@@ -108,6 +112,11 @@ const [BasicForm, formApi] = useVbenForm({
       component: 'Input',
       defaultValue: [],
       label: '抄送人',
+      // 默认不显示
+      dependencies: {
+        if: false,
+        triggerFields: [''],
+      },
     },
   ],
   showDefaultActions: false,
