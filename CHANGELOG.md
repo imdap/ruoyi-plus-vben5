@@ -13,6 +13,7 @@
 **BUG FIX**
 
 - 菜单管理 新增没有加载下拉选择api
+- v-access:role指令错误判断code而非role
 
 # 1.5.1
 
