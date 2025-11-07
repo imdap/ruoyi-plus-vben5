@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import type { DropdownMenuItemProps } from 'radix-vue';
+import type { DropdownMenuItemProps } from 'reka-ui';
 
-import { cn } from '@vben-core/shared/utils';
-import { DropdownMenuItem, useForwardProps } from 'radix-vue';
 import { computed } from 'vue';
 
+import { cn } from '@vben-core/shared/utils';
+
+import { DropdownMenuItem, useForwardProps } from 'reka-ui';
+
 const props = defineProps<
-  { class?: any; inset?: boolean } & DropdownMenuItemProps
+  DropdownMenuItemProps & { class?: any; inset?: boolean }
 >();
 
 const delegatedProps = computed(() => {

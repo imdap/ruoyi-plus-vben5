@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import type { AccordionItemProps } from 'radix-vue';
+import type { AccordionItemProps } from 'reka-ui';
 
-import { cn } from '@vben-core/shared/utils';
-import { AccordionItem, useForwardProps } from 'radix-vue';
 import { computed } from 'vue';
 
-const props = defineProps<{ class?: any } & AccordionItemProps>();
+import { cn } from '@vben-core/shared/utils';
+
+import { AccordionItem, useForwardProps } from 'reka-ui';
+
+const props = defineProps<AccordionItemProps & { class?: any }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

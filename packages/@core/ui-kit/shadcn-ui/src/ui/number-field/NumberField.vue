@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import type { NumberFieldRootEmits, NumberFieldRootProps } from 'radix-vue';
+import type { NumberFieldRootEmits, NumberFieldRootProps } from 'reka-ui';
 
-import { cn } from '@vben-core/shared/utils';
-import { NumberFieldRoot, useForwardPropsEmits } from 'radix-vue';
 import { computed } from 'vue';
 
-const props = defineProps<{ class?: any } & NumberFieldRootProps>();
+import { cn } from '@vben-core/shared/utils';
+
+import { NumberFieldRoot, useForwardPropsEmits } from 'reka-ui';
+
+const props = defineProps<NumberFieldRootProps & { class?: any }>();
 const emits = defineEmits<NumberFieldRootEmits>();
 
 const delegatedProps = computed(() => {

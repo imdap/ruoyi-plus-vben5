@@ -2,18 +2,20 @@
 import type {
   DropdownMenuRadioItemEmits,
   DropdownMenuRadioItemProps,
-} from 'radix-vue';
+} from 'reka-ui';
+
+import { computed } from 'vue';
 
 import { cn } from '@vben-core/shared/utils';
+
 import { Circle } from 'lucide-vue-next';
 import {
   DropdownMenuItemIndicator,
   DropdownMenuRadioItem,
   useForwardPropsEmits,
-} from 'radix-vue';
-import { computed } from 'vue';
+} from 'reka-ui';
 
-const props = defineProps<{ class?: any } & DropdownMenuRadioItemProps>();
+const props = defineProps<DropdownMenuRadioItemProps & { class?: any }>();
 
 const emits = defineEmits<DropdownMenuRadioItemEmits>();
 

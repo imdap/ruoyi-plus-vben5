@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import type { RadioGroupRootEmits, RadioGroupRootProps } from 'radix-vue';
+import type { RadioGroupRootEmits, RadioGroupRootProps } from 'reka-ui';
 
-import { cn } from '@vben-core/shared/utils';
-import { RadioGroupRoot, useForwardPropsEmits } from 'radix-vue';
 import { computed } from 'vue';
 
-const props = defineProps<{ class?: any } & RadioGroupRootProps>();
+import { cn } from '@vben-core/shared/utils';
+
+import { RadioGroupRoot, useForwardPropsEmits } from 'reka-ui';
+
+const props = defineProps<RadioGroupRootProps & { class?: any }>();
 const emits = defineEmits<RadioGroupRootEmits>();
 
 const delegatedProps = computed(() => {

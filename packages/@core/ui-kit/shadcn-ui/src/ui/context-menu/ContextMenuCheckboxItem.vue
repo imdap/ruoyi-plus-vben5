@@ -2,18 +2,20 @@
 import type {
   ContextMenuCheckboxItemEmits,
   ContextMenuCheckboxItemProps,
-} from 'radix-vue';
+} from 'reka-ui';
+
+import { computed } from 'vue';
 
 import { cn } from '@vben-core/shared/utils';
+
 import { Check } from 'lucide-vue-next';
 import {
   ContextMenuCheckboxItem,
   ContextMenuItemIndicator,
   useForwardPropsEmits,
-} from 'radix-vue';
-import { computed } from 'vue';
+} from 'reka-ui';
 
-const props = defineProps<{ class?: any } & ContextMenuCheckboxItemProps>();
+const props = defineProps<ContextMenuCheckboxItemProps & { class?: any }>();
 const emits = defineEmits<ContextMenuCheckboxItemEmits>();
 
 const delegatedProps = computed(() => {

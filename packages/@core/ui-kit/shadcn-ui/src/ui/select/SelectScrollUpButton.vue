@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import type { SelectScrollUpButtonProps } from 'radix-vue';
+import type { SelectScrollUpButtonProps } from 'reka-ui';
 
-import { cn } from '@vben-core/shared/utils';
-import { ChevronUp } from 'lucide-vue-next';
-import { SelectScrollUpButton, useForwardProps } from 'radix-vue';
 import { computed } from 'vue';
 
-const props = defineProps<{ class?: any } & SelectScrollUpButtonProps>();
+import { cn } from '@vben-core/shared/utils';
+
+import { ChevronUp } from 'lucide-vue-next';
+import { SelectScrollUpButton, useForwardProps } from 'reka-ui';
+
+const props = defineProps<SelectScrollUpButtonProps & { class?: any }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

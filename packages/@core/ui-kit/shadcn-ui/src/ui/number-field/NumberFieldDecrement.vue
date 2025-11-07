@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import type { NumberFieldDecrementProps } from 'radix-vue';
+import type { NumberFieldDecrementProps } from 'reka-ui';
 
-import { cn } from '@vben-core/shared/utils';
-import { Minus } from 'lucide-vue-next';
-import { NumberFieldDecrement, useForwardProps } from 'radix-vue';
 import { computed } from 'vue';
 
-const props = defineProps<{ class?: any } & NumberFieldDecrementProps>();
+import { cn } from '@vben-core/shared/utils';
+
+import { Minus } from 'lucide-vue-next';
+import { NumberFieldDecrement, useForwardProps } from 'reka-ui';
+
+const props = defineProps<NumberFieldDecrementProps & { class?: any }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import type { SwitchRootEmits, SwitchRootProps } from 'radix-vue';
+import type { SwitchRootEmits, SwitchRootProps } from 'reka-ui';
 
-import { cn } from '@vben-core/shared/utils';
-import { SwitchRoot, SwitchThumb, useForwardPropsEmits } from 'radix-vue';
 import { computed } from 'vue';
 
-const props = defineProps<{ class?: any } & SwitchRootProps>();
+import { cn } from '@vben-core/shared/utils';
+
+import { SwitchRoot, SwitchThumb, useForwardPropsEmits } from 'reka-ui';
+
+const props = defineProps<SwitchRootProps & { class?: any }>();
 
 const emits = defineEmits<SwitchRootEmits>();
 
