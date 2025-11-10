@@ -63,7 +63,9 @@ onMounted(async () => {
     if (accessStore.accessToken) {
       await authCallback(data);
       message.success(`${source}授权成功`);
-      router.push(preferences.app.defaultHomePath);
+      setTimeout(() => {
+        router.push(preferences.app.defaultHomePath);
+      }, 1500);
     } else {
       // 这里内部已经做了跳转到首页的操作
       await authStore.authLogin(data as any);
