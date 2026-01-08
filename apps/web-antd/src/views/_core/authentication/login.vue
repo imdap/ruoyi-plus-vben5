@@ -4,12 +4,13 @@ import type { LoginAndRegisterParams, VbenFormSchema } from '@vben/common-ui';
 import type { TenantResp } from '#/api';
 import type { CaptchaResponse } from '#/api/core/captcha';
 
-import { computed, onMounted, ref, useTemplateRef } from 'vue';
+import { computed, markRaw, onMounted, ref, useTemplateRef } from 'vue';
 
 import { AuthenticationLogin, z } from '@vben/common-ui';
 import { DEFAULT_TENANT_ID } from '@vben/constants';
 import { $t } from '@vben/locales';
 
+import { Input, Select } from 'ant-design-vue';
 import { omit } from 'lodash-es';
 
 import { tenantList } from '#/api';
@@ -17,6 +18,7 @@ import { captchaImage } from '#/api/core/captcha';
 import { useAuthStore } from '#/store';
 
 import { useLoginTenantId } from '../oauth-common';
+import InputCaptcha from './input-captcha.vue';
 import OAuthLogin from './oauth-login.vue';
 
 defineOptions({ name: 'Login' });
@@ -73,15 +75,18 @@ const { loginTenantId } = useLoginTenantId();
 const formSchema = computed((): VbenFormSchema[] => {
   return [
     {
-      component: 'VbenSelect',
+      component: markRaw(Select),
+      modelPropName: 'value',
       componentProps: {
-        class: 'bg-background h-[40px] focus:border-primary',
-        contentClass: 'max-h-[256px] overflow-y-auto',
+        class: 'w-full',
+        size: 'large',
+        showSearch: true,
+        optionFilterProp: 'label',
         options: tenantInfo.value.voList?.map((item) => ({
           label: item.companyName,
           value: item.tenantId,
         })),
-        placeholder: $t('authentication.selectAccount'),
+        placeholder: $t('ui.formRules.selectRequired'),
       },
       defaultValue: DEFAULT_TENANT_ID,
       dependencies: {
@@ -98,10 +103,12 @@ const formSchema = computed((): VbenFormSchema[] => {
       rules: z.string().min(1, { message: $t('authentication.selectAccount') }),
     },
     {
-      component: 'VbenInput',
+      component: markRaw(Input),
+      modelPropName: 'value',
       componentProps: {
-        class: 'focus:border-primary',
+        size: 'large',
         placeholder: $t('authentication.usernameTip'),
+        allowClear: true,
       },
       defaultValue: 'admin',
       fieldName: 'username',
@@ -109,10 +116,11 @@ const formSchema = computed((): VbenFormSchema[] => {
       rules: z.string().min(1, { message: $t('authentication.usernameTip') }),
     },
     {
-      component: 'VbenInputPassword',
+      component: markRaw(Input.Password),
+      modelPropName: 'value',
       componentProps: {
-        class: 'focus:border-primary',
-        placeholder: $t('authentication.password'),
+        size: 'large',
+        placeholder: $t('authentication.passwordTip'),
       },
       defaultValue: 'admin123',
       fieldName: 'password',
@@ -120,7 +128,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       rules: z.string().min(5, { message: $t('authentication.passwordTip') }),
     },
     {
-      component: 'VbenInputCaptcha',
+      component: markRaw(InputCaptcha),
       componentProps: {
         captcha: captchaInfo.value.img,
         class: 'focus:border-primary',

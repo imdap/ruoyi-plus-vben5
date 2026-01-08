@@ -109,7 +109,7 @@ defineExpose({
       </Title>
     </slot>
 
-    <Form />
+    <Form class="mb-2" />
 
     <div
       v-if="showRememberMe || showForgetPassword"

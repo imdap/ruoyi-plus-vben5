@@ -2,6 +2,10 @@
 
 dev中 未发布
 
+**REFACTOR**
+
+- 使用antd组件替换密码登录表单
+
 **FEATURES**
 
 - 合并官方更新 将Radix(v1)替换为Reka UI(v2)
