@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { SelectProps } from 'antdv-next';
 import type { MessageType } from 'antdv-next/dist/message/interface';
 
 import type { TenantOption } from '#/api';
@@ -72,7 +73,10 @@ const loading = ref(false);
  * @param tenantId tenantId
  * @param option 当前option
  */
-const onSelected: SelectHandler = async (tenantId: string, option: any) => {
+const onSelected: SelectProps['onSelect'] = async (
+  tenantId: string,
+  option: any,
+) => {
   if (unref(lastSelected) === tenantId) {
     // createMessage.info('选择一致');
     return;
@@ -139,7 +143,9 @@ function filterOption(input: string, option: TenantOption) {
       :filter-option="filterOption"
       :options="tenantList"
       :placeholder="$t('component.tenantToggle.placeholder')"
-      :dropdown-style="{ position: 'fixed', zIndex: 1024 }"
+      :styles="{
+        root: { position: 'fixed', zIndex: 1024 },
+      }"
       allow-clear
       class="w-60"
       show-search
