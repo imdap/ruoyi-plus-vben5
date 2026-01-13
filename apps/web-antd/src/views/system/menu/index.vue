@@ -196,11 +196,7 @@ const isAdmin = computed(() => {
 
 <template>
   <Page v-if="isAdmin" :auto-content-height="true">
-    <BasicTable
-      id="system-menu-table"
-      table-title="菜单列表"
-      table-title-help="双击展开/收起子菜单"
-    >
+    <BasicTable table-title="菜单列表" table-title-help="双击展开/收起子菜单">
       <template #toolbar-tools>
         <Space>
           <Tooltip title="删除菜单以及子菜单">
@@ -270,13 +266,3 @@ const isAdmin = computed(() => {
   </Page>
   <Fallback v-else description="您没有菜单管理的访问权限" status="403" />
 </template>
-
-<style lang="scss">
-#system-menu-table > .vxe-grid {
-  --vxe-ui-table-row-current-background-color: hsl(var(--primary-100));
-
-  html.dark & {
-    --vxe-ui-table-row-current-background-color: hsl(var(--primary-800));
-  }
-}
-</style>
