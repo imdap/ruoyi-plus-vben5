@@ -240,7 +240,8 @@ const isAdmin = computed(() => {
           <!-- '按钮类型'无法再添加子菜单 -->
           <ghost-button
             v-if="row.menuType !== 'F'"
-            class="btn-success"
+            variant="link"
+            color="green"
             v-access:code="['system:menu:add']"
             v-access:role="['superadmin']"
             @click="handleSubAdd(row)"
