@@ -3,7 +3,8 @@
 该文件作为例子 使用原生表单而非useVbenForm
 -->
 <script setup lang="ts">
-import type { RuleObject } from 'antdv-next/es/form';
+import type { FormInstance } from 'antdv-next';
+import type { Rule } from 'antdv-next/dist/form/types';
 
 import { computed, ref } from 'vue';
 
@@ -55,8 +56,8 @@ const defaultValues: FormData = {
  */
 const formData = ref(defaultValues);
 
-type AntdFormRules<T> = Partial<Record<keyof T, RuleObject[]>> & {
-  [key: string]: RuleObject[];
+type AntdFormRules<T> = Partial<Record<keyof T, Rule[]>> & {
+  [key: string]: Rule[];
 };
 /**
  * 表单校验规则
@@ -68,13 +69,7 @@ const formRules = ref<AntdFormRules<FormData>>({
   noticeTitle: [{ required: true, message: $t('ui.formRules.required') }],
 });
 
-/**
- * useForm解构出表单方法
- */
-const { validate, validateInfos, resetFields } = Form.useForm(
-  formData,
-  formRules,
-);
+const formInstance = ref<FormInstance>();
 
 function customFormValueGetter() {
   return JSON.stringify(formData.value);
@@ -122,7 +117,7 @@ const [BasicModal, modalApi] = useVbenModal({
 async function handleConfirm() {
   try {
     modalApi.lock(true);
-    await validate();
+    await formInstance.value?.validate();
     // 可能会做数据处理 使用cloneDeep深拷贝
     const data = cloneDeep(formData.value);
     await (isUpdate.value ? noticeUpdate(data) : noticeAdd(data));
@@ -138,22 +133,26 @@ async function handleConfirm() {
 
 async function handleClosed() {
   formData.value = defaultValues;
-  resetFields();
+  formInstance.value?.resetFields();
   resetInitialized();
 }
 </script>
 
 <template>
   <BasicModal :title="title">
-    <Form layout="vertical">
-      <FormItem label="公告标题" v-bind="validateInfos.noticeTitle">
+    <Form layout="vertical" ref="formInstance" :model="formData">
+      <FormItem
+        label="公告标题"
+        name="noticeTitle"
+        :rules="formRules.noticeTitle"
+      >
         <Input
           :placeholder="$t('ui.formRules.required')"
           v-model:value="formData.noticeTitle"
         />
       </FormItem>
       <div class="grid sm:grid-cols-1 lg:grid-cols-2">
-        <FormItem label="公告状态" v-bind="validateInfos.status">
+        <FormItem label="公告状态" name="status" :rules="formRules.status">
           <RadioGroup
             button-style="solid"
             option-type="button"
@@ -161,7 +160,11 @@ async function handleClosed() {
             :options="getDictOptions(DictEnum.SYS_NOTICE_STATUS)"
           />
         </FormItem>
-        <FormItem label="公告类型" v-bind="validateInfos.noticeType">
+        <FormItem
+          label="公告类型"
+          name="noticeType"
+          :rules="formRules.noticeType"
+        >
           <RadioGroup
             button-style="solid"
             option-type="button"
@@ -170,7 +173,11 @@ async function handleClosed() {
           />
         </FormItem>
       </div>
-      <FormItem label="公告内容" v-bind="validateInfos.noticeContent">
+      <FormItem
+        label="公告内容"
+        name="noticeContent"
+        :rules="formRules.noticeContent"
+      >
         <Tinymce v-model="formData.noticeContent" />
       </FormItem>
     </Form>
