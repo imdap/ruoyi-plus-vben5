@@ -14,6 +14,7 @@
 ## 框架级别的变化
 
 - message/modal/notification直接导入使用(静态方法)无法获取context 即主题/国际化无效 需要通过`window.xxx`进行调用
+- 使用`version-polling`替代自带的版本检测更新 样式更新 在worker执行 不会阻塞主线程
 
 ## 已知问题
 
