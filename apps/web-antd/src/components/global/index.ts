@@ -12,3 +12,5 @@ export function setupGlobalComponent(app: App) {
   // 表格操作列专用按钮
   app.component('GhostButton', GhostButton);
 }
+
+export { default as ApiSwitch } from './api-switch.vue';

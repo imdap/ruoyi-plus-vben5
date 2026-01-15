@@ -41,6 +41,16 @@ export const UNAUTHORIZED_CODE = 401;
  * 超管用户ID
  */
 export const SUPERADMIN_USER_ID = 1;
+export const SUPERADMIN_ROLE_ID = 1;
+
+/**
+ * 超管角色key
+ */
+export const SUPERADMIN_ROLE_KEY = 'superadmin';
+/**
+ * 管理员(非超管) 角色key
+ */
+export const ADMIN_ROLE_KEY = 'admin';
 
 /**
  * 对应 字典-S系统开关的状态

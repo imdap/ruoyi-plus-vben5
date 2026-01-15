@@ -9,6 +9,12 @@ import { useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
 import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+import {
+  ADMIN_ROLE_KEY,
+  EnableStatus,
+  SUPERADMIN_ROLE_ID,
+  SUPERADMIN_ROLE_KEY,
+} from '@vben/constants';
 import { getVxePopupContainer } from '@vben/utils';
 
 import { Modal, Popconfirm, Space } from 'antdv-next';
@@ -20,7 +26,7 @@ import {
   roleList,
   roleRemove,
 } from '#/api/system/role';
-import { TableSwitch } from '#/components/table';
+import { ApiSwitch } from '#/components/global';
 import { commonDownloadExcel } from '#/utils/file/download';
 
 import { columns, querySchema } from './data';
@@ -122,7 +128,7 @@ function handleDownloadExcel() {
 
 const { hasAccessByCodes, hasAccessByRoles } = useAccess();
 
-const isSuperAdmin = computed(() => hasAccessByRoles(['superadmin']));
+const isSuperAdmin = computed(() => hasAccessByRoles([SUPERADMIN_ROLE_KEY]));
 
 const [RoleAuthModal, authModalApi] = useVbenModal({
   connectedComponent: roleAuthModal,
@@ -136,6 +142,13 @@ function handleAuthEdit(record: Role) {
 const router = useRouter();
 function handleAssignRole(record: Role) {
   router.push(`/system/role-auth/user/${record.roleId}`);
+}
+
+async function handleChangeStatus(checked: boolean, row: Role) {
+  await roleChangeStatus({
+    roleId: row.roleId,
+    status: checked ? EnableStatus.Enable : EnableStatus.Disable,
+  });
 }
 </script>
 
@@ -169,12 +182,12 @@ function handleAssignRole(record: Role) {
         </Space>
       </template>
       <template #status="{ row }">
-        <TableSwitch
-          v-model:value="row.status"
-          :api="() => roleChangeStatus(row)"
+        <ApiSwitch
+          :value="row.status === EnableStatus.Enable"
+          :api="(checked) => handleChangeStatus(checked, row)"
           :disabled="
-            row.roleId === 1 ||
-            row.roleKey === 'admin' ||
+            row.roleId === SUPERADMIN_ROLE_ID ||
+            row.roleKey === ADMIN_ROLE_KEY ||
             !hasAccessByCodes(['system:role:edit'])
           "
           @reload="tableApi.query()"
@@ -184,7 +197,9 @@ function handleAssignRole(record: Role) {
         <!-- 租户管理员不可修改admin角色 防止误操作 -->
         <!-- 超级管理员可通过租户切换来操作租户管理员角色 -->
         <template
-          v-if="!row.superAdmin && (row.roleKey !== 'admin' || isSuperAdmin)"
+          v-if="
+            !row.superAdmin && (row.roleKey !== ADMIN_ROLE_KEY || isSuperAdmin)
+          "
         >
           <Space>
             <ghost-button
