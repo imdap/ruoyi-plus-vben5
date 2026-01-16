@@ -7,7 +7,6 @@ import type { DictType } from '#/api/system/dict/dict-type-model';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
 
 import { Modal, Popconfirm, Space } from 'antdv-next';
 
@@ -133,7 +132,7 @@ function handleDownloadExcel() {
 
 <template>
   <div>
-    <BasicTable id="dict-type" table-title="字典类型列表">
+    <BasicTable table-title="字典类型列表">
       <template #toolbar-tools>
         <Space>
           <a-button
@@ -175,9 +174,6 @@ function handleDownloadExcel() {
             {{ $t('pages.common.edit') }}
           </ghost-button>
           <Popconfirm
-            :get-popup-container="
-              (node) => getVxePopupContainer(node, 'dict-type')
-            "
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
