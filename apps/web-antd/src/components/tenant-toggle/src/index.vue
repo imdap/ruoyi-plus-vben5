@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SelectProps } from 'antdv-next';
+import type { SelectEmits } from 'antdv-next';
 import type { MessageType } from 'antdv-next/dist/message/interface';
 
 import type { TenantOption } from '#/api';
@@ -73,7 +73,7 @@ const loading = ref(false);
  * @param tenantId tenantId
  * @param option 当前option
  */
-const onSelected: SelectProps['onSelect'] = async (
+const onSelected: SelectEmits['onSelect'] = async (
   tenantId: string,
   option: any,
 ) => {
