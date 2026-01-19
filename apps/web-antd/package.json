@@ -27,6 +27,7 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@alova/adapter-axios": "^2.0.17",
     "@ant-design/icons-vue": "^7.0.1",
     "@tinymce/tinymce-vue": "^6.0.1",
     "@vben/access": "workspace:*",
@@ -44,7 +45,9 @@
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
+    "alova": "^3.4.1",
     "antdv-next": "catalog:",
+    "axios": "catalog:",
     "cropperjs": "^1.6.2",
     "dayjs": "catalog:",
     "echarts": "^5.5.1",
