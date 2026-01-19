@@ -19,6 +19,10 @@ export type AlovaMeta = {
    */
   encrypt?: boolean;
   /**
+   * 错误弹窗类型
+   */
+  errorMessageMode?: MessageType;
+  /**
    * 是否返回原生axios响应
    */
   isReturnNativeResponse?: boolean;
@@ -27,13 +31,9 @@ export type AlovaMeta = {
    */
   isTransformResponse?: boolean;
   /**
-   * 接口请求失败时的提示方式
-   */
-  showErrorMessage?: MessageType;
-  /**
    * 接口请求成功时的提示方式
    */
-  showSuccessMessage?: MessageType;
+  successMessageMode?: MessageType;
   /**
    * 是否需要在请求头中添加 token
    */

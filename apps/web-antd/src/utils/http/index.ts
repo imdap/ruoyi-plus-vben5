@@ -59,8 +59,8 @@ const asymmetricEncryption: BaseAsymmetricEncryption = new RsaEncryption({
 const symmetricEncryption: BaseSymmetricEncryption = new AesEncryption();
 
 const defaultMeta: AlovaMeta = {
-  showSuccessMessage: 'none',
-  showErrorMessage: 'message',
+  successMessageMode: 'none',
+  errorMessageMode: 'message',
   withToken: true,
   isReturnNativeResponse: false,
   isTransformResponse: true,
@@ -243,7 +243,7 @@ const alovaInstance = createAlova({
           successMsg = $t(`http.operationSuccess`);
         }
 
-        if (!['none', undefined].includes(instance.meta?.showSuccessMessage)) {
+        if (!['none', undefined].includes(instance.meta?.successMessageMode)) {
           showAntdMessage({
             meta: instance.meta,
             message: successMsg,
@@ -277,7 +277,7 @@ const alovaInstance = createAlova({
 
       // errorMessageMode='modal'的时候会显示modal错误弹窗，而不是消息提示，用于一些比较重要的错误
       // errorMessageMode='none' 一般是调用时明确表示不希望自动弹出错误提示
-      if (!['none', undefined].includes(instance.meta?.showErrorMessage)) {
+      if (!['none', undefined].includes(instance.meta?.errorMessageMode)) {
         showAntdMessage({
           meta: instance.meta,
           message: timeoutMsg,
@@ -304,7 +304,7 @@ const alovaInstance = createAlova({
         }
 
         if (errMessage) {
-          if (!['none', undefined].includes(method.meta?.showErrorMessage)) {
+          if (!['none', undefined].includes(method.meta?.errorMessageMode)) {
             showAntdMessage({
               meta: method.meta,
               message: errMessage,
@@ -335,7 +335,7 @@ alovaInstance.GetWithMessage = function (url, options) {
     ...options,
     meta: {
       ...options?.meta,
-      showSuccessMessage: 'message',
+      successMessageMode: 'message',
     },
   });
 };
@@ -345,7 +345,7 @@ alovaInstance.PostWithMessage = function (url, data, config) {
     ...config,
     meta: {
       ...config?.meta,
-      showSuccessMessage: 'message',
+      successMessageMode: 'message',
     },
   });
 };
@@ -355,7 +355,7 @@ alovaInstance.PutWithMessage = function (url, data, config) {
     ...config,
     meta: {
       ...config?.meta,
-      showSuccessMessage: 'message',
+      successMessageMode: 'message',
     },
   });
 };
@@ -365,7 +365,7 @@ alovaInstance.DeleteWithMessage = function (url, data, config) {
     ...config,
     meta: {
       ...config?.meta,
-      showSuccessMessage: 'message',
+      successMessageMode: 'message',
     },
   });
 };

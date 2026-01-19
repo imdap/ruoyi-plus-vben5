@@ -40,7 +40,7 @@ export function checkStatus(
   if (
     errorMessage &&
     meta &&
-    !['none', undefined].includes(meta.showErrorMessage)
+    !['none', undefined].includes(meta.errorMessageMode)
   ) {
     showAntdMessage({
       meta,

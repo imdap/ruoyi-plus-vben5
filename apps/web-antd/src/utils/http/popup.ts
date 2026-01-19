@@ -11,14 +11,14 @@ interface ShowMessageOptions {
 export function showAntdMessage(options: ShowMessageOptions) {
   const { meta = {}, message, type } = options;
 
-  if (meta.showErrorMessage === 'message' && type === 'error') {
+  if (meta.errorMessageMode === 'message' && type === 'error') {
     window.message[type](message);
   }
-  if (meta.showSuccessMessage === 'message' && type === 'success') {
+  if (meta.successMessageMode === 'message' && type === 'success') {
     window.message[type](message);
   }
 
-  if (meta.showErrorMessage === 'modal' && type === 'error') {
+  if (meta.errorMessageMode === 'modal' && type === 'error') {
     window.modal.error({
       content: message,
       title: $t('http.errorTip'),
@@ -26,7 +26,7 @@ export function showAntdMessage(options: ShowMessageOptions) {
       okButtonProps: { danger: true },
     });
   }
-  if (meta.showSuccessMessage === 'modal' && type === 'success') {
+  if (meta.successMessageMode === 'modal' && type === 'success') {
     window.modal.success({
       content: message,
       title: $t('http.successTip'),
@@ -34,13 +34,13 @@ export function showAntdMessage(options: ShowMessageOptions) {
     });
   }
 
-  if (meta.showErrorMessage === 'notification' && type === 'error') {
+  if (meta.errorMessageMode === 'notification' && type === 'error') {
     window.notification.error({
       description: message,
       title: $t('http.errorTip'),
     });
   }
-  if (meta.showSuccessMessage === 'notification' && type === 'success') {
+  if (meta.successMessageMode === 'notification' && type === 'success') {
     window.notification.success({
       description: message,
       title: $t('http.successTip'),
