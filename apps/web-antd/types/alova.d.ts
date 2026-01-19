@@ -49,10 +49,15 @@ declare module 'alova' {
    * 添加withMessage方法 用于success弹窗
    */
   interface Alova {
-    GetWithMessage: GetType;
-    PostWithMessage: PostType;
-    PutWithMessage: PutType;
-    DeleteWithMessage: DeleteType;
+    get: GetType;
+    post: PostType;
+    put: PutType;
+    delete: DeleteType;
+    // 添加withMessage方法 用于弹出message提示
+    getWithMsg: GetType;
+    postWithMsg: PostType;
+    putWithMsg: PutType;
+    deleteWithMsg: DeleteType;
   }
 }
 

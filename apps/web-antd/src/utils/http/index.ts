@@ -326,11 +326,27 @@ const alovaInstance = createAlova({
   },
 });
 
+alovaInstance.get = function (url, options) {
+  return this.Get(url, options);
+};
+
+alovaInstance.post = function (url, data, config) {
+  return this.Post(url, data, config);
+};
+
+alovaInstance.put = function (url, data, config) {
+  return this.Put(url, data, config);
+};
+
+alovaInstance.delete = function (url, data, config) {
+  return this.Delete(url, data, config);
+};
+
 /**
 提供xxWithMessage方法，用于请求成功后弹出提示
  */
 
-alovaInstance.GetWithMessage = function (url, options) {
+alovaInstance.getWithMsg = function (url, options) {
   return this.Get(url, {
     ...options,
     meta: {
@@ -340,7 +356,7 @@ alovaInstance.GetWithMessage = function (url, options) {
   });
 };
 
-alovaInstance.PostWithMessage = function (url, data, config) {
+alovaInstance.postWithMsg = function (url, data, config) {
   return this.Post(url, data, {
     ...config,
     meta: {
@@ -350,7 +366,7 @@ alovaInstance.PostWithMessage = function (url, data, config) {
   });
 };
 
-alovaInstance.PutWithMessage = function (url, data, config) {
+alovaInstance.putWithMsg = function (url, data, config) {
   return this.Put(url, data, {
     ...config,
     meta: {
@@ -360,7 +376,7 @@ alovaInstance.PutWithMessage = function (url, data, config) {
   });
 };
 
-alovaInstance.DeleteWithMessage = function (url, data, config) {
+alovaInstance.deleteWithMsg = function (url, data, config) {
   return this.Delete(url, data, {
     ...config,
     meta: {
