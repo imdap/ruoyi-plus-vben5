@@ -15,6 +15,7 @@
 ## 框架级别的变化
 
 - v1版本的`requestClient`已经被`alovaInstance`替代 已经做了兼容(99%) 可直接替换
+- 表格的操作列`ghost-button`替换名称为`action-button` 现在你可以修改来默认样式
 - message/modal/notification直接导入使用(静态方法)无法获取context 即主题/国际化无效 需要通过`window.xxx`进行调用
 - 使用`version-polling`替代自带的版本检测更新 样式更新 在worker执行 不会阻塞主线程
 - 字典常量enum从`packages/@core/base/shared/src/constants`移动到`@vben/constants`下 需要移动文件位置(导入不需要更改)
