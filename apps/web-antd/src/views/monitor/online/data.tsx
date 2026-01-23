@@ -58,10 +58,20 @@ export const columns: VxeGridProps['columns'] = [
     field: 'os',
     slots: {
       default: ({ row }) => {
+        /**
+         *  Windows 10 or Windows Server 2016 太长了 分割一下 详情依旧能看到详细的
+         */
+        let value = row.os;
+        if (value) {
+          const split = value.split(' or ');
+          if (split.length === 2) {
+            value = split[0];
+          }
+        }
         return (
           <div class="flex items-center justify-center gap-[6px]">
             {renderOsIcon(row.os, 'shrink-0')}
-            {row.os}
+            {value}
           </div>
         );
       },

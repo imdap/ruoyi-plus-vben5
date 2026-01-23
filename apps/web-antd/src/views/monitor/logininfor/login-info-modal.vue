@@ -31,6 +31,16 @@ const items = computed<DescriptionsProps['items']>(() => {
     return [];
   }
   const data = loginInfo.value;
+  /**
+   *  Windows 10 or Windows Server 2016 太长了 分割一下 详情依旧能看到详细的
+   */
+  let os = data.os;
+  if (os) {
+    const split = os.split(' or ');
+    if (split.length === 2) {
+      os = split[0]!;
+    }
+  }
   return [
     {
       label: '登录状态',
@@ -66,7 +76,7 @@ const items = computed<DescriptionsProps['items']>(() => {
       content: (
         <div class="flex items-center justify-center gap-[6px]">
           {renderOsIcon(data.os, 'shrink-0')}
-          {data.os}
+          {os}
         </div>
       ),
     },
