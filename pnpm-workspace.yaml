@@ -21,6 +21,8 @@ overrides:
   vue: 'catalog:'
 
 catalog:
+  '@alova/adapter-axios': ^2.0.17
+  '@ant-design/icons-vue': ^7.0.1
   '@ast-grep/napi': ^0.39.9
   '@changesets/changelog-github': ^0.5.2
   '@changesets/cli': ^2.29.8
@@ -46,11 +48,13 @@ catalog:
   '@tailwindcss/typography': ^0.5.19
   '@tanstack/vue-query': ^5.92.8
   '@tanstack/vue-store': ^0.8.0
+  '@tinymce/tinymce-vue': ^6.0.1
   '@types/archiver': ^6.0.4
   '@types/eslint': ^9.6.1
   '@types/html-minifier-terser': ^7.0.2
   '@types/json-bigint': ^1.0.4
   '@types/jsonwebtoken': ^9.0.10
+  '@types/lodash-es': ^4.17.12
   '@types/lodash.clonedeep': ^4.5.9
   '@types/node': ^24.10.9
   '@types/nprogress': ^0.2.3
@@ -69,6 +73,7 @@ catalog:
   '@vueuse/core': ^14.1.0
   '@vueuse/integrations': ^14.1.0
   '@vueuse/motion': ^3.0.3
+  alova: ^3.4.1
   antdv-next: latest
   archiver: ^7.0.1
   autoprefixer: ^10.4.23
@@ -82,6 +87,7 @@ catalog:
   clsx: ^2.1.1
   commitlint-plugin-function-rules: ^4.3.1
   consola: ^3.4.2
+  cropperjs: ^1.6.2
   cross-env: ^10.1.0
   cspell: ^9.6.0
   cssnano: ^7.1.2
@@ -126,6 +132,7 @@ catalog:
   jsonc-eslint-parser: ^2.4.2
   jsonwebtoken: ^9.0.3
   lefthook: ^2.0.15
+  lodash-es: ^4.17.21
   lodash.clonedeep: ^4.5.0
   lucide-vue-next: ^0.553.0
   medium-zoom: ^1.1.0
@@ -170,12 +177,15 @@ catalog:
   tailwindcss-animate: ^1.0.7
   tdesign-vue-next: ^1.18.0
   theme-colors: ^0.1.0
+  tinymce: 7.9.1
   tippy.js: ^6.3.7
   turbo: ^2.7.6
   typescript: ^5.9.3
   unbuild: ^3.6.1
   unplugin-element-plus: ^0.11.2
+  unplugin-vue-components: ^0.27.3
   vee-validate: ^4.15.1
+  version-polling: ^1.3.3
   vite: ^7.3.1
   vite-plugin-compression: ^0.5.1
   vite-plugin-dts: ^4.5.4
@@ -199,3 +209,6 @@ catalog:
   yaml-eslint-parser: ^1.3.2
   zod: ^3.25.76
   zod-defaults: 0.1.3
+catalogs:
+  conflicts_echarts_h5_5_1:
+    echarts: ^5.5.1
