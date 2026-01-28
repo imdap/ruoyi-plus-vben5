@@ -20,7 +20,7 @@ import {
   packageRemove,
 } from '#/api/system/tenant-package';
 import { ApiSwitch } from '#/components/global';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 
 import { columns, querySchema } from './data';
 import tenantPackageDrawer from './tenant-package-drawer.vue';
@@ -104,12 +104,14 @@ function handleMultiDelete() {
   });
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(
-    packageExport,
-    '租户套餐数据',
-    tableApi.formApi.form.values,
-  );
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(packageExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('租户套餐数据');
+  exportBlob({ data: formValues, fileName });
 }
 
 /**
@@ -137,7 +139,9 @@ async function handleChangeStatus(checked: boolean, row: TenantPackage) {
         <Space>
           <a-button
             v-access:code="['system:tenantPackage:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>

@@ -26,7 +26,7 @@ import {
 } from '#/api/system/tenant';
 import { ApiSwitch } from '#/components/global';
 import { useTenantStore } from '#/store/tenant';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 
 import { columns, querySchema } from './data';
 import tenantDrawer from './tenant-drawer.vue';
@@ -122,8 +122,14 @@ function handleMultiDelete() {
   });
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(tenantExport, '租户数据', tableApi.formApi.form.values);
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(tenantExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('租户数据');
+  exportBlob({ data: formValues, fileName });
 }
 
 /**
@@ -159,7 +165,6 @@ function handleSyncTenantConfig() {
 }
 
 async function handleChangeStatus(checked: boolean, row: Tenant) {
-  console.log(checked);
   await tenantStatusChange({
     id: row.id,
     tenantId: row.tenantId,
@@ -208,7 +213,9 @@ const handleMenuClick: DropdownEmits['menuClick'] = (e) => {
 
           <a-button
             v-access:code="['system:tenant:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>
