@@ -29,6 +29,7 @@
   "dependencies": {
     "@alova/adapter-axios": "catalog:",
     "@ant-design/icons-vue": "catalog:",
+    "@antdv-next/icons": "catalog:",
     "@tinymce/tinymce-vue": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
