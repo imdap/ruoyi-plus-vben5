@@ -64,6 +64,9 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
             chunkFileNames: 'js/[name]-[hash].js',
             entryFileNames: 'jse/index-[name]-[hash].js',
             experimentalMinChunkSize: 20 * 1024,
+            manualChunks: {
+              'antdv-next': ['antdv-next'],
+            },
           },
         },
         target: 'es2015',
