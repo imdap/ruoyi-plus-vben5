@@ -6,7 +6,7 @@ import { computed, h, onMounted, ref } from 'vue';
 import { DictEnum } from '@vben/constants';
 import { cn } from '@vben/utils';
 
-import { MessageOutlined, UserOutlined } from '@ant-design/icons-vue';
+import { MessageOutlined, UserOutlined } from '@antdv-next/icons';
 import { Avatar } from 'antdv-next';
 
 import { ossInfo } from '#/api/system/oss';

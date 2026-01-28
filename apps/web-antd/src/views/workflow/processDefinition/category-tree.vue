@@ -5,7 +5,7 @@ import type { CategoryTree } from '#/api/workflow/category/model';
 
 import { onMounted, ref } from 'vue';
 
-import { SyncOutlined } from '@ant-design/icons-vue';
+import { SyncOutlined } from '@antdv-next/icons';
 import { InputSearch, Skeleton, Tree } from 'antdv-next';
 
 import { categoryTree } from '#/api/workflow/category';

@@ -9,7 +9,7 @@ import type { BaseUploadProps, UploadEmits } from './props';
 
 import { $t, I18nT } from '@vben/locales';
 
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined, UploadOutlined } from '@antdv-next/icons';
 import { Image, Upload } from 'antdv-next';
 import { isFunction } from 'lodash-es';
 

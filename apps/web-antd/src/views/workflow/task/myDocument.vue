@@ -8,7 +8,7 @@ import { Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 import { getPopupContainer } from '@vben/utils';
 
-import { FilterOutlined, RedoOutlined } from '@ant-design/icons-vue';
+import { FilterOutlined, RedoOutlined } from '@antdv-next/icons';
 import {
   Empty,
   Form,

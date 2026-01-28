@@ -16,7 +16,7 @@ import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
-import { GithubOutlined, UserOutlined } from '@ant-design/icons-vue';
+import { GithubOutlined, UserOutlined } from '@antdv-next/icons';
 
 import { TenantToggle } from '#/components/tenant-toggle';
 import { $t } from '#/locales';

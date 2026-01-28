@@ -5,7 +5,7 @@ import type { DeptTree } from '#/api/system/user/model';
 
 import { onMounted, ref } from 'vue';
 
-import { SyncOutlined } from '@ant-design/icons-vue';
+import { SyncOutlined } from '@antdv-next/icons';
 import { Empty, InputSearch, Skeleton, Tree } from 'antdv-next';
 
 import { getDeptTree } from '#/api/system/user';

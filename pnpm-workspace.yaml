@@ -22,7 +22,6 @@ overrides:
 
 catalog:
   '@alova/adapter-axios': ^2.0.17
-  '@ant-design/icons-vue': ^7.0.1
   '@antdv-next/icons': 1.0.0-beta.1
   '@ast-grep/napi': ^0.39.9
   '@changesets/changelog-github': ^0.5.2

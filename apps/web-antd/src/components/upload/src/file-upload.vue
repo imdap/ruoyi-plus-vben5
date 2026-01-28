@@ -11,7 +11,7 @@ import { computed } from 'vue';
 
 import { $t, I18nT } from '@vben/locales';
 
-import { InboxOutlined, UploadOutlined } from '@ant-design/icons-vue';
+import { InboxOutlined, UploadOutlined } from '@antdv-next/icons';
 import { Upload } from 'antdv-next';
 
 import { uploadApi } from '#/api';

@@ -14,7 +14,7 @@ import { Fallback, VbenAvatar } from '@vben/common-ui';
 import { DictEnum } from '@vben/constants';
 import { cn } from '@vben/utils';
 
-import { CopyOutlined } from '@ant-design/icons-vue';
+import { CopyOutlined } from '@antdv-next/icons';
 import { useClipboard } from '@vueuse/core';
 import { Card, Divider, TabPane, Tabs } from 'antdv-next';
 

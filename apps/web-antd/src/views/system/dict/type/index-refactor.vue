@@ -14,7 +14,7 @@ import {
   ExportOutlined,
   PlusOutlined,
   SyncOutlined,
-} from '@ant-design/icons-vue';
+} from '@antdv-next/icons';
 import { Alert, Input, Popconfirm, Space, Tooltip } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';

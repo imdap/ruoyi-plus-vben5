@@ -20,7 +20,7 @@ import {
   UsergroupAddOutlined,
   UsergroupDeleteOutlined,
   UserOutlined,
-} from '@ant-design/icons-vue';
+} from '@antdv-next/icons';
 import { Dropdown, Menu, MenuItem, Space } from 'antdv-next';
 
 import {
