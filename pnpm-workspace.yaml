@@ -74,7 +74,7 @@ catalog:
   '@vueuse/integrations': ^14.1.0
   '@vueuse/motion': ^3.0.3
   alova: ^3.4.1
-  antdv-next: 1.0.0-beta.3
+  antdv-next: 1.0.0-rc.5
   archiver: ^7.0.1
   autoprefixer: ^10.4.23
   axios: ^1.13.2
