@@ -86,6 +86,7 @@ function currentPreview(file: UploadFile) {
 <template>
   <div>
     <Upload
+      v-bind="$attrs"
       v-model:file-list="innerFileList"
       :class="{ 'upload-animation__disabled': !withAnimation }"
       :list-type="listType"

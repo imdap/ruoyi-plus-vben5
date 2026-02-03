@@ -78,6 +78,7 @@ Upload.Dragger只会影响样式
 <template>
   <div>
     <CurrentUploadComponent
+      v-bind="$attrs"
       v-model:file-list="innerFileList"
       :accept="accept"
       :list-type="listType"
