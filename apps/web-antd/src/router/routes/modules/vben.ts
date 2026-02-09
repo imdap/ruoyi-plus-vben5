@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 
 import {
+  VBEN_ANTDV_NEXT_PREVIEW_URL,
   VBEN_DOC_URL,
   VBEN_ELE_PREVIEW_URL,
   VBEN_GITHUB_URL,
@@ -49,6 +50,16 @@ const routes: RouteRecordRaw[] = [
           icon: 'mdi:github',
           link: VBEN_GITHUB_URL,
           title: 'Github',
+        },
+      },
+      {
+        name: 'VbenAntdVNext',
+        path: '/vben-admin/antdv-next',
+        component: IFrameView,
+        meta: {
+          badgeType: 'dot',
+          link: VBEN_ANTDV_NEXT_PREVIEW_URL,
+          title: $t('demos.vben.antdv-next'),
         },
       },
       {
