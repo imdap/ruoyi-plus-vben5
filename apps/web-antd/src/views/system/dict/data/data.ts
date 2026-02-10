@@ -99,7 +99,7 @@ export const drawerSchema: FormSchemaGetter = () => [
     fieldName: 'dictSort',
     label: '显示排序',
     rules: 'required',
-    defaultValue: 0,
+    defaultValue: 1,
   },
   {
     component: 'Textarea',

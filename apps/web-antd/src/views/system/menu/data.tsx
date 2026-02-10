@@ -228,7 +228,7 @@ export const drawerSchema: FormSchemaGetter = () => [
     fieldName: 'orderNum',
     help: '排序, 数字越小越靠前',
     label: '显示排序',
-    defaultValue: 0,
+    defaultValue: 1,
     rules: 'required',
   },
   {

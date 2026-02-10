@@ -111,7 +111,7 @@ export const drawerSchema: FormSchemaGetter = () => [
     fieldName: 'postSort',
     label: '岗位排序',
     rules: 'required',
-    defaultValue: 0,
+    defaultValue: 1,
   },
   {
     component: 'RadioGroup',
