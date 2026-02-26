@@ -22,6 +22,6 @@
 - ~~Switch的value只能是boolean值 之前可以为 string/number/boolean (antd组件变化)~~ 后续rc版本又加上了
 - Popconfirm不再需要 `:get-popup-container="getVxePopupContainer"` antd已经支持滚动跟随 故`getVxePopupContainer`已经移除
 - 离线(菜单)图标方案重构 在`scripts/generate-offline-icons.js`添加图标名称 在根目录执行`pnpm generate-offline-icons`即可生成离线图标
-- 表格上方搜索表单(或者需要调用formReset的场景) -> 时间相关组件必须设置`defaultValue`为`null`(区间时间组件需要设置为[null, null]的元组) **否则不会正常重置**
+- ~~表格上方搜索表单(或者需要调用formReset的场景) -> 时间相关组件必须设置`defaultValue`为`null`(区间时间组件需要设置为[null, null]的元组) **否则不会正常重置**~~ 后续版本已经修复
 - 移除`commonDownloadExcel`方法 使用`useBlobExport`代替
 - 路由模式由`backend`改为`mix`模式 即前后端混合路由 路由放在`apps/web-antd/src/router/routes/modules`下 移除原先的`local.ts`

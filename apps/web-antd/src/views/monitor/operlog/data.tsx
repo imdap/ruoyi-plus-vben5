@@ -45,7 +45,6 @@ export const querySchema: FormSchemaGetter = () => [
     componentProps: {
       valueFormat: 'YYYY-MM-DD HH:mm:ss',
     },
-    defaultValue: [null, null],
   },
 ];
 
