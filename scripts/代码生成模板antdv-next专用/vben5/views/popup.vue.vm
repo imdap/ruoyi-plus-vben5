@@ -1,0 +1,376 @@
+﻿#if($formComponent == "useForm")
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+
+import { useVben${PopupComponent} } from '@vben/common-ui';
+import { $t } from '@vben/locales';
+import { cloneDeep } from '@vben/utils';
+
+import { useVbenForm } from '#/adapter/form';
+import { ${businessName}Add, ${businessName}Info, ${businessName}Update } from '#/api/${moduleName}/${businessName}';
+import { defaultFormValueGetter, useBeforeCloseDiff } from '#/utils/popup';
+
+import { ${popupComponent}Schema } from './data';
+
+const emit = defineEmits<{ reload: [] }>();
+
+const isUpdate = ref(false);
+const title = computed(() => {
+  return isUpdate.value ? $t('pages.common.edit') : $t('pages.common.add');
+});
+
+const [BasicForm, formApi] = useVbenForm({
+  commonConfig: {
+    // 默认占满两列
+    formItemClass: 'col-span-2',
+    // 默认label宽度 px
+    labelWidth: 80,
+    // 通用配置项 会影响到所有表单项
+    componentProps: {
+      class: 'w-full',
+    },
+  },
+  schema: ${popupComponent}Schema(),
+  showDefaultActions: false,
+  wrapperClass: 'grid-cols-2',
+});
+
+const { onBeforeClose, markInitialized, resetInitialized } = useBeforeCloseDiff(
+  {
+    initializedGetter: defaultFormValueGetter(formApi),
+    currentGetter: defaultFormValueGetter(formApi),
+  },
+);
+
+const [Basic${PopupComponent}, ${popupComponent}Api] = useVben${PopupComponent}({
+  // 在这里更改宽度
+  class: 'w-[550px]',
+  fullscreenButton: false,
+  onBeforeClose,
+  onClosed: handleClosed,
+  onConfirm: handleConfirm,
+  onOpenChange: async (isOpen) => {
+    if (!isOpen) {
+      return null;
+    }
+    ${popupComponent}Api.${popupComponent}Loading(true);
+
+    const { id } = ${popupComponent}Api.getData() as { id?: number | string };
+    isUpdate.value = !!id;
+
+    if (isUpdate.value && id) {
+      const record = await ${businessName}Info(id);
+      await formApi.setValues(record);
+    }
+    await markInitialized();
+
+    ${popupComponent}Api.${popupComponent}Loading(false);
+  },
+});
+
+async function handleConfirm() {
+  try {
+    ${popupComponent}Api.lock(true);
+    const { valid } = await formApi.validate();
+    if (!valid) {
+      return;
+    }
+    // getValues获取为一个readonly的对象 需要修改必须先深拷贝一次
+    const data = cloneDeep(await formApi.getValues());
+    await (isUpdate.value ? ${businessName}Update(data) : ${businessName}Add(data));
+    resetInitialized();
+    emit('reload');
+    ${popupComponent}Api.close();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    ${popupComponent}Api.lock(false);
+  }
+}
+
+async function handleClosed() {
+  await formApi.resetForm();
+  resetInitialized();
+}
+</script>
+
+<template>
+  <Basic${PopupComponent} :title="title">
+    <BasicForm />
+  </Basic${PopupComponent}>
+</template>
+#else
+<!--
+使用antdv-next原生Form生成 详细用法参考antdv-next Form组件文档
+vscode默认配置文件会自动格式化/移除未使用依赖
+-->
+<script setup lang="ts">
+import type { FormInstance } from 'antdv-next';
+import type { Rule } from 'antdv-next/dist/form/types';
+
+import { computed, ref } from 'vue';
+
+import {
+  CheckboxGroup,
+  DatePicker,
+  Form,
+  FormItem,
+  Input,
+  RadioGroup,
+  Select,
+  Textarea,
+} from 'antdv-next';
+import { ImageUpload, FileUpload } from '#/components/upload';
+import { Tinymce } from '#/components/tinymce';
+import { getPopupContainer } from '@vben/utils';
+import { pick } from 'lodash-es';
+
+#if(${dicts} != '')
+import { getDictOptions } from '#/utils/dict';
+#end
+
+import { useVben${PopupComponent} } from '@vben/common-ui';
+import { $t } from '@vben/locales';
+import { cloneDeep } from '@vben/utils';
+
+import { ${businessName}Add, ${businessName}Info, ${businessName}Update } from '#/api/${moduleName}/${businessName}';
+import type { ${BusinessName}Form } from '#/api/${moduleName}/${businessName}/model';
+import { useBeforeCloseDiff } from '#/utils/popup';
+
+const emit = defineEmits<{ reload: [] }>();
+
+const isUpdate = ref(false);
+const title = computed(() => {
+  return isUpdate.value ? $t('pages.common.edit') : $t('pages.common.add');
+});
+
+/**
+ * 定义默认值 用于reset
+ */
+const defaultValues: Partial<${BusinessName}Form> = {
+  #foreach ($column in $columns)
+    #if($column.insert || $column.edit)
+      #if($column.htmlType == "checkbox")
+  $column.javaField: []#if($foreach.count != $columns.size()),#end
+      #else
+  $column.javaField: undefined#if($foreach.count != $columns.size()),#end
+      #end
+    #end
+  #end
+};
+
+/**
+ * 表单数据ref
+ */
+const formData = ref(defaultValues);
+
+type AntdFormRules<T> = Partial<Record<keyof T, Rule[]>> & {
+  [key: string]: Rule[];
+};
+/**
+ * 表单校验规则
+ */
+const formRules = ref<AntdFormRules<${BusinessName}Form>>({
+#foreach ($column in $columns)
+#if($column.insert || $column.edit)
+#if($column.required && $column.pk == false)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+    $column.javaField: [
+      { required: true, message: "$comment不能为空" },
+    ]#if($foreach.count != $columns.size()),#end
+#end
+#end
+#end
+});
+
+const formInstance = ref<FormInstance>();
+
+function customFormValueGetter() {
+  return JSON.stringify(formData.value);
+}
+
+const { onBeforeClose, markInitialized, resetInitialized } = useBeforeCloseDiff(
+  {
+    initializedGetter: customFormValueGetter,
+    currentGetter: customFormValueGetter,
+  },
+);
+
+const [Basic${PopupComponent}, ${popupComponent}Api] = useVben${PopupComponent}({
+  class: 'w-[550px]',
+  fullscreenButton: false,
+  onBeforeClose,
+  onClosed: handleClosed,
+  onConfirm: handleConfirm,
+  onOpenChange: async (isOpen) => {
+    if (!isOpen) {
+      return null;
+    }
+    ${popupComponent}Api.${popupComponent}Loading(true);
+
+    const { id } = ${popupComponent}Api.getData() as { id?: number | string };
+    isUpdate.value = !!id;
+
+    if (isUpdate.value && id) {
+      const record = await ${businessName}Info(id);
+      // 只赋值存在的字段
+      const filterRecord = pick(record, Object.keys(defaultValues));
+      formData.value = filterRecord;
+    }
+    await markInitialized();
+
+    ${popupComponent}Api.${popupComponent}Loading(false);
+  },
+});
+
+async function handleConfirm() {
+  try {
+    ${popupComponent}Api.lock(true);
+    await formInstance.value?.validate();
+    // 可能会做数据处理 使用cloneDeep深拷贝
+    const data = cloneDeep(formData.value);
+    await (isUpdate.value ? ${businessName}Update(data) : ${businessName}Add(data));
+    resetInitialized();
+    emit('reload');
+    ${popupComponent}Api.close();
+  } catch (error) {
+    console.error(error);
+  } finally {
+    ${popupComponent}Api.lock(false);
+  }
+}
+
+async function handleClosed() {
+  formData.value = defaultValues;
+  formInstance.value?.resetFields();
+  resetInitialized();
+}
+</script>
+
+<template>
+  <Basic${PopupComponent} :title="title">
+    <Form :label-col="{ span: 4 }" ref="formInstance" :model="formData">
+#foreach($column in $columns)
+#set($field=$column.javaField)
+#if(($column.insert || $column.edit) && !$column.pk)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#set($dictType=$column.dictType)
+#if($column.htmlType == "input")
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <Input v-model:value="formData.${field}" :placeholder="$t('ui.formRules.required')" />
+      </FormItem>
+#elseif($column.htmlType == "imageUpload")
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <!-- props参考apps/web-antd/src/components/upload/src/props.d.ts -->
+        <!-- maxCount为1(默认)时只允许上传一个文件 会自动绑定为string而非string[] -->
+        <ImageUpload :max-count="1" v-model:value="formData.${field}" />
+      </FormItem>
+#elseif($column.htmlType == "fileUpload")
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <!-- props参考apps/web-antd/src/components/upload/src/props.d.ts -->
+        <!-- maxCount为1(默认)时只允许上传一个文件 会自动绑定为string而非string[] -->
+        <FileUpload :max-count="1" v-model:value="formData.${field}" />
+      </FormItem>
+#elseif($column.htmlType == "editor")
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <Tinymce
+          :disabled="false"
+          v-model="formData.${field}"
+        />
+      </FormItem>
+#elseif($column.htmlType == "select" && "" != $dictType)
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <Select
+          v-model:value="formData.${field}"
+          #if($column.javaType == "Integer" || $column.javaType == "Long")
+          :options="getDictOptions('$dictType', true)"
+          #else
+          :options="getDictOptions('$dictType')"
+          #end
+          :getPopupContainer="getPopupContainer"
+          :placeholder="$t('ui.formRules.selectRequired')"
+        />
+      </FormItem>
+#elseif($column.htmlType == "select" && "" == $dictType)
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <Select
+          v-model:value="formData.${field}"
+          :options="[]"
+          :getPopupContainer="getPopupContainer"
+          :placeholder="$t('ui.formRules.selectRequired')"
+        />
+      </FormItem>
+#elseif($column.htmlType == "checkbox" && "" != $dictType)
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <CheckboxGroup
+          v-model:value="formData.${field}"
+          #if($column.javaType == "Integer" || $column.javaType == "Long")
+          :options="getDictOptions('$dictType', true)"
+          #else
+          :options="getDictOptions('$dictType')"
+          #end
+        />
+      </FormItem>
+#elseif($column.htmlType == "checkbox" && "" == $dictType)
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <CheckboxGroup
+          v-model:value="formData.${field}"
+          :options="[]"
+        />
+      </FormItem>
+#elseif($column.htmlType == "radio" && "" != $dictType)
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <RadioGroup
+          option-type="button"
+          button-style="solid"
+          v-model:value="formData.${field}"
+          #if($column.javaType == "Integer" || $column.javaType == "Long")
+          :options="getDictOptions('$dictType', true)"
+          #else
+          :options="getDictOptions('$dictType')"
+          #end
+        />
+      </FormItem>
+#elseif($column.htmlType == "radio" && "" == $dictType)
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <RadioGroup
+          option-type="button"
+          button-style="solid"
+          v-model:value="formData.${field}"
+          :options="[]"
+        />
+      </FormItem>
+#elseif($column.htmlType == "datetime")
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <!-- 需要自行调整参数 -->
+        <DatePicker
+          v-model:value="formData.${field}"
+          format="YYYY-MM-DD HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
+        />
+      </FormItem>
+#elseif($column.htmlType == "textarea")
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <Textarea
+          v-model:value="formData.${field}"
+          :placeholder="$t('ui.formRules.required')"
+          :rows="4"
+        />
+      </FormItem>
+#end
+#end
+#end
+    </Form>
+  </Basic${PopupComponent}>
+</template>
+#end
