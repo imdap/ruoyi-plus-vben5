@@ -79,7 +79,7 @@ catalog:
   autoprefixer: ^10.4.23
   axios: ^1.13.4
   axios-mock-adapter: ^2.1.0
-  cac: ^6.7.14
+  cac: ^7.0.0
   chalk: ^5.6.2
   cheerio: ^1.2.0
   circular-dependency-scanner: ^2.3.0
