@@ -137,7 +137,7 @@ catalog:
   medium-zoom: ^1.1.0
   nitropack: ^2.13.1
   nprogress: ^0.2.0
-  ora: ^8.2.0
+  ora: ^9.3.0
   pinia: ^3.0.4
   pinia-plugin-persistedstate: ^4.7.1
   pkg-types: ^2.3.0
