@@ -26,6 +26,7 @@ export interface MenuMeta {
  * @param children 子路由信息
  */
 export interface Menu {
+  id: number;
   alwaysShow?: boolean;
   children: Menu[];
   component: string;
@@ -35,11 +36,12 @@ export interface Menu {
   path: string;
   query?: string;
   redirect?: string;
+  pid?: number;
 }
 
 /**
  * 获取用户所有菜单
  */
 export async function getAllMenusApi() {
-  return alovaInstance.get<Menu[]>('/system/menu/getRouters');
+  return alovaInstance.get<Menu[]>('/auth/getRouters');
 }

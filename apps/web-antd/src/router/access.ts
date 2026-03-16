@@ -242,9 +242,45 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
         duration: 1,
       });
       // 后台返回路由/菜单
-      const backMenuList = await getAllMenusApi();
+      const flatMenuList = await getAllMenusApi();
+
+      // 构建树形结构（基于 id 和 pid）
+      const buildMenuTree = (menus: Menu[]): Menu[] => {
+        const map = new Map<number, Menu>();
+        const roots: Menu[] = [];
+
+        // 初始化映射，并为每个菜单准备一个 children 数组（避免影响原始对象）
+        menus.forEach((menu) => {
+          const path = menu.path;
+          if (menu.pid === 0 && path && !path.startsWith('/')) {
+            menu.path = `/${path}`;
+            menu.component = 'Layout';
+            // console.log('sp:', path);
+          }
+          map.set(menu.id, {
+            ...menu,
+            children: [], // 覆盖或初始化 children
+          });
+        });
+
+        // 构建父子关系
+        menus.forEach((menu) => {
+          const current = map.get(menu.id) as Menu;
+          if (menu.pid && map.has(menu.pid)) {
+            const parent = map.get(menu.pid) as Menu;
+            parent.children.push(current);
+          } else {
+            // pid 不存在或为 0/null/undefined 时作为根节点
+            roots.push(current);
+          }
+        });
+
+        return roots;
+      };
+
+      const menuTree = buildMenuTree(flatMenuList);
       // 转换为vben能用的路由
-      const vbenMenuList = backMenuToVbenMenu(backMenuList);
+      const vbenMenuList = backMenuToVbenMenu(menuTree);
       return vbenMenuList;
     },
     // 可以指定没有权限跳转403页面
