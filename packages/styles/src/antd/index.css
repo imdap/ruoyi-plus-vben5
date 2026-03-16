@@ -1,6 +1,15 @@
 @reference "tailwindcss";
 /* antdv-next 组件库的一些样式重置 */
 
+body {
+  /**
+   * 全局启用 抗锯齿字体
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-smooth
+   */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .ant-app {
   width: 100%;
   height: 100%;

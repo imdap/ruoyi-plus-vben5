@@ -1,27 +1,25 @@
 <script lang="ts" setup>
-import type { ConfigProviderProps } from 'antdv-next';
+import type { ConfigProviderProps } from "antdv-next";
 
-import { computed } from 'vue';
+import { computed } from "vue";
 
-import { useAntdDesignTokens } from '@vben/hooks';
-import { preferences, usePreferences } from '@vben/preferences';
+import { useAntdDesignTokens } from "@vben/hooks";
+import { preferences, usePreferences } from "@vben/preferences";
 
-import { App, ConfigProvider, theme } from 'antdv-next';
+import { App, ConfigProvider, theme } from "antdv-next";
 
-import { antdLocale } from '#/locales';
+import { antdLocale } from "#/locales";
 
-import { waveConfigs } from './components/global/button-wave';
-import { PopupContext } from './utils/context';
+import { waveConfigs } from "./components/global/button-wave";
+import { PopupContext } from "./utils/context";
 
-defineOptions({ name: 'App' });
+defineOptions({ name: "App" });
 
 const { isDark } = usePreferences();
 const { tokens } = useAntdDesignTokens();
 
 const tokenTheme = computed(() => {
-  const algorithm = isDark.value
-    ? [theme.darkAlgorithm]
-    : [theme.defaultAlgorithm];
+  const algorithm = isDark.value ? [theme.darkAlgorithm] : [theme.defaultAlgorithm];
 
   // antd 紧凑模式算法
   if (preferences.app.compact) {
@@ -41,9 +39,7 @@ const waveConfig = computed(() => {
   return found ? found.wave : {};
 });
 
-const otherProps = computed<
-  Omit<ConfigProviderProps, 'locale' | 'theme' | 'wave'>
->(() => {
+const otherProps = computed<Omit<ConfigProviderProps, "locale" | "theme" | "wave">>(() => {
   // 目前不生效?
   return {
     modal: { mask: { blur: false } },
@@ -53,25 +49,10 @@ const otherProps = computed<
 </script>
 
 <template>
-  <ConfigProvider
-    :locale="antdLocale"
-    :theme="tokenTheme"
-    :wave="waveConfig"
-    v-bind="otherProps"
-  >
+  <ConfigProvider :locale="antdLocale" :theme="tokenTheme" :wave="waveConfig" v-bind="otherProps">
     <App :message="{ maxCount: 1 }">
       <RouterView />
       <PopupContext />
     </App>
   </ConfigProvider>
 </template>
-
-<style lang="scss">
-body {
-  /**
-   * 全局启用 抗锯齿字体
-   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-smooth
-   */
-  @apply antialiased;
-}
-</style>
