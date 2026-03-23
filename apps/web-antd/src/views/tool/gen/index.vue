@@ -188,19 +188,21 @@ const [TableImportModal, tableImportModalApi] = useVbenModal({
 function handleImport() {
   tableImportModalApi.open();
 }
+
+import howToUseModal from './md/how-to-use-modal.vue';
+const [HowToUseModal, howToUseModalApi] = useVbenModal({
+  connectedComponent: howToUseModal,
+});
 </script>
 
 <template>
   <Page :auto-content-height="true">
     <BasicTable table-title="代码生成列表">
       <template #toolbar-tools>
-        <a
-          class="mr-2 text-primary"
-          href="https://dapdap.top/other/template.html"
-          target="_blank"
-          >👉关于代码生成模板
-        </a>
         <Space>
+          <a-button type="link" @click="howToUseModalApi.open()">
+            如何使用🤔(beta版)
+          </a-button>
           <a-button
             :disabled="!vxeCheckboxChecked(tableApi)"
             danger
@@ -284,5 +286,6 @@ function handleImport() {
     </BasicTable>
     <CodePreviewModal />
     <TableImportModal @reload="tableApi.query()" />
+    <HowToUseModal />
   </Page>
 </template>
