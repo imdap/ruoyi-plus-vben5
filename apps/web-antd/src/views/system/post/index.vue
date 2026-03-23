@@ -127,6 +127,11 @@ async function handleExport() {
   const fileName = buildExportFileName('岗位数据');
   exportBlob({ data: formValues, fileName });
 }
+
+function handleDeptSelect(keys: string[]) {
+  selectDeptId.value = keys;
+  tableApi.reload();
+}
 </script>
 
 <template>
@@ -136,7 +141,7 @@ async function handleExport() {
       v-model:select-dept-id="selectDeptId"
       class="w-[260px]"
       @reload="() => tableApi.reload()"
-      @select="() => tableApi.reload()"
+      @select="handleDeptSelect"
     />
     <BasicTable class="flex-1 overflow-hidden" table-title="岗位列表">
       <template #toolbar-tools>

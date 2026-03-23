@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Key } from 'antdv-next/dist/table/interface';
+
 import type { PropType } from 'vue';
 
 import type { DeptTree } from '#/api/system/user/model';
@@ -27,7 +29,7 @@ const emit = defineEmits<{
   /**
    * 点击节点的事件
    */
-  select: [];
+  select: [keys: string[]];
 }>();
 
 interface Props {
@@ -92,6 +94,10 @@ async function handleReload() {
 }
 
 onMounted(loadTree);
+
+function handleSelect(keys: Key[]) {
+  emit('select', keys as string[]);
+}
 </script>
 
 <template>
@@ -133,7 +139,7 @@ onMounted(loadTree);
             :tree-data="deptTreeComputed"
             :virtual="false"
             default-expand-all
-            @select="$emit('select')"
+            @select="handleSelect"
             :styles="{
               item: {
                 '--ant-tree-node-selected-bg':

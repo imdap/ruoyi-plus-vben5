@@ -211,6 +211,11 @@ async function handleChangeStatus(checked: SwitchProps['checked'], row: User) {
     status: checked ? EnableStatus.Enable : EnableStatus.Disable,
   });
 }
+
+function handleDeptSelect(keys: string[]) {
+  selectDeptId.value = keys;
+  tableApi.reload();
+}
 </script>
 
 <template>
@@ -220,7 +225,7 @@ async function handleChangeStatus(checked: SwitchProps['checked'], row: User) {
         v-model:select-dept-id="selectDeptId"
         class="w-[260px]"
         @reload="() => tableApi.reload()"
-        @select="() => tableApi.reload()"
+        @select="handleDeptSelect"
       />
       <BasicTable class="flex-1 overflow-hidden" table-title="用户列表">
         <template #toolbar-tools>
