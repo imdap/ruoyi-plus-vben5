@@ -33,7 +33,7 @@
   "editor.autoClosingQuotes": "beforeWhitespace",
   "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?",
   "editor.quickSuggestions": {
-    "strings": "on",
+    "strings": "on"
   },
 
   // lint && format
@@ -46,35 +46,35 @@
     "source.fixAll.eslint": "explicit",
     "source.fixAll.oxc": "explicit",
     "source.fixAll.stylelint": "explicit",
-    "source.organizeImports": "never",
+    "source.organizeImports": "never"
   },
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "[html]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[css]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[scss]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[javascript]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[json]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[markdown]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[vue]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   },
 
   // extensions
@@ -97,7 +97,7 @@
     "*.art": "html",
     "**/tsconfig.json": "jsonc",
     "*.json": "jsonc",
-    "package.json": "json",
+    "package.json": "json"
   },
 
   "files.exclude": {
@@ -115,7 +115,7 @@
     "**/.DS_Store": true,
     "**/vite.config.mts.*": true,
     "**/tea.yaml": true,
-    "**/public/tinymce/**": true,
+    "**/public/tinymce/**": true
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
@@ -125,7 +125,7 @@
     "**/tmp/**": true,
     "**/bower_components/**": true,
     "**/dist/**": true,
-    "**/yarn.lock": true,
+    "**/yarn.lock": true
   },
 
   "typescript.tsserver.exclude": ["**/node_modules", "**/dist", "**/.turbo"],
@@ -157,7 +157,7 @@
     "node_modules": true,
     "CHANGELOG.md": true,
     "**/pnpm-lock.yaml": true,
-    "**/yarn.lock": true,
+    "**/yarn.lock": true
   },
 
   "debug.onTaskErrors": "debugAnyway",
@@ -196,21 +196,26 @@
     "json",
     "jsonc",
     "json5",
-    "yaml",
+    "yaml"
   ],
 
-  "tailwindCSS.experimental.classRegex": [["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
 
   "github.copilot.enable": {
     "*": true,
     "markdown": true,
     "plaintext": false,
-    "yaml": false,
+    "yaml": false
   },
 
   "cssVariables.lookupFiles": ["packages/@core/base/design/src/**/*.css"],
 
-  "i18n-ally.localesPaths": ["packages/locales/src/langs", "apps/*/src/locales/langs"],
+  "i18n-ally.localesPaths": [
+    "packages/locales/src/langs",
+    "apps/*/src/locales/langs"
+  ],
   "i18n-ally.pathMatcher": "{locale}/{namespace}.{ext}",
   "i18n-ally.enabledParsers": ["json"],
   "i18n-ally.sourceLanguage": "en",
@@ -229,7 +234,7 @@
     "*.env": "$(capture).env.*",
     "README.md": "README*,CHANGELOG*,LICENSE,CNAME",
     "package.json": "pnpm-lock.yaml,pnpm-workspace.yaml,.gitattributes,.gitignore,.gitpod.yml,.npmrc,.browserslistrc,.node-version,.git*,.tazerc.json",
-    "oxlint.config.ts": ".eslintignore,.stylelintignore,.commitlintrc.*,stylelint.config.*,.lintstagedrc.mjs,cspell.json,lefthook.yml,oxfmt.config.*,eslint.config.*",
+    "oxlint.config.ts": ".eslintignore,.stylelintignore,.commitlintrc.*,stylelint.config.*,.lintstagedrc.mjs,cspell.json,lefthook.yml,oxfmt.config.*,eslint.config.*"
   },
   "commentTranslate.hover.enabled": false,
   "commentTranslate.multiLineMerge": true,
@@ -251,6 +256,7 @@
     "rollup",
     "Spel",
     "tinymce",
-    "vitest",
+    "vitest"
   ],
+  "unocss.disable": true
 }
