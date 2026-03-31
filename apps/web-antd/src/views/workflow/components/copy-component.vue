@@ -8,7 +8,7 @@ import { computed } from 'vue';
 
 import { useVbenModal, VbenAvatar } from '@vben/common-ui';
 
-import { Avatar, AvatarGroup, Tooltip } from 'ant-design-vue';
+import { Avatar, AvatarGroup, Tooltip } from 'antdv-next';
 
 import { userSelectModal } from '.';
 

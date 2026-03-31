@@ -58,7 +58,6 @@ const [BasicForm, formApi] = useVbenForm({
         maxSize: 20,
         accept: 'png, jpg, jpeg, doc, docx, xlsx, xls, ppt, pdf',
       },
-      defaultValue: [],
       label: '附件上传',
       formItemClass: 'items-start',
     },
@@ -125,7 +124,7 @@ async function handleSubmit() {
     }
     const data = cloneDeep(await formApi.getValues());
     // 附件join
-    data.fileId = data.attachment?.join?.(',');
+    data.fileId = data.attachment;
     // 取消attachment参数的传递
     data.attachment = undefined;
     await backProcess(data);

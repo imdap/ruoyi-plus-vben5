@@ -7,9 +7,9 @@ import type { Dept } from '#/api/system/dept/model';
 import { nextTick } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
-import { eachTree, getVxePopupContainer } from '@vben/utils';
+import { eachTree } from '@vben/utils';
 
-import { Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deptList, deptRemove } from '#/api/system/dept';
@@ -148,32 +148,32 @@ function setExpandOrCollapse(expand: boolean) {
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button
+          <action-button
             v-access:code="['system:dept:edit']"
             @click="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </ghost-button>
-          <ghost-button
-            class="btn-success"
+          </action-button>
+          <action-button
+            variant="link"
+            color="green"
             v-access:code="['system:dept:add']"
             @click="handleSubAdd(row)"
           >
             {{ $t('pages.common.add') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
-            :get-popup-container="getVxePopupContainer"
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['system:dept:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

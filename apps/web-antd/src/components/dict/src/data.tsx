@@ -1,6 +1,6 @@
 import type { VNode } from 'vue';
 
-import { Tag } from 'ant-design-vue';
+import { Tag } from 'antdv-next';
 
 interface TagType {
   [key: string]: { color: string; label: string };

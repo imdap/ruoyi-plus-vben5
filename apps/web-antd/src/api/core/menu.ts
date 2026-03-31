@@ -1,4 +1,4 @@
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 /**
  * @description: 菜单meta
@@ -41,5 +41,5 @@ export interface Menu {
  * 获取用户所有菜单
  */
 export async function getAllMenusApi() {
-  return requestClient.get<Menu[]>('/system/menu/getRouters');
+  return alovaInstance.get<Menu[]>('/system/menu/getRouters');
 }

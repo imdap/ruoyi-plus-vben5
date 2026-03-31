@@ -3,7 +3,7 @@ import type { TenantPackage } from './model';
 import type { ID, IDS, PageQuery, PageResult } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   packageChangeStatus = '/system/tenant/package/changeStatus',
@@ -19,7 +19,7 @@ enum Api {
  * @returns 分页列表
  */
 export function packageList(params?: PageQuery) {
-  return requestClient.get<PageResult<TenantPackage>>(Api.packageList, {
+  return alovaInstance.get<PageResult<TenantPackage>>(Api.packageList, {
     params,
   });
 }
@@ -29,7 +29,7 @@ export function packageList(params?: PageQuery) {
  * @returns 下拉框
  */
 export function packageSelectList() {
-  return requestClient.get<TenantPackage[]>(Api.packageSelectList);
+  return alovaInstance.get<TenantPackage[]>(Api.packageSelectList);
 }
 
 /**
@@ -47,7 +47,7 @@ export function packageExport(data: Partial<TenantPackage>) {
  * @returns 信息
  */
 export function packageInfo(id: ID) {
-  return requestClient.get<TenantPackage>(`${Api.root}/${id}`);
+  return alovaInstance.get<TenantPackage>(`${Api.root}/${id}`);
 }
 
 /**
@@ -56,7 +56,7 @@ export function packageInfo(id: ID) {
  * @returns void
  */
 export function packageAdd(data: Partial<TenantPackage>) {
-  return requestClient.postWithMsg<void>(Api.root, data);
+  return alovaInstance.postWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -65,7 +65,7 @@ export function packageAdd(data: Partial<TenantPackage>) {
  * @returns void
  */
 export function packageUpdate(data: Partial<TenantPackage>) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -78,7 +78,7 @@ export function packageChangeStatus(data: Partial<TenantPackage>) {
     packageId: data.packageId,
     status: data.status,
   };
-  return requestClient.putWithMsg<void>(Api.packageChangeStatus, packageId);
+  return alovaInstance.putWithMsg<void>(Api.packageChangeStatus, packageId);
 }
 
 /**
@@ -87,5 +87,5 @@ export function packageChangeStatus(data: Partial<TenantPackage>) {
  * @returns void
  */
 export function packageRemove(ids: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${ids}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${ids}`);
 }

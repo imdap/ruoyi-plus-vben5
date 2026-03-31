@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { SwitchProps } from 'antdv-next';
+
 import type { VbenFormProps } from '@vben/common-ui';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -6,9 +8,9 @@ import type { Client } from '#/api/system/client/model';
 
 import { useAccess } from '@vben/access';
 import { Page, useVbenDrawer } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
+import { DEFAULT_CLIENT_ID, EnableStatus } from '@vben/constants';
 
-import { Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -17,8 +19,8 @@ import {
   clientList,
   clientRemove,
 } from '#/api/system/client';
-import { TableSwitch } from '#/components/table';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { ApiSwitch } from '#/components/global';
+import { useBlobExport } from '#/utils/file/export';
 
 import clientDrawer from './client-drawer.vue';
 import { columns, querySchema } from './data';
@@ -93,7 +95,7 @@ async function handleDelete(row: Client) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: Client) => row.id);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -104,11 +106,26 @@ function handleMultiDelete() {
   });
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(clientExport, '客户端数据', tableApi.formApi.form.values);
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(clientExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('客户端数据');
+  exportBlob({ data: formValues, fileName });
 }
 
 const { hasAccessByCodes } = useAccess();
+async function handleChangeStatus(
+  checked: SwitchProps['checked'],
+  row: Client,
+) {
+  await clientChangeStatus({
+    clientId: row.id,
+    status: checked ? EnableStatus.Enable : EnableStatus.Disable,
+  });
+}
 </script>
 
 <template>
@@ -118,7 +135,9 @@ const { hasAccessByCodes } = useAccess();
         <Space>
           <a-button
             v-access:code="['system:client:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>
@@ -143,36 +162,38 @@ const { hasAccessByCodes } = useAccess();
       <template #status="{ row }">
         <!-- pc不允许禁用 禁用了直接登录不了 应该设置disabled -->
         <!-- 登录提示: 认证权限类型已禁用 -->
-        <TableSwitch
-          v-model:value="row.status"
-          :api="() => clientChangeStatus(row)"
-          :disabled="row.id === 1 || !hasAccessByCodes(['system:client:edit'])"
+        <ApiSwitch
+          :value="row.status === EnableStatus.Enable"
+          :api="(checked) => handleChangeStatus(checked, row)"
+          :disabled="
+            row.id === DEFAULT_CLIENT_ID ||
+            !hasAccessByCodes(['system:client:edit'])
+          "
           @reload="tableApi.query()"
         />
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button
+          <action-button
             v-access:code="['system:client:edit']"
             @click.stop="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
             :disabled="row.id === 1"
-            :get-popup-container="getVxePopupContainer"
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               :disabled="row.id === 1"
               danger
               v-access:code="['system:client:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

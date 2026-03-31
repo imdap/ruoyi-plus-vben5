@@ -3,7 +3,7 @@ import type { DictData } from './dict-data-model';
 import type { ID, IDS, PageQuery } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   dictDataExport = '/system/dict/data/export',
@@ -17,7 +17,7 @@ enum Api {
  * @returns 字典数据
  */
 export function dictDataInfo(dictType: string) {
-  return requestClient.get<DictData[]>(`${Api.root}/type/${dictType}`);
+  return alovaInstance.get<DictData[]>(`${Api.root}/type/${dictType}`);
 }
 
 /**
@@ -26,7 +26,7 @@ export function dictDataInfo(dictType: string) {
  * @returns 字典数据列表
  */
 export function dictDataList(params?: PageQuery) {
-  return requestClient.get<DictData[]>(Api.dictDataList, { params });
+  return alovaInstance.get<DictData[]>(Api.dictDataList, { params });
 }
 
 /**
@@ -44,7 +44,7 @@ export function dictDataExport(data: Partial<DictData>) {
  * @returns void
  */
 export function dictDataRemove(dictIds: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${dictIds}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${dictIds}`);
 }
 
 /**
@@ -53,7 +53,7 @@ export function dictDataRemove(dictIds: IDS) {
  * @returns void
  */
 export function dictDataAdd(data: Partial<DictData>) {
-  return requestClient.postWithMsg<void>(Api.root, data);
+  return alovaInstance.postWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -62,7 +62,7 @@ export function dictDataAdd(data: Partial<DictData>) {
  * @returns void
  */
 export function dictDataUpdate(data: Partial<DictData>) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -71,5 +71,5 @@ export function dictDataUpdate(data: Partial<DictData>) {
  * @returns 字典数据
  */
 export function dictDetailInfo(dictCode: ID) {
-  return requestClient.get<DictData>(`${Api.root}/${dictCode}`);
+  return alovaInstance.get<DictData>(`${Api.root}/${dictCode}`);
 }

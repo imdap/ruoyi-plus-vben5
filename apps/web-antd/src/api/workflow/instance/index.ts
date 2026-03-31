@@ -3,14 +3,14 @@ import type { FlowInfoResponse, FlowInstanceVariableResp } from './model';
 
 import type { ID, IDS, PageQuery, PageResult } from '#/api/common';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 /**
  * @param businessId 业务ID
  * @returns TaskInfo
  */
 export function getTaskByBusinessId(businessId: string) {
-  return requestClient.get<TaskInfo>(
+  return alovaInstance.get<TaskInfo>(
     `/workflow/instance/getInfo/${businessId}`,
   );
 }
@@ -21,7 +21,7 @@ export function getTaskByBusinessId(businessId: string) {
  * @returns
  */
 export function pageByRunning(params?: PageQuery) {
-  return requestClient.get('/workflow/instance/pageByRunning', { params });
+  return alovaInstance.get('/workflow/instance/pageByRunning', { params });
 }
 
 /**
@@ -30,7 +30,7 @@ export function pageByRunning(params?: PageQuery) {
  * @returns
  */
 export function pageByFinish(params?: PageQuery) {
-  return requestClient.get('/workflow/instance/pageByFinish', { params });
+  return alovaInstance.get('/workflow/instance/pageByFinish', { params });
 }
 
 /**
@@ -38,7 +38,7 @@ export function pageByFinish(params?: PageQuery) {
  * @param businessIds 业务id
  */
 export function deleteByBusinessIds(businessIds: IDS) {
-  return requestClient.deleteWithMsg<void>(
+  return alovaInstance.deleteWithMsg<void>(
     `/workflow/instance/deleteByBusinessIds${businessIds}`,
   );
 }
@@ -48,7 +48,7 @@ export function deleteByBusinessIds(businessIds: IDS) {
  * @param instanceIds 实例id
  */
 export function deleteByInstanceIds(instanceIds: IDS) {
-  return requestClient.deleteWithMsg<void>(
+  return alovaInstance.deleteWithMsg<void>(
     `/workflow/instance/deleteByInstanceIds/${instanceIds}`,
   );
 }
@@ -58,7 +58,7 @@ export function deleteByInstanceIds(instanceIds: IDS) {
  * @param data
  */
 export function cancelProcessApply(data: { businessId: ID; message?: string }) {
-  return requestClient.putWithMsg<void>(
+  return alovaInstance.putWithMsg<void>(
     '/workflow/instance/cancelProcessApply',
     data,
   );
@@ -70,7 +70,7 @@ export function cancelProcessApply(data: { businessId: ID; message?: string }) {
  * @param active
  */
 export function workflowInstanceActive(instanceId: ID, active: boolean) {
-  return requestClient.putWithMsg<void>(
+  return alovaInstance.putWithMsg<void>(
     `/workflow/instance/active/${instanceId}?active=${active}`,
   );
 }
@@ -81,7 +81,7 @@ export function workflowInstanceActive(instanceId: ID, active: boolean) {
  * @returns PageResult<Flow>
  */
 export function pageByCurrent(params?: PageQuery) {
-  return requestClient.get<PageResult<TaskInfo>>(
+  return alovaInstance.get<PageResult<TaskInfo>>(
     '/workflow/instance/pageByCurrent',
     { params },
   );
@@ -93,7 +93,7 @@ export function pageByCurrent(params?: PageQuery) {
  * @returns 流程图，流程记录
  */
 export function flowInfo(businessId: string) {
-  return requestClient.get<FlowInfoResponse>(
+  return alovaInstance.get<FlowInfoResponse>(
     `/workflow/instance/flowHisTaskList/${businessId}`,
   );
 }
@@ -104,7 +104,7 @@ export function flowInfo(businessId: string) {
  * @returns Map<string,any>
  */
 export function instanceVariable(instanceId: string) {
-  return requestClient.get<FlowInstanceVariableResp>(
+  return alovaInstance.get<FlowInstanceVariableResp>(
     `/workflow/instance/instanceVariable/${instanceId}`,
   );
 }
@@ -116,7 +116,7 @@ export function workflowInstanceInvalid(data: {
   comment?: string;
   id: string;
 }) {
-  return requestClient.postWithMsg<void>('/workflow/instance/invalid', data);
+  return alovaInstance.postWithMsg<void>('/workflow/instance/invalid', data);
 }
 
 /**
@@ -132,7 +132,7 @@ export function updateFlowVariable(data: {
   key: string;
   value: any;
 }) {
-  return requestClient.putWithMsg<void>(
+  return alovaInstance.putWithMsg<void>(
     '/workflow/instance/updateVariable',
     data,
   );

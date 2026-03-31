@@ -7,9 +7,8 @@ import type { DictType } from '#/api/system/dict/dict-type-model';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
 
-import { Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -18,7 +17,7 @@ import {
   dictTypeRemove,
   refreshDictTypeCache,
 } from '#/api/system/dict/dict-type';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 
 import { emitter } from '../mitt';
 import { columns, querySchema } from './data';
@@ -106,7 +105,7 @@ async function handleDelete(row: DictType) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: DictType) => row.dictId);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -122,18 +121,20 @@ async function handleRefreshCache() {
   await tableApi.query();
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(
-    dictTypeExport,
-    '字典类型数据',
-    tableApi.formApi.form.values,
-  );
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(dictTypeExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('字典类型数据');
+  exportBlob({ data: formValues, fileName });
 }
 </script>
 
 <template>
   <div>
-    <BasicTable id="dict-type" table-title="字典类型列表">
+    <BasicTable table-title="字典类型列表">
       <template #toolbar-tools>
         <Space>
           <a-button
@@ -144,7 +145,9 @@ function handleDownloadExcel() {
           </a-button>
           <a-button
             v-access:code="['system:dict:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>
@@ -168,27 +171,24 @@ function handleDownloadExcel() {
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button
+          <action-button
             v-access:code="['system:dict:edit']"
             @click.stop="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
-            :get-popup-container="
-              (node) => getVxePopupContainer(node, 'dict-type')
-            "
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['system:dict:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

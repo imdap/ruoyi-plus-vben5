@@ -9,7 +9,7 @@ import { computed, nextTick, ref, shallowRef, useAttrs, watch } from 'vue';
 import { preferences, usePreferences } from '@vben/preferences';
 
 import Editor from '@tinymce/tinymce-vue';
-import { Spin } from 'ant-design-vue';
+import { Spin } from 'antdv-next';
 import { camelCase } from 'lodash-es';
 
 import { uploadApi } from '#/api';

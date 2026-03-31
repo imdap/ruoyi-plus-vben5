@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UploadFile } from 'ant-design-vue/es/upload/interface';
+import type { UploadFile } from 'antdv-next/es/upload/interface';
 
 import type { CustomGetter } from '#/components/upload/src/props';
 
@@ -8,7 +8,7 @@ import { h, ref } from 'vue';
 import { CodeMirror, Page, useVbenModal } from '@vben/common-ui';
 
 import { useClipboard } from '@vueuse/core';
-import { Alert, Card, Modal, RadioGroup, Switch } from 'ant-design-vue';
+import { Alert, Card, RadioGroup, Switch } from 'antdv-next';
 
 import { FileUpload, ImageUpload } from '#/components/upload';
 
@@ -22,7 +22,7 @@ const multipleImageId = ref<string[]>(['1905537674682916865']);
 const multipleFileId = ref<string[]>(['1905191167882518529']);
 
 function handlePreview(file: UploadFile) {
-  Modal.info({
+  window.modal.info({
     content: h('div', { class: 'break-all' }, JSON.stringify(file, null, 2)),
     maskClosable: true,
   });

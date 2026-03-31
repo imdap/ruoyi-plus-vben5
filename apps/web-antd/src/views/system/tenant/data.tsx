@@ -3,8 +3,6 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { getPopupContainer } from '@vben/utils';
 
-import dayjs from 'dayjs';
-
 import { z } from '#/adapter/form';
 
 export const querySchema: FormSchemaGetter = () => [
@@ -73,10 +71,7 @@ export const columns: VxeGridProps['columns'] = [
   },
 ];
 
-const defaultExpireTime = dayjs()
-  .add(365, 'days')
-  .startOf('day')
-  .format('YYYY-MM-DD HH:mm:ss');
+// const defaultExpireTime = dayjs().add(365, 'days').startOf('day');
 
 export const drawerSchema: FormSchemaGetter = () => [
   {
@@ -191,7 +186,7 @@ export const drawerSchema: FormSchemaGetter = () => [
       valueFormat: 'YYYY-MM-DD HH:mm:ss',
       getPopupContainer,
     },
-    defaultValue: defaultExpireTime,
+    // defaultValue: defaultExpireTime,
     fieldName: 'expireTime',
     help: `已经设置过期时间不允许重置为'无期限'\n即在开通时未设置无期限 以后都不允许设置`,
     label: '过期时间',

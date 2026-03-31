@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { computed } from 'vue';
 
-import { Tag } from 'ant-design-vue';
+import { Tag } from 'antdv-next';
 
 defineOptions({ name: 'OptionsTag' });
 

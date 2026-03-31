@@ -5,8 +5,8 @@ import { computed, ref, watch } from 'vue';
 import { SvgMessageUrl } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { useUserStore } from '@vben/stores';
+import { buildUUID } from '@vben/utils';
 
-import { Modal, notification } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { defineStore } from 'pinia';
 
@@ -52,10 +52,10 @@ export const useNotifyStore = defineStore(
         if (!message) return;
         console.log(`接收到消息: ${message}`);
 
-        notification.success({
+        window.notification.success({
           description: message,
           duration: 3,
-          message: $t('component.notice.received'),
+          title: $t('component.notice.received'),
         });
 
         notificationList.value.unshift({
@@ -66,6 +66,7 @@ export const useNotifyStore = defineStore(
           message,
           title: $t('component.notice.title'),
           userId: userId.value,
+          id: buildUUID(),
         });
 
         // 需要手动置空 vue3在值相同时不会触发watch
@@ -91,7 +92,7 @@ export const useNotifyStore = defineStore(
     function setRead(item: NotificationItem) {
       !item.isRead && (item.isRead = true);
       // 显示信息
-      Modal.info({
+      window.modal.info({
         title: item.title,
         content: item.message,
       });

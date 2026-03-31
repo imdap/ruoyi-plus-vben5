@@ -3,7 +3,7 @@ import type { OperationLog } from './model';
 import type { IDS, PageQuery, PageResult } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   operLogClean = '/monitor/operlog/clean',
@@ -18,7 +18,7 @@ enum Api {
  * @returns 分页结果
  */
 export function operLogList(params?: PageQuery) {
-  return requestClient.get<PageResult<OperationLog>>(Api.operLogList, {
+  return alovaInstance.get<PageResult<OperationLog>>(Api.operLogList, {
     params,
   });
 }
@@ -28,14 +28,14 @@ export function operLogList(params?: PageQuery) {
  * @param operIds id/ids
  */
 export function operLogDelete(operIds: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${operIds}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${operIds}`);
 }
 
 /**
  * 清空全部分页日志
  */
 export function operLogClean() {
-  return requestClient.deleteWithMsg<void>(Api.operLogClean);
+  return alovaInstance.deleteWithMsg<void>(Api.operLogClean);
 }
 
 /**

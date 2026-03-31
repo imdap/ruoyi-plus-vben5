@@ -11,7 +11,6 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { cloneDeep } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
 import { omit } from 'lodash-es';
 
 import { useVbenForm } from '#/adapter/form';
@@ -63,7 +62,6 @@ const [BasicForm, formApi] = useVbenForm({
         maxSize: 20,
         accept: 'png, jpg, jpeg, doc, docx, xlsx, xls, ppt, pdf',
       },
-      defaultValue: [],
       label: '附件上传',
       formItemClass: 'items-start',
     },
@@ -162,7 +160,7 @@ async function handleSubmit() {
     }));
     const requestData = {
       ...omit(data, ['attachment']),
-      fileId: data.attachment.join(','),
+      fileId: data.attachment,
       taskVariables: {},
       variables: {},
       flowCopyList,
@@ -173,7 +171,7 @@ async function handleSubmit() {
       // 判断是否选中
       for (const item of nextNodeInfo.value) {
         if (item.selectUserList.length === 0) {
-          message.warn(`未选择节点[${item.nodeName}]审批人`);
+          window.message.warning(`未选择节点[${item.nodeName}]审批人`);
           return;
         }
       }

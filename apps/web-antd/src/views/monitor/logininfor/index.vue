@@ -7,9 +7,8 @@ import type { LoginLog } from '#/api/monitor/logininfo/model';
 import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
 
-import { Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -19,7 +18,7 @@ import {
   loginInfoRemove,
   userUnlock,
 } from '#/api/monitor/logininfo';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 import { confirmDeleteModal } from '#/utils/modal';
 
 import { columns, querySchema } from './data';
@@ -112,7 +111,7 @@ async function handleDelete(row: LoginLog) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: LoginLog) => row.infoId);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -135,15 +134,14 @@ async function handleUnlock() {
   tableApi.grid.clearCheckboxRow();
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(
-    loginInfoExport,
-    '登录日志',
-    tableApi.formApi.form.values,
-    {
-      fieldMappingTime: formOptions.fieldMappingTime,
-    },
-  );
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(loginInfoExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('登录日志');
+  exportBlob({ data: formValues, fileName });
 }
 </script>
 
@@ -160,7 +158,9 @@ function handleDownloadExcel() {
           </a-button>
           <a-button
             v-access:code="['monitor:logininfor:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>
@@ -185,22 +185,21 @@ function handleDownloadExcel() {
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button @click.stop="handlePreview(row)">
+          <action-button @click.stop="handlePreview(row)">
             {{ $t('pages.common.info') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
-            :get-popup-container="getVxePopupContainer"
             placement="left"
             title="确认删除?"
             @confirm="() => handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['monitor:logininfor:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

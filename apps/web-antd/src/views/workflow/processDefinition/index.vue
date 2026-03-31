@@ -1,6 +1,6 @@
 <!-- eslint-disable no-use-before-define -->
 <script setup lang="ts">
-import type { RadioChangeEvent } from 'ant-design-vue';
+import type { RadioChangeEvent } from 'antdv-next';
 
 import type { VbenFormProps } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
@@ -12,16 +12,8 @@ import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
-import { getVxePopupContainer } from '@vben/utils';
 
-import {
-  message,
-  Modal,
-  Popconfirm,
-  RadioGroup,
-  Space,
-  Switch,
-} from 'ant-design-vue';
+import { Popconfirm, RadioGroup, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -33,6 +25,7 @@ import {
   workflowDefinitionList,
   workflowDefinitionPublish,
 } from '#/api/workflow/definition';
+import { ApiSwitch } from '#/components/global';
 import { downloadByData } from '#/utils/file/download';
 
 import CategoryTree from './category-tree.vue';
@@ -135,7 +128,7 @@ async function handleDelete(row: Recordable<any>) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: any) => row.id);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -159,14 +152,19 @@ function handleDesign(row: any, _disabled: boolean) {
   });
 }
 
+// ...跟系统其他定义的变量竟然是反的
+const activeStatus = {
+  Enable: 1,
+  Disable: 0,
+} as const;
 /**
  * 激活/挂起流程
  * @param row row
  */
-async function handleActive(row: any, status: boolean | number | string) {
-  const lastStatus = status === 1 ? 0 : 1;
+async function handleActive(row: any, checked: boolean) {
+  const lastStatus = checked ? activeStatus.Enable : activeStatus.Disable;
   try {
-    await workflowDefinitionActive(row.id, !!status);
+    await workflowDefinitionActive(row.id, !!checked);
     await tableApi.query();
   } catch (error) {
     row.activityStatus = lastStatus;
@@ -219,7 +217,10 @@ function handleEdit(row: any) {
  * @param row row
  */
 async function handleExportXml(row: any) {
-  const hideLoading = message.loading($t('pages.common.downloadLoading'), 0);
+  const hideLoading = window.message.loading(
+    $t('pages.common.downloadLoading'),
+    0,
+  );
   try {
     const blob = await workflowDefinitionExport(row.id);
     downloadByData(blob, `${row.flowName}-${Date.now()}.json`);
@@ -239,12 +240,12 @@ const [ProcessDefinitionDeployModal, deployModalApi] = useVbenModal({
  */
 function handleDeploy() {
   if (selectedCode.value.length === 0) {
-    message.warning('请先选择流程分类');
+    window.message.warning('请先选择流程分类');
     return;
   }
   const selectedCategory = selectedCode.value[0];
   if (selectedCategory === 0) {
-    message.warning('不可选择根目录进行部署, 请选择子分类');
+    window.message.warning('不可选择根目录进行部署, 请选择子分类');
     return;
   }
   deployModalApi.setData({ category: selectedCategory });
@@ -265,6 +266,11 @@ async function handleReload(type: 'add' | 'update') {
   }
   await tableApi.reload();
 }
+
+function handleCategorySelect(keys: string[]) {
+  selectedCode.value = keys;
+  tableApi.reload();
+}
 </script>
 
 <template>
@@ -274,7 +280,7 @@ async function handleReload(type: 'add' | 'update') {
         v-model:select-code="selectedCode"
         class="w-[260px]"
         @reload="() => tableApi.reload()"
-        @select="() => tableApi.reload()"
+        @select="handleCategorySelect"
       />
       <BasicTable class="flex-1 overflow-hidden">
         <template #toolbar-actions>
@@ -310,13 +316,20 @@ async function handleReload(type: 'add' | 'update') {
           </Space>
         </template>
         <template #activityStatus="{ row }">
-          <Switch
+          <!-- <Switch
             v-model:checked="row.activityStatus"
             :checked-value="1"
             :unchecked-value="0"
             checked-children="激活"
             un-checked-children="挂起"
             @change="(status) => handleActive(row, status)"
+          /> -->
+          <ApiSwitch
+            :value="row.activityStatus === activeStatus.Enable"
+            checked-children="激活"
+            un-checked-children="挂起"
+            :api="(checked) => handleActive(row, checked)"
+            @reload="() => tableApi.query()"
           />
         </template>
         <template #action="{ row }">
@@ -326,7 +339,6 @@ async function handleReload(type: 'add' | 'update') {
                 编辑信息
               </a-button>
               <Popconfirm
-                :get-popup-container="getVxePopupContainer"
                 placement="left"
                 title="确认删除？"
                 @confirm="handleDelete(row)"
@@ -345,7 +357,6 @@ async function handleReload(type: 'add' | 'update') {
                 {{ row.isPublish ? '查看流程' : '设计流程' }}
               </a-button>
               <Popconfirm
-                :get-popup-container="getVxePopupContainer"
                 :title="`确认发布流程[${row.flowName}]?`"
                 placement="left"
                 @confirm="handlePublish(row)"
@@ -353,11 +364,12 @@ async function handleReload(type: 'add' | 'update') {
                 <a-button v-if="!row.isPublish" size="small" type="link">
                   发布流程
                 </a-button>
+                <span v-else></span>
+                <!-- 必须要保证在Popconfirm存在元素 所以用v-else来接收 -->
               </Popconfirm>
             </div>
             <div>
               <Popconfirm
-                :get-popup-container="getVxePopupContainer"
                 :title="`确认复制流程[${row.flowName}]?`"
                 placement="left"
                 @confirm="handleCopy(row)"

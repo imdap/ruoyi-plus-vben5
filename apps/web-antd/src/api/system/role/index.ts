@@ -4,7 +4,7 @@ import type { DeptResp, Role } from './model';
 import type { ID, IDS, PageQuery, PageResult } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   roleAllocatedList = '/system/role/authUser/allocatedList',
@@ -27,7 +27,7 @@ enum Api {
  * @returns 分页列表
  */
 export function roleList(params?: PageQuery) {
-  return requestClient.get<PageResult<Role>>(Api.roleList, { params });
+  return alovaInstance.get<PageResult<Role>>(Api.roleList, { params });
 }
 
 /**
@@ -45,7 +45,7 @@ export function roleExport(data: Partial<Role>) {
  * @returns 角色信息
  */
 export function roleInfo(roleId: ID) {
-  return requestClient.get<Role>(`${Api.root}/${roleId}`);
+  return alovaInstance.get<Role>(`${Api.root}/${roleId}`);
 }
 
 /**
@@ -54,7 +54,7 @@ export function roleInfo(roleId: ID) {
  * @returns void
  */
 export function roleAdd(data: Partial<Role>) {
-  return requestClient.postWithMsg<void>(Api.root, data);
+  return alovaInstance.postWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -63,7 +63,7 @@ export function roleAdd(data: Partial<Role>) {
  * @returns void
  */
 export function roleUpdate(data: Partial<Role>) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -76,7 +76,7 @@ export function roleChangeStatus(data: Partial<Role>) {
     roleId: data.roleId,
     status: data.status,
   };
-  return requestClient.putWithMsg<void>(Api.roleChangeStatus, requestData);
+  return alovaInstance.putWithMsg<void>(Api.roleChangeStatus, requestData);
 }
 
 /**
@@ -85,7 +85,7 @@ export function roleChangeStatus(data: Partial<Role>) {
  * @returns void
  */
 export function roleRemove(roleIds: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${roleIds}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${roleIds}`);
 }
 
 /**
@@ -94,14 +94,14 @@ export function roleRemove(roleIds: IDS) {
  * @returns void
  */
 export function roleDataScope(data: any) {
-  return requestClient.putWithMsg<void>(Api.roleDataScope, data);
+  return alovaInstance.putWithMsg<void>(Api.roleDataScope, data);
 }
 
 /**
  * @deprecated 全局并没有用到这个方法
  */
 export function roleOptionSelect(params?: any) {
-  return requestClient.get(Api.roleOptionSelect, { params });
+  return alovaInstance.get(Api.roleOptionSelect, { params });
 }
 
 /**
@@ -110,7 +110,7 @@ export function roleOptionSelect(params?: any) {
  * @returns 分页
  */
 export function roleAllocatedList(params?: PageQuery) {
-  return requestClient.get<PageResult<User>>(Api.roleAllocatedList, { params });
+  return alovaInstance.get<PageResult<User>>(Api.roleAllocatedList, { params });
 }
 
 /**
@@ -119,7 +119,7 @@ export function roleAllocatedList(params?: PageQuery) {
  * @returns void
  */
 export function roleUnallocatedList(params: any) {
-  return requestClient.get<PageResult<User>>(Api.roleUnallocatedList, {
+  return alovaInstance.get<PageResult<User>>(Api.roleUnallocatedList, {
     params,
   });
 }
@@ -129,7 +129,7 @@ export function roleUnallocatedList(params: any) {
  * @returns void
  */
 export function roleAuthCancel(data: { roleId: ID; userId: ID }) {
-  return requestClient.putWithMsg<void>(Api.roleAuthCancel, data);
+  return alovaInstance.putWithMsg<void>(Api.roleAuthCancel, data);
 }
 
 /**
@@ -139,7 +139,7 @@ export function roleAuthCancel(data: { roleId: ID; userId: ID }) {
  * @returns void
  */
 export function roleAuthCancelAll(roleId: ID, userIds: IDS) {
-  return requestClient.putWithMsg<void>(
+  return alovaInstance.putWithMsg<void>(
     `${Api.roleAuthCancelAll}?roleId=${roleId}&userIds=${userIds.join(',')}`,
   );
 }
@@ -151,7 +151,7 @@ export function roleAuthCancelAll(roleId: ID, userIds: IDS) {
  * @returns void
  */
 export function roleSelectAll(roleId: ID, userIds: IDS) {
-  return requestClient.putWithMsg<void>(
+  return alovaInstance.putWithMsg<void>(
     `${Api.roleAuthSelectAll}?roleId=${roleId}&userIds=${userIds.join(',')}`,
   );
 }
@@ -162,5 +162,5 @@ export function roleSelectAll(roleId: ID, userIds: IDS) {
  * @returns DeptResp
  */
 export function roleDeptTree(roleId: ID) {
-  return requestClient.get<DeptResp>(`${Api.roleDeptTree}/${roleId}`);
+  return alovaInstance.get<DeptResp>(`${Api.roleDeptTree}/${roleId}`);
 }

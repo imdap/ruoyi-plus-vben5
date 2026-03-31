@@ -3,7 +3,7 @@ import type { DemoForm, DemoQuery, DemoVO } from './model';
 import type { ID, IDS, PageResult } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 /**
  * 查询测试单表列表
@@ -11,7 +11,7 @@ import { requestClient } from '#/api/request';
  * @returns 测试单表列表
  */
 export function demoList(params?: DemoQuery) {
-  return requestClient.get<PageResult<DemoVO>>('/demo/demo/list', { params });
+  return alovaInstance.get<PageResult<DemoVO>>('/demo/demo/list', { params });
 }
 
 /**
@@ -29,7 +29,7 @@ export function demoExport(params?: DemoQuery) {
  * @returns 测试单表详情
  */
 export function demoInfo(id: ID) {
-  return requestClient.get<DemoVO>(`/demo/demo/${id}`);
+  return alovaInstance.get<DemoVO>(`/demo/demo/${id}`);
 }
 
 /**
@@ -38,7 +38,7 @@ export function demoInfo(id: ID) {
  * @returns void
  */
 export function demoAdd(data: DemoForm) {
-  return requestClient.postWithMsg<void>('/demo/demo', data);
+  return alovaInstance.postWithMsg<void>('/demo/demo', data);
 }
 
 /**
@@ -47,7 +47,7 @@ export function demoAdd(data: DemoForm) {
  * @returns void
  */
 export function demoUpdate(data: DemoForm) {
-  return requestClient.putWithMsg<void>('/demo/demo', data);
+  return alovaInstance.putWithMsg<void>('/demo/demo', data);
 }
 
 /**
@@ -56,5 +56,5 @@ export function demoUpdate(data: DemoForm) {
  * @returns void
  */
 export function demoRemove(id: ID | IDS) {
-  return requestClient.deleteWithMsg<void>(`/demo/demo/${id}`);
+  return alovaInstance.deleteWithMsg<void>(`/demo/demo/${id}`);
 }

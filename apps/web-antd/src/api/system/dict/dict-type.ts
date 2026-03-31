@@ -3,7 +3,7 @@ import type { DictType } from './dict-type-model';
 import type { ID, IDS, PageQuery, PageResult } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   dictOptionSelectList = '/system/dict/type/optionselect',
@@ -19,7 +19,7 @@ enum Api {
  * @returns list
  */
 export function dictTypeList(params?: PageQuery) {
-  return requestClient.get<PageResult<DictType>>(Api.dictTypeList, { params });
+  return alovaInstance.get<PageResult<DictType>>(Api.dictTypeList, { params });
 }
 
 /**
@@ -37,7 +37,7 @@ export function dictTypeExport(data: Partial<DictType>) {
  * @returns void
  */
 export function dictTypeRemove(dictIds: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${dictIds}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${dictIds}`);
 }
 
 /**
@@ -45,7 +45,7 @@ export function dictTypeRemove(dictIds: IDS) {
  * @returns void
  */
 export function refreshDictTypeCache() {
-  return requestClient.deleteWithMsg<void>(Api.dictTypeRefreshCache);
+  return alovaInstance.deleteWithMsg<void>(Api.dictTypeRefreshCache);
 }
 
 /**
@@ -54,7 +54,7 @@ export function refreshDictTypeCache() {
  * @returns void
  */
 export function dictTypeAdd(data: Partial<DictType>) {
-  return requestClient.postWithMsg<void>(Api.root, data);
+  return alovaInstance.postWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -63,7 +63,7 @@ export function dictTypeAdd(data: Partial<DictType>) {
  * @returns void
  */
 export function dictTypeUpdate(data: Partial<DictType>) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -72,7 +72,7 @@ export function dictTypeUpdate(data: Partial<DictType>) {
  * @returns 信息
  */
 export function dictTypeInfo(dictId: ID) {
-  return requestClient.get<DictType>(`${Api.root}/${dictId}`);
+  return alovaInstance.get<DictType>(`${Api.root}/${dictId}`);
 }
 
 /**
@@ -81,5 +81,5 @@ export function dictTypeInfo(dictId: ID) {
  * @returns options
  */
 export function dictOptionSelectList() {
-  return requestClient.get<DictType[]>(Api.dictOptionSelectList);
+  return alovaInstance.get<DictType[]>(Api.dictOptionSelectList);
 }

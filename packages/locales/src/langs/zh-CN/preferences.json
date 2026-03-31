@@ -124,6 +124,7 @@
   "theme": {
     "title": "主题",
     "radius": "圆角",
+    "buttonWaveMode": "按钮水波纹样式",
     "fontSize": "字体大小",
     "fontSizeTip": "调整全局字体大小，实时预览效果",
     "light": "浅色",

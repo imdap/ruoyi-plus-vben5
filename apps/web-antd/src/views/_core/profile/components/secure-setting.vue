@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { UpdatePasswordParam } from '#/api/system/profile/model';
 
-import { Modal } from 'ant-design-vue';
 import { omit } from 'lodash-es';
 
 import { useVbenForm, z } from '#/adapter/form';
@@ -79,7 +78,7 @@ function buttonLoading(loading: boolean) {
 
 const authStore = useAuthStore();
 function handleSubmit(values: any) {
-  Modal.confirm({
+  window.modal.confirm({
     content: '确认修改密码吗？',
     onOk: async () => {
       try {

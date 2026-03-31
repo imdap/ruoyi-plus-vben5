@@ -162,6 +162,9 @@ export const drawerSchema: FormSchemaGetter = () => [
     componentProps: {
       addonAfter: '秒',
       placeholder: '请输入',
+      style: {
+        '--ant-border-radius': 'var(--radius) 0 0 var(--radius)',
+      },
     },
     defaultValue: 1800,
     fieldName: 'activeTimeout',
@@ -174,6 +177,9 @@ export const drawerSchema: FormSchemaGetter = () => [
     component: 'InputNumber',
     componentProps: {
       addonAfter: '秒',
+      style: {
+        '--ant-border-radius': 'var(--radius) 0 0 var(--radius)',
+      },
     },
     defaultValue: 604_800,
     fieldName: 'timeout',

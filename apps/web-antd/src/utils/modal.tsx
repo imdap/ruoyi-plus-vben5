@@ -1,9 +1,11 @@
-import type { ModalFuncProps } from 'ant-design-vue';
-import type { Rule } from 'ant-design-vue/es/form';
+/* eslint-disable vue/multi-word-component-names */
+import type { FormInstance } from 'antdv-next';
+import type { Rule } from 'antdv-next/dist/form/types';
+import type { ModalFuncProps } from 'antdv-next/dist/modal/interface';
 
-import { reactive } from 'vue';
+import { defineComponent, h, reactive, ref } from 'vue';
 
-import { Alert, Form, Input, Modal } from 'ant-design-vue';
+import { Alert, Form, FormItem, Input } from 'antdv-next';
 import { isFunction } from 'lodash-es';
 
 export interface ConfirmModalProps extends Omit<ModalFuncProps, 'visible'> {
@@ -24,7 +26,6 @@ export function confirmDeleteModal(props: ConfirmModalProps) {
       {
         message: '校验不通过',
         required: true,
-        trigger: 'change',
         validator(_, value) {
           if (value !== confirmText) {
             return Promise.reject(new Error('校验不通过'));
@@ -34,28 +35,41 @@ export function confirmDeleteModal(props: ConfirmModalProps) {
       },
     ],
   });
-  const useForm = Form.useForm;
-  const { validate, validateInfos } = useForm(formValue, rulesRef);
 
-  Modal.confirm({
+  const outerInstance = ref<{ formInstance?: FormInstance }>({});
+
+  window.modal.confirm({
     ...props,
     centered: true,
-    content: (
-      <div class="flex flex-col gap-[8px]">
-        <Alert message={'确认删除后将无法恢复，请谨慎操作！'} type="error" />
-        <Form layout="vertical" model={formValue}>
-          <Form.Item {...validateInfos.content}>
-            <Input
-              placeholder={placeholder}
-              v-model:value={formValue.content}
-            />
-          </Form.Item>
-        </Form>
-      </div>
-    ),
+    content: () =>
+      h(
+        defineComponent({
+          setup(_, { expose }) {
+            const formInstance = ref<FormInstance>();
+            expose({ formInstance });
+            return () => (
+              <div class="flex flex-col gap-[8px]">
+                <Alert
+                  title={'确认删除后将无法恢复，请谨慎操作！'}
+                  type="error"
+                />
+                <Form layout="vertical" model={formValue} ref={formInstance}>
+                  <FormItem name="content" rules={rulesRef.content}>
+                    <Input
+                      placeholder={placeholder}
+                      v-model:value={formValue.content}
+                    />
+                  </FormItem>
+                </Form>
+              </div>
+            );
+          },
+        }),
+        { ref: outerInstance },
+      ),
     okButtonProps: { danger: true, type: 'primary' },
     onOk: async () => {
-      await validate();
+      await outerInstance.value?.formInstance?.validate();
       isFunction(props.onValidated) && props.onValidated();
     },
     title: '提示',

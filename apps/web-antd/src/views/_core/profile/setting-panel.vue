@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { TabPane, Tabs } from 'ant-design-vue';
+import { TabPane, Tabs } from 'antdv-next';
 
 import AccountBind from './components/account-bind.vue';
 import BaseSetting from './components/base-setting.vue';
@@ -31,7 +31,10 @@ const settingList = [
 </script>
 
 <template>
-  <Tabs class="bg-background rounded-[var(--radius)] px-[16px] lg:flex-1">
+  <Tabs
+    class="rounded-[var(--radius)] bg-background lg:flex-1"
+    :classes="{ header: 'px-4' }"
+  >
     <TabPane v-for="item in settingList" :key="item.key" :tab="item.name">
       <component :is="item.component" v-bind="$attrs" />
     </TabPane>

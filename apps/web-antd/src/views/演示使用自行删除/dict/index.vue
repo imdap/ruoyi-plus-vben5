@@ -1,4 +1,6 @@
-<script setup lang="ts">
+<script setup lang="tsx">
+import type { DescriptionsProps } from 'antdv-next';
+
 import { computed, h, ref } from 'vue';
 
 import { CodeMirror, Page } from '@vben/common-ui';
@@ -8,11 +10,10 @@ import {
   Alert,
   Card,
   Descriptions,
-  DescriptionsItem,
   RadioGroup,
   Select,
   Space,
-} from 'ant-design-vue';
+} from 'antdv-next';
 import { repeat } from 'lodash-es';
 
 import { DictTag } from '#/components/dict';
@@ -53,6 +54,53 @@ const filterCode = `
   label: '状态',
 },
 `;
+
+const items: DescriptionsProps['items'] = [
+  {
+    content: <DictTag dicts={options} value="error" />,
+    label: '默认为unknown',
+  },
+  {
+    content: (
+      <DictTag dicts={options} fallback="自定义的fallback" value="error" />
+    ),
+    label: '直接返回string',
+  },
+  {
+    content: (
+      <DictTag
+        dicts={options}
+        fallback={(v: any) => repeat(String(v), 5)}
+        value="error"
+      />
+    ),
+    label: '函数返回string',
+  },
+  {
+    content: (
+      <DictTag
+        dicts={options}
+        fallback={(v: any) =>
+          h('span', { class: 'text-red-500' }, `${v} 没有匹配到值`)
+        }
+        value="error"
+      />
+    ),
+    label: '函数返回VNode',
+  },
+  {
+    content: (
+      <DictTag dicts={options} value="error">
+        {{
+          fallback: (v: any) => (
+            <span class="text-red-500"> {v} 跟上面相同的写法 </span>
+          ),
+        }}
+      </DictTag>
+    ),
+    label: '使用fallback插槽',
+  },
+];
 </script>
 
 <template>
@@ -98,41 +146,7 @@ const filterCode = `
     </Card>
 
     <Card size="small" title="字典标签 - 未匹配到值的fallback">
-      <Descriptions :column="1">
-        <DescriptionsItem label="默认为unknown">
-          <DictTag :dicts="options" value="error" />
-        </DescriptionsItem>
-
-        <DescriptionsItem label="直接返回string">
-          <DictTag :dicts="options" value="error" fallback="自定义的fallback" />
-        </DescriptionsItem>
-
-        <DescriptionsItem label="函数返回string">
-          <DictTag
-            :dicts="options"
-            value="error"
-            :fallback="(v) => repeat(String(v), 5)"
-          />
-        </DescriptionsItem>
-
-        <DescriptionsItem label="函数返回VNode">
-          <DictTag
-            :dicts="options"
-            value="error"
-            :fallback="
-              (v) => h('span', { class: 'text-red-500' }, `${v} 没有匹配到值`)
-            "
-          />
-        </DescriptionsItem>
-
-        <DescriptionsItem label="使用fallback插槽">
-          <DictTag :dicts="options" value="error">
-            <template #fallback="v">
-              <span class="text-red-500"> {{ v }} 跟上面相同的写法 </span>
-            </template>
-          </DictTag>
-        </DescriptionsItem>
-      </Descriptions>
+      <Descriptions :column="1" :items="items" />
     </Card>
 
     <Card size="small" title="给 Form 组件赋值前 需要处理字典后展示的情况">
@@ -141,7 +155,7 @@ const filterCode = `
 
         这里使用computed过滤了部分选项
         <a
-          class="text-primary font-semibold"
+          class="font-semibold text-primary"
           target="_blank"
           href="https://dapdap.top/function/dict.html#%E7%BB%99-form-%E7%BB%84%E4%BB%B6%E8%B5%8B%E5%80%BC%E5%89%8D-%E9%9C%80%E8%A6%81%E5%81%9A%E5%A4%84%E7%90%86%E5%AD%97%E5%85%B8%E5%90%8E%E5%B1%95%E7%A4%BA%E7%9A%84%E6%83%85%E5%86%B5"
         >

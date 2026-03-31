@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Spin } from 'ant-design-vue';
+import { Spin } from 'antdv-next';
 
 import { getTaskByBusinessId } from '#/api/workflow/instance';
 

@@ -1,6 +1,7 @@
 import { createApp, watchEffect } from 'vue';
 
 import { registerAccessDirective } from '@vben/access';
+import { setDefaultModalProps } from '@vben/common-ui';
 import { registerLoadingDirective } from '@vben/common-ui/es/loading';
 import { preferences } from '@vben/preferences';
 import { initStores } from '@vben/stores';
@@ -16,6 +17,7 @@ import { initComponentAdapter } from './adapter/component';
 import { initSetupVbenForm } from './adapter/form';
 import App from './app.vue';
 import { router } from './router';
+import { initPopupContext } from './utils/context';
 
 async function bootstrap(namespace: string) {
   // 初始化组件适配器
@@ -25,9 +27,10 @@ async function bootstrap(namespace: string) {
   await initSetupVbenForm();
 
   // // 设置弹窗的默认配置
-  // setDefaultModalProps({
-  //   fullscreenButton: false,
-  // });
+  setDefaultModalProps({
+    fullscreenButton: false,
+    animationType: 'scale',
+  });
   // // 设置抽屉的默认配置
   // setDefaultDrawerProps({
   //   zIndex: 1020,
@@ -55,6 +58,9 @@ async function bootstrap(namespace: string) {
   // 初始化 tippy
   const { initTippy } = await import('@vben/common-ui/es/tippy');
   initTippy(app);
+
+  // 初始化全局弹窗方法(静态API fallback, 防止路由守卫中访问undefined)
+  initPopupContext();
 
   // 配置路由及路由守卫
   app.use(router);

@@ -7,14 +7,14 @@ import type {
 
 import type { ID, IDS } from '#/api/common';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 /**
  * 获取流程分类树列表
  * @returns tree
  */
 export function categoryTree() {
-  return requestClient.get<CategoryTree[]>('/workflow/category/categoryTree');
+  return alovaInstance.get<CategoryTree[]>('/workflow/category/categoryTree');
 }
 
 /**
@@ -23,7 +23,7 @@ export function categoryTree() {
  * @returns 流程分类列表
  */
 export function categoryList(params?: CategoryQuery) {
-  return requestClient.get<CategoryVO[]>(`/workflow/category/list`, { params });
+  return alovaInstance.get<CategoryVO[]>(`/workflow/category/list`, { params });
 }
 
 /**
@@ -32,7 +32,7 @@ export function categoryList(params?: CategoryQuery) {
  * @returns 流程分类详情
  */
 export function categoryInfo(id: ID) {
-  return requestClient.get<CategoryVO>(`/workflow/category/${id}`);
+  return alovaInstance.get<CategoryVO>(`/workflow/category/${id}`);
 }
 
 /**
@@ -41,7 +41,7 @@ export function categoryInfo(id: ID) {
  * @returns void
  */
 export function categoryAdd(data: CategoryForm) {
-  return requestClient.postWithMsg<void>('/workflow/category', data);
+  return alovaInstance.postWithMsg<void>('/workflow/category', data);
 }
 
 /**
@@ -50,7 +50,7 @@ export function categoryAdd(data: CategoryForm) {
  * @returns void
  */
 export function categoryUpdate(data: CategoryForm) {
-  return requestClient.putWithMsg<void>('/workflow/category', data);
+  return alovaInstance.putWithMsg<void>('/workflow/category', data);
 }
 
 /**
@@ -59,5 +59,5 @@ export function categoryUpdate(data: CategoryForm) {
  * @returns void
  */
 export function categoryRemove(id: ID | IDS) {
-  return requestClient.deleteWithMsg<void>(`/workflow/category/${id}`);
+  return alovaInstance.deleteWithMsg<void>(`/workflow/category/${id}`);
 }

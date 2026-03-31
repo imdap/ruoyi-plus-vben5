@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
-import { Switch } from 'ant-design-vue';
+import { Switch } from 'antdv-next';
 
 import { Tinymce } from '#/components/tinymce';
 

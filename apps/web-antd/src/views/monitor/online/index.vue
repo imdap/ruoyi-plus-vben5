@@ -7,9 +7,8 @@ import type { OnlineUser } from '#/api/monitor/online/model';
 import { ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
 
-import { Popconfirm } from 'ant-design-vue';
+import { Popconfirm } from 'antdv-next';
 import { slice } from 'lodash-es';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -82,19 +81,18 @@ async function handleForceOffline(row: OnlineUser) {
         <div class="mr-1 pl-1 text-[1rem]">
           <div>
             在线用户列表 (共
-            <span class="text-primary font-bold">{{ onlineCount }}</span>
+            <span class="font-bold text-primary">{{ onlineCount }}</span>
             人在线)
           </div>
         </div>
       </template>
       <template #action="{ row }">
         <Popconfirm
-          :get-popup-container="getVxePopupContainer"
           :title="`确认强制下线[${row.userName}]?`"
           placement="left"
           @confirm="handleForceOffline(row)"
         >
-          <ghost-button danger>强制下线</ghost-button>
+          <action-button danger>强制下线</action-button>
         </Popconfirm>
       </template>
     </BasicTable>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ZodType } from 'zod';
 
-import type { FormSchema, MaybeComponentProps } from '../types';
+import type { FormActions, FormSchema, MaybeComponentProps } from '../types';
 
 import { computed, nextTick, onUnmounted, useTemplateRef, watch } from 'vue';
 
@@ -48,6 +48,7 @@ const {
   modelPropName,
   renderComponentContent,
   rules,
+  help,
 } = defineProps<
   Props & {
     commonComponentProps: MaybeComponentProps;
@@ -63,10 +64,16 @@ const formApi = formRenderProps.form;
 const compact = computed(() => formRenderProps.compact);
 const isInValid = computed(() => errors.value?.length > 0);
 
+function getFormApi(): FormActions {
+  if (!formApi) {
+    throw new Error('Form api is required in <FormField />');
+  }
+
+  return formApi;
+}
+
 const FieldComponent = computed(() => {
-  const finalComponent = isString(component)
-    ? componentMap.value[component]
-    : component;
+  const finalComponent = isString(component) ? componentMap.value[component] : component;
   if (!finalComponent) {
     // 组件未注册
     console.warn(`Component ${component} is not registered`);
@@ -74,14 +81,8 @@ const FieldComponent = computed(() => {
   return finalComponent;
 });
 
-const {
-  dynamicComponentProps,
-  dynamicRules,
-  isDisabled,
-  isIf,
-  isRequired,
-  isShow,
-} = useDependencies(() => dependencies);
+const { dynamicComponentProps, dynamicRules, isDisabled, isIf, isRequired, isShow } =
+  useDependencies(() => dependencies);
 
 const labelStyle = computed(() => {
   return labelClass?.includes('w-') || isVertical.value
@@ -156,7 +157,7 @@ const fieldRules = computed(() => {
 
 const computedProps = computed(() => {
   const finalComponentProps = isFunction(componentProps)
-    ? componentProps(values.value, formApi!)
+    ? componentProps(values.value, getFormApi())
     : componentProps;
 
   return {
@@ -164,6 +165,18 @@ const computedProps = computed(() => {
     ...finalComponentProps,
     ...dynamicComponentProps.value,
   };
+});
+
+// 自定义帮助信息
+const computedHelp = computed(() => {
+  const helpContent = help;
+  if (!helpContent) {
+    return undefined;
+  }
+  return () =>
+    isFunction(helpContent)
+      ? helpContent(values.value, getFormApi())
+      : helpContent;
 });
 
 watch(
@@ -186,7 +199,7 @@ const customContentRender = computed(() => {
   if (!isFunction(renderComponentContent)) {
     return {};
   }
-  return renderComponentContent(values.value, formApi!);
+  return renderComponentContent(values.value, getFormApi());
 });
 
 const renderContentKey = computed(() => {
@@ -208,8 +221,7 @@ function fieldBindEvent(slotProps: Record<string, any>) {
   const handler = slotProps.componentField['onUpdate:modelValue'];
 
   const bindEventField =
-    modelPropName ||
-    (isString(component) ? componentBindEventMap.value?.[component] : null);
+    modelPropName || (isString(component) ? componentBindEventMap.value?.[component] : null);
 
   let value = modelValue;
   // antd design 的一些组件会传递一个 event 对象
@@ -283,12 +295,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <FormField
-    v-if="!hide && isIf"
-    v-bind="fieldProps"
-    v-slot="slotProps"
-    :name="fieldName"
-  >
+  <FormField v-if="!hide && isIf" v-bind="fieldProps" v-slot="slotProps" :name="fieldName">
     <FormItem
       v-show="isShow"
       :class="{
@@ -308,13 +315,13 @@ onUnmounted(() => {
           cn(
             'flex leading-6',
             {
-              'mr-2 flex-shrink-0 justify-end': !isVertical,
+              'mr-2 shrink-0 justify-end': !isVertical,
               'mb-1 flex-row': isVertical,
             },
             labelClass,
           )
         "
-        :help="help"
+        :help="computedHelp"
         :colon="colon"
         :label="label"
         :required="shouldRequired && !hideRequiredMark"
@@ -324,7 +331,8 @@ onUnmounted(() => {
           <VbenRenderContent :content="label" />
         </template>
       </FormLabel>
-      <div class="flex-auto overflow-hidden p-[1px]">
+      <!-- overflow-hidden导致radio的波纹效果无法显示 -->
+      <div class="flex-auto p-[1px]">
         <div :class="cn('relative flex w-full items-center', wrapperClass)">
           <FormControl :class="cn(controlClass)">
             <slot
@@ -345,11 +353,7 @@ onUnmounted(() => {
                 v-bind="createComponentProps(slotProps)"
                 :disabled="shouldDisabled"
               >
-                <template
-                  v-for="name in renderContentKey"
-                  :key="name"
-                  #[name]="renderSlotProps"
-                >
+                <template v-for="name in renderContentKey" :key="name" #[name]="renderSlotProps">
                   <VbenRenderContent
                     :content="customContentRender[name]"
                     v-bind="{ ...renderSlotProps, formContext: slotProps }"
@@ -357,11 +361,7 @@ onUnmounted(() => {
                 </template>
                 <!-- <slot></slot> -->
               </component>
-              <VbenTooltip
-                v-if="compact && isInValid"
-                :delay-duration="300"
-                side="left"
-              >
+              <VbenTooltip v-if="compact && isInValid" :delay-duration="300" side="left">
                 <template #trigger>
                   <slot name="trigger">
                     <CircleAlert

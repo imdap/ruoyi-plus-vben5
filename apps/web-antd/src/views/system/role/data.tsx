@@ -6,7 +6,7 @@ import { markRaw } from 'vue';
 import { DictEnum } from '@vben/constants';
 import { getPopupContainer } from '@vben/utils';
 
-import { Tag } from 'ant-design-vue';
+import { Tag } from 'antdv-next';
 
 import { DefaultSlot } from '#/components/global/slot';
 import { TreeSelectPanel } from '#/components/tree';
@@ -70,9 +70,7 @@ export const columns: VxeGridProps['columns'] = [
     field: 'dataScope',
     slots: {
       default: ({ row }) => {
-        const found = authScopeOptions.find(
-          (item) => item.value === row.dataScope,
-        );
+        const found = authScopeOptions.find((item) => item.value === row.dataScope);
         if (found) {
           return <Tag color={found.color}>{found.label}</Tag>;
         }
@@ -131,7 +129,10 @@ export const drawerSchema: FormSchemaGetter = () => [
     fieldName: 'roleSort',
     label: '角色排序',
     rules: 'required',
-    defaultValue: 0,
+    defaultValue: 1,
+    componentProps: {
+      rootClass: 'flex-1',
+    },
   },
   {
     component: 'Select',

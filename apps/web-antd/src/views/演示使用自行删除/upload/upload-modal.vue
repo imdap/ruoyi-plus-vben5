@@ -3,7 +3,7 @@ import { h } from 'vue';
 
 import { JsonPreview, useVbenModal } from '@vben/common-ui';
 
-import { Modal, Space } from 'ant-design-vue';
+import { Space } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 
@@ -35,7 +35,7 @@ async function getValues() {
     const v = await formApi.getValues();
     console.log(v);
 
-    Modal.info({
+    window.modal.info({
       content: () => h(JsonPreview, { data: v }),
     });
   } catch (error) {

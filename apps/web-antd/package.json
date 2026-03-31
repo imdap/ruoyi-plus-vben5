@@ -1,6 +1,6 @@
 {
   "name": "@vben/web-antd",
-  "version": "1.5.4",
+  "version": "2.0.0",
   "homepage": "https://vben.pro",
   "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
   "repository": {
@@ -27,7 +27,10 @@
     "#/*": "./src/*"
   },
   "dependencies": {
-    "@ant-design/icons-vue": "catalog:",
+    "@alova/adapter-axios": "catalog:",
+    "@antdv-next/auto-import-resolver": "catalog:",
+    "@antdv-next/happy-work-theme": "catalog:",
+    "@antdv-next/icons": "catalog:",
     "@tinymce/tinymce-vue": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
@@ -44,17 +47,20 @@
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
-    "ant-design-vue": "catalog:",
+    "alova": "catalog:",
+    "antdv-next": "catalog:",
+    "axios": "catalog:",
     "cropperjs": "catalog:",
     "dayjs": "catalog:",
-    "echarts": "catalog:conflicts_echarts_h5_5_1",
+    "echarts": "catalog:",
     "lodash-es": "catalog:",
+    "motion-v": "catalog:",
     "pinia": "catalog:",
     "tinymce": "catalog:",
     "unplugin-vue-components": "catalog:",
+    "version-polling": "catalog:",
     "vue": "catalog:",
-    "vue-router": "catalog:",
-    "vue3-colorpicker": "catalog:"
+    "vue-router": "catalog:"
   },
   "devDependencies": {
     "@types/lodash-es": "catalog:"

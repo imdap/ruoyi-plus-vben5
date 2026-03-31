@@ -3,7 +3,7 @@ import type { Recordable } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { Popconfirm } from 'ant-design-vue';
+import { Popconfirm } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { forceLogout2, onlineDeviceList } from '#/api/monitor/online';

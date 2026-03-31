@@ -1,10 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import type { UploadChangeParam, UploadFile } from 'ant-design-vue';
-import type { FileType } from 'ant-design-vue/es/upload/interface';
-import type {
-  RcFile,
-  UploadRequestOption,
-} from 'ant-design-vue/es/vc-upload/interface';
+import type { UploadChangeParam, UploadFile, UploadProps } from 'antdv-next';
 
 import type { ModelRef } from 'vue';
 
@@ -15,14 +10,14 @@ import type {
   UploadType,
 } from './props';
 
-import type { AxiosProgressEvent, UploadResult } from '#/api';
+import type { UploadResult } from '#/api';
 import type { OssFile } from '#/api/system/oss/model';
 
 import { computed, onUnmounted, ref, watch } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { message, Modal, Upload } from 'ant-design-vue';
+import { Upload } from 'antdv-next';
 import { isFunction, isString } from 'lodash-es';
 
 import { ossInfo } from '#/api/system/oss';
@@ -50,12 +45,9 @@ export function useImagePreview() {
   const previewVisible = ref(false);
   // 预览的图片 url/base64
   const previewImage = ref('');
-  // 预览的图片名称
-  const previewTitle = ref('');
 
-  function handleCancel() {
-    previewVisible.value = false;
-    previewTitle.value = '';
+  function handleOpenChange(isOpen: boolean) {
+    previewVisible.value = isOpen;
   }
 
   async function handlePreview(file: UploadFile) {
@@ -70,16 +62,21 @@ export function useImagePreview() {
     const url = file.url ?? '';
     previewImage.value = url || file.preview || '';
     previewVisible.value = true;
-    previewTitle.value =
-      file.name || url.slice(Math.max(0, url.lastIndexOf('/') + 1));
+  }
+
+  function handleAfterOpenChange(open: boolean) {
+    if (!open) {
+      previewVisible.value = false;
+      previewImage.value = '';
+    }
   }
 
   return {
     previewVisible,
     previewImage,
-    previewTitle,
-    handleCancel,
+    handleOpenChange,
     handlePreview,
+    handleAfterOpenChange,
   };
 }
 
@@ -94,7 +91,7 @@ export function useImagePreview() {
 export function useUpload(
   props: Readonly<BaseUploadProps>,
   emit: UploadEmits,
-  bindValue: ModelRef<string | string[]>,
+  bindValue: ModelRef<string>,
   uploadType: UploadType,
 ) {
   // 组件内部维护fileList
@@ -208,11 +205,9 @@ export function useUpload(
           bindValue.value = ossId;
         } else {
           // 给默认值
-          if (!Array.isArray(bindValue.value)) {
-            bindValue.value = [];
-          }
-          // 直接使用.value无法触发useForm的更新(原生是正常的) 需要修改地址
-          bindValue.value = [...bindValue.value, ossId];
+          const validIds = bindValue.value ? bindValue.value.split(',') : [];
+          validIds.push(ossId);
+          bindValue.value = validIds.join(',');
         }
         break;
       }
@@ -230,10 +225,12 @@ export function useUpload(
       if (props.maxCount === 1) {
         bindValue.value = '';
       } else {
-        (bindValue.value as string[]).splice(
-          bindValue.value.indexOf(currentFile.uid),
-          1,
-        );
+        const validIds = bindValue.value ? bindValue.value.split(',') : [];
+        const index = validIds.indexOf(currentFile.uid);
+        if (index !== -1) {
+          validIds.splice(index, 1);
+          bindValue.value = validIds.join(',');
+        }
       }
       // 触发remove事件
       emit('remove', currentFile);
@@ -245,7 +242,7 @@ export function useUpload(
     }
 
     return new Promise<boolean>((resolve) => {
-      Modal.confirm({
+      window.modal.confirm({
         title: $t('pages.common.tip'),
         content: $t('component.upload.confirmDelete', [currentFile.name]),
         okButtonProps: { danger: true },
@@ -267,52 +264,53 @@ export function useUpload(
    * @param file file
    * @returns file | false
    */
-  function beforeUpload(file: FileType) {
+  const beforeUpload: UploadProps['beforeUpload'] = (file) => {
     const isLtMax = file.size / 1024 / 1024 < props.maxSize!;
     if (!isLtMax) {
-      message.error($t('component.upload.maxSize', [props.maxSize]));
+      window.message.error($t('component.upload.maxSize', [props.maxSize]));
       // 防止被加入文件列表 可以通过返回 Upload.LIST_IGNORE 实现。
       return Upload.LIST_IGNORE;
     }
     // 大坑 Safari不支持file-type库 去除文件类型的校验
     return file;
-  }
+  };
 
-  const uploadAbort = new AbortController();
+  const abortList: (() => void)[] = [];
   /**
    * 自定义上传实现
    * @param info
    */
-  async function customRequest(info: UploadRequestOption<any>) {
+  const customRequest: UploadProps['customRequest'] = async (info) => {
     const { api } = props;
     if (!isFunction(api)) {
       console.warn('upload api must exist and be a function');
       return;
     }
     try {
-      // 进度条事件
-      const progressEvent: AxiosProgressEvent = (e) => {
-        const percent = Math.trunc((e.loaded / e.total!) * 100);
-        info.onProgress!({ percent });
-      };
-      const res = await api(info.file as File, {
-        onUploadProgress: progressEvent,
-        signal: uploadAbort.signal,
+      const apiInstance = api(info.file as File, {
         otherData: props?.data,
       });
+      // 进度条事件
+      apiInstance.onUpload((e) => {
+        const percent = Math.trunc((e.loaded / e.total!) * 100);
+        info.onProgress!({ percent });
+      });
+      abortList.push(apiInstance.abort);
+      const res = await apiInstance;
       info.onSuccess!(res);
       if (props.showSuccessMsg) {
-        message.success($t('component.upload.uploadSuccess'));
+        window.message.success($t('component.upload.uploadSuccess'));
       }
-      emit('success', info.file as RcFile, res);
+      emit('success', info.file, res);
     } catch (error: any) {
       console.error(error);
       info.onError!(error);
     }
-  }
+  };
 
   onUnmounted(() => {
-    props.abortOnUnmounted && uploadAbort.abort();
+    props.abortOnUnmounted && abortList.forEach((abort) => abort());
+    abortList.length = 0;
   });
 
   /**
@@ -322,7 +320,7 @@ export function useUpload(
   watch(
     () => bindValue.value,
     async (value) => {
-      if (value.length === 0) {
+      if (!value) {
         // 清空绑定值时，同时清空innerFileList，避免外部使用时还能读取到
         innerFileList.value = [];
         return;
@@ -335,7 +333,8 @@ export function useUpload(
         return;
       }
 
-      const resp = await ossInfo(value);
+      const ids = value.split(',');
+      const resp = await ossInfo(ids);
       function transformFile(info: OssFile) {
         const cb = { type: 'info', response: info } as const;
 
@@ -359,17 +358,14 @@ export function useUpload(
       // 多文件
       // 单文件查到了也会走这里的逻辑 filter会报错 需要maxCount判断处理
       if (
-        resp.length !== value.length &&
+        resp.length !== ids.length &&
         !props.keepMissingId &&
         props.maxCount !== 1
       ) {
-        // 给默认值
-        if (!Array.isArray(bindValue.value)) {
-          bindValue.value = [];
-        }
-        bindValue.value = bindValue.value.filter((ossId) =>
+        const validIds = ids.filter((ossId) =>
           resp.map((res) => res.ossId).includes(ossId),
         );
+        bindValue.value = validIds.join(',');
       }
     },
     { immediate: true },

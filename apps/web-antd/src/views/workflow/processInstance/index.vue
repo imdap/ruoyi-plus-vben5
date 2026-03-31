@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { RadioChangeEvent } from 'ant-design-vue';
+import type { RadioChangeEvent } from 'antdv-next';
 
 import type { VbenFormProps } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
@@ -10,9 +10,8 @@ import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
-import { getVxePopupContainer } from '@vben/utils';
 
-import { Modal, Popconfirm, RadioGroup, Space } from 'ant-design-vue';
+import { Popconfirm, RadioGroup, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -136,7 +135,7 @@ async function handleDelete(row: Recordable<any>) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: any) => row.id);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -162,6 +161,11 @@ function handleInfo(row: any) {
   flowInfoModalApi.setData({ businessId: row.businessId });
   flowInfoModalApi.open();
 }
+
+function handleCategorySelect(keys: string[]) {
+  selectedCode.value = keys;
+  tableApi.reload();
+}
 </script>
 
 <template>
@@ -171,7 +175,7 @@ function handleInfo(row: any) {
         v-model:select-code="selectedCode"
         class="w-[260px]"
         @reload="() => tableApi.reload()"
-        @select="() => tableApi.reload()"
+        @select="handleCategorySelect"
       />
       <BasicTable class="flex-1 overflow-hidden">
         <template #toolbar-actions>
@@ -208,7 +212,6 @@ function handleInfo(row: any) {
                 作废流程
               </a-button>
               <Popconfirm
-                :get-popup-container="getVxePopupContainer"
                 placement="left"
                 title="确认删除？"
                 @confirm="handleDelete(row)"

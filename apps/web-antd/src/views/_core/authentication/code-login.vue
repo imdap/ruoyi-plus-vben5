@@ -9,7 +9,7 @@ import { AuthenticationCodeLogin, z } from '@vben/common-ui';
 import { DEFAULT_TENANT_ID } from '@vben/constants';
 import { $t } from '@vben/locales';
 
-import { Alert, message } from 'ant-design-vue';
+import { Alert } from 'antdv-next';
 
 import { tenantList } from '#/api';
 import { sendSmsCode } from '#/api/core/captcha';
@@ -96,7 +96,7 @@ const formSchema = computed((): VbenFormSchema[] => {
             }
             // 调用接口发送
             await sendSmsCode(value);
-            message.success('验证码发送成功');
+            window.message.success('验证码发送成功');
           },
         };
       },

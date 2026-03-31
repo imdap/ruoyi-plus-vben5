@@ -3,19 +3,15 @@ import type { Flow } from '#/api/workflow/instance/model';
 
 import { computed, h, onMounted, ref } from 'vue';
 
-import { VbenAvatar } from '@vben/common-ui';
 import { DictEnum } from '@vben/constants';
 import { cn } from '@vben/utils';
 
-import {
-  MessageOutlined,
-  UsergroupAddOutlined,
-  UserOutlined,
-} from '@ant-design/icons-vue';
-import { Avatar, TimelineItem } from 'ant-design-vue';
+import { MessageOutlined, UserOutlined } from '@antdv-next/icons';
+import { Avatar } from 'antdv-next';
 
 import { ossInfo } from '#/api/system/oss';
-import { renderDict } from '#/utils/render';
+import { DictTag } from '#/components/dict';
+import { getDictOptions } from '#/utils/dict';
 
 defineOptions({
   name: 'ApprovalTimelineItem',
@@ -48,50 +44,27 @@ onMounted(async () => {
 const isMultiplePerson = computed(
   () => props.item.approver?.split(',').length > 1,
 );
+
+const flowStatusOptions = getDictOptions(DictEnum.WF_TASK_STATUS);
 </script>
 
 <template>
-  <TimelineItem>
-    <template #dot>
-      <div class="relative rounded-full border">
-        <Avatar
-          class="bg-primary-400"
-          v-if="isMultiplePerson"
-          :size="36"
-          :icon="h(UsergroupAddOutlined)"
-        />
-        <VbenAvatar
-          v-else
-          :alt="item?.approveName ?? 'unknown'"
-          class="bg-primary size-[36px] rounded-full text-white"
-          src=""
-        />
-        <div
-          :class="
-            cn(
-              'absolute bottom-0 right-[-2px]',
-              'size-[12px] rounded-full bg-green-500',
-              'border-[2px] border-white',
-            )
-          "
-        ></div>
-      </div>
-    </template>
-    <div class="mb-5 ml-2 flex flex-col gap-1">
+  <div>
+    <div :class="cn('mb-5 ml-2 flex flex-col gap-1', 'mt-[-8px]')">
       <div class="flex items-center gap-1">
         <div class="font-bold">{{ item.nodeName }}</div>
-        <component :is="renderDict(item.flowStatus, DictEnum.WF_TASK_STATUS)" />
+        <DictTag :value="item.flowStatus" :dicts="flowStatusOptions" />
       </div>
 
       <div :class="cn('mt-2 flex flex-wrap gap-2')" v-if="isMultiplePerson">
         <!-- 如果昵称中带, 这里的处理是不准确的 -->
         <div
-          :class="cn('bg-foreground/5 flex items-center rounded-full', 'p-1')"
+          :class="cn('flex items-center rounded-full bg-foreground/5', 'p-1')"
           v-for="(name, index) in item.approveName.split(',')"
           :key="index"
         >
           <Avatar
-            class="bg-primary-400 flex items-center justify-center"
+            class="flex items-center justify-center bg-primary-400"
             :size="24"
             :icon="h(UserOutlined)"
           />
@@ -107,9 +80,9 @@ const isMultiplePerson = computed(
         :class="cn('flex gap-2')"
       >
         <MessageOutlined />
-        <div class="text-foreground/75 break-all">{{ item.message }}</div>
+        <div class="break-all text-foreground/75">{{ item.message }}</div>
       </div>
-      <div v-if="attachmentInfo.length > 0" class="flex flex-wrap gap-2">
+      <div v-if="attachmentInfo.length > 0" class="flex flex-wrap gap-4">
         <!-- 这里下载的文件名不是原始文件名 -->
         <a
           v-for="attachment in attachmentInfo"
@@ -125,5 +98,5 @@ const isMultiplePerson = computed(
         </a>
       </div>
     </div>
-  </TimelineItem>
+  </div>
 </template>

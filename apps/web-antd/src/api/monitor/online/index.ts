@@ -2,7 +2,7 @@ import type { OnlineUser } from './model';
 
 import type { PageQuery, PageResult } from '#/api/common';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   onlineList = '/monitor/online/list',
@@ -14,7 +14,7 @@ enum Api {
  * @returns OnlineUser[]
  */
 export function onlineDeviceList() {
-  return requestClient.get<PageResult<OnlineUser>>(Api.root);
+  return alovaInstance.get<PageResult<OnlineUser>>(Api.root);
 }
 
 /**
@@ -23,7 +23,7 @@ export function onlineDeviceList() {
  * @returns 结果
  */
 export function onlineList(params?: PageQuery) {
-  return requestClient.get<PageResult<OnlineUser>>(Api.onlineList, { params });
+  return alovaInstance.get<PageResult<OnlineUser>>(Api.onlineList, { params });
 }
 
 /**
@@ -32,7 +32,7 @@ export function onlineList(params?: PageQuery) {
  * @returns void
  */
 export function forceLogout(tokenId: string) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${tokenId}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${tokenId}`);
 }
 
 /**
@@ -41,5 +41,5 @@ export function forceLogout(tokenId: string) {
  * @returns void
  */
 export function forceLogout2(tokenId: string) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/myself/${tokenId}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/myself/${tokenId}`);
 }

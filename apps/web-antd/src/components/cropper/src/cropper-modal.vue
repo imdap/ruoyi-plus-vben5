@@ -8,7 +8,7 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { $t as t } from '@vben/locales';
 
-import { Avatar, message, Space, Tooltip, Upload } from 'ant-design-vue';
+import { Avatar, Space, Tooltip, Upload } from 'antdv-next';
 import { isFunction } from 'lodash-es';
 
 import { dataURLtoBlob } from '#/utils/file/base64Conver';
@@ -102,7 +102,7 @@ async function handleOk() {
   const uploadApi = props.uploadApi;
   if (uploadApi && isFunction(uploadApi)) {
     if (!previewSource.value) {
-      message.warn('未选择图片');
+      window.message.warning('未选择图片');
       return;
     }
     const blob = dataURLtoBlob(previewSource.value);

@@ -1,4 +1,4 @@
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 export interface Role {
   dataScope: string;
@@ -42,5 +42,5 @@ export interface UserInfoResp {
  * 存在返回null的情况(401) 不会抛出异常 需要手动抛异常
  */
 export async function getUserInfoApi() {
-  return requestClient.get<null | UserInfoResp>('/system/user/getInfo');
+  return alovaInstance.get<null | UserInfoResp>('/system/user/getInfo');
 }

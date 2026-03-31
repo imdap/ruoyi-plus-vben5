@@ -3,7 +3,7 @@ import type { LeaveForm, LeaveQuery, LeaveVO } from './model';
 import type { ID, IDS, PageResult } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 /**
  * 查询请假申请列表
@@ -11,7 +11,7 @@ import { requestClient } from '#/api/request';
  * @returns 请假申请列表
  */
 export function leaveList(params?: LeaveQuery) {
-  return requestClient.get<PageResult<LeaveVO>>('/workflow/leave/list', {
+  return alovaInstance.get<PageResult<LeaveVO>>('/workflow/leave/list', {
     params,
   });
 }
@@ -31,7 +31,7 @@ export function leaveExport(params?: LeaveQuery) {
  * @returns 请假申请详情
  */
 export function leaveInfo(id: ID) {
-  return requestClient.get<LeaveVO>(`/workflow/leave/${id}`);
+  return alovaInstance.get<LeaveVO>(`/workflow/leave/${id}`);
 }
 
 /**
@@ -40,7 +40,7 @@ export function leaveInfo(id: ID) {
  * @returns void
  */
 export function leaveAdd(data: LeaveForm) {
-  return requestClient.postWithMsg<LeaveVO>('/workflow/leave', data);
+  return alovaInstance.postWithMsg<LeaveVO>('/workflow/leave', data);
 }
 
 /**
@@ -49,7 +49,7 @@ export function leaveAdd(data: LeaveForm) {
  * @returns void
  */
 export function leaveUpdate(data: LeaveForm) {
-  return requestClient.putWithMsg<LeaveVO>('/workflow/leave', data);
+  return alovaInstance.putWithMsg<LeaveVO>('/workflow/leave', data);
 }
 
 /**
@@ -58,7 +58,7 @@ export function leaveUpdate(data: LeaveForm) {
  * @returns void
  */
 export function leaveRemove(id: ID | IDS) {
-  return requestClient.deleteWithMsg<void>(`/workflow/leave/${id}`);
+  return alovaInstance.deleteWithMsg<void>(`/workflow/leave/${id}`);
 }
 
 /**
@@ -67,7 +67,7 @@ export function leaveRemove(id: ID | IDS) {
  * @returns void
  */
 export function submitAndStartWorkflow(data: LeaveForm) {
-  return requestClient.postWithMsg<void>(
+  return alovaInstance.postWithMsg<void>(
     '/workflow/leave/submitAndFlowStart',
     data,
   );

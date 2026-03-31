@@ -2,7 +2,7 @@ import type { Menu, MenuOption, MenuQuery, MenuResp } from './model';
 
 import type { ID, IDS } from '#/api/common';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   menuList = '/system/menu/list',
@@ -18,7 +18,7 @@ enum Api {
  * @returns 列表
  */
 export function menuList(params?: MenuQuery) {
-  return requestClient.get<Menu[]>(Api.menuList, { params });
+  return alovaInstance.get<Menu[]>(Api.menuList, { params });
 }
 
 /**
@@ -27,7 +27,7 @@ export function menuList(params?: MenuQuery) {
  * @returns 菜单详情
  */
 export function menuInfo(menuId: ID) {
-  return requestClient.get<Menu>(`${Api.root}/${menuId}`);
+  return alovaInstance.get<Menu>(`${Api.root}/${menuId}`);
 }
 
 /**
@@ -35,7 +35,7 @@ export function menuInfo(menuId: ID) {
  * @param data 参数
  */
 export function menuAdd(data: Partial<Menu>) {
-  return requestClient.postWithMsg<void>(Api.root, data);
+  return alovaInstance.postWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -43,7 +43,7 @@ export function menuAdd(data: Partial<Menu>) {
  * @param data 参数
  */
 export function menuUpdate(data: Partial<Menu>) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -51,7 +51,7 @@ export function menuUpdate(data: Partial<Menu>) {
  * @param menuIds ids
  */
 export function menuRemove(menuIds: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${menuIds}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${menuIds}`);
 }
 
 /**
@@ -60,7 +60,7 @@ export function menuRemove(menuIds: IDS) {
  * @returns resp
  */
 export function roleMenuTreeSelect(roleId: ID) {
-  return requestClient.get<MenuResp>(`${Api.roleMenuTree}/${roleId}`);
+  return alovaInstance.get<MenuResp>(`${Api.roleMenuTree}/${roleId}`);
 }
 
 /**
@@ -68,7 +68,7 @@ export function roleMenuTreeSelect(roleId: ID) {
  * @returns []
  */
 export function menuTreeSelect() {
-  return requestClient.get<MenuOption[]>(Api.menuTreeSelect);
+  return alovaInstance.get<MenuOption[]>(Api.menuTreeSelect);
 }
 
 /**
@@ -77,7 +77,7 @@ export function menuTreeSelect() {
  * @returns resp
  */
 export function tenantPackageMenuTreeSelect(packageId: ID) {
-  return requestClient.get<MenuResp>(
+  return alovaInstance.get<MenuResp>(
     `${Api.tenantPackageMenuTreeselect}/${packageId}`,
   );
 }
@@ -88,5 +88,5 @@ export function tenantPackageMenuTreeSelect(packageId: ID) {
  * @returns void
  */
 export function menuCascadeRemove(menuIds: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/cascade/${menuIds}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/cascade/${menuIds}`);
 }

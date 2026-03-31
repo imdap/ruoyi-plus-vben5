@@ -3,7 +3,7 @@
 去除使用`file-type`库进行文件类型检测 在Safari无法使用
 -->
 <script setup lang="ts">
-import type { UploadListType } from 'ant-design-vue/es/upload/interface';
+import type { UploadProps } from 'antdv-next';
 
 import type { BaseUploadProps, UploadEmits } from './props';
 
@@ -11,8 +11,8 @@ import { computed } from 'vue';
 
 import { $t, I18nT } from '@vben/locales';
 
-import { InboxOutlined, UploadOutlined } from '@ant-design/icons-vue';
-import { Upload } from 'ant-design-vue';
+import { InboxOutlined, UploadOutlined } from '@antdv-next/icons';
+import { Upload } from 'antdv-next';
 
 import { uploadApi } from '#/api';
 
@@ -25,7 +25,7 @@ interface FileUploadProps extends BaseUploadProps {
    * 文件上传不适合用picture-card显示
    * @default text
    */
-  listType?: Exclude<UploadListType, 'picture-card'>;
+  listType?: Exclude<UploadProps['listType'], 'picture-card'>;
 }
 
 const props = withDefaults(defineProps<FileUploadProps>(), {
@@ -57,8 +57,8 @@ const CurrentUploadComponent = computed(() => {
 });
 
 // 双向绑定 ossId
-const ossIdList = defineModel<string | string[]>('value', {
-  default: () => [],
+const ossIdList = defineModel<string>('value', {
+  default: '',
 });
 
 const {
@@ -78,6 +78,7 @@ Upload.Dragger只会影响样式
 <template>
   <div>
     <CurrentUploadComponent
+      v-bind="$attrs"
       v-model:file-list="innerFileList"
       :accept="accept"
       :list-type="listType"
@@ -118,7 +119,7 @@ Upload.Dragger只会影响样式
       >
         <template #size>
           <span
-            class="text-primary mx-1 font-medium"
+            class="mx-1 font-medium text-primary"
             :class="{ 'upload-text__disabled': disabled }"
           >
             {{ maxSize }}MB
@@ -126,7 +127,7 @@ Upload.Dragger只会影响样式
         </template>
         <template #ext>
           <span
-            class="text-primary mx-1 font-medium"
+            class="mx-1 font-medium text-primary"
             :class="{ 'upload-text__disabled': disabled }"
           >
             {{ acceptStr }}

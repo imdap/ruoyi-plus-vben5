@@ -20,8 +20,8 @@ const defaultPreferences: Preferences = {
     defaultHomePath: '/analytics',
     dynamicTitle: true,
     enableCheckUpdates: true,
-    enablePreferences: true,
     enableCopyPreferences: true,
+    enablePreferences: true,
     enableRefreshToken: false,
     enableStickyPreferencesNavigationBar: true,
     isMobile: false,
@@ -114,6 +114,7 @@ const defaultPreferences: Preferences = {
   },
   theme: {
     builtinType: 'default',
+    buttonWaveMode: 'Default',
     colorDestructive: 'hsl(348 100% 61%)',
     colorPrimary: 'hsl(215 100% 54%)',
     colorSuccess: 'hsl(144 57% 58%)',

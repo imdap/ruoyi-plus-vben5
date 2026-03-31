@@ -2,7 +2,7 @@ import type { TreeForm, TreeQuery, TreeVO } from './model';
 
 import type { ID, IDS } from '#/api/common';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 /**
  * 查询测试树列表
@@ -10,7 +10,7 @@ import { requestClient } from '#/api/request';
  * @returns 测试树列表
  */
 export function treeList(params?: TreeQuery) {
-  return requestClient.get<TreeVO[]>('/demo/tree/list', { params });
+  return alovaInstance.get<TreeVO[]>('/demo/tree/list', { params });
 }
 
 /**
@@ -19,7 +19,7 @@ export function treeList(params?: TreeQuery) {
  * @returns 测试树详情
  */
 export function treeInfo(id: ID) {
-  return requestClient.get<TreeVO>(`/demo/tree/${id}`);
+  return alovaInstance.get<TreeVO>(`/demo/tree/${id}`);
 }
 
 /**
@@ -28,7 +28,7 @@ export function treeInfo(id: ID) {
  * @returns void
  */
 export function treeAdd(data: TreeForm) {
-  return requestClient.postWithMsg<void>('/demo/tree', data);
+  return alovaInstance.postWithMsg<void>('/demo/tree', data);
 }
 
 /**
@@ -37,7 +37,7 @@ export function treeAdd(data: TreeForm) {
  * @returns void
  */
 export function treeUpdate(data: TreeForm) {
-  return requestClient.putWithMsg<void>('/demo/tree', data);
+  return alovaInstance.putWithMsg<void>('/demo/tree', data);
 }
 
 /**
@@ -46,5 +46,5 @@ export function treeUpdate(data: TreeForm) {
  * @returns void
  */
 export function treeRemove(id: ID | IDS) {
-  return requestClient.deleteWithMsg<void>(`/demo/tree/${id}`);
+  return alovaInstance.deleteWithMsg<void>(`/demo/tree/${id}`);
 }

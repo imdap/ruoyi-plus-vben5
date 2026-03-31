@@ -10,7 +10,7 @@ import {
   listToTree,
 } from '@vben/utils';
 
-import { Input, Skeleton } from 'ant-design-vue';
+import { Input, Skeleton } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { menuAdd, menuInfo, menuList, menuUpdate } from '#/api/system/menu';

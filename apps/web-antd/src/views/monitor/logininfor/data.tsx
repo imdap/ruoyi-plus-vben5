@@ -1,5 +1,3 @@
-import type { VNode } from 'vue';
-
 import type { FormSchemaGetter } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
@@ -58,7 +56,12 @@ export const columns: VxeGridProps['columns'] = [
     field: 'browser',
     slots: {
       default: ({ row }) => {
-        return renderBrowserIcon(row.browser, true) as VNode;
+        return (
+          <div class="flex items-center justify-center gap-[6px]">
+            {renderBrowserIcon(row.browser, 'shrink-0')}
+            {row.browser}
+          </div>
+        );
       },
     },
   },
@@ -77,7 +80,12 @@ export const columns: VxeGridProps['columns'] = [
             value = split[0];
           }
         }
-        return renderOsIcon(value, true) as VNode;
+        return (
+          <div class="flex items-center justify-center gap-[6px]">
+            {renderOsIcon(row.os, 'shrink-0')}
+            {value}
+          </div>
+        );
       },
     },
   },

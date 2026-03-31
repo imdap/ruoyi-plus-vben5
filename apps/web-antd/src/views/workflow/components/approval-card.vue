@@ -1,4 +1,6 @@
-<script setup lang="ts">
+<script setup lang="tsx">
+import type { DescriptionsProps } from 'antdv-next';
+
 import type { TaskInfo } from '#/api/workflow/task/model';
 
 import { computed } from 'vue';
@@ -6,7 +8,7 @@ import { computed } from 'vue';
 import { VbenAvatar } from '@vben/common-ui';
 import { DictEnum } from '@vben/constants';
 
-import { Descriptions, DescriptionsItem, Tooltip } from 'ant-design-vue';
+import { Descriptions, Tooltip } from 'antdv-next';
 
 import { renderDict } from '#/utils/render';
 
@@ -33,6 +35,20 @@ function handleClick() {
 const diffUpdateTimeString = computed(() => {
   return getDiffTimeString(props.info.updateTime);
 });
+
+const items = computed<DescriptionsProps['items']>(() => {
+  const { info } = props;
+  return [
+    {
+      content: <div class="font-bold">{info.nodeName}</div>,
+      label: '当前任务',
+    },
+    {
+      content: info.createTime,
+      label: '提交时间',
+    },
+  ];
+});
 </script>
 
 <template>
@@ -45,6 +61,7 @@ const diffUpdateTimeString = computed(() => {
   >
     <Descriptions
       :column="1"
+      :items="items"
       :title="info.businessTitle ?? info.flowName"
       size="middle"
     >
@@ -53,21 +70,12 @@ const diffUpdateTimeString = computed(() => {
           :is="renderDict(info.flowStatus, DictEnum.WF_BUSINESS_STATUS)"
         />
       </template>
-      <DescriptionsItem label="当前任务">
-        <div class="font-bold">{{ info.nodeName }}</div>
-      </DescriptionsItem>
-      <DescriptionsItem label="提交时间">
-        {{ info.createTime }}
-      </DescriptionsItem>
-      <!-- <DescriptionsItem label="更新时间">
-        {{ info.updateTime }}
-      </DescriptionsItem> -->
     </Descriptions>
     <div class="flex w-full items-center justify-between text-[14px]">
       <div class="flex items-center gap-1 overflow-hidden whitespace-nowrap">
         <VbenAvatar
           :alt="info?.createByName"
-          class="bg-primary size-[24px] rounded-full text-[10px] text-white"
+          class="size-[24px] rounded-full bg-primary text-[10px] text-white"
           src=""
         />
         <span class="overflow-hidden text-ellipsis opacity-50">

@@ -7,14 +7,14 @@ import { ImageUpload } from '#/components/upload';
 
 const emit = defineEmits<{ reload: [] }>();
 
-const fileList = ref<string[]>([]);
+const fileList = ref<string>('');
 const [BasicModal, modalApi] = useVbenModal({
   onOpenChange: (isOpen) => {
     if (isOpen) {
       return null;
     }
     if (fileList.value.length > 0) {
-      fileList.value = [];
+      fileList.value = '';
       emit('reload');
       modalApi.close();
       return null;

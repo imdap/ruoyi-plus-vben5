@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { UploadFile } from 'ant-design-vue/es/upload/interface';
+import type { UploadFile } from 'antdv-next';
 
 import { h, ref, unref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { ExcelIcon, InBoxIcon } from '@vben/icons';
 
-import { Modal, Switch, Upload } from 'ant-design-vue';
+import { InboxOutlined } from '@antdv-next/icons';
+import { Switch, Upload } from 'antdv-next';
 
 import { downloadImportTemplate, userImportData } from '#/api/system/user';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 
 const emit = defineEmits<{ reload: [] }>();
 
@@ -35,11 +35,11 @@ async function handleSubmit() {
       updateSupport: unref(checked),
     };
     const { code, msg } = await userImportData(data);
-    let modal = Modal.success;
+    let modal = window.modal.success;
     if (code === 200) {
       emit('reload');
     } else {
-      modal = Modal.error;
+      modal = window.modal.error;
     }
     handleCancel();
     modal({
@@ -62,6 +62,11 @@ function handleCancel() {
   fileList.value = [];
   checked.value = false;
 }
+
+const { exportBlob, exportLoading } = useBlobExport(downloadImportTemplate);
+async function handleExport() {
+  exportBlob({ data: {}, fileName: '用户导入模板.xlsx' });
+}
 </script>
 
 <template>
@@ -80,7 +85,7 @@ function handleCancel() {
       accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
     >
       <p class="ant-upload-drag-icon flex items-center justify-center">
-        <InBoxIcon class="text-primary size-[48px]" />
+        <InboxOutlined class="size-[48px] text-primary" />
       </p>
       <p class="ant-upload-text">点击或者拖拽到此处上传文件</p>
     </UploadDragger>
@@ -89,10 +94,12 @@ function handleCancel() {
         <span>允许导入xlsx, xls文件</span>
         <a-button
           type="link"
-          @click="commonDownloadExcel(downloadImportTemplate, '用户导入模板')"
+          :loading="exportLoading"
+          :disabled="exportLoading"
+          @click="handleExport"
         >
           <div class="flex items-center gap-[4px]">
-            <ExcelIcon />
+            <span class="icon-[vscode-icons--file-type-excel]"></span>
             <span>下载模板</span>
           </div>
         </a-button>

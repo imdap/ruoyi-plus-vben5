@@ -8,7 +8,7 @@ import type { FlowComponentsMapMapKey } from '../register';
 import type { FlowInfoResponse } from '#/api/workflow/instance/model';
 import type { TaskInfo } from '#/api/workflow/task/model';
 
-import { Divider } from 'ant-design-vue';
+import { Divider } from 'antdv-next';
 
 import { ApprovalTimeline } from '.';
 import { flowComponentsMap } from '../register';

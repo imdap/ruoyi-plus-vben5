@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import type { Key } from 'antdv-next/dist/table/interface';
+
 import type { PropType } from 'vue';
 
 import type { CategoryTree } from '#/api/workflow/category/model';
 
 import { onMounted, ref } from 'vue';
 
-import { SyncOutlined } from '@ant-design/icons-vue';
-import { InputSearch, Skeleton, Tree } from 'ant-design-vue';
+import { SyncOutlined } from '@antdv-next/icons';
+import { InputSearch, Skeleton, Tree } from 'antdv-next';
 
 import { categoryTree } from '#/api/workflow/category';
 
@@ -20,7 +22,7 @@ const emit = defineEmits<{
   /**
    * 点击节点的事件
    */
-  select: [];
+  select: [keys: string[]];
 }>();
 
 const selectCode = defineModel('selectCode', {
@@ -54,6 +56,10 @@ async function handleReload() {
 }
 
 onMounted(loadTree);
+
+function handleSelect(keys: Key[]) {
+  emit('select', keys as string[]);
+}
 </script>
 
 <template>
@@ -83,6 +89,7 @@ onMounted(loadTree);
           </InputSearch>
         </div>
         <div class="h-full overflow-x-hidden px-[8px]">
+          <!-- TODO: 适配antdv-next -->
           <Tree
             v-bind="$attrs"
             v-if="categoryTreeArray.length > 0"
@@ -93,7 +100,13 @@ onMounted(loadTree);
             :tree-data="categoryTreeArray"
             :virtual="false"
             default-expand-all
-            @select="$emit('select')"
+            @select="handleSelect"
+            :styles="{
+              item: {
+                '--ant-tree-node-selected-bg':
+                  'var(--ant-color-primary-bg-hover)',
+              },
+            }"
           >
             <template #title="{ label }">
               <span v-if="label.includes(searchValue)">

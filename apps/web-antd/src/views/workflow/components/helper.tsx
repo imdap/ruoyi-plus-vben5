@@ -1,6 +1,5 @@
 import { defineComponent, h, ref } from 'vue';
 
-import { Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -20,7 +19,7 @@ export interface ApproveWithReasonModalProps {
 export function approveWithReasonModal(props: ApproveWithReasonModalProps) {
   const { onOk, title, description } = props;
   const content = ref('');
-  Modal.confirm({
+  window.modal.confirm({
     title,
     content: h(
       defineComponent({

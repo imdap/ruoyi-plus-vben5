@@ -5,9 +5,8 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { SysConfig } from '#/api/system/config/model';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
 
-import { Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -16,7 +15,7 @@ import {
   configRefreshCache,
   configRemove,
 } from '#/api/system/config';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 
 import configModal from './config-modal.vue';
 import { columns, querySchema } from './data';
@@ -94,7 +93,7 @@ async function handleDelete(row: SysConfig) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: SysConfig) => row.configId);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -105,10 +104,14 @@ function handleMultiDelete() {
   });
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(configExport, '参数配置', tableApi.formApi.form.values, {
-    fieldMappingTime: formOptions.fieldMappingTime,
-  });
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(configExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('参数配置');
+  exportBlob({ data: formValues, fileName });
 }
 
 async function handleRefreshCache() {
@@ -125,7 +128,9 @@ async function handleRefreshCache() {
           <a-button @click="handleRefreshCache"> 刷新缓存 </a-button>
           <a-button
             v-access:code="['system:config:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>
@@ -149,25 +154,24 @@ async function handleRefreshCache() {
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button
+          <action-button
             v-access:code="['system:config:edit']"
             @click.stop="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
-            :get-popup-container="getVxePopupContainer"
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['system:config:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

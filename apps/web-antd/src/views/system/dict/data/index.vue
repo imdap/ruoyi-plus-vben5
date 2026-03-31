@@ -5,12 +5,11 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { PageQuery } from '#/api/common';
 import type { DictData } from '#/api/system/dict/dict-data-model';
 
-import { ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
 
-import { Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -18,7 +17,7 @@ import {
   dictDataList,
   dictDataRemove,
 } from '#/api/system/dict/dict-data';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 
 import { emitter } from '../mitt';
 import { columns, querySchema } from './data';
@@ -102,7 +101,7 @@ async function handleDelete(row: DictData) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: DictData) => row.dictCode);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -113,24 +112,38 @@ function handleMultiDelete() {
   });
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(dictDataExport, '字典数据', tableApi.formApi.form.values);
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(dictDataExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  formValues.dictType = dictType.value;
+  // 文件名
+  const fileName = buildExportFileName('字典数据');
+  exportBlob({ data: formValues, fileName });
 }
 
-emitter.on('rowClick', async (value) => {
-  dictType.value = value;
-  await tableApi.query();
+onMounted(() => {
+  emitter.on('rowClick', async (value) => {
+    dictType.value = value;
+    await tableApi.query();
+  });
+});
+onBeforeUnmount(() => {
+  emitter.off('rowClick');
 });
 </script>
 
 <template>
   <div>
-    <BasicTable id="dict-data" table-title="字典数据列表">
+    <BasicTable table-title="字典数据列表">
       <template #toolbar-tools>
         <Space>
           <a-button
             v-access:code="['system:dict:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>
@@ -155,27 +168,24 @@ emitter.on('rowClick', async (value) => {
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button
+          <action-button
             v-access:code="['system:dict:edit']"
             @click="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
-            :get-popup-container="
-              (node) => getVxePopupContainer(node, 'dict-data')
-            "
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['system:dict:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

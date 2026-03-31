@@ -3,7 +3,7 @@ import type { HttpResponse } from '@vben/request';
 
 import { useAppConfig } from '@vben/hooks';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 const { clientId, sseEnable } = useAppConfig(
   import.meta.env,
@@ -78,7 +78,7 @@ export namespace AuthApi {
  * 登录
  */
 export async function loginApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>(
+  return alovaInstance.post<AuthApi.LoginResult>(
     '/auth/login',
     { ...data, clientId },
     {
@@ -92,7 +92,7 @@ export async function loginApi(data: AuthApi.LoginParams) {
  * @returns void
  */
 export function doLogout() {
-  return requestClient.post<HttpResponse<void>>('/auth/logout');
+  return alovaInstance.post<HttpResponse<void>>('/auth/logout');
 }
 
 /**
@@ -106,7 +106,7 @@ export function seeConnectionClose() {
   if (!sseEnable) {
     return;
   }
-  return requestClient.get<void>('/resource/sse/close');
+  return alovaInstance.get<void>('/resource/sse/close');
 }
 
 /**
@@ -133,7 +133,7 @@ export interface TenantResp {
  * 获取租户列表 下拉框使用
  */
 export function tenantList() {
-  return requestClient.get<TenantResp>('/auth/tenant/list');
+  return alovaInstance.get<TenantResp>('/auth/tenant/list');
 }
 
 /**
@@ -141,7 +141,7 @@ export function tenantList() {
  * @returns string[]
  */
 export async function getAccessCodesApi() {
-  return requestClient.get<string[]>('/auth/codes');
+  return alovaInstance.get<string[]>('/auth/codes');
 }
 
 /**
@@ -150,7 +150,7 @@ export async function getAccessCodesApi() {
  * @returns 跳转url
  */
 export function authBinding(source: string, tenantId: string) {
-  return requestClient.get<string>(`/auth/binding/${source}`, {
+  return alovaInstance.get<string>(`/auth/binding/${source}`, {
     params: {
       domain: window.location.host,
       tenantId,
@@ -163,7 +163,7 @@ export function authBinding(source: string, tenantId: string) {
  * @param id id
  */
 export function authUnbinding(id: string) {
-  return requestClient.deleteWithMsg<void>(`/auth/unlock/${id}`);
+  return alovaInstance.deleteWithMsg<void>(`/auth/unlock/${id}`);
 }
 
 /**
@@ -172,5 +172,5 @@ export function authUnbinding(id: string) {
  * @returns void
  */
 export function authCallback(data: AuthApi.OAuthLoginParams) {
-  return requestClient.post<void>('/auth/social/callback', data);
+  return alovaInstance.post<void>('/auth/social/callback', data);
 }

@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import type { VbenFormProps } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
+
+import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { nextTick } from 'vue';
 
-import { Page, useVbenModal, type VbenFormProps } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
+import { Page, useVbenModal } from '@vben/common-ui';
 
-import { Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
-import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { categoryList, categoryRemove } from '#/api/workflow/category';
 
 import categoryModal from './category-modal.vue';
@@ -118,32 +120,32 @@ function collapseAll() {
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button
+          <action-button
             v-access:code="['workflow:category:edit']"
             @click.stop="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </ghost-button>
-          <ghost-button
-            class="btn-success"
+          </action-button>
+          <action-button
+            variant="link"
+            color="green"
             v-access:code="['workflow:category:edit']"
             @click.stop="handleAdd(row)"
           >
             {{ $t('pages.common.add') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
-            :get-popup-container="getVxePopupContainer"
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['workflow:category:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

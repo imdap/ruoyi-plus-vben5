@@ -7,9 +7,8 @@ import type { User } from '#/api/system/user/model';
 import { useRoute } from 'vue-router';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
 
-import { Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -94,7 +93,7 @@ async function handleAuthCancel(record: User) {
 function handleMultipleAuthCancel() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: User) => row.userId);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认取消选中的${ids.length}条授权记录吗？`,
@@ -132,18 +131,17 @@ function handleMultipleAuthCancel() {
       </template>
       <template #action="{ row }">
         <Popconfirm
-          :get-popup-container="getVxePopupContainer"
           :title="`是否取消授权用户[${row.userName} - ${row.nickName}]?`"
           placement="left"
           @confirm="handleAuthCancel(row)"
         >
-          <ghost-button
+          <action-button
             danger
             v-access:code="['system:role:remove']"
             @click.stop=""
           >
             取消授权
-          </ghost-button>
+          </action-button>
         </Popconfirm>
       </template>
     </BasicTable>

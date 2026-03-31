@@ -7,7 +7,7 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 import { addFullName, cloneDeep, getPopupContainer } from '@vben/utils';
 
-import { Tag } from 'ant-design-vue';
+import { Tag } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { configInfoByKey } from '#/api/system/config';

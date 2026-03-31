@@ -2,9 +2,11 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { ID } from '#/api/common';
 import type { MenuOption } from '#/api/system/menu/model';
 
-import { h, markRaw } from 'vue';
+import { h } from 'vue';
 
-import { FolderIcon, MenuIcon, OkButtonIcon, VbenIcon } from '@vben/icons';
+import { VbenIcon } from '@vben/icons';
+
+import { menuTypes } from '#/views/system/menu/data';
 
 export interface Permission {
   checked: boolean;
@@ -15,12 +17,6 @@ export interface Permission {
 export interface MenuPermissionOption extends MenuOption {
   permissions: Permission[];
 }
-
-const menuTypes = {
-  C: { icon: markRaw(MenuIcon), value: '菜单' },
-  F: { icon: markRaw(OkButtonIcon), value: '按钮' },
-  M: { icon: markRaw(FolderIcon), value: '目录' },
-};
 
 export const nodeOptions = [
   { label: '节点关联', value: true },

@@ -1,6 +1,6 @@
 <!-- 审批终止 Modal弹窗的content属性专用 用于填写审批意见 -->
 <script setup lang="ts">
-import { Textarea } from 'ant-design-vue';
+import { TextArea } from 'antdv-next';
 
 defineOptions({
   name: 'ApprovalContent',
@@ -15,7 +15,7 @@ defineEmits<{ 'update:value': [string] }>();
 <template>
   <div class="flex flex-col gap-2">
     <div>{{ description }}</div>
-    <Textarea
+    <TextArea
       :allow-clear="true"
       :auto-size="true"
       :value="value"

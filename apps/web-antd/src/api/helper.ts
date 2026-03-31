@@ -1,10 +1,7 @@
 import { $t } from '@vben/locales';
 
-import { message, Modal } from 'ant-design-vue';
-
 import { useAuthStore } from '#/store';
-
-import { requestClient } from './request';
+import { alovaInstance } from '#/utils/http';
 
 /**
  * @description:  contentType
@@ -25,8 +22,7 @@ export const ContentTypeEnum = {
  * @returns blob二进制
  */
 export function commonExport(url: string, data: Record<string, any>) {
-  return requestClient.post<Blob>(url, data, {
-    data,
+  return alovaInstance.post<Blob>(url, data, {
     headers: { 'Content-Type': ContentTypeEnum.FORM_URLENCODED },
     isTransformResponse: false,
     responseType: 'blob',
@@ -83,7 +79,7 @@ export function handleUnauthorizedLogout() {
       if (error instanceof ImpossibleReturn401Exception) {
         lockLogoutRequest = true;
         if (import.meta.env.DEV) {
-          Modal.error({
+          window.modal.error({
             title: '提示',
             centered: true,
             content:
@@ -93,7 +89,7 @@ export function handleUnauthorizedLogout() {
       }
     })
     .finally(() => {
-      message.error(timeoutMsg);
+      window.message.error(timeoutMsg);
       isLogoutProcessing = false;
     });
   // 不再执行下面逻辑

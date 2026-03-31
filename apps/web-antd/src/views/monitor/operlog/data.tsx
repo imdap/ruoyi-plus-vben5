@@ -62,7 +62,7 @@ export const columns: VxeGridProps['columns'] = [
   },
   { field: 'operName', title: '操作人员' },
   { field: 'operIp', title: 'IP地址' },
-  { field: 'operLocation', title: 'IP信息' },
+  { field: 'operLocation', title: 'IP信息', width: 200 },
   {
     field: 'status',
     title: '操作状态',

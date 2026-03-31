@@ -9,7 +9,7 @@ import { preferences } from '@vben/preferences';
 import { useAccessStore } from '@vben/stores';
 import { cn } from '@vben/utils';
 
-import { message, Spin } from 'ant-design-vue';
+import { Spin } from 'antdv-next';
 
 import { authCallback } from '#/api';
 import { useAuthStore } from '#/store';
@@ -49,7 +49,7 @@ onMounted(async () => {
       (item) => item.source === source,
     );
     if (!currentClient) {
-      message.error({ content: `未找到${source}平台` });
+      window.message.error({ content: `未找到${source}平台` });
       return;
     }
     const data: AuthApi.OAuthLoginParams = {
@@ -62,14 +62,14 @@ onMounted(async () => {
     // 没有token为登录 有token是授权
     if (accessStore.accessToken) {
       await authCallback(data);
-      message.success(`${source}授权成功`);
+      window.message.success(`${source}授权成功`);
       setTimeout(() => {
         router.push(preferences.app.defaultHomePath);
       }, 1500);
     } else {
       // 这里内部已经做了跳转到首页的操作
       await authStore.authLogin(data as any);
-      message.success(`${source}登录成功`);
+      window.message.success(`${source}登录成功`);
     }
   } catch (error) {
     console.error(error);

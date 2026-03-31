@@ -2,7 +2,7 @@ import type { Notice } from './model';
 
 import type { ID, IDS, PageQuery } from '#/api/common';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   noticeList = '/system/notice/list',
@@ -15,7 +15,7 @@ enum Api {
  * @returns 分页结果
  */
 export function noticeList(params?: PageQuery) {
-  return requestClient.get<Notice[]>(Api.noticeList, { params });
+  return alovaInstance.get<Notice[]>(Api.noticeList, { params });
 }
 
 /**
@@ -24,7 +24,7 @@ export function noticeList(params?: PageQuery) {
  * @returns 详情
  */
 export function noticeInfo(noticeId: ID) {
-  return requestClient.get<Notice>(`${Api.root}/${noticeId}`);
+  return alovaInstance.get<Notice>(`${Api.root}/${noticeId}`);
 }
 
 /**
@@ -32,7 +32,7 @@ export function noticeInfo(noticeId: ID) {
  * @param data 参数
  */
 export function noticeAdd(data: Partial<Notice>) {
-  return requestClient.postWithMsg<void>(Api.root, data);
+  return alovaInstance.postWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -40,7 +40,7 @@ export function noticeAdd(data: Partial<Notice>) {
  * @param data 参数
  */
 export function noticeUpdate(data: any) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -48,5 +48,5 @@ export function noticeUpdate(data: any) {
  * @param noticeIds ids
  */
 export function noticeRemove(noticeIds: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${noticeIds}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${noticeIds}`);
 }

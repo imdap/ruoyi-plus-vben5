@@ -1,4 +1,4 @@
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   list = '/system/sse/list',
@@ -8,19 +8,19 @@ enum Api {
 }
 
 export function sseStatus() {
-  return requestClient.get<boolean>(Api.status);
+  return alovaInstance.get<boolean>(Api.status);
 }
 
 export function sseSendAll(message: string) {
-  return requestClient.postWithMsg<void>(`${Api.sendAll}?message=${message}`);
+  return alovaInstance.postWithMsg<void>(`${Api.sendAll}?message=${message}`);
 }
 
 export function sseSendByUserId(userId: string, message: string) {
-  return requestClient.postWithMsg<void>(
+  return alovaInstance.postWithMsg<void>(
     `${Api.send}/${userId}?message=${message}`,
   );
 }
 
 export function sseList() {
-  return requestClient.get<any>(Api.list);
+  return alovaInstance.get<any>(Api.list);
 }

@@ -11,7 +11,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Card, Spin } from 'ant-design-vue';
+import { Card, Spin } from 'antdv-next';
 import dayjs from 'dayjs';
 import { cloneDeep, omit } from 'lodash-es';
 

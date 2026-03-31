@@ -3,7 +3,7 @@ import type { LoginLog } from './model';
 import type { IDS, PageQuery, PageResult } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   loginInfoClean = '/monitor/logininfor/clean',
@@ -19,7 +19,7 @@ enum Api {
  * @returns list[]
  */
 export function loginInfoList(params?: PageQuery) {
-  return requestClient.get<PageResult<LoginLog>>(Api.loginInfoList, { params });
+  return alovaInstance.get<PageResult<LoginLog>>(Api.loginInfoList, { params });
 }
 
 /**
@@ -37,7 +37,7 @@ export function loginInfoExport(data: any) {
  * @returns void
  */
 export function loginInfoRemove(infoIds: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${infoIds}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${infoIds}`);
 }
 
 /**
@@ -46,7 +46,7 @@ export function loginInfoRemove(infoIds: IDS) {
  * @returns void
  */
 export function userUnlock(username: string) {
-  return requestClient.get<void>(`${Api.userUnlock}/${username}`, {
+  return alovaInstance.get<void>(`${Api.userUnlock}/${username}`, {
     successMessageMode: 'message',
   });
 }
@@ -56,5 +56,5 @@ export function userUnlock(username: string) {
  * @returns void
  */
 export function loginInfoClean() {
-  return requestClient.deleteWithMsg<void>(Api.loginInfoClean);
+  return alovaInstance.deleteWithMsg<void>(Api.loginInfoClean);
 }

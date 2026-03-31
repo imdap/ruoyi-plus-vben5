@@ -5,7 +5,7 @@ import type { SocialInfo } from '#/api/system/social/model';
 
 import { onMounted, ref } from 'vue';
 
-import { Alert, Avatar, Card, Empty, Modal, Tooltip } from 'ant-design-vue';
+import { Alert, Avatar, Card, Empty, Tooltip } from 'antdv-next';
 
 import { authUnbinding } from '#/api';
 import { socialList } from '#/api/system/social';
@@ -50,7 +50,7 @@ function handleUnbind(record: BindItemWithInfo) {
   if (!record.info) {
     return;
   }
-  Modal.confirm({
+  window.modal.confirm({
     content: `确定解绑[${record.source}]平台的[${record.info.userName}]账号吗？`,
     async onOk() {
       await authUnbinding(record.info!.id);

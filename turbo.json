@@ -6,7 +6,6 @@
     "**/tsconfig*.json",
     "internal/node-utils/*.json",
     "internal/node-utils/src/**/*.ts",
-    "internal/tailwind-config/src/**/*.ts",
     "internal/vite-config/*.json",
     "internal/vite-config/src/**/*.ts",
     "scripts/*/src/**/*.ts",
@@ -40,10 +39,6 @@
     "build:analyze": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
-    },
-    "@vben/backend-mock#build": {
-      "dependsOn": ["^build"],
-      "outputs": [".nitro/**", ".output/**"]
     },
     "test:e2e": {},
     "dev": {

@@ -7,9 +7,8 @@ import type { Post } from '#/api/system/post/model';
 import { ref } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
 
-import { Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -18,7 +17,7 @@ import {
   postList,
   postRemove,
 } from '#/api/system/post';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 import DeptTree from '#/views/system/user/dept-tree.vue';
 
 import { columns, querySchema } from './data';
@@ -108,7 +107,7 @@ async function handleDelete(row: Post) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: Post) => row.postId);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -119,8 +118,19 @@ function handleMultiDelete() {
   });
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(postExport, '岗位信息', tableApi.formApi.form.values);
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(postExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('岗位数据');
+  exportBlob({ data: formValues, fileName });
+}
+
+function handleDeptSelect(keys: string[]) {
+  selectDeptId.value = keys;
+  tableApi.reload();
 }
 </script>
 
@@ -131,14 +141,16 @@ function handleDownloadExcel() {
       v-model:select-dept-id="selectDeptId"
       class="w-[260px]"
       @reload="() => tableApi.reload()"
-      @select="() => tableApi.reload()"
+      @select="handleDeptSelect"
     />
     <BasicTable class="flex-1 overflow-hidden" table-title="岗位列表">
       <template #toolbar-tools>
         <Space>
           <a-button
             v-access:code="['system:post:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>
@@ -162,25 +174,24 @@ function handleDownloadExcel() {
       </template>
       <template #action="{ row }">
         <Space>
-          <GhostButton
+          <action-button
             v-access:code="['system:post:edit']"
             @click="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </GhostButton>
+          </action-button>
           <Popconfirm
-            :get-popup-container="getVxePopupContainer"
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <GhostButton
+            <action-button
               danger
               v-access:code="['system:post:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </GhostButton>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

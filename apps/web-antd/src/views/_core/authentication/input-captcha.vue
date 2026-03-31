@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Input } from 'ant-design-vue';
+import { Input, SpaceCompact } from 'antdv-next';
 
 interface Props {
   captcha?: string;
@@ -22,8 +22,8 @@ const modelValue = defineModel<string>({ default: '' });
 
 <!-- 图片验证码 -->
 <template>
-  <div class="flex w-full">
-    <div class="flex-1">
+  <div class="w-full flex-1">
+    <SpaceCompact class="w-full">
       <Input
         size="large"
         id="code"
@@ -36,21 +36,21 @@ const modelValue = defineModel<string>({ default: '' });
         :label="label"
         :placeholder="placeholder"
       />
-    </div>
-    <div class="captcha-image--container relative">
-      <img
-        :src="captcha"
-        class="h-[40px] w-[115px] cursor-pointer rounded-r-lg"
-        :class="{ 'pointer-events-none': loading }"
-        @click="$emit('captchaClick')"
-      />
-      <div
-        v-if="loading"
-        class="absolute inset-0 flex cursor-not-allowed items-center justify-center rounded-r-lg bg-black/30"
-      >
-        <span class="captcha-loading"></span>
+      <div class="relative rounded-r-lg border">
+        <img
+          :src="captcha"
+          class="h-[40px] w-[150px] cursor-pointer rounded-r-lg"
+          :class="{ 'pointer-events-none': loading }"
+          @click="$emit('captchaClick')"
+        />
+        <div
+          v-if="loading"
+          class="absolute inset-0 flex cursor-not-allowed items-center justify-center rounded-r-lg bg-black/30"
+        >
+          <span class="captcha-loading"></span>
+        </div>
       </div>
-    </div>
+    </SpaceCompact>
   </div>
 </template>
 
@@ -74,14 +74,5 @@ const modelValue = defineModel<string>({ default: '' });
   border-bottom-color: transparent;
   border-radius: 50%;
   animation: loading-rotation 1s linear infinite;
-}
-
-/**
-  验证码输入框样式
-  去除右边的圆角
-*/
-input[id='code'] {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
 }
 </style>

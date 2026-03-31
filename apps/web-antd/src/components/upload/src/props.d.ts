@@ -1,10 +1,10 @@
-import type { UploadFile } from 'ant-design-vue';
-import type { RcFile } from 'ant-design-vue/es/vc-upload/interface';
+import type { UploadFile } from 'antdv-next';
+import type { RcFile } from 'antdv-next/es/vc-upload/interface';
 
 import type { UploadApi, UploadResult } from '#/api';
 import type { OssFile } from '#/api/system/oss/model';
 
-import { UploadChangeParam } from 'ant-design-vue';
+import { UploadChangeParam } from 'antdv-next';
 
 export type UploadType = 'file' | 'image';
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { MessageType } from 'ant-design-vue/es/message';
-import type { SelectHandler } from 'ant-design-vue/es/vc-select/Select';
+import type { SelectEmits } from 'antdv-next';
+import type { MessageType } from 'antdv-next/dist/message/interface';
 
 import type { TenantOption } from '#/api';
 
@@ -11,7 +11,7 @@ import { useAccess } from '@vben/access';
 import { useTabs } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
-import { message, Select, Spin } from 'ant-design-vue';
+import { Select, Spin } from 'antdv-next';
 import { storeToRefs } from 'pinia';
 
 import { tenantDynamicClear, tenantDynamicToggle } from '#/api/system/tenant';
@@ -73,7 +73,10 @@ const loading = ref(false);
  * @param tenantId tenantId
  * @param option 当前option
  */
-const onSelected: SelectHandler = async (tenantId: string, option: any) => {
+const handleSelect: SelectEmits['onSelect'] = async (
+  tenantId: string,
+  option: any,
+) => {
   if (unref(lastSelected) === tenantId) {
     // createMessage.info('选择一致');
     return;
@@ -86,7 +89,7 @@ const onSelected: SelectHandler = async (tenantId: string, option: any) => {
 
     // 关闭之前的message 只保留一条
     messageInstance.value?.();
-    messageInstance.value = message.success(
+    messageInstance.value = window.message.success(
       `${$t('component.tenantToggle.switch')} ${option.companyName}`,
     );
 
@@ -100,14 +103,16 @@ const onSelected: SelectHandler = async (tenantId: string, option: any) => {
   }
 };
 
-async function onDeselect() {
+async function handleClear() {
   try {
     loading.value = true;
 
     await tenantDynamicClear();
     // 关闭之前的message 只保留一条
     messageInstance.value?.();
-    messageInstance.value = message.success($t('component.tenantToggle.reset'));
+    messageInstance.value = window.message.success(
+      $t('component.tenantToggle.reset'),
+    );
 
     lastSelected.value = '';
     close(false);
@@ -139,12 +144,12 @@ function filterOption(input: string, option: TenantOption) {
       :filter-option="filterOption"
       :options="tenantList"
       :placeholder="$t('component.tenantToggle.placeholder')"
-      :dropdown-style="{ position: 'fixed', zIndex: 1024 }"
       allow-clear
       class="w-60"
+      :popup-style="{ position: 'fixed' }"
       show-search
-      @deselect="onDeselect"
-      @select="onSelected"
+      @clear="handleClear"
+      @select="handleSelect"
     >
       <template v-if="loading" #suffixIcon>
         <Spin size="small" spinning />

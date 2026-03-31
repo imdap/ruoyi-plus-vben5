@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { DropdownEmits, MenuItemType, SwitchProps } from 'antdv-next';
+
 import type { VbenFormProps } from '@vben/common-ui';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -8,9 +10,9 @@ import { computed } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { Fallback, Page, useVbenDrawer } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
+import { EnableStatus } from '@vben/constants';
 
-import { Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Dropdown, Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -22,9 +24,9 @@ import {
   tenantStatusChange,
   tenantSyncPackage,
 } from '#/api/system/tenant';
-import { TableSwitch } from '#/components/table';
+import { ApiSwitch } from '#/components/global';
 import { useTenantStore } from '#/store/tenant';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 
 import { columns, querySchema } from './data';
 import tenantDrawer from './tenant-drawer.vue';
@@ -107,7 +109,7 @@ async function handleDelete(row: Tenant) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: Tenant) => row.id);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -120,8 +122,14 @@ function handleMultiDelete() {
   });
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(tenantExport, '租户数据', tableApi.formApi.form.values);
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(tenantExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('租户数据');
+  exportBlob({ data: formValues, fileName });
 }
 
 /**
@@ -135,9 +143,8 @@ const isSuperAdmin = computed(() => {
 });
 
 function handleSyncTenantDict() {
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
-    iconType: 'warning',
     content: '确认同步租户字典？',
     onOk: async () => {
       await dictSyncTenant();
@@ -147,9 +154,8 @@ function handleSyncTenantDict() {
 }
 
 function handleSyncTenantConfig() {
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
-    iconType: 'warning',
     content: '确认同步租户参数配置？',
     onOk: async () => {
       await syncTenantConfig();
@@ -157,6 +163,42 @@ function handleSyncTenantConfig() {
     },
   });
 }
+
+async function handleChangeStatus(
+  checked: SwitchProps['checked'],
+  row: Tenant,
+) {
+  await tenantStatusChange({
+    id: row.id,
+    tenantId: row.tenantId,
+    status: checked ? EnableStatus.Enable : EnableStatus.Disable,
+  });
+}
+
+const items = computed(() => {
+  const list: MenuItemType[] = [];
+  if (hasAccessByCodes(['system:tenant:edit'])) {
+    list.push(
+      { label: '同步租户字典', key: 'syncTenantDict' },
+      { label: '同步租户参数配置', key: 'syncTenantConfig' },
+    );
+  }
+  return list;
+});
+
+const handleMenuClick: DropdownEmits['menuClick'] = (e) => {
+  const { key } = e;
+  switch (key) {
+    case 'syncTenantConfig': {
+      handleSyncTenantConfig();
+      break;
+    }
+    case 'syncTenantDict': {
+      handleSyncTenantDict();
+      break;
+    }
+  }
+};
 </script>
 
 <template>
@@ -164,24 +206,23 @@ function handleSyncTenantConfig() {
     <BasicTable table-title="租户列表">
       <template #toolbar-tools>
         <Space>
-          <a-button
-            v-access:code="['system:tenant:edit']"
-            @click="handleSyncTenantDict"
+          <Dropdown
+            placement="top"
+            :menu="{ items }"
+            @menu-click="handleMenuClick"
           >
-            同步租户字典
-          </a-button>
-          <a-button
-            v-access:code="['system:tenant:edit']"
-            @click="handleSyncTenantConfig"
-          >
-            同步租户参数配置
-          </a-button>
+            <a-button>操作</a-button>
+          </Dropdown>
+
           <a-button
             v-access:code="['system:tenant:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>
+
           <a-button
             :disabled="!vxeCheckboxChecked(tableApi)"
             danger
@@ -201,47 +242,46 @@ function handleSyncTenantConfig() {
         </Space>
       </template>
       <template #status="{ row }">
-        <TableSwitch
-          v-model:value="row.status"
-          :api="() => tenantStatusChange(row)"
+        <ApiSwitch
+          :value="row.status === EnableStatus.Enable"
+          :api="(checked) => handleChangeStatus(checked, row)"
           :disabled="row.id === 1 || !hasAccessByCodes(['system:tenant:edit'])"
           @reload="tableApi.query()"
         />
       </template>
       <template #action="{ row }">
         <Space v-if="row.id !== 1">
-          <ghost-button
+          <action-button
             v-access:code="['system:tenant:edit']"
             @click="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
-            :get-popup-container="getVxePopupContainer"
             :title="`确认同步[${row.companyName}]的套餐吗?`"
             placement="left"
             @confirm="handleSync(row)"
           >
-            <ghost-button
-              class="btn-success"
+            <action-button
+              variant="link"
+              color="green"
               v-access:code="['system:tenant:edit']"
             >
               {{ $t('pages.common.sync') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
           <Popconfirm
-            :get-popup-container="getVxePopupContainer"
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['system:tenant:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

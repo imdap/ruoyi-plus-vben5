@@ -40,6 +40,7 @@ import {
   Block,
   Breadcrumb,
   BuiltinTheme,
+  ButtonWaveMode,
   ColorMode,
   Content,
   Copyright,
@@ -70,7 +71,9 @@ const appContentCompact = defineModel<ContentCompactType>('appContentCompact');
 const appWatermark = defineModel<boolean>('appWatermark');
 const appWatermarkContent = defineModel<string>('appWatermarkContent');
 const appEnableCheckUpdates = defineModel<boolean>('appEnableCheckUpdates');
-const appEnableCopyPreferences = defineModel<boolean>('appEnableCopyPreferences');
+const appEnableCopyPreferences = defineModel<boolean>(
+  'appEnableCopyPreferences',
+);
 const appEnableStickyPreferencesNavigationBar = defineModel<boolean>(
   'appEnableStickyPreferencesNavigationBar',
 );
@@ -87,6 +90,7 @@ const themeColorPrimary = defineModel<string>('themeColorPrimary');
 const themeBuiltinType = defineModel<BuiltinThemeType>('themeBuiltinType');
 const themeMode = defineModel<ThemeModeType>('themeMode');
 const themeRadius = defineModel<string>('themeRadius');
+const themeButtonWaveMode = defineModel<string>('themeButtonWaveMode');
 const themeFontSize = defineModel<number>('themeFontSize');
 const themeSemiDarkSidebar = defineModel<boolean>('themeSemiDarkSidebar');
 const themeSemiDarkSidebarSub = defineModel<boolean>('themeSemiDarkSidebarSub');
@@ -250,7 +254,7 @@ async function handleReset() {
     <Drawer
       :description="$t('preferences.subtitle')"
       :title="$t('preferences.title')"
-      class="!border-0 sm:max-w-sm"
+      class="border-0! sm:max-w-sm"
     >
       <template #extra>
         <div class="flex items-center">
@@ -262,7 +266,7 @@ async function handleReset() {
           >
             <span
               v-if="diffPreference"
-              class="bg-primary absolute right-0.5 top-0.5 h-2 w-2 rounded"
+              class="absolute top-0.5 right-0.5 size-2 rounded-sm bg-primary"
             ></span>
             <RotateCw class="size-4" />
           </VbenIconButton>
@@ -335,6 +339,9 @@ async function handleReset() {
             </Block>
             <Block :title="$t('preferences.theme.radius')">
               <Radius v-model="themeRadius" />
+            </Block>
+            <Block :title="$t('preferences.theme.buttonWaveMode')">
+              <ButtonWaveMode v-model="themeButtonWaveMode" />
             </Block>
             <Block :title="$t('preferences.theme.fontSize')">
               <FontSize v-model="themeFontSize" />
@@ -495,8 +502,6 @@ async function handleReset() {
 
 <style scoped>
 :deep(.sticky-tabs-header [role='tablist']) {
-  position: sticky;
-  top: -12px;
-  z-index: 9999;
+  @apply -top-3 z-9999 sticky;
 }
 </style>

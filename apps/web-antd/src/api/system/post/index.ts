@@ -4,7 +4,7 @@ import type { Post } from './model';
 import type { ID, IDS, PageQuery } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   postExport = '/system/post/export',
@@ -19,7 +19,7 @@ enum Api {
  * @returns Post[]
  */
 export function postList(params?: PageQuery) {
-  return requestClient.get<Post[]>(Api.postList, { params });
+  return alovaInstance.get<Post[]>(Api.postList, { params });
 }
 
 /**
@@ -37,7 +37,7 @@ export function postExport(data: Partial<Post>) {
  * @returns 岗位信息
  */
 export function postInfo(postId: ID) {
-  return requestClient.get<Post>(`${Api.root}/${postId}`);
+  return alovaInstance.get<Post>(`${Api.root}/${postId}`);
 }
 
 /**
@@ -46,7 +46,7 @@ export function postInfo(postId: ID) {
  * @returns void
  */
 export function postAdd(data: Partial<Post>) {
-  return requestClient.postWithMsg<void>(Api.root, data);
+  return alovaInstance.postWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -55,7 +55,7 @@ export function postAdd(data: Partial<Post>) {
  * @returns void
  */
 export function postUpdate(data: Partial<Post>) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -64,7 +64,7 @@ export function postUpdate(data: Partial<Post>) {
  * @returns void
  */
 export function postRemove(postIds: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${postIds}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${postIds}`);
 }
 
 /**
@@ -73,7 +73,7 @@ export function postRemove(postIds: IDS) {
  * @returns 岗位
  */
 export function postOptionSelect(deptId: ID) {
-  return requestClient.get<Post[]>(Api.postSelect, { params: { deptId } });
+  return alovaInstance.get<Post[]>(Api.postSelect, { params: { deptId } });
 }
 
 /**
@@ -81,5 +81,5 @@ export function postOptionSelect(deptId: ID) {
  * @returns 部门树
  */
 export function postDeptTreeSelect() {
-  return requestClient.get<DeptTree[]>('/system/post/deptTree');
+  return alovaInstance.get<DeptTree[]>('/system/post/deptTree');
 }

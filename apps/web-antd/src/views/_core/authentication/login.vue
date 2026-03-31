@@ -10,7 +10,7 @@ import { AuthenticationLogin, z } from '@vben/common-ui';
 import { DEFAULT_TENANT_ID } from '@vben/constants';
 import { $t } from '@vben/locales';
 
-import { Input, Select } from 'ant-design-vue';
+import { Input, InputPassword, Select } from 'antdv-next';
 import { omit } from 'lodash-es';
 
 import { tenantList } from '#/api';
@@ -116,7 +116,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       rules: z.string().min(1, { message: $t('authentication.usernameTip') }),
     },
     {
-      component: markRaw(Input.Password),
+      component: markRaw(InputPassword),
       modelPropName: 'value',
       componentProps: {
         size: 'large',

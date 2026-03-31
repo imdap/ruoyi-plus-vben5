@@ -34,6 +34,8 @@ export const columns: VxeGridProps['columns'] = [
   {
     title: '公告标题',
     field: 'noticeTitle',
+    align: 'left',
+    headerAlign: 'center',
   },
   {
     title: '公告类型',

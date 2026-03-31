@@ -2,7 +2,7 @@ import type { ProcessDefinition } from './model';
 
 import type { ID, IDS, PageQuery, PageResult } from '#/api/common';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 /**
  * 全部的流程定义
@@ -10,7 +10,7 @@ import { requestClient } from '#/api/request';
  * @returns 分页
  */
 export function workflowDefinitionList(params?: PageQuery) {
-  return requestClient.get<PageResult<ProcessDefinition>>(
+  return alovaInstance.get<PageResult<ProcessDefinition>>(
     '/workflow/definition/list',
     { params },
   );
@@ -22,7 +22,7 @@ export function workflowDefinitionList(params?: PageQuery) {
  * @returns 分页
  */
 export function unPublishList(params?: PageQuery) {
-  return requestClient.get<PageResult<ProcessDefinition>>(
+  return alovaInstance.get<PageResult<ProcessDefinition>>(
     '/workflow/definition/unPublishList',
     { params },
   );
@@ -34,7 +34,7 @@ export function unPublishList(params?: PageQuery) {
  * @returns ProcessDefinition[]
  */
 export function getHisListByKey(flowCode: string) {
-  return requestClient.get<ProcessDefinition[]>(
+  return alovaInstance.get<ProcessDefinition[]>(
     `/workflow/definition/getHisListByKey/${flowCode}`,
   );
 }
@@ -45,7 +45,7 @@ export function getHisListByKey(flowCode: string) {
  * @returns ProcessDefinition
  */
 export function workflowDefinitionInfo(id: ID) {
-  return requestClient.get<ProcessDefinition>(`/workflow/definition/${id}`);
+  return alovaInstance.get<ProcessDefinition>(`/workflow/definition/${id}`);
 }
 
 /**
@@ -53,7 +53,7 @@ export function workflowDefinitionInfo(id: ID) {
  * @param data
  */
 export function workflowDefinitionAdd(data: any) {
-  return requestClient.postWithMsg<void>('/workflow/definition', data);
+  return alovaInstance.postWithMsg<void>('/workflow/definition', data);
 }
 
 /**
@@ -61,7 +61,7 @@ export function workflowDefinitionAdd(data: any) {
  * @param data
  */
 export function workflowDefinitionUpdate(data: any) {
-  return requestClient.putWithMsg<void>('/workflow/definition', data);
+  return alovaInstance.putWithMsg<void>('/workflow/definition', data);
 }
 
 /**
@@ -70,7 +70,7 @@ export function workflowDefinitionUpdate(data: any) {
  * @returns boolean
  */
 export function workflowDefinitionPublish(id: ID) {
-  return requestClient.putWithMsg<boolean>(
+  return alovaInstance.putWithMsg<boolean>(
     `/workflow/definition/publish/${id}`,
   );
 }
@@ -81,7 +81,7 @@ export function workflowDefinitionPublish(id: ID) {
  * @returns boolean
  */
 export function workflowDefinitionUnPublish(id: ID) {
-  return requestClient.putWithMsg<boolean>(
+  return alovaInstance.putWithMsg<boolean>(
     `/workflow/definition/unPublish/${id}`,
   );
 }
@@ -91,7 +91,7 @@ export function workflowDefinitionUnPublish(id: ID) {
  * @param ids idList
  */
 export function workflowDefinitionDelete(ids: IDS) {
-  return requestClient.deleteWithMsg<void>(`/workflow/definition/${ids}`);
+  return alovaInstance.deleteWithMsg<void>(`/workflow/definition/${ids}`);
 }
 
 /**
@@ -99,7 +99,7 @@ export function workflowDefinitionDelete(ids: IDS) {
  * @param id id
  */
 export function workflowDefinitionCopy(id: ID) {
-  return requestClient.postWithMsg<void>(`/workflow/definition/copy/${id}`);
+  return alovaInstance.postWithMsg<void>(`/workflow/definition/copy/${id}`);
 }
 
 /**
@@ -110,7 +110,7 @@ export function workflowDefinitionImport(data: {
   category: ID;
   file: Blob | File;
 }) {
-  return requestClient.postWithMsg<boolean>(
+  return alovaInstance.postWithMsg<boolean>(
     '/workflow/definition/importDef',
     data,
     { headers: { 'Content-Type': 'multipart/form-data' } },
@@ -123,7 +123,7 @@ export function workflowDefinitionImport(data: {
  * @returns blob
  */
 export function workflowDefinitionExport(id: ID) {
-  return requestClient.postWithMsg<Blob>(
+  return alovaInstance.postWithMsg<Blob>(
     `/workflow/definition/exportDef/${id}`,
     {},
     {
@@ -139,7 +139,7 @@ export function workflowDefinitionExport(id: ID) {
  * @returns xml
  */
 export function workflowDefinitionXml(id: ID) {
-  return requestClient.get<string>(`/workflow/definition/xmlString/${id}`);
+  return alovaInstance.get<string>(`/workflow/definition/xmlString/${id}`);
 }
 
 /**
@@ -149,7 +149,7 @@ export function workflowDefinitionXml(id: ID) {
  * @returns boolean
  */
 export function workflowDefinitionActive(id: ID, active: boolean) {
-  return requestClient.putWithMsg<boolean>(
+  return alovaInstance.putWithMsg<boolean>(
     `/workflow/definition/active/${id}?active=${active}`,
   );
 }

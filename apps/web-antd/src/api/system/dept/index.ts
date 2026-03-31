@@ -2,7 +2,7 @@ import type { Dept } from './model';
 
 import type { ID } from '#/api/common';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   deptList = '/system/dept/list',
@@ -15,7 +15,7 @@ enum Api {
  * @returns list
  */
 export function deptList(params?: { deptName?: string; status?: string }) {
-  return requestClient.get<Dept[]>(Api.deptList, { params });
+  return alovaInstance.get<Dept[]>(Api.deptList, { params });
 }
 
 /**
@@ -24,7 +24,7 @@ export function deptList(params?: { deptName?: string; status?: string }) {
  * @returns void
  */
 export function deptNodeList(deptId: ID) {
-  return requestClient.get<Dept[]>(`${Api.deptNodeInfo}/${deptId}`);
+  return alovaInstance.get<Dept[]>(`${Api.deptNodeInfo}/${deptId}`);
 }
 
 /**
@@ -33,7 +33,7 @@ export function deptNodeList(deptId: ID) {
  * @returns 部门信息
  */
 export function deptInfo(deptId: ID) {
-  return requestClient.get<Dept>(`${Api.root}/${deptId}`);
+  return alovaInstance.get<Dept>(`${Api.root}/${deptId}`);
 }
 
 /**
@@ -41,7 +41,7 @@ export function deptInfo(deptId: ID) {
  * @param data 参数
  */
 export function deptAdd(data: Partial<Dept>) {
-  return requestClient.postWithMsg<void>(Api.root, data);
+  return alovaInstance.postWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -49,7 +49,7 @@ export function deptAdd(data: Partial<Dept>) {
  * @param data 参数
  */
 export function deptUpdate(data: Partial<Dept>) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -58,5 +58,5 @@ export function deptUpdate(data: Partial<Dept>) {
  * @returns void
  */
 export function deptRemove(deptId: ID) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${deptId}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${deptId}`);
 }

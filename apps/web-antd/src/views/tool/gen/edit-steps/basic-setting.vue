@@ -9,7 +9,7 @@ import { useVbenForm } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 import { addFullName, listToTree } from '@vben/utils';
 
-import { Col, Row } from 'ant-design-vue';
+import { Col, Row } from 'antdv-next';
 
 import { menuList } from '#/api/system/menu';
 

@@ -1,4 +1,4 @@
-import type { UploadFile } from 'ant-design-vue';
+import type { UploadFile } from 'antdv-next';
 
 /**
  * 默认支持上传的图片文件类型

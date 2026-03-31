@@ -8,7 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { useTabs } from '@vben/hooks';
 
-import { Spin } from 'ant-design-vue';
+import { Spin } from 'antdv-next';
 
 import { useQueryId } from './hook';
 

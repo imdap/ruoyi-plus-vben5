@@ -58,3 +58,22 @@ export const columns: VxeGridProps['columns'] = [
     width: 300,
   },
 ];
+
+export const iconMap = [
+  { key: 'java', value: <span class="icon-[skill-icons--java-light]"></span> },
+  { key: 'xml', value: <span class="icon-[tabler--file-type-xml]"></span> },
+  { key: 'sql', value: <span class="icon-[carbon--sql]"></span> },
+  { key: 'ts', value: <span class="icon-[skill-icons--typescript]"></span> },
+  { key: 'vue', value: <span class="icon-[logos--vue]"></span> },
+  {
+    key: 'folder',
+    value: <span class="icon-[flat-color-icons--folder]"></span>,
+  },
+];
+
+export const defaultFileIcon = (
+  <span class="icon-[flat-color-icons--folder]"></span>
+);
+export const defaultFolderIcon = (
+  <span class="icon-[flat-color-icons--folder]"></span>
+);

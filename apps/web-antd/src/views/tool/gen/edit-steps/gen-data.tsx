@@ -2,7 +2,7 @@ import type { Recordable } from '@vben/types';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { Checkbox, Input, Select } from 'ant-design-vue';
+import { Checkbox, Input, Select } from 'antdv-next';
 
 const JavaTypes: string[] = [
   'Long',

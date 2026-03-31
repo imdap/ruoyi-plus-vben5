@@ -8,7 +8,7 @@ import type { DictData } from '#/api/system/dict/dict-data-model';
 
 import { computed, defineComponent, h, isVNode } from 'vue';
 
-import { Spin, Tag } from 'ant-design-vue';
+import { Spin, Tag } from 'antdv-next';
 import { isFunction, isString } from 'lodash-es';
 
 import { tagTypes } from './data';

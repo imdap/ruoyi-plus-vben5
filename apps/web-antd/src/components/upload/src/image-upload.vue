@@ -3,17 +3,14 @@
 去除使用`file-type`库进行文件类型检测 在Safari无法使用
 -->
 <script setup lang="ts">
-import type {
-  UploadFile,
-  UploadListType,
-} from 'ant-design-vue/es/upload/interface';
+import type { UploadFile, UploadProps } from 'antdv-next';
 
 import type { BaseUploadProps, UploadEmits } from './props';
 
 import { $t, I18nT } from '@vben/locales';
 
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons-vue';
-import { Image, ImagePreviewGroup, Upload } from 'ant-design-vue';
+import { PlusOutlined, UploadOutlined } from '@antdv-next/icons';
+import { Image, Upload } from 'antdv-next';
 import { isFunction } from 'lodash-es';
 
 import { uploadApi } from '#/api';
@@ -26,7 +23,7 @@ interface ImageUploadProps extends BaseUploadProps {
    * 同antdv的listType
    * @default picture-card
    */
-  listType?: UploadListType;
+  listType?: UploadProps['listType'];
   /**
    * 使用list-type: picture-card时 是否显示动画
    * 会有一个`弹跳`的效果 默认关闭
@@ -55,8 +52,8 @@ const props = withDefaults(defineProps<ImageUploadProps>(), {
 const emit = defineEmits<UploadEmits>();
 
 // 双向绑定 ossId
-const ossIdList = defineModel<string | string[]>('value', {
-  default: () => [],
+const ossIdList = defineModel<string>('value', {
+  default: '',
 });
 
 const {
@@ -68,8 +65,13 @@ const {
   customRequest,
 } = useUpload(props, emit, ossIdList, 'image');
 
-const { previewVisible, previewImage, handleCancel, handlePreview } =
-  useImagePreview();
+const {
+  previewVisible,
+  previewImage,
+  handleOpenChange,
+  handlePreview,
+  handleAfterOpenChange,
+} = useImagePreview();
 
 function currentPreview(file: UploadFile) {
   // 有自定义预览逻辑走自定义
@@ -84,6 +86,7 @@ function currentPreview(file: UploadFile) {
 <template>
   <div>
     <Upload
+      v-bind="$attrs"
       v-model:file-list="innerFileList"
       :class="{ 'upload-animation__disabled': !withAnimation }"
       :list-type="listType"
@@ -127,7 +130,7 @@ function currentPreview(file: UploadFile) {
       >
         <template #size>
           <span
-            class="text-primary mx-1 font-medium"
+            class="mx-1 font-medium text-primary"
             :class="{ 'upload-text__disabled': disabled }"
           >
             {{ maxSize }}MB
@@ -135,7 +138,7 @@ function currentPreview(file: UploadFile) {
         </template>
         <template #ext>
           <span
-            class="text-primary mx-1 font-medium"
+            class="mx-1 font-medium text-primary"
             :class="{ 'upload-text__disabled': disabled }"
           >
             {{ acceptStr }}
@@ -144,14 +147,16 @@ function currentPreview(file: UploadFile) {
       </I18nT>
     </slot>
 
-    <ImagePreviewGroup
+    <Image
+      v-if="previewImage"
+      :styles="{ root: { display: 'none' } }"
+      :src="previewImage"
       :preview="{
-        visible: previewVisible,
-        onVisibleChange: handleCancel,
+        open: previewVisible,
+        onOpenChange: handleOpenChange,
+        afterOpenChange: handleAfterOpenChange,
       }"
-    >
-      <Image class="hidden" :src="previewImage" />
-    </ImagePreviewGroup>
+    />
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 {
   "name": "@vben/common-ui",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "homepage": "https://github.com/vbenjs/vue-vben-admin",
   "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
   "repository": {
@@ -28,13 +28,14 @@
     }
   },
   "dependencies": {
-    "@codemirror/lang-html": "^6.4.9",
-    "@codemirror/lang-java": "^6.0.1",
-    "@codemirror/lang-javascript": "^6.2.2",
-    "@codemirror/lang-sql": "^6.7.1",
-    "@codemirror/lang-vue": "^0.1.3",
-    "@codemirror/lang-xml": "^6.1.0",
-    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/lang-html": "catalog:",
+    "@codemirror/lang-java": "catalog:",
+    "@codemirror/lang-javascript": "catalog:",
+    "@codemirror/lang-sql": "catalog:",
+    "@codemirror/lang-vue": "catalog:",
+    "@codemirror/lang-xml": "catalog:",
+    "@codemirror/theme-one-dark": "catalog:",
+    "@vben-core/design": "workspace:*",
     "@vben-core/form-ui": "workspace:*",
     "@vben-core/popup-ui": "workspace:*",
     "@vben-core/preferences": "workspace:*",
@@ -48,19 +49,20 @@
     "@vben/types": "workspace:*",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
-    "codemirror": "6.0.1",
+    "codemirror": "catalog:",
     "json-bigint": "catalog:",
     "qrcode": "catalog:",
     "tippy.js": "catalog:",
-    "vditor": "3.10.9",
+    "vditor": "catalog:",
     "vue": "catalog:",
-    "vue-codemirror6": "1.3.4",
-    "vue-json-pretty": "^2.4.0",
+    "vue-codemirror6": "catalog:",
+    "vue-json-pretty": "catalog:",
     "vue-json-viewer": "catalog:",
     "vue-router": "catalog:",
     "vue-tippy": "catalog:"
   },
   "devDependencies": {
+    "@types/json-bigint": "catalog:",
     "@types/qrcode": "catalog:"
   }
 }

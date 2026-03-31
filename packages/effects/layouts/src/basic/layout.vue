@@ -20,7 +20,7 @@ import { cloneDeep, mapTree } from '@vben/utils';
 import { VbenAdminLayout } from '@vben-core/layout-ui';
 import { VbenBackTop, VbenLogo } from '@vben-core/shadcn-ui';
 
-import { Breadcrumb, CheckUpdates, Preferences } from '../widgets';
+import { Breadcrumb, Preferences } from '../widgets';
 import { LayoutContent, LayoutContentSpinner } from './content';
 import { Copyright } from './copyright';
 import { LayoutFooter } from './footer';
@@ -373,7 +373,7 @@ const headerSlots = computed(() => {
         v-if="preferences.logo.enable"
         :fit="preferences.logo.fit"
         :text="preferences.app.name"
-        :theme="theme"
+        :theme="sidebarThemeSub"
       >
         <template v-if="$slots['logo-text']" #text>
           <slot name="logo-text"></slot>
@@ -410,10 +410,10 @@ const headerSlots = computed(() => {
 
     <template #extra>
       <slot name="extra"></slot>
-      <CheckUpdates
+      <!-- <CheckUpdates
         v-if="preferences.app.enableCheckUpdates"
         :check-updates-interval="preferences.app.checkUpdatesInterval"
-      />
+      /> -->
 
       <Transition v-if="preferences.widget.lockScreen" name="slide-up">
         <slot v-if="accessStore.isLockScreen" name="lock-screen"></slot>
@@ -421,7 +421,7 @@ const headerSlots = computed(() => {
 
       <template v-if="preferencesButtonPosition.fixed">
         <Preferences
-          class="z-100 fixed right-0 top-1/2 -translate-y-1/2 transform"
+          class="fixed top-1/2 right-0 z-100 -translate-y-1/2 transform"
           @clear-preferences-and-logout="clearPreferencesAndLogout"
         />
       </template>

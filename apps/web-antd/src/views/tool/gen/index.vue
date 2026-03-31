@@ -8,9 +8,8 @@ import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
 
-import { message, Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 import dayjs from 'dayjs';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
@@ -125,10 +124,10 @@ async function handleBatchGen() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: any) => row.tableId);
   if (ids.length === 0) {
-    message.info('请选择需要生成代码的表');
+    window.message.info('请选择需要生成代码的表');
     return;
   }
-  const hideLoading = message.loading('下载中...');
+  const hideLoading = window.message.loading('下载中...');
   try {
     const params = ids.join(',');
     const data = await batchGenCode(params);
@@ -140,12 +139,12 @@ async function handleBatchGen() {
 }
 
 async function handleDownload(record: Recordable<any>) {
-  const hideLoading = message.loading('加载中...');
+  const hideLoading = window.message.loading('加载中...');
   try {
     // 路径生成
     if (record.genType === '1' && record.genPath) {
       await genWithPath(record.tableId);
-      message.success(`生成成功: ${record.genPath}`);
+      window.message.success(`生成成功: ${record.genPath}`);
       return;
     }
     // zip生成
@@ -171,7 +170,7 @@ async function handleDelete(record: Recordable<any>) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: any) => row.tableId);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -189,19 +188,21 @@ const [TableImportModal, tableImportModalApi] = useVbenModal({
 function handleImport() {
   tableImportModalApi.open();
 }
+
+import howToUseModal from './md/how-to-use-modal.vue';
+const [HowToUseModal, howToUseModalApi] = useVbenModal({
+  connectedComponent: howToUseModal,
+});
 </script>
 
 <template>
   <Page :auto-content-height="true">
     <BasicTable table-title="代码生成列表">
       <template #toolbar-tools>
-        <a
-          class="text-primary mr-2"
-          href="https://dapdap.top/other/template.html"
-          target="_blank"
-          >👉关于代码生成模板
-        </a>
         <Space>
+          <a-button type="link" @click="howToUseModalApi.open()">
+            如何使用🤔(beta版)
+          </a-button>
           <a-button
             :disabled="!vxeCheckboxChecked(tableApi)"
             danger
@@ -245,7 +246,6 @@ function handleImport() {
           {{ $t('pages.common.edit') }}
         </a-button>
         <Popconfirm
-          :get-popup-container="getVxePopupContainer"
           :title="`确认同步[${row.tableName}]?`"
           placement="left"
           @confirm="handleSync(row)"
@@ -268,7 +268,6 @@ function handleImport() {
           生成代码
         </a-button>
         <Popconfirm
-          :get-popup-container="getVxePopupContainer"
           :title="`确认删除[${row.tableName}]?`"
           placement="left"
           @confirm="handleDelete(row)"
@@ -287,5 +286,6 @@ function handleImport() {
     </BasicTable>
     <CodePreviewModal />
     <TableImportModal @reload="tableApi.query()" />
+    <HowToUseModal />
   </Page>
 </template>

@@ -8,7 +8,7 @@ import { Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 import { cloneDeep, safeParseNumber } from '@vben/utils';
 
-import { Card, Skeleton, TabPane, Tabs } from 'ant-design-vue';
+import { Card, Skeleton, TabPane, Tabs } from 'antdv-next';
 
 import { editSave, genInfo } from '#/api/tool/gen';
 

@@ -4,15 +4,12 @@ import type { RedisInfo } from '#/api/monitor/cache';
 import { onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { CommandLineIcon, MemoryIcon, RedisIcon } from '@vben/icons';
 
-import { Button, Card, Col, Row } from 'ant-design-vue';
+import { Button, Card } from 'antdv-next';
 
 import { redisCacheInfo } from '#/api/monitor/cache';
 
 import { CommandChart, MemoryChart, RedisDescription } from './components';
-
-const baseSpan = { lg: 12, md: 24, sm: 24, xl: 12, xs: 24 };
 
 const chartData = reactive<{
   command: { name: string; value: string }[];
@@ -55,53 +52,48 @@ async function loadInfo() {
 
 <template>
   <Page>
-    <Row :gutter="[15, 15]">
-      <Col :span="24">
-        <Card size="small">
-          <template #title>
-            <div class="flex items-center justify-start gap-[6px]">
-              <RedisIcon class="size-[16px]" />
-              <span>redis信息</span>
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <Card class="lg:col-span-2" size="small">
+        <template #title>
+          <div class="flex items-center justify-start gap-[6px]">
+            <span class="icon-[skill-icons--redis-light] size-[16px]"></span>
+            <span>redis信息</span>
+          </div>
+        </template>
+        <template #extra>
+          <Button size="small" @click="loadInfo">
+            <div class="flex">
+              <span class="icon-[charm--refresh]"></span>
             </div>
-          </template>
-          <template #extra>
-            <Button size="small" @click="loadInfo">
-              <div class="flex">
-                <span class="icon-[charm--refresh]"></span>
-              </div>
-            </Button>
-          </template>
-          <RedisDescription v-if="redisInfo" :data="redisInfo" />
-        </Card>
-      </Col>
-      <Col v-bind="baseSpan">
-        <Card size="small">
-          <template #title>
-            <div class="flex items-center gap-[6px]">
-              <CommandLineIcon class="size-[16px]" />
-              <span>命令统计</span>
-            </div>
-          </template>
-          <CommandChart
-            v-if="chartData.command.length > 0"
-            :data="chartData.command"
-          />
-        </Card>
-      </Col>
-      <Col v-bind="baseSpan">
-        <Card size="small">
-          <template #title>
-            <div class="flex items-center justify-start gap-[6px]">
-              <MemoryIcon class="size-[16px]" />
-              <span>内存占用</span>
-            </div>
-          </template>
-          <MemoryChart
-            v-if="chartData.memory !== '0'"
-            :data="chartData.memory"
-          />
-        </Card>
-      </Col>
-    </Row>
+          </Button>
+        </template>
+        <RedisDescription v-if="redisInfo" :data="redisInfo" />
+      </Card>
+
+      <Card size="small">
+        <template #title>
+          <div class="flex items-center gap-[6px]">
+            <span
+              class="icon-[flat-color-icons--command-line] size-[16px]"
+            ></span>
+            <span>命令统计</span>
+          </div>
+        </template>
+        <CommandChart
+          v-if="chartData.command.length > 0"
+          :data="chartData.command"
+        />
+      </Card>
+
+      <Card size="small">
+        <template #title>
+          <div class="flex items-center justify-start gap-[6px]">
+            <span class="icon-[la--memory] size-[16px]"></span>
+            <span>内存占用</span>
+          </div>
+        </template>
+        <MemoryChart v-if="chartData.memory !== '0'" :data="chartData.memory" />
+      </Card>
+    </div>
   </Page>
 </template>

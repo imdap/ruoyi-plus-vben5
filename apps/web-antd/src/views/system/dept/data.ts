@@ -95,7 +95,10 @@ export const drawerSchema: FormSchemaGetter = () => [
     fieldName: 'orderNum',
     label: '显示排序',
     rules: 'required',
-    defaultValue: 0,
+    defaultValue: 1,
+    componentProps: {
+      class: 'flex-1',
+    },
   },
   {
     component: 'Input',

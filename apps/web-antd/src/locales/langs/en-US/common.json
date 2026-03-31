@@ -1,0 +1,7 @@
+{
+  "export": {
+    "title": "Export",
+    "loading": "Exporting...",
+    "canceled": "Export has been cancelled."
+  }
+}

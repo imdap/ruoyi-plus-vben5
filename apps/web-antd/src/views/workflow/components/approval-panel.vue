@@ -3,20 +3,22 @@ TODO: 优化项
 会先加载流程信息 再加载业务表单信息
 -->
 <script setup lang="ts">
+import type { TabsProps } from 'antdv-next';
+
 import type { ApprovalType } from './type';
 
 import type { FlowInfoResponse } from '#/api/workflow/instance/model';
 import type { TaskInfo } from '#/api/workflow/task/model';
 
-import { computed, ref, watch } from 'vue';
+import { computed, h, ref, watch } from 'vue';
 
 import { Fallback, VbenAvatar } from '@vben/common-ui';
 import { DictEnum } from '@vben/constants';
 import { cn } from '@vben/utils';
 
-import { CopyOutlined } from '@ant-design/icons-vue';
+import { CopyOutlined } from '@antdv-next/icons';
 import { useClipboard } from '@vueuse/core';
-import { Card, Divider, message, TabPane, Tabs } from 'ant-design-vue';
+import { Card, Divider, Tabs } from 'antdv-next';
 
 import { flowInfo } from '#/api/workflow/instance';
 import { getTaskByTaskId } from '#/api/workflow/task';
@@ -87,18 +89,34 @@ const currentFlowInfo = ref<FlowInfoResponse>();
  */
 const loading = ref(false);
 
+// 存放所有请求取消函数
+const abortList: (() => void)[] = [];
+let loadingTimer: ReturnType<typeof setTimeout>;
+
 async function handleLoadInfo(task: TaskInfo | undefined) {
+  currentFlowInfo.value = undefined;
+  onlyForBtnPermissionTask.value = undefined;
   if (!task) {
     return null;
   }
+  clearTimeout(loadingTimer);
   try {
-    loading.value = true;
+    loadingTimer = setTimeout(() => {
+      loading.value = true;
+    }, 300);
+    // 取消之前的请求 & 清空数组
+    abortList.forEach((abort) => abort());
+    abortList.length = 0;
 
     /**
      * 不为审批不需要调用`getTaskByTaskId`接口
      */
     if (props.type !== 'approve') {
-      const flowResp = await flowInfo(task.businessId);
+      const flowRespApi = flowInfo(task.businessId);
+      // 请求取消
+      abortList.push(flowRespApi.abort);
+      // 获取数据
+      const flowResp = await flowRespApi;
       currentFlowInfo.value = flowResp;
       return;
     }
@@ -107,16 +125,19 @@ async function handleLoadInfo(task: TaskInfo | undefined) {
      * getTaskByTaskId主要为了获取按钮权限 目前没有其他功能
      * 行数据(即props.task)获取的是没有按钮权限的
      */
-    const [flowResp, taskResp] = await Promise.all([
-      flowInfo(task.businessId),
-      getTaskByTaskId(task.id),
-    ]);
+    const flowInfoApi = flowInfo(task.businessId);
+    const taskRespApi = getTaskByTaskId(task.id);
+    // 请求取消
+    abortList.push(flowInfoApi.abort, taskRespApi.abort);
+
+    const [flowResp, taskResp] = await Promise.all([flowInfoApi, taskRespApi]);
 
     currentFlowInfo.value = flowResp;
     onlyForBtnPermissionTask.value = taskResp;
   } catch (error) {
     console.error(error);
   } finally {
+    clearTimeout(loadingTimer);
     loading.value = false;
   }
 }
@@ -130,15 +151,39 @@ watch(() => props.task, handleLoadInfo);
 const { copy } = useClipboard({ legacy: true });
 async function handleCopy(text: string) {
   await copy(text);
-  message.success('复制成功');
+  window.message.success('复制成功');
 }
+
+const tabItems = computed<TabsProps['items']>(() => {
+  if (!currentFlowInfo.value) {
+    return [];
+  }
+  return [
+    {
+      key: '1',
+      label: '审批详情',
+      content: h(ApprovalDetails, {
+        currentFlowInfo: currentFlowInfo.value,
+        task: props.task!,
+      }),
+    },
+    {
+      forceRender: false,
+      key: '2',
+      label: '审批流程图',
+      content: h(FlowPreview, {
+        instanceId: currentFlowInfo.value.instanceId,
+      }),
+    },
+  ];
+});
 </script>
 
 <template>
   <div :class="cn('thin-scrollbar', 'flex flex-1 overflow-y-hidden')">
     <Card
       v-if="task"
-      :body-style="{ overflowY: 'auto', height: '100%' }"
+      :styles="{ body: { overflowY: 'auto', height: '100%' } }"
       :loading="loading"
       class="thin-scrollbar flex-1 overflow-y-hidden"
       size="small"
@@ -153,7 +198,7 @@ async function handleCopy(text: string) {
       <template #extra>
         <a-button size="small" @click="() => handleLoadInfo(task)">
           <div class="flex items-center justify-center">
-            <span class="icon-[material-symbols--refresh] size-24px"></span>
+            <span class="size-24px icon-[material-symbols--refresh]"></span>
           </div>
         </a-button>
       </template>
@@ -174,7 +219,7 @@ async function handleCopy(text: string) {
           <div class="flex items-center gap-2">
             <VbenAvatar
               :alt="task?.createByName ?? ''"
-              class="bg-primary size-[28px] rounded-full text-white"
+              class="size-[28px] rounded-full bg-primary text-white"
               src=""
             />
 
@@ -196,18 +241,12 @@ async function handleCopy(text: string) {
           </div>
         </div>
 
-        <Tabs v-if="currentFlowInfo" class="flex-1">
-          <TabPane key="1" tab="审批详情">
-            <ApprovalDetails
-              :current-flow-info="currentFlowInfo"
-              :task="task"
-            />
-          </TabPane>
-
-          <TabPane key="2" tab="审批流程图">
-            <FlowPreview :instance-id="currentFlowInfo.instanceId" />
-          </TabPane>
-        </Tabs>
+        <Tabs
+          v-if="currentFlowInfo"
+          class="flex-1"
+          :items="tabItems"
+          :destroy-on-hidden="true"
+        />
       </div>
 
       <!-- 固定底部 占位高度 -->

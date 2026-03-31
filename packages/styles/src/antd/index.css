@@ -1,18 +1,28 @@
-/* ant-design-vue 组件库的一些样式重置 */
+@reference "tailwindcss";
+/* antdv-next 组件库的一些样式重置 */
+
+body {
+  /**
+   * 全局启用 抗锯齿字体
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-smooth
+   */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 .ant-app {
   width: 100%;
   height: 100%;
-  overscroll-behavior: none;
+  /* 会导致页面无法滚动 */
+  /* overscroll-behavior: none; */
   color: inherit;
 }
 
-.ant-btn {
+/* .ant-btn {
   .anticon {
     display: inline-flex;
   }
 
-  /* * 修复按钮添加图标时的位置问题 */
   > svg {
     display: inline-block;
   }
@@ -20,9 +30,9 @@
   > svg + span {
     margin-inline-start: 6px;
   }
-}
+} */
 
-.ant-tag {
+/* .ant-tag {
   > svg {
     display: inline-block;
   }
@@ -30,37 +40,74 @@
   > svg + span {
     margin-inline-start: 4px;
   }
-}
+} */
 
 .ant-message-notice-content,
 .ant-notification-notice {
-  @apply dark:border-border/60 dark:border;
+  &:is(.dark *) {
+    border-color: hsl(var(--border) / 60%);
+    border-width: 1px;
+  }
 }
 
 .form-valid-error {
   /** select 选择器的样式 */
+  --vben-form-error-shadow: 0 0 0 2px rgba(255, 35, 5, 0.1);
 
   .ant-select:not(.valid-success) .ant-select-selector:not(.valid-success) {
     border-color: hsl(var(--destructive)) !important;
   }
 
   .ant-select-focused .ant-select-selector {
-    box-shadow: 0 0 0 2px rgb(255 38 5 / 6%) !important;
+    box-shadow: var(--vben-form-error-shadow) !important;
   }
 
   /** 数字输入框样式 */
   .ant-input-number-focused {
-    box-shadow: 0 0 0 2px rgb(255 38 5 / 6%);
+    box-shadow: var(--vben-form-error-shadow);
+  }
+
+  .ant-input-number.ant-input-number-mode-input {
+    border-color: hsl(var(--destructive));
   }
 
   /** 密码输入框样式 */
   .ant-input-affix-wrapper:hover {
     border-color: hsl(var(--destructive));
-    box-shadow: 0 0 0 2px rgb(255 38 5 / 6%);
+    box-shadow: var(--vben-form-error-shadow);
   }
 
   .ant-input:not(.valid-success) {
     border-color: hsl(var(--destructive)) !important;
+  }
+
+  /* select focus-within样式 */
+  .ant-picker-outlined:focus,
+  .ant-picker-outlined:focus-within {
+    border-color: hsl(var(--destructive));
+  }
+  /* focus样式 shadow */
+  .ant-select.ant-select-outlined:not(.ant-select-disabled).ant-select-focused {
+    /* --ant-select-active-outline-color: var(--vben-form-error-shadow); */
+    box-shadow: var(--vben-form-error-shadow);
+  }
+
+  /* InputNumber */
+  .ant-input-number-outlined:focus,
+  .ant-input-number-outlined:focus-within {
+    --ant-input-number-active-border-color: hsl(var(--destructive));
+  }
+
+  .ant-mentions-outlined:focus,
+  .ant-mentions-outlined:focus-within {
+    --ant-mentions-active-border-color: hsl(var(--destructive));
+    --ant-mentions-active-shadow: var(--vben-form-error-shadow);
+  }
+
+  .ant-input-outlined:focus,
+  .ant-input-outlined:focus-within {
+    --ant-input-active-border-color: hsl(var(--destructive));
+    --ant-input-active-shadow: var(--vben-form-error-shadow);
   }
 }
 
@@ -71,7 +118,7 @@
 
 /** 时间选择器的样式 */
 .form-valid-error .ant-picker-focused {
-  box-shadow: 0 0 0 2px rgb(255 38 5 / 6%);
+  box-shadow: var(--vben-form-error-shadow);
 }
 
 /** 前后置小圆点样式 */
@@ -80,11 +127,11 @@
 }
 
 .dot-before-red {
-  @apply dot-before-common before:bg-red-500;
+  @apply before:relative before:top-[-2px] before:mr-[5px] before:inline-block before:size-[6px] before:rounded-full before:content-[''] before:bg-red-500;
 }
 
 .dot-before-green {
-  @apply dot-before-common before:bg-green-500;
+  @apply before:relative before:top-[-2px] before:mr-[5px] before:inline-block before:size-[6px] before:rounded-full before:content-[''] before:bg-green-500;
 }
 
 /**
@@ -106,28 +153,4 @@ vxe表格loading 只加载表格 不加载上面的表单
 */
 .vxe-grid.is--loading::before {
   content: none !important;
-}
-
-/**
-自定义success按钮样式
-ghost按钮专用!
-*/
-.btn-success {
-  color: hsl(var(--success)) !important;
-  border-color: hsl(var(--success)) !important;
-}
-
-.btn-success:hover {
-  color: hsl(var(--success) / 50%) !important;
-  border-color: hsl(var(--success) / 50%) !important;
-}
-
-html.dark button[disabled].btn-success {
-  color: rgb(242 242 242 / 25%) !important;
-  border-color: hsl(240deg 3.7% 22%) !important;
-}
-
-button[disabled].btn-success {
-  color: rgb(50 54 57 / 25%) !important;
-  border-color: hsl(240deg 5.9% 90%) !important;
 }

@@ -5,6 +5,8 @@ import { useAppConfig } from '@vben/hooks';
 import { stringify } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
 
+import { motion } from 'motion-v';
+
 import { useWarmflowIframe } from './hook';
 
 defineOptions({ name: 'FlowPreview' });
@@ -38,9 +40,15 @@ const { iframeRef } = useWarmflowIframe();
 </script>
 
 <template>
-  <iframe
-    ref="iframeRef"
-    :src="url"
-    class="h-[600px] w-full rounded-[6px] border"
-  ></iframe>
+  <motion.div
+    :initial="{ opacity: 0 }"
+    :animate="{ opacity: 1 }"
+    :transition="{ duration: 0.5 }"
+  >
+    <iframe
+      ref="iframeRef"
+      :src="url"
+      class="h-[600px] w-full rounded-[6px] border"
+    ></iframe>
+  </motion.div>
 </template>

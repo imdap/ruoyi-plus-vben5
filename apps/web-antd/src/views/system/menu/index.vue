@@ -9,14 +9,9 @@ import { computed, ref } from 'vue';
 import { useAccess } from '@vben/access';
 import { Fallback, Page, useVbenDrawer } from '@vben/common-ui';
 import { $t } from '@vben/locales';
-import {
-  eachTree,
-  getVxePopupContainer,
-  listToTree,
-  treeToList,
-} from '@vben/utils';
+import { eachTree, listToTree, treeToList } from '@vben/utils';
 
-import { Popconfirm, Space, Switch, Tooltip } from 'ant-design-vue';
+import { Popconfirm, Space, Switch, Tooltip } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { menuCascadeRemove, menuList, menuRemove } from '#/api/system/menu';
@@ -196,11 +191,7 @@ const isAdmin = computed(() => {
 
 <template>
   <Page v-if="isAdmin" :auto-content-height="true">
-    <BasicTable
-      id="system-menu-table"
-      table-title="菜单列表"
-      table-title-help="双击展开/收起子菜单"
-    >
+    <BasicTable table-title="菜单列表" table-title-help="双击展开/收起子菜单">
       <template #toolbar-tools>
         <Space>
           <Tooltip title="删除菜单以及子菜单">
@@ -230,37 +221,37 @@ const isAdmin = computed(() => {
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button
+          <action-button
             v-access:code="['system:menu:edit']"
             v-access:role="['superadmin']"
             @click="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </ghost-button>
+          </action-button>
           <!-- '按钮类型'无法再添加子菜单 -->
-          <ghost-button
+          <action-button
             v-if="row.menuType !== 'F'"
-            class="btn-success"
+            variant="link"
+            color="green"
             v-access:code="['system:menu:add']"
             v-access:role="['superadmin']"
             @click="handleSubAdd(row)"
           >
             {{ $t('pages.common.add') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
-            :get-popup-container="getVxePopupContainer"
             placement="left"
             :title="removeConfirmTitle(row)"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['system:menu:remove']"
               v-access:role="['superadmin']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>
@@ -269,13 +260,3 @@ const isAdmin = computed(() => {
   </Page>
   <Fallback v-else description="您没有菜单管理的访问权限" status="403" />
 </template>
-
-<style lang="scss">
-#system-menu-table > .vxe-grid {
-  --vxe-ui-table-row-current-background-color: hsl(var(--primary-100));
-
-  html.dark & {
-    --vxe-ui-table-row-current-background-color: hsl(var(--primary-800));
-  }
-}
-</style>

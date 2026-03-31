@@ -9,14 +9,14 @@ import type {
 
 import type { ID, IDS, PageQuery, PageResult } from '#/api/common';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 /**
  * 启动任务
  * @param data
  */
 export function startWorkFlow(data: StartWorkFlowReqData) {
-  return requestClient.post<{
+  return alovaInstance.post<{
     processInstanceId: string;
     taskId: string;
   }>('/workflow/task/startWorkFlow', data);
@@ -27,7 +27,7 @@ export function startWorkFlow(data: StartWorkFlowReqData) {
  * @param data
  */
 export function completeTask(data: CompleteTaskReqData) {
-  return requestClient.postWithMsg<void>('/workflow/task/completeTask', data);
+  return alovaInstance.postWithMsg<void>('/workflow/task/completeTask', data);
 }
 
 /**
@@ -35,7 +35,7 @@ export function completeTask(data: CompleteTaskReqData) {
  * @param params
  */
 export function pageByTaskWait(params?: PageQuery) {
-  return requestClient.get<PageResult<TaskInfo>>(
+  return alovaInstance.get<PageResult<TaskInfo>>(
     '/workflow/task/pageByTaskWait',
     { params },
   );
@@ -46,7 +46,7 @@ export function pageByTaskWait(params?: PageQuery) {
  * @param params
  */
 export function pageByTaskFinish(params?: PageQuery) {
-  return requestClient.get<PageResult<TaskInfo>>(
+  return alovaInstance.get<PageResult<TaskInfo>>(
     '/workflow/task/pageByTaskFinish',
     { params },
   );
@@ -57,7 +57,7 @@ export function pageByTaskFinish(params?: PageQuery) {
  * @param params
  */
 export function pageByAllTaskWait(params?: PageQuery) {
-  return requestClient.get<PageResult<TaskInfo>>(
+  return alovaInstance.get<PageResult<TaskInfo>>(
     '/workflow/task/pageByAllTaskWait',
     { params },
   );
@@ -68,7 +68,7 @@ export function pageByAllTaskWait(params?: PageQuery) {
  * @param params
  */
 export function pageByAllTaskFinish(params?: PageQuery) {
-  return requestClient.get<PageResult<TaskInfo>>(
+  return alovaInstance.get<PageResult<TaskInfo>>(
     '/workflow/task/pageByAllTaskFinish',
     { params },
   );
@@ -79,7 +79,7 @@ export function pageByAllTaskFinish(params?: PageQuery) {
  * @param params
  */
 export function pageByTaskCopy(params?: PageQuery) {
-  return requestClient.get<PageResult<TaskInfo>>(
+  return alovaInstance.get<PageResult<TaskInfo>>(
     '/workflow/task/pageByTaskCopy',
     { params },
   );
@@ -91,14 +91,14 @@ export function pageByTaskCopy(params?: PageQuery) {
  * @returns info
  */
 export function getTaskByTaskId(taskId: string) {
-  return requestClient.get<TaskInfo>(`/workflow/task/getTask/${taskId}`);
+  return alovaInstance.get<TaskInfo>(`/workflow/task/getTask/${taskId}`);
 }
 
 /**
  * 终止任务
  */
 export function terminationTask(data: { comment?: string; taskId: string }) {
-  return requestClient.postWithMsg<void>(
+  return alovaInstance.postWithMsg<void>(
     '/workflow/task/terminationTask',
     data,
   );
@@ -113,7 +113,7 @@ export function taskOperation(
   taskOperationData: TaskOperationData,
   taskOperation: TaskOperationType,
 ) {
-  return requestClient.postWithMsg<void>(
+  return alovaInstance.postWithMsg<void>(
     `/workflow/task/taskOperation/${taskOperation}`,
     taskOperationData,
   );
@@ -125,7 +125,7 @@ export function taskOperation(
  * @param userId 办理人id
  */
 export function updateAssignee(taskIdList: IDS, userId: ID) {
-  return requestClient.putWithMsg<void>(
+  return alovaInstance.putWithMsg<void>(
     `/workflow/task/updateAssignee/${userId}`,
     taskIdList,
   );
@@ -136,7 +136,7 @@ export function updateAssignee(taskIdList: IDS, userId: ID) {
  * @param data 参数
  */
 export function backProcess(data: any) {
-  return requestClient.postWithMsg<void>('/workflow/task/backProcess', data);
+  return alovaInstance.postWithMsg<void>('/workflow/task/backProcess', data);
 }
 
 /**
@@ -145,7 +145,7 @@ export function backProcess(data: any) {
  * @param nodeCode 当前节点编码
  */
 export function getBackTaskNode(taskId: string, nodeCode: string) {
-  return requestClient.get<{ nodeCode: string; nodeName: string }[]>(
+  return alovaInstance.get<{ nodeCode: string; nodeName: string }[]>(
     `/workflow/task/getBackTaskNode/${taskId}/${nodeCode}`,
   );
 }
@@ -155,7 +155,7 @@ export function getBackTaskNode(taskId: string, nodeCode: string) {
  * @param taskId 任务id
  */
 export function currentTaskAllUser(taskId: ID) {
-  return requestClient.get<any>(`/workflow/task/currentTaskAllUser/${taskId}`);
+  return alovaInstance.get<any>(`/workflow/task/currentTaskAllUser/${taskId}`);
 }
 
 /**
@@ -165,7 +165,7 @@ export function currentTaskAllUser(taskId: ID) {
  * @returns NextNodeInfo
  */
 export function getNextNodeList(data: { taskId: string }) {
-  return requestClient.post<NextNodeInfo[]>(
+  return alovaInstance.post<NextNodeInfo[]>(
     '/workflow/task/getNextNodeList',
     data,
   );

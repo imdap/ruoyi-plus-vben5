@@ -9,7 +9,7 @@ import type {
 import type { ID, IDS, PageQuery, PageResult } from '#/api/common';
 
 import { commonExport, ContentTypeEnum } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   deptTree = '/system/user/deptTree',
@@ -30,7 +30,7 @@ enum Api {
  * @returns User
  */
 export function userList(params?: PageQuery) {
-  return requestClient.get<PageResult<User>>(Api.userList, { params });
+  return alovaInstance.get<PageResult<User>>(Api.userList, { params });
 }
 
 /**
@@ -48,7 +48,7 @@ export function userExport(data: Partial<User>) {
  * @returns void
  */
 export function userImportData(data: UserImportParam) {
-  return requestClient.post<{ code: number; msg: string }>(
+  return alovaInstance.post<{ code: number; msg: string }>(
     Api.userImport,
     data,
     {
@@ -65,7 +65,7 @@ export function userImportData(data: UserImportParam) {
  * @returns blob
  */
 export function downloadImportTemplate() {
-  return requestClient.post<Blob>(
+  return alovaInstance.post<Blob>(
     Api.userImportTemplate,
     {},
     {
@@ -83,7 +83,7 @@ export function downloadImportTemplate() {
  */
 export function findUserInfo(userId?: ID) {
   const url = userId ? `${Api.root}/${userId}` : `${Api.root}/`;
-  return requestClient.get<UserInfoResponse>(url);
+  return alovaInstance.get<UserInfoResponse>(url);
 }
 
 /**
@@ -92,7 +92,7 @@ export function findUserInfo(userId?: ID) {
  * @returns void
  */
 export function userAdd(data: Partial<User>) {
-  return requestClient.postWithMsg<void>(Api.root, data);
+  return alovaInstance.postWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -101,7 +101,7 @@ export function userAdd(data: Partial<User>) {
  * @returns void
  */
 export function userUpdate(data: Partial<User>) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -114,7 +114,7 @@ export function userStatusChange(data: Partial<User>) {
     userId: data.userId,
     status: data.status,
   };
-  return requestClient.putWithMsg<void>(Api.userStatusChange, requestData);
+  return alovaInstance.putWithMsg<void>(Api.userStatusChange, requestData);
 }
 
 /**
@@ -123,7 +123,7 @@ export function userStatusChange(data: Partial<User>) {
  * @returns void
  */
 export function userRemove(userIds: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${userIds}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${userIds}`);
 }
 
 /**
@@ -132,7 +132,7 @@ export function userRemove(userIds: IDS) {
  * @returns void
  */
 export function userResetPassword(data: ResetPwdParam) {
-  return requestClient.putWithMsg<void>(Api.userResetPassword, data, {
+  return alovaInstance.putWithMsg<void>(Api.userResetPassword, data, {
     encrypt: true,
   });
 }
@@ -143,7 +143,7 @@ export function userResetPassword(data: ResetPwdParam) {
  * @returns void
  */
 export function getUserAuthRole(userId: ID) {
-  return requestClient.get(`${Api.userAuthRole}/${userId}`);
+  return alovaInstance.get(`${Api.userAuthRole}/${userId}`);
 }
 
 /**
@@ -152,7 +152,7 @@ export function getUserAuthRole(userId: ID) {
  * @returns void
  */
 export function userAuthRoleUpdate(userId: ID, roleIds: number[]) {
-  return requestClient.putWithMsg(Api.userAuthRole, { roleIds, userId });
+  return alovaInstance.putWithMsg(Api.userAuthRole, { roleIds, userId });
 }
 
 /**
@@ -160,12 +160,12 @@ export function userAuthRoleUpdate(userId: ID, roleIds: number[]) {
  * @returns 部门树数组
  */
 export function getDeptTree() {
-  return requestClient.get<DeptTree[]>(Api.deptTree);
+  return alovaInstance.get<DeptTree[]>(Api.deptTree);
 }
 
 /**
  * 获取部门下的所有用户信息
  */
 export function listUserByDeptId(deptId: ID) {
-  return requestClient.get<User[]>(`${Api.listDeptUsers}/${deptId}`);
+  return alovaInstance.get<User[]>(`${Api.listDeptUsers}/${deptId}`);
 }

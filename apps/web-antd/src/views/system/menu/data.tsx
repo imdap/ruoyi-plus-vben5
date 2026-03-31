@@ -1,10 +1,8 @@
 import type { FormSchemaGetter } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h } from 'vue';
-
 import { DictEnum } from '@vben/constants';
-import { FolderIcon, MenuIcon, OkButtonIcon, VbenIcon } from '@vben/icons';
+import { VbenIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { getPopupContainer } from '@vben/utils';
 
@@ -51,10 +49,19 @@ export const yesNoOptions = [
 ];
 
 // （M目录 C菜单 F按钮）
-const menuTypes = {
-  C: { icon: MenuIcon, value: '菜单' },
-  F: { icon: OkButtonIcon, value: '按钮' },
-  M: { icon: FolderIcon, value: '目录' },
+export const menuTypes = {
+  C: {
+    icon: <span class="icon-[material-symbols--menu]"></span>,
+    value: '菜单',
+  },
+  F: {
+    icon: <span class="icon-[mdi--button-pointer]"></span>,
+    value: '按钮',
+  },
+  M: {
+    icon: <span class="icon-[flat-color-icons--folder]"></span>,
+    value: '目录',
+  },
 };
 export const columns: VxeGridProps['columns'] = [
   {
@@ -103,7 +110,7 @@ export const columns: VxeGridProps['columns'] = [
         }
         return (
           <span class="flex items-center justify-center gap-1">
-            {h(current.icon, { class: 'size-[18px]' })}
+            {current.icon}
             <span>{current.value}</span>
           </span>
         );
@@ -221,7 +228,7 @@ export const drawerSchema: FormSchemaGetter = () => [
     fieldName: 'orderNum',
     help: '排序, 数字越小越靠前',
     label: '显示排序',
-    defaultValue: 0,
+    defaultValue: 1,
     rules: 'required',
   },
   {

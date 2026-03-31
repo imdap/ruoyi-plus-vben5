@@ -6,13 +6,12 @@ import type { LeaveForm } from './api/model';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
 
-import { Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import { cancelProcessApply } from '#/api/workflow/instance';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 
 import { applyModal, flowInfoModal } from '../components';
 import { leaveExport, leaveList, leaveRemove } from './api';
@@ -125,7 +124,7 @@ async function handleRevoke(row: Required<LeaveForm>) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: Required<LeaveForm>) => row.id);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -136,16 +135,16 @@ function handleMultiDelete() {
   });
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(
-    leaveExport,
-    '请假申请数据',
-    tableApi.formApi.form.values,
-    {
-      fieldMappingTime: formOptions.fieldMappingTime,
-    },
-  );
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(leaveExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('请假申请数据');
+  exportBlob({ data: formValues, fileName });
 }
+
 const [FlowInfoModal, flowInfoModalApi] = useVbenModal({
   connectedComponent: flowInfoModal,
 });
@@ -163,7 +162,9 @@ function handleInfo(row: Required<LeaveForm>) {
         <Space>
           <a-button
             v-access:code="['workflow:leave:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>
@@ -196,7 +197,6 @@ function handleInfo(row: Required<LeaveForm>) {
           {{ $t('pages.common.edit') }}
         </a-button>
         <Popconfirm
-          :get-popup-container="getVxePopupContainer"
           placement="left"
           title="确认撤销？"
           :disabled="!['waiting'].includes(row.status)"
@@ -214,7 +214,6 @@ function handleInfo(row: Required<LeaveForm>) {
           </a-button>
         </Popconfirm>
         <Popconfirm
-          :get-popup-container="getVxePopupContainer"
           placement="left"
           title="确认删除？"
           :disabled="!['draft', 'cancel', 'back'].includes(row.status)"

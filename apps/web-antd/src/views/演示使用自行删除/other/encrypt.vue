@@ -3,15 +3,15 @@ import { ref } from 'vue';
 
 import { JsonPreview, Page } from '@vben/common-ui';
 
-import { Alert, Card } from 'ant-design-vue';
+import { Alert, Card } from 'antdv-next';
 import dayjs from 'dayjs';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 const requestData = ref<any>({});
 const requestData2 = ref<any>({});
 async function apiRequest(name: string) {
-  const resp = await requestClient.post('/test/api/encrypt/request', name, {
+  const resp = await alovaInstance.post('/test/api/encrypt/request', name, {
     encrypt: true,
     isReturnNativeResponse: true,
   });
@@ -23,7 +23,7 @@ async function apiRequest(name: string) {
 const encryptData = ref<any>({});
 const response = ref<any>({});
 async function apiResponse() {
-  const resp = await requestClient.get('/test/api/encrypt/response', {
+  const resp = await alovaInstance.get('/test/api/encrypt/response', {
     isTransformResponse: false,
     transformResponse: (data) => {
       encryptData.value = data;

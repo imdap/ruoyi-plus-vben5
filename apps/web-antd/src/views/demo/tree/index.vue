@@ -9,7 +9,7 @@ import { nextTick } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { getPopupContainer, listToTree } from '@vben/utils';
 
-import { Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
@@ -118,25 +118,25 @@ function collapseAll() {
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button
+          <action-button
             v-access:code="['system:tree:edit']"
             @click.stop="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
             :get-popup-container="getPopupContainer"
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['system:tree:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

@@ -5,7 +5,7 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 import { cloneDeep } from '@vben/utils';
 
-import { Alert } from 'ant-design-vue';
+import { Alert } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import {

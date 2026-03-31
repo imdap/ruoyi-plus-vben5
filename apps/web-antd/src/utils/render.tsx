@@ -6,29 +6,10 @@ import type { DictFallback } from '#/components/dict/src/type';
 import { h } from 'vue';
 
 import { JsonPreview } from '@vben/common-ui';
-import {
-  AndroidIcon,
-  BaiduIcon,
-  ChromeIcon,
-  DefaultBrowserIcon,
-  DefaultOsIcon,
-  DingtalkIcon,
-  EdgeIcon,
-  FirefoxIcon,
-  IconifyIcon,
-  IPhoneIcon,
-  LinuxIcon,
-  MicromessengerIcon,
-  OperaIcon,
-  OSXIcon,
-  QuarkIcon,
-  SafariIcon,
-  SvgQQIcon,
-  UcIcon,
-  WindowsIcon,
-} from '@vben/icons';
+import { IconifyIcon, VbenIcon } from '@vben/icons';
+import { cn } from '@vben/utils';
 
-import { Tag } from 'ant-design-vue';
+import { Tag } from 'antdv-next';
 
 import { DictTag } from '#/components/dict';
 
@@ -187,34 +168,38 @@ export function renderIconSpan(
 }
 
 const osOptions = [
-  { icon: WindowsIcon, value: 'windows' },
-  { icon: LinuxIcon, value: 'linux' },
-  { icon: OSXIcon, value: 'osx' },
-  { icon: AndroidIcon, value: 'android' },
-  { icon: IPhoneIcon, value: 'iphone' },
+  { icon: 'icon-[devicon--windows8]', value: 'windows' },
+  { icon: 'icon-[wpf--macos]', value: 'osx' },
+  { icon: 'icon-[devicon--linux]', value: 'linux' },
+  { icon: 'icon-[flat-color-icons--android-os]', value: 'android' },
+  { icon: 'icon-[majesticons--iphone-x-apps-line]', value: 'ios' },
 ];
+
+const DefaultOsIcon = 'icon-[ic--outline-computer]';
 
 /**
  * 浏览器图标
  * cn.hutool.http.useragent -> browers
  */
 const browserOptions = [
-  { icon: ChromeIcon, value: 'chrome' },
-  { icon: EdgeIcon, value: 'edge' },
-  { icon: FirefoxIcon, value: 'firefox' },
-  { icon: OperaIcon, value: 'opera' },
-  { icon: SafariIcon, value: 'safari' },
-  { icon: MicromessengerIcon, value: 'micromessenger' },
-  { icon: MicromessengerIcon, value: 'windowswechat' },
-  { icon: QuarkIcon, value: 'quark' },
-  { icon: MicromessengerIcon, value: 'wxwork' },
-  { icon: SvgQQIcon, value: 'qq' },
-  { icon: DingtalkIcon, value: 'dingtalk' },
-  { icon: UcIcon, value: 'uc' },
-  { icon: BaiduIcon, value: 'baidu' },
+  { icon: 'icon-[logos--chrome]', value: 'chrome' },
+  { icon: 'icon-[logos--microsoft-edge]', value: 'edge' },
+  { icon: 'icon-[logos--firefox]', value: 'firefox' },
+  { icon: 'icon-[logos--opera]', value: 'opera' },
+  { icon: 'icon-[logos--safari]', value: 'safari' },
+  { icon: 'icon-[mdi--wechat]', value: 'micromessenger' },
+  { icon: 'icon-[mdi--wechat]', value: 'windowswechat' },
+  { icon: 'icon-[logos--quarkus-icon]', value: 'quark' },
+  { icon: 'icon-[mdi--wechat]', value: 'wxwork' },
+  { icon: 'svg:qq', value: 'qq', type: 'offline' },
+  { icon: 'icon-[ri--dingding-line]', value: 'dingtalk' },
+  { icon: 'icon-[arcticons--uc-browser]', value: 'uc' },
+  { icon: 'icon-[ri--baidu-fill]', value: 'baidu' },
 ];
 
-export function renderOsIcon(os: string, center = false) {
+const DefaultBrowserIcon = 'icon-[ph--browser-duotone]';
+
+export function renderOsIcon(os: string, className?: string) {
   if (!os) {
     return;
   }
@@ -226,16 +211,24 @@ export function renderOsIcon(os: string, center = false) {
     current = osOptions[0];
   }
   const icon = current ? current.icon : DefaultOsIcon;
-  return renderIconSpan(icon, os, center, '5px');
+  return <span class={cn(icon, className)} />;
 }
 
-export function renderBrowserIcon(browser: string, center = false) {
+export function renderBrowserIcon(browser: string, className?: string) {
   if (!browser) {
     return;
   }
   const current = browserOptions.find((item) =>
     browser.toLocaleLowerCase().includes(item.value),
   );
-  const icon = current ? current.icon : DefaultBrowserIcon;
-  return renderIconSpan(icon, browser, center, '5px');
+  // TODO: 需要优化
+  if (!current) {
+    return <span class={cn(DefaultBrowserIcon, className)} />;
+  }
+  // support offline icon
+  const icon = current.icon;
+  if (current.type === 'offline') {
+    return <VbenIcon icon={icon} />;
+  }
+  return <span class={cn(icon, className)} />;
 }

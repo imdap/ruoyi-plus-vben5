@@ -2,29 +2,31 @@
 
 ## 置顶说明
 
-由于最新官方分支使用了`tailwind4` 故此版本作为v1的latest版本 不再进行更新
+使用`antdv-next`已经作为主分支进行更新
+
+原`ant-design-vue`已经归档到`v1/ant-design-vue`分支 不再进行更新(当然你可以手动合并官方的更新)
 
 ## 提示
+
+最低需要使用`node版本>22.16.0` 否则会影响编辑器的格式化(需要安装oxc插件)
+
+该分支使用[antdv-next](https://github.com/antdv-next/antdv-next)替代已经不维护的antd-design-vue
 
 该仓库使用vben最新版本v5开发
 
 v5版本采用分仓(包)目录结构, 具体开发路径为: `根目录/apps/web-antd`
 
-目前对应后端版本: **分布式5.5.3/微服务2.5.3**
-
-V1.1.0版本已支持离线图标
-
-V1.2.0版本对接warmflow工作流
+目前对应后端版本: **分布式5.5.1/微服务2.5.1**
 
 ## 简介
 
-基于 [vben5 & ant-design-vue](https://github.com/vbenjs/vue-vben-admin) 的 RuoYi-Vue-Plus 前端项目
+基于 [vben5 & antdv-next](https://github.com/vbenjs/vue-vben-admin) 的 RuoYi-Vue-Plus 前端项目
 
-| 组件/框架      | 版本   |
-| :------------- | :----- |
-| vben           | 5.5.9  |
-| ant-design-vue | 4.2.6  |
-| vue            | 3.5.13 |
+| 组件/框架  | 版本   |
+| :--------- | :----- |
+| vben       | 5.5.9  |
+| antdv-next | 4.2.6  |
+| vue        | 3.5.13 |
 
 对应后端项目: **(分布式 5.X 分支 微服务 2.分支)**
 
@@ -36,19 +38,11 @@ V1.2.0版本对接warmflow工作流
 
 admin 账号: admin admin123
 
-[dev分支预览](http://vben5.dapdap.top)
+[预览地址点这里](http://vben5.dapdap.top)
 
-[antdv-next分支预览](http://antdv-next.dapdap.top)
+## WX Group
 
-## 分支说明
-
-- `main` 主分支 稳定分支(基于ant-design-vue)
-- `dev` 开发分支 包含前端/后端新功能 没问题后合并到`main`分支(基于ant-design-vue) [预览地址](http://vben5.dapdap.top)
-- `antdv-next`分支 使用`antdv-next`替换已经不维护的`ant-design-vue` 分支 且包含破坏性更新 (基于antv-next) [预览地址](http://antdv-next.dapdap.top)
-
-antdv-next开发完毕且测试正常后 会作为主分支更新(v2) 原先基于`ant-design-vue`的版本会作为归档(v1)
-
-antdv-next目前为阿尔法版本
+演示站 - 微信群菜单
 
 ## 文档
 
@@ -69,7 +63,7 @@ antdv-next目前为阿尔法版本
 ```json
 "packageManager": "pnpm",
 "engines": {
-  "node": ">=20.15.0",
+  "node": ">=22.16.0",
   "pnpm": "latest"
 },
 ```

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Page } from '@vben/common-ui';
 
-import { Card } from 'ant-design-vue';
+import { Card } from 'antdv-next';
 
 import EditTable from './edit-table.vue';
 </script>

@@ -3,7 +3,7 @@ import type { GenInfo } from './model';
 import type { ID, IDS, PageQuery } from '#/api/common';
 
 import { ContentTypeEnum } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   batchGenCode = '/tool/gen/batchGenCode',
@@ -20,22 +20,22 @@ enum Api {
 }
 // 查询代码生成列表
 export function generatedList(params?: PageQuery) {
-  return requestClient.get(Api.generatedList, { params });
+  return alovaInstance.get(Api.generatedList, { params });
 }
 
 // 修改代码生成业务
 export function genInfo(tableId: ID) {
-  return requestClient.get<GenInfo>(`${Api.root}/${tableId}`);
+  return alovaInstance.get<GenInfo>(`${Api.root}/${tableId}`);
 }
 
 // 查询数据库列表
 export function readyToGenList(params?: PageQuery) {
-  return requestClient.get(Api.readyToGenList, { params });
+  return alovaInstance.get(Api.readyToGenList, { params });
 }
 
 // 查询数据表字段列表
 export function columnList(tableId: ID) {
-  return requestClient.get(`${Api.columnList}/${tableId}`);
+  return alovaInstance.get(`${Api.columnList}/${tableId}`);
 }
 
 /**
@@ -45,7 +45,7 @@ export function columnList(tableId: ID) {
  * @returns ret
  */
 export function importTable(tables: string | string[], dataName: string) {
-  return requestClient.postWithMsg(
+  return alovaInstance.postWithMsg(
     Api.importTable,
     { dataName, tables },
     {
@@ -56,41 +56,41 @@ export function importTable(tables: string | string[], dataName: string) {
 
 // 修改保存代码生成业务
 export function editSave(data: any) {
-  return requestClient.putWithMsg(Api.root, data);
+  return alovaInstance.putWithMsg(Api.root, data);
 }
 
 // 删除代码生成
 export function genRemove(tableIds: IDS) {
-  return requestClient.deleteWithMsg(`${Api.root}/${tableIds}`);
+  return alovaInstance.deleteWithMsg(`${Api.root}/${tableIds}`);
 }
 
 // 预览代码
 export function previewCode(tableId: ID) {
-  return requestClient.get<{ [key: string]: string }>(
+  return alovaInstance.get<{ [key: string]: string }>(
     `${Api.preview}/${tableId}`,
   );
 }
 
 // 生成代码（下载方式）
 export function genDownload(tableId: ID) {
-  return requestClient.get<Blob>(`${Api.download}/${tableId}`);
+  return alovaInstance.get<Blob>(`${Api.download}/${tableId}`);
 }
 
 // 生成代码（自定义路径）
 export function genWithPath(tableId: ID) {
-  return requestClient.get<void>(`${Api.genCode}/${tableId}`);
+  return alovaInstance.get<void>(`${Api.genCode}/${tableId}`);
 }
 
 // 同步数据库
 export function syncDb(tableId: ID) {
-  return requestClient.get(`${Api.syncDb}/${tableId}`, {
+  return alovaInstance.get(`${Api.syncDb}/${tableId}`, {
     successMessageMode: 'message',
   });
 }
 
 // 批量生成代码
 export function batchGenCode(tableIdStr: ID | IDS) {
-  return requestClient.get<Blob>(Api.batchGenCode, {
+  return alovaInstance.get<Blob>(Api.batchGenCode, {
     isTransformResponse: false,
     params: { tableIdStr },
     responseType: 'blob',
@@ -99,5 +99,5 @@ export function batchGenCode(tableIdStr: ID | IDS) {
 
 // 查询数据源名称列表
 export function getDataSourceNames() {
-  return requestClient.get<string[]>(Api.dataSourceNames);
+  return alovaInstance.get<string[]>(Api.dataSourceNames);
 }

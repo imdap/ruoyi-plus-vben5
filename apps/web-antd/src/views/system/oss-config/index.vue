@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { SwitchProps } from 'antdv-next';
+
 import type { VbenFormProps } from '@vben/common-ui';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -6,9 +8,9 @@ import type { OssConfig } from '#/api/system/oss-config/model';
 
 import { useAccess } from '@vben/access';
 import { Page, useVbenDrawer } from '@vben/common-ui';
-import { getVxePopupContainer } from '@vben/utils';
+import { EnableStatus } from '@vben/constants';
 
-import { Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -16,7 +18,7 @@ import {
   ossConfigList,
   ossConfigRemove,
 } from '#/api/system/oss-config';
-import { TableSwitch } from '#/components/table';
+import { ApiSwitch } from '#/components/global';
 
 import { columns, querySchema } from './data';
 import ossConfigDrawer from './oss-config-drawer.vue';
@@ -89,7 +91,7 @@ async function handleDelete(row: OssConfig) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: OssConfig) => row.ossConfigId);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -101,6 +103,16 @@ function handleMultiDelete() {
 }
 
 const { hasAccessByCodes } = useAccess();
+async function handleChangeStatus(
+  checked: SwitchProps['checked'],
+  row: OssConfig,
+) {
+  await ossConfigChangeStatus({
+    ossConfigId: row.ossConfigId,
+    configKey: row.configKey,
+    status: checked ? EnableStatus.Enable : EnableStatus.Disable,
+  });
+}
 </script>
 
 <template>
@@ -127,9 +139,9 @@ const { hasAccessByCodes } = useAccess();
         </Space>
       </template>
       <template #status="{ row }">
-        <TableSwitch
-          v-model:value="row.status"
-          :api="() => ossConfigChangeStatus(row)"
+        <ApiSwitch
+          :value="row.status === EnableStatus.Enable"
+          :api="(checked) => handleChangeStatus(checked, row)"
           :disabled="!hasAccessByCodes(['system:ossConfig:edit'])"
           checked-text="是"
           un-checked-text="否"
@@ -138,25 +150,24 @@ const { hasAccessByCodes } = useAccess();
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button
+          <action-button
             v-access:code="['system:ossConfig:edit']"
             @click="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
-            :get-popup-container="getVxePopupContainer"
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['system:ossConfig:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

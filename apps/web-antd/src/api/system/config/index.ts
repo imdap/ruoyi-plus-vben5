@@ -3,7 +3,7 @@ import type { SysConfig } from './model';
 import type { ID, IDS, PageQuery, PageResult } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   configExport = '/system/config/export',
@@ -19,11 +19,11 @@ enum Api {
  * @returns 列表
  */
 export function configList(params?: PageQuery) {
-  return requestClient.get<PageResult<SysConfig>>(Api.configList, { params });
+  return alovaInstance.get<PageResult<SysConfig>>(Api.configList, { params });
 }
 
 export function configInfo(configId: ID) {
-  return requestClient.get<SysConfig>(`${Api.root}/${configId}`);
+  return alovaInstance.get<SysConfig>(`${Api.root}/${configId}`);
 }
 
 /**
@@ -39,7 +39,7 @@ export function configExport(data: Partial<SysConfig>) {
  * @returns void
  */
 export function configRefreshCache() {
-  return requestClient.deleteWithMsg<void>(Api.configRefreshCache);
+  return alovaInstance.deleteWithMsg<void>(Api.configRefreshCache);
 }
 
 /**
@@ -47,7 +47,7 @@ export function configRefreshCache() {
  * @param data 参数
  */
 export function configUpdate(data: Partial<SysConfig>) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -55,7 +55,7 @@ export function configUpdate(data: Partial<SysConfig>) {
  * @param data 参数
  */
 export function configAdd(data: Partial<SysConfig>) {
-  return requestClient.postWithMsg<void>(Api.root, data);
+  return alovaInstance.postWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -63,7 +63,7 @@ export function configAdd(data: Partial<SysConfig>) {
  * @param configIds ids
  */
 export function configRemove(configIds: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${configIds}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${configIds}`);
 }
 
 /**
@@ -72,5 +72,5 @@ export function configRemove(configIds: IDS) {
  * @returns value
  */
 export function configInfoByKey(configKey: string) {
-  return requestClient.get<string>(`${Api.configInfoByKey}/${configKey}`);
+  return alovaInstance.get<string>(`${Api.configInfoByKey}/${configKey}`);
 }

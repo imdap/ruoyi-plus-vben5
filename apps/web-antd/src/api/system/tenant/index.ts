@@ -3,7 +3,7 @@ import type { Tenant } from './model';
 import type { ID, IDS, PageQuery } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   dictSync = '/system/tenant/syncTenantDict',
@@ -22,7 +22,7 @@ enum Api {
  * @returns 分页
  */
 export function tenantList(params?: PageQuery) {
-  return requestClient.get<Tenant[]>(Api.tenantList, { params });
+  return alovaInstance.get<Tenant[]>(Api.tenantList, { params });
 }
 
 /**
@@ -40,7 +40,7 @@ export function tenantExport(data: Partial<Tenant>) {
  * @returns 租户信息
  */
 export function tenantInfo(id: ID) {
-  return requestClient.get<Tenant>(`${Api.root}/${id}`);
+  return alovaInstance.get<Tenant>(`${Api.root}/${id}`);
 }
 
 /**
@@ -49,7 +49,7 @@ export function tenantInfo(id: ID) {
  * @returns void
  */
 export function tenantAdd(data: Partial<Tenant>) {
-  return requestClient.postWithMsg<void>(Api.root, data, { encrypt: true });
+  return alovaInstance.postWithMsg<void>(Api.root, data, { encrypt: true });
 }
 
 /**
@@ -58,7 +58,7 @@ export function tenantAdd(data: Partial<Tenant>) {
  * @returns void
  */
 export function tenantUpdate(data: Partial<Tenant>) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -72,7 +72,7 @@ export function tenantStatusChange(data: Partial<Tenant>) {
     tenantId: data.tenantId,
     status: data.status,
   };
-  return requestClient.putWithMsg(Api.tenantStatus, requestData);
+  return alovaInstance.putWithMsg(Api.tenantStatus, requestData);
 }
 
 /**
@@ -81,7 +81,7 @@ export function tenantStatusChange(data: Partial<Tenant>) {
  * @returns void
  */
 export function tenantRemove(ids: IDS) {
-  return requestClient.deleteWithMsg(`${Api.root}/${ids}`);
+  return alovaInstance.deleteWithMsg(`${Api.root}/${ids}`);
 }
 
 /**
@@ -90,7 +90,7 @@ export function tenantRemove(ids: IDS) {
  * @returns void
  */
 export function tenantDynamicToggle(tenantId: string) {
-  return requestClient.get<void>(`${Api.tenantDynamic}/${tenantId}`);
+  return alovaInstance.get<void>(`${Api.tenantDynamic}/${tenantId}`);
 }
 
 /**
@@ -98,7 +98,7 @@ export function tenantDynamicToggle(tenantId: string) {
  * @returns void
  */
 export function tenantDynamicClear() {
-  return requestClient.get<void>(Api.tenantDynamicClear);
+  return alovaInstance.get<void>(Api.tenantDynamicClear);
 }
 
 /**
@@ -108,7 +108,7 @@ export function tenantDynamicClear() {
  * @returns void
  */
 export function tenantSyncPackage(tenantId: string, packageId: string) {
-  return requestClient.get<void>(Api.tenantSyncPackage, {
+  return alovaInstance.get<void>(Api.tenantSyncPackage, {
     params: { packageId, tenantId },
     successMessageMode: 'message',
   });
@@ -120,7 +120,7 @@ export function tenantSyncPackage(tenantId: string, packageId: string) {
  * @returns void
  */
 export function dictSyncTenant(tenantId?: string) {
-  return requestClient.get<void>(Api.dictSync, {
+  return alovaInstance.get<void>(Api.dictSync, {
     params: { tenantId },
     successMessageMode: 'message',
   });
@@ -131,7 +131,7 @@ export function dictSyncTenant(tenantId?: string) {
  * @returns void
  */
 export function syncTenantConfig() {
-  return requestClient.get<void>('/system/tenant/syncTenantConfig', {
+  return alovaInstance.get<void>('/system/tenant/syncTenantConfig', {
     successMessageMode: 'message',
   });
 }

@@ -8,7 +8,7 @@ import type { OperationLog } from '#/api/monitor/operlog/model';
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { Modal, Space } from 'ant-design-vue';
+import { Space } from 'antdv-next';
 
 import {
   addSortParams,
@@ -21,7 +21,7 @@ import {
   operLogExport,
   operLogList,
 } from '#/api/monitor/operlog';
-import { commonDownloadExcel } from '#/utils/file/download';
+import { useBlobExport } from '#/utils/file/export';
 import { confirmDeleteModal } from '#/utils/modal';
 
 import { columns, querySchema } from './data';
@@ -124,7 +124,7 @@ function handleClear() {
 async function handleDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: OperationLog) => row.operId);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条操作日志吗？`,
@@ -135,10 +135,14 @@ async function handleDelete() {
   });
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(operLogExport, '操作日志', tableApi.formApi.form.values, {
-    fieldMappingTime: formOptions.fieldMappingTime,
-  });
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(operLogExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('操作日志');
+  exportBlob({ data: formValues, fileName });
 }
 </script>
 
@@ -155,7 +159,9 @@ function handleDownloadExcel() {
           </a-button>
           <a-button
             v-access:code="['monitor:operlog:export']"
-            @click="handleDownloadExcel"
+            :loading="exportLoading"
+            :disabled="exportLoading"
+            @click="handleExport"
           >
             {{ $t('pages.common.export') }}
           </a-button>
@@ -171,12 +177,12 @@ function handleDownloadExcel() {
         </Space>
       </template>
       <template #action="{ row }">
-        <ghost-button
+        <action-button
           v-access:code="['monitor:operlog:list']"
           @click.stop="handlePreview(row)"
         >
           {{ $t('pages.common.preview') }}
-        </ghost-button>
+        </action-button>
       </template>
     </BasicTable>
     <OperationPreviewDrawer />

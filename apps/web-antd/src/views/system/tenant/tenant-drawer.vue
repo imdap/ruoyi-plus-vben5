@@ -6,7 +6,8 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 import { cloneDeep } from '@vben/utils';
 
-import { Button, message, Skeleton } from 'ant-design-vue';
+import { Button, Skeleton } from 'antdv-next';
+import dayjs from 'dayjs';
 
 import { useVbenForm } from '#/adapter/form';
 import { tenantAdd, tenantInfo, tenantUpdate } from '#/api/system/tenant';
@@ -43,7 +44,7 @@ async function setupPackageSelect() {
    * 检测是否存在租户套餐 你也不想表单填完了发现套餐为0无法选中吧
    */
   if (tenantPackageList.length === 0) {
-    const closeMessage = message.error(
+    const closeMessage = window.message.error(
       h('span', {}, [
         '请先配置租户套餐',
         h(
@@ -107,6 +108,9 @@ const [BasicDrawer, drawerApi] = useVbenDrawer({
         tenantInfo(id),
         setupPackageSelect(),
       ]);
+      record.expireTime = record.expireTime
+        ? (dayjs(record.expireTime) as any)
+        : undefined;
       await formApi.setValues(record);
     } else {
       await setupPackageSelect();
@@ -136,6 +140,10 @@ async function handleConfirm() {
       return;
     }
     const data = cloneDeep(await formApi.getValues());
+    // dayjs转string
+    if (data.expireTime) {
+      data.expireTime = dayjs(data.expireTime).format('YYYY-MM-DD HH:mm:ss');
+    }
     await (isUpdate.value ? tenantUpdate(data) : tenantAdd(data));
     resetInitialized();
     emit('reload');

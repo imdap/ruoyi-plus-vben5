@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { MarkdownPreviewer, Page } from '@vben/common-ui';
 
-import { Spin } from 'ant-design-vue';
+import { Spin } from 'antdv-next';
 
 import changelog from '../../../../../../CHANGELOG.md?raw';
 

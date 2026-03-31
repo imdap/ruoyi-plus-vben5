@@ -7,7 +7,7 @@ import type {
 
 import type { Ref } from 'vue';
 
-import type { ClassType, DeepPartial } from '@vben/types';
+import type { ClassType } from '@vben/types';
 
 import type { BaseFormComponentType, VbenFormProps } from '@vben-core/form-ui';
 
@@ -26,6 +26,8 @@ interface ToolbarConfigOptions extends VxeGridPropTypes.ToolbarConfig {
   search?: boolean;
 }
 
+export type VxeTableGridColumns<T = any> = VxeTableGridOptions<T>['columns'];
+
 export interface VxeTableGridOptions<T = any> extends VxeTableGridProps<T> {
   /** 工具栏配置 */
   toolbarConfig?: ToolbarConfigOptions;
@@ -40,6 +42,10 @@ export interface VxeGridProps<
   T extends Record<string, any> = any,
   D extends BaseFormComponentType = BaseFormComponentType,
 > {
+  /**
+   * 数据
+   */
+  tableData?: any[];
   /**
    * 标题
    */
@@ -59,7 +65,7 @@ export interface VxeGridProps<
   /**
    * vxe-grid 配置
    */
-  gridOptions?: DeepPartial<VxeTableGridOptions<T>>;
+  gridOptions?: Partial<VxeTableGridOptions<T>>;
   /**
    * vxe-grid 事件
    */
@@ -89,5 +95,5 @@ export type ExtendedVxeGridApi<
 
 export interface SetupVxeTable {
   configVxeTable: (ui: VxeUIExport) => void;
-  useVbenForm: typeof useVbenForm;
+  useVbenForm?: typeof useVbenForm;
 }

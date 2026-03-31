@@ -39,6 +39,10 @@ export interface DrawerProps {
    */
   closeOnPressEscape?: boolean;
   /**
+   * 禁用确认按钮
+   */
+  confirmDisabled?: boolean;
+  /**
    * 确定按钮 loading
    * @default false
    */

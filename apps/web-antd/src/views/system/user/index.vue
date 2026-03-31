@@ -1,26 +1,20 @@
 <script setup lang="ts">
+import type { MenuProps, SwitchProps } from 'antdv-next';
+
 import type { VbenFormProps } from '@vben/common-ui';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { User } from '#/api/system/user/model';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+import { EnableStatus, SUPERADMIN_USER_ID } from '@vben/constants';
 import { $t } from '@vben/locales';
 import { preferences } from '@vben/preferences';
-import { getVxePopupContainer } from '@vben/utils';
 
-import {
-  Avatar,
-  Dropdown,
-  Menu,
-  MenuItem,
-  Modal,
-  Popconfirm,
-  Space,
-} from 'ant-design-vue';
+import { Avatar, Dropdown, Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
@@ -29,8 +23,8 @@ import {
   userRemove,
   userStatusChange,
 } from '#/api/system/user';
-import { TableSwitch } from '#/components/table';
-import { commonDownloadExcel } from '#/utils/file/download';
+import ApiSwitch from '#/components/global/api-switch.vue';
+import { useBlobExport } from '#/utils/file/export';
 
 import { columns, querySchema } from './data';
 import DeptTree from './dept-tree.vue';
@@ -61,7 +55,7 @@ const formOptions: VbenFormProps = {
       allowClear: true,
     },
   },
-  wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+  wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
   handleReset: async () => {
     selectDeptId.value = [];
 
@@ -151,7 +145,7 @@ async function handleDelete(row: User) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: User) => row.userId);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -162,10 +156,14 @@ function handleMultiDelete() {
   });
 }
 
-function handleDownloadExcel() {
-  commonDownloadExcel(userExport, '用户管理', tableApi.formApi.form.values, {
-    fieldMappingTime: formOptions.fieldMappingTime,
-  });
+const { exportBlob, exportLoading, buildExportFileName } =
+  useBlobExport(userExport);
+async function handleExport() {
+  // 构建表单请求参数
+  const formValues = await tableApi.formApi.getValues();
+  // 文件名
+  const fileName = buildExportFileName('用户信息');
+  exportBlob({ data: formValues, fileName });
 }
 
 const [UserInfoModal, userInfoModalApi] = useVbenModal({
@@ -186,6 +184,43 @@ function handleResetPwd(record: User) {
 }
 
 const { hasAccessByCodes } = useAccess();
+const menuItems = computed(() => {
+  const items: MenuProps['items'] = [{ key: 'info', label: '用户信息' }];
+  if (hasAccessByCodes(['system:user:resetPwd'])) {
+    items.push({ key: 'resetPwd', label: '重置密码' });
+  }
+  return items;
+});
+
+function handleMenuClick(key: string, row: any) {
+  switch (key) {
+    case 'info': {
+      handleUserInfo(row);
+      break;
+    }
+    case 'resetPwd': {
+      handleResetPwd(row);
+      break;
+    }
+  }
+}
+
+async function handleChangeStatus(checked: SwitchProps['checked'], row: User) {
+  await userStatusChange({
+    userId: row.userId,
+    status: checked ? EnableStatus.Enable : EnableStatus.Disable,
+  });
+}
+
+function handleDeptSelect(keys: string[]) {
+  selectDeptId.value = keys;
+  tableApi.formApi.submitForm();
+}
+
+function handleDeptReload() {
+  tableApi.formApi.resetForm();
+  tableApi.reload();
+}
 </script>
 
 <template>
@@ -194,15 +229,17 @@ const { hasAccessByCodes } = useAccess();
       <DeptTree
         v-model:select-dept-id="selectDeptId"
         class="w-[260px]"
-        @reload="() => tableApi.reload()"
-        @select="() => tableApi.reload()"
+        @reload="handleDeptReload"
+        @select="handleDeptSelect"
       />
       <BasicTable class="flex-1 overflow-hidden" table-title="用户列表">
         <template #toolbar-tools>
           <Space>
             <a-button
               v-access:code="['system:user:export']"
-              @click="handleDownloadExcel"
+              :loading="exportLoading"
+              :disabled="exportLoading"
+              @click="handleExport"
             >
               {{ $t('pages.common.export') }}
             </a-button>
@@ -235,52 +272,47 @@ const { hasAccessByCodes } = useAccess();
           <Avatar :src="row.avatar || preferences.app.defaultAvatar" />
         </template>
         <template #status="{ row }">
-          <TableSwitch
-            v-model:value="row.status"
-            :api="() => userStatusChange(row)"
+          <!-- value只能接收boolean值 -->
+          <ApiSwitch
+            :value="row.status === EnableStatus.Enable"
+            :api="(checked) => handleChangeStatus(checked, row)"
             :disabled="
-              row.userId === 1 || !hasAccessByCodes(['system:user:edit'])
+              row.userId === SUPERADMIN_USER_ID ||
+              !hasAccessByCodes(['system:user:edit'])
             "
             @reload="() => tableApi.query()"
           />
         </template>
         <template #action="{ row }">
-          <template v-if="row.userId !== 1">
+          <template v-if="row.userId !== SUPERADMIN_USER_ID">
             <Space>
-              <ghost-button
+              <action-button
                 v-access:code="['system:user:edit']"
                 @click.stop="handleEdit(row)"
               >
                 {{ $t('pages.common.edit') }}
-              </ghost-button>
+              </action-button>
               <Popconfirm
-                :get-popup-container="getVxePopupContainer"
                 placement="left"
                 title="确认删除？"
                 @confirm="handleDelete(row)"
               >
-                <ghost-button
+                <action-button
                   danger
                   v-access:code="['system:user:remove']"
                   @click.stop=""
                 >
                   {{ $t('pages.common.delete') }}
-                </ghost-button>
+                </action-button>
               </Popconfirm>
             </Space>
-            <Dropdown placement="bottomRight">
-              <template #overlay>
-                <Menu>
-                  <MenuItem key="1" @click="handleUserInfo(row)">
-                    用户信息
-                  </MenuItem>
-                  <span v-access:code="['system:user:resetPwd']">
-                    <MenuItem key="2" @click="handleResetPwd(row)">
-                      重置密码
-                    </MenuItem>
-                  </span>
-                </Menu>
-              </template>
+            <Dropdown
+              placement="bottomRight"
+              :menu="{
+                items: menuItems,
+                onClick: (info) => handleMenuClick(info.key, row),
+              }"
+            >
               <a-button size="small" type="link">
                 {{ $t('pages.common.more') }}
               </a-button>

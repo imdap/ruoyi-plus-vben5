@@ -13,17 +13,8 @@ import { useAppConfig } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { stringify } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
-import { getVxePopupContainer } from '@vben/utils';
 
-import {
-  Image,
-  Modal,
-  Popconfirm,
-  Space,
-  Spin,
-  Switch,
-  Tooltip,
-} from 'ant-design-vue';
+import { Image, Popconfirm, Space, Spin, Switch, Tooltip } from 'antdv-next';
 
 import {
   addSortParams,
@@ -39,6 +30,7 @@ import { columns, querySchema } from './data';
 import fallbackImageBase64 from './fallback-image.txt?raw';
 import fileUploadModal from './file-upload-modal.vue';
 import imageUploadModal from './image-upload-modal.vue';
+import uploadTestModal from './upload-test-modal.vue';
 
 const formOptions: VbenFormProps = {
   commonConfig: {
@@ -167,7 +159,7 @@ async function handleDelete(row: OssFile) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: OssFile) => row.ossId);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -222,6 +214,9 @@ const [ImageUploadModal, imageUploadApi] = useVbenModal({
 const [FileUploadModal, fileUploadApi] = useVbenModal({
   connectedComponent: fileUploadModal,
 });
+const [UploadTestModal, uploadTestApi] = useVbenModal({
+  connectedComponent: uploadTestModal,
+});
 </script>
 
 <template>
@@ -259,6 +254,12 @@ const [FileUploadModal, fileUploadApi] = useVbenModal({
           >
             图片上传
           </a-button>
+          <a-button
+            v-access:code="['system:oss:upload']"
+            @click="uploadTestApi.open"
+          >
+            测试上传
+          </a-button>
         </Space>
       </template>
       <template #url="{ row }">
@@ -288,30 +289,30 @@ const [FileUploadModal, fileUploadApi] = useVbenModal({
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button
+          <action-button
             v-access:code="['system:oss:download']"
             @click="handleDownload(row)"
           >
             {{ $t('pages.common.download') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
-            :get-popup-container="getVxePopupContainer"
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['system:oss:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>
     </BasicTable>
     <ImageUploadModal @reload="tableApi.query" />
     <FileUploadModal @reload="tableApi.query" />
+    <UploadTestModal />
   </Page>
 </template>

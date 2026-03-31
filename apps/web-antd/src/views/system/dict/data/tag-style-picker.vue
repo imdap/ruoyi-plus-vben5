@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import type { RadioChangeEvent } from 'ant-design-vue';
+import type { RadioChangeEvent } from 'antdv-next';
 
 import { computed } from 'vue';
 
-import { usePreferences } from '@vben/preferences';
-
-import { RadioGroup, Select } from 'ant-design-vue';
-import { ColorPicker } from 'vue3-colorpicker';
+import { ColorPicker, RadioGroup, Select } from 'antdv-next';
 
 import { tagSelectOptions } from '#/components/dict';
-
-import 'vue3-colorpicker/style.css';
 
 /**
  * 需要禁止透传
@@ -50,11 +45,6 @@ function handleSelectTypeChange(e: RadioChangeEvent) {
   // 必须给默认hex颜色 不能为空字符串
   color.value = e.target.value === 'custom' ? '#1677ff' : undefined;
 }
-
-const { isDark } = usePreferences();
-const theme = computed(() => {
-  return isDark.value ? 'black' : 'white';
-});
 </script>
 
 <template>
@@ -75,12 +65,11 @@ const theme = computed(() => {
       placeholder="请选择标签样式"
       @deselect="$emit('deselect')"
     />
+
     <ColorPicker
       v-if="selectType === 'custom'"
-      disable-alpha
-      format="hex"
-      v-model:pure-color="color"
-      :theme="theme"
+      v-model:value="color"
+      show-text
     />
   </div>
 </template>

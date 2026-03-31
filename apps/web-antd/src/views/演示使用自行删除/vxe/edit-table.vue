@@ -5,15 +5,7 @@ import { nextTick, onMounted } from 'vue';
 
 import { JsonPreview } from '@vben/common-ui';
 
-import {
-  Button,
-  Input,
-  InputNumber,
-  message,
-  Modal,
-  Select,
-  Space,
-} from 'ant-design-vue';
+import { Button, Input, InputNumber, Select, Space } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
@@ -246,9 +238,9 @@ async function handleValidate() {
   const result = await tableApi.grid.validate(true);
   console.log(result);
   if (result) {
-    message.error('校验失败');
+    window.message.error('校验失败');
   } else {
-    message.success('校验成功');
+    window.message.success('校验成功');
   }
 }
 
@@ -256,7 +248,7 @@ function getData() {
   const data = tableApi.grid.getTableData();
   const { fullData } = data;
   console.log(fullData);
-  Modal.info({
+  window.modal.info({
     title: '提示',
     content: (
       <div class="max-h-[350px] overflow-y-auto">

@@ -1,4 +1,4 @@
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 /**
  * 发送短信验证码
@@ -6,7 +6,7 @@ import { requestClient } from '#/api/request';
  * @returns void
  */
 export function sendSmsCode(phonenumber: string) {
-  return requestClient.get<void>('/resource/sms/code', {
+  return alovaInstance.get<void>('/resource/sms/code', {
     params: { phonenumber },
   });
 }
@@ -17,7 +17,7 @@ export function sendSmsCode(phonenumber: string) {
  * @returns void
  */
 export function sendEmailCode(email: string) {
-  return requestClient.get<void>('/resource/email/code', {
+  return alovaInstance.get<void>('/resource/email/code', {
     params: { email },
   });
 }
@@ -38,5 +38,5 @@ export interface CaptchaResponse {
  * @returns resp
  */
 export function captchaImage() {
-  return requestClient.get<CaptchaResponse>('/auth/code');
+  return alovaInstance.get<CaptchaResponse>('/auth/code');
 }

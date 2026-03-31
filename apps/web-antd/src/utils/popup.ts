@@ -5,7 +5,6 @@ import { ref } from 'vue';
 
 import { $t } from '@vben/locales';
 
-import { Modal } from 'ant-design-vue';
 import { isFunction } from 'lodash-es';
 
 interface BeforeCloseDiffProps {
@@ -86,13 +85,14 @@ export function useBeforeCloseDiff(props: BeforeCloseDiffProps) {
 
       // 数据有变化，显示确认对话框
       return new Promise<boolean>((resolve) => {
-        Modal.confirm({
+        window.modal.confirm({
           title: $t('pages.common.tip'),
           content: $t('pages.common.beforeCloseTip'),
           centered: true,
           okButtonProps: { danger: true },
           cancelText: $t('common.cancel'),
           okText: $t('common.confirm'),
+          mask: { blur: false },
           onOk: () => {
             resolve(true);
             isInitialized.value = false;

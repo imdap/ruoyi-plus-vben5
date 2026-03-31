@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Page } from '@vben/common-ui';
 
-import { Alert, Image } from 'ant-design-vue';
+import { Alert, Image } from 'antdv-next';
 
 import wechatGroupImg from './img-base64.txt?raw';
 </script>

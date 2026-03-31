@@ -9,12 +9,11 @@ import { ref } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { getPopupContainer } from '@vben/utils';
 
-import { Modal, Popconfirm, Space } from 'ant-design-vue';
+import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
-import { commonDownloadExcel } from '#/utils/file/download';
 
-import { demoExport, demoList, demoRemove } from './api';
+import { demoList, demoRemove } from './api';
 import { columns, querySchema } from './data';
 import demoModal from './demo-modal.vue';
 
@@ -84,7 +83,7 @@ async function handleDelete(row: Recordable<any>) {
 function handleMultiDelete() {
   const rows = tableApi.grid.getCheckboxRecords();
   const ids = rows.map((row: any) => row.id);
-  Modal.confirm({
+  window.modal.confirm({
     title: '提示',
     okType: 'danger',
     content: `确认删除选中的${ids.length}条记录吗？`,
@@ -106,18 +105,6 @@ function handleMultiDelete() {
       <template #toolbar-tools>
         <Space>
           <a-button
-            v-access:code="['system:demo:export']"
-            @click="
-              commonDownloadExcel(
-                demoExport,
-                '测试单数据',
-                tableApi.formApi.form.values,
-              )
-            "
-          >
-            {{ $t('pages.common.export') }}
-          </a-button>
-          <a-button
             :disabled="!vxeCheckboxChecked(tableApi)"
             danger
             type="primary"
@@ -137,25 +124,25 @@ function handleMultiDelete() {
       </template>
       <template #action="{ row }">
         <Space>
-          <ghost-button
+          <action-button
             v-access:code="['system:demo:edit']"
             @click.stop="handleEdit(row)"
           >
             {{ $t('pages.common.edit') }}
-          </ghost-button>
+          </action-button>
           <Popconfirm
             :get-popup-container="getPopupContainer"
             placement="left"
             title="确认删除？"
             @confirm="handleDelete(row)"
           >
-            <ghost-button
+            <action-button
               danger
               v-access:code="['system:demo:remove']"
               @click.stop=""
             >
               {{ $t('pages.common.delete') }}
-            </ghost-button>
+            </action-button>
           </Popconfirm>
         </Space>
       </template>

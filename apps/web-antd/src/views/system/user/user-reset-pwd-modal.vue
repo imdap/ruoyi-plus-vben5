@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import type { DescriptionsProps } from 'antdv-next';
+
 import type { ResetPwdParam, User } from '#/api/system/user/model';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal, z } from '@vben/common-ui';
 
-import { Descriptions, DescriptionsItem } from 'ant-design-vue';
+import { Descriptions } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { userResetPassword } from '#/api/system/user';
@@ -86,6 +88,17 @@ async function handleClosed() {
   await formApi.resetForm();
   currentUser.value = null;
 }
+
+const items = computed<DescriptionsProps['items']>(() => {
+  if (!currentUser.value) {
+    return [];
+  }
+  return [
+    { label: '用户ID', content: currentUser.value.userId },
+    { label: '用户名', content: currentUser.value.userName },
+    { label: '昵称', content: currentUser.value.nickName },
+  ];
+});
 </script>
 
 <template>
@@ -95,17 +108,7 @@ async function handleClosed() {
     title="重置密码"
   >
     <div class="flex flex-col gap-[12px]">
-      <Descriptions v-if="currentUser" size="small" :column="1" bordered>
-        <DescriptionsItem label="用户ID">
-          {{ currentUser.userId }}
-        </DescriptionsItem>
-        <DescriptionsItem label="用户名">
-          {{ currentUser.userName }}
-        </DescriptionsItem>
-        <DescriptionsItem label="昵称">
-          {{ currentUser.nickName }}
-        </DescriptionsItem>
-      </Descriptions>
+      <Descriptions size="small" :column="1" bordered :items="items" />
       <BasicForm />
     </div>
   </BasicModal>

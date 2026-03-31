@@ -3,7 +3,7 @@ import type { Client } from './model';
 import type { ID, IDS, PageQuery, PageResult } from '#/api/common';
 
 import { commonExport } from '#/api/helper';
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   clientChangeStatus = '/system/client/changeStatus',
@@ -18,7 +18,7 @@ enum Api {
  * @returns 列表
  */
 export function clientList(params?: PageQuery) {
-  return requestClient.get<PageResult<Client>>(Api.clientList, { params });
+  return alovaInstance.get<PageResult<Client>>(Api.clientList, { params });
 }
 
 /**
@@ -35,7 +35,7 @@ export function clientExport(data: Partial<Client>) {
  * @returns 详情
  */
 export function clientInfo(id: ID) {
-  return requestClient.get<Client>(`${Api.root}/${id}`);
+  return alovaInstance.get<Client>(`${Api.root}/${id}`);
 }
 
 /**
@@ -43,7 +43,7 @@ export function clientInfo(id: ID) {
  * @param data 参数
  */
 export function clientAdd(data: Partial<Client>) {
-  return requestClient.postWithMsg<void>(Api.root, data);
+  return alovaInstance.postWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -51,7 +51,7 @@ export function clientAdd(data: Partial<Client>) {
  * @param data 参数
  */
 export function clientUpdate(data: Partial<Client>) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -63,7 +63,7 @@ export function clientChangeStatus(data: any) {
     clientId: data.clientId,
     status: data.status,
   };
-  return requestClient.putWithMsg<void>(Api.clientChangeStatus, requestData);
+  return alovaInstance.putWithMsg<void>(Api.clientChangeStatus, requestData);
 }
 
 /**
@@ -71,5 +71,5 @@ export function clientChangeStatus(data: any) {
  * @param ids id集合
  */
 export function clientRemove(ids: IDS) {
-  return requestClient.deleteWithMsg<void>(`${Api.root}/${ids}`);
+  return alovaInstance.deleteWithMsg<void>(`${Api.root}/${ids}`);
 }

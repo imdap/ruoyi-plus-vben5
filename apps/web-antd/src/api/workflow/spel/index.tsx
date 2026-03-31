@@ -2,24 +2,24 @@ import type { Spel } from './model';
 
 import type { ID, PageQuery, PageResult } from '#/api/common';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 export function spelList(params?: PageQuery) {
-  return requestClient.get<PageResult<Spel>>('/workflow/spel/list', { params });
+  return alovaInstance.get<PageResult<Spel>>('/workflow/spel/list', { params });
 }
 
 export function spelInfo(id: ID) {
-  return requestClient.get<Spel>(`/workflow/spel/${id}`);
+  return alovaInstance.get<Spel>(`/workflow/spel/${id}`);
 }
 
 export function spelAdd(data: Partial<Spel>) {
-  return requestClient.postWithMsg<Spel>('/workflow/spel', data);
+  return alovaInstance.postWithMsg<Spel>('/workflow/spel', data);
 }
 
 export function spelUpdate(data: Partial<Spel>) {
-  return requestClient.putWithMsg<Spel>('/workflow/spel', data);
+  return alovaInstance.putWithMsg<Spel>('/workflow/spel', data);
 }
 
 export function spelDelete(ids: ID[]) {
-  return requestClient.deleteWithMsg<Spel>(`/workflow/spel/${ids}`);
+  return alovaInstance.deleteWithMsg<Spel>(`/workflow/spel/${ids}`);
 }

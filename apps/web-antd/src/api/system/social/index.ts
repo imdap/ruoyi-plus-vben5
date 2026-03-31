@@ -2,7 +2,7 @@ import type { SocialInfo } from './model';
 
 import type { ID } from '#/api/common';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   root = '/system/social',
@@ -14,12 +14,12 @@ enum Api {
  * @returns info
  */
 export function socialList() {
-  return requestClient.get<SocialInfo[]>(Api.socialList);
+  return alovaInstance.get<SocialInfo[]>(Api.socialList);
 }
 
 /**
  * @deprecated 并没有用到这个方法
  */
 export function socialInfo(id: ID) {
-  return requestClient.get(`${Api.root}/${id}`);
+  return alovaInstance.get(`${Api.root}/${id}`);
 }

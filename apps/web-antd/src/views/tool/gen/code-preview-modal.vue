@@ -1,28 +1,21 @@
 <script setup lang="ts">
-import type { Key } from 'ant-design-vue/es/vc-tree/interface';
+import type { Key } from 'antdv-next/dist/table/interface';
 
 import type { Component } from 'vue';
 
 import type { LanguageSupport } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
 
-import { markRaw, ref } from 'vue';
+import { ref } from 'vue';
 
 import { CodeMirror, useVbenModal } from '@vben/common-ui';
-import {
-  DefaultFileIcon,
-  FolderIcon,
-  JavaIcon,
-  SqlIcon,
-  TsIcon,
-  VueIcon,
-  XmlIcon,
-} from '@vben/icons';
 
 import { useClipboard } from '@vueuse/core';
-import { Alert, Skeleton, Tree } from 'ant-design-vue';
+import { Alert, Skeleton, Tree } from 'antdv-next';
 
 import { previewCode } from '#/api/tool/gen';
+
+import { defaultFileIcon, defaultFolderIcon, iconMap } from './data';
 
 interface TreeNode {
   children: TreeNode[];
@@ -97,17 +90,7 @@ function convertToTree(paths: string[]): TreeNode[] {
   return tree;
 }
 
-const iconMap = [
-  { key: 'java', value: markRaw(JavaIcon) },
-  { key: 'xml', value: markRaw(XmlIcon) },
-  { key: 'sql', value: markRaw(SqlIcon) },
-  { key: 'ts', value: markRaw(TsIcon) },
-  { key: 'vue', value: markRaw(VueIcon) },
-  { key: 'folder', value: markRaw(FolderIcon) },
-];
 function findIcon(path: string) {
-  const defaultFileIcon = DefaultFileIcon;
-  const defaultFolderIcon = FolderIcon;
   if (path.endsWith('.vm')) {
     const realPath = path.slice(0, -3);
     // 是否为指定拓展名
@@ -178,7 +161,7 @@ const { copy } = useClipboard({ legacy: true });
           default-expand-all
           @select="handleSelect"
         >
-          <template #title="{ title, icon }">
+          <template #titleRender="{ title, icon }">
             <div class="flex items-center gap-[16px]">
               <component :is="icon" />
               <span>{{ title }}</span>

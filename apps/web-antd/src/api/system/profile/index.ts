@@ -2,7 +2,7 @@ import type { FileCallBack, UpdatePasswordParam, UserProfile } from './model';
 
 import { buildUUID } from '@vben/utils';
 
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 enum Api {
   root = '/system/user/profile',
@@ -15,7 +15,7 @@ enum Api {
  * @returns userInformation
  */
 export function userProfile() {
-  return requestClient.get<UserProfile>(Api.root);
+  return alovaInstance.get<UserProfile>(Api.root);
 }
 
 /**
@@ -24,7 +24,7 @@ export function userProfile() {
  * @returns void
  */
 export function userProfileUpdate(data: any) {
-  return requestClient.putWithMsg<void>(Api.root, data);
+  return alovaInstance.putWithMsg<void>(Api.root, data);
 }
 
 /**
@@ -33,7 +33,7 @@ export function userProfileUpdate(data: any) {
  * @returns void
  */
 export function userUpdatePassword(data: UpdatePasswordParam) {
-  return requestClient.putWithMsg<void>(Api.updatePassword, data, {
+  return alovaInstance.putWithMsg<void>(Api.updatePassword, data, {
     encrypt: true,
   });
 }
@@ -55,7 +55,7 @@ export function userUpdateAvatar(fileCallback: FileCallBack) {
   file = filename
     ? new File([file], filename)
     : new File([file], `${buildUUID()}.png`);
-  return requestClient.post(
+  return alovaInstance.post(
     Api.updateAvatar,
     {
       avatarfile: file,

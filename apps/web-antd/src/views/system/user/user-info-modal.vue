@@ -1,4 +1,6 @@
-<script setup lang="ts">
+<script setup lang="tsx">
+import type { DescriptionsProps } from 'antdv-next';
+
 import type { User } from '#/api/system/user/model';
 
 import { computed, shallowRef } from 'vue';
@@ -6,13 +8,14 @@ import { computed, shallowRef } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { DictEnum } from '@vben/constants';
 
-import { Descriptions, DescriptionsItem, Tag } from 'ant-design-vue';
+import { Descriptions, Tag } from 'antdv-next';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import { findUserInfo } from '#/api/system/user';
-import { renderDict } from '#/utils/render';
+import { DictTag } from '#/components/dict';
+import { getDictOptions } from '#/utils/dict';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -83,70 +86,70 @@ const diffLoginTime = computed(() => {
   const diffText = dayjs.duration(diffSeconds, 'seconds').humanize();
   return diffText;
 });
+
+const statusOptions = getDictOptions(DictEnum.SYS_NORMAL_DISABLE);
+const items = computed<DescriptionsProps['items']>(() => {
+  if (!currentUser.value) {
+    return [];
+  }
+  const { userId, status } = currentUser.value;
+  return [
+    { label: 'userId', content: userId },
+    {
+      label: '用户状态',
+      content: <DictTag dicts={statusOptions} value={status} />,
+    },
+    { label: '用户信息', content: mixInfo.value },
+    { label: '手机号', content: currentUser.value.phonenumber || '-' },
+    { label: '邮箱', content: currentUser.value.email || '-' },
+    {
+      label: '岗位',
+      content: (
+        <div class="flex flex-wrap gap-0.5">
+          {currentUser.value.postNames.map((item) => (
+            <Tag key={item}>{item}</Tag>
+          ))}
+        </div>
+      ),
+    },
+    {
+      label: '权限',
+      content: (
+        <div class="flex flex-wrap gap-0.5">
+          {currentUser.value.roleNames.map((item) => (
+            <Tag key={item}>{item}</Tag>
+          ))}
+        </div>
+      ),
+    },
+    { label: '创建时间', content: currentUser.value.createTime },
+    { label: '上次登录IP', content: currentUser.value.loginIp || '-' },
+    {
+      label: '上次登录时间',
+      content: (
+        <>
+          <span>{currentUser.value.loginDate ?? '-'}</span>
+          {diffLoginTime.value && (
+            <Tag class="ml-2" color="processing">
+              {diffLoginTime.value}前
+            </Tag>
+          )}
+        </>
+      ),
+    },
+    { label: '备注', content: currentUser.value.remark || '-' },
+  ];
+});
 </script>
 
 <template>
   <BasicModal :footer="false" :fullscreen-button="false" title="用户信息">
-    <Descriptions v-if="currentUser" size="small" :column="1" bordered>
-      <DescriptionsItem label="userId">
-        {{ currentUser.userId }}
-      </DescriptionsItem>
-      <DescriptionsItem label="用户状态">
-        <component
-          :is="renderDict(currentUser.status, DictEnum.SYS_NORMAL_DISABLE)"
-        />
-      </DescriptionsItem>
-      <DescriptionsItem label="用户信息">
-        {{ mixInfo }}
-      </DescriptionsItem>
-      <DescriptionsItem label="手机号">
-        {{ currentUser.phonenumber || '-' }}
-      </DescriptionsItem>
-      <DescriptionsItem label="邮箱">
-        {{ currentUser.email || '-' }}
-      </DescriptionsItem>
-      <DescriptionsItem label="岗位">
-        <div
-          v-if="currentUser.postNames.length > 0"
-          class="flex flex-wrap gap-0.5"
-        >
-          <Tag v-for="item in currentUser.postNames" :key="item">
-            {{ item }}
-          </Tag>
-        </div>
-        <span v-else>-</span>
-      </DescriptionsItem>
-      <DescriptionsItem label="权限">
-        <div
-          v-if="currentUser.roleNames.length > 0"
-          class="flex flex-wrap gap-0.5"
-        >
-          <Tag v-for="item in currentUser.roleNames" :key="item">
-            {{ item }}
-          </Tag>
-        </div>
-        <span v-else>-</span>
-      </DescriptionsItem>
-      <DescriptionsItem label="创建时间">
-        {{ currentUser.createTime }}
-      </DescriptionsItem>
-      <DescriptionsItem label="上次登录IP">
-        {{ currentUser.loginIp ?? '-' }}
-      </DescriptionsItem>
-      <DescriptionsItem label="上次登录时间">
-        <span>{{ currentUser.loginDate ?? '-' }}</span>
-        <Tag
-          class="ml-2"
-          v-if="diffLoginTime"
-          :bordered="false"
-          color="processing"
-        >
-          {{ diffLoginTime }}前
-        </Tag>
-      </DescriptionsItem>
-      <DescriptionsItem label="备注">
-        {{ currentUser.remark ?? '-' }}
-      </DescriptionsItem>
-    </Descriptions>
+    <Descriptions
+      v-if="currentUser"
+      size="small"
+      :column="1"
+      bordered
+      :items="items"
+    />
   </BasicModal>
 </template>

@@ -1,4 +1,4 @@
-import { requestClient } from '#/api/request';
+import { alovaInstance } from '#/utils/http';
 
 export interface CommandStats {
   name: string;
@@ -20,5 +20,5 @@ export interface CacheInfo {
  * @returns redis信息
  */
 export function redisCacheInfo() {
-  return requestClient.get<CacheInfo>('/monitor/cache');
+  return alovaInstance.get<CacheInfo>('/monitor/cache');
 }
