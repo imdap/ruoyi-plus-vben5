@@ -1,0 +1,6 @@
+{
+    "id": "markdown",
+    "name": "Markdown",
+    "description": "Markdown dictionary.",
+    "import": ["./cspell-ext.yaml"]
+}

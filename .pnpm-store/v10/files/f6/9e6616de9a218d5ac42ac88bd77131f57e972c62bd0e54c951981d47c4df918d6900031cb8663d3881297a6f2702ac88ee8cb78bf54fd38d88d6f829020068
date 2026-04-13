@@ -1,0 +1,529 @@
+import MenuContext_default, { useMenuContextProvider } from "./context/MenuContext.js";
+import { MeasureProvider, PathUserProvider } from "./context/PathContext.js";
+import { useIdContextProvide } from "./context/IdContext.js";
+import { PrivateContextProvider } from "./context/PrivateContext.js";
+import useAccessibility, { getFocusableElements, refreshElements } from "./hooks/useAccessibility.js";
+import useKeyRecords, { OVERFLOW_KEY } from "./hooks/useKeyRecords.js";
+import useMemoCallback from "./hooks/useMemoCallback.js";
+import { warnItemProp } from "./utils/warnUtil.js";
+import MenuItem_default from "./MenuItem.js";
+import SubMenu_default from "./SubMenu/index.js";
+import { parseItems } from "./utils/nodeUtil.js";
+import { computed, createVNode, defineComponent, isVNode, mergeDefaults, mergeProps, nextTick, onMounted, onUnmounted, ref, shallowRef, watch } from "vue";
+import { classNames } from "@v-c/util";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+import Overflow from "@v-c/overflow";
+import useId from "@v-c/util/dist/hooks/useId";
+import isEqual from "@v-c/util/dist/isEqual";
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+var EMPTY_LIST = [];
+var defaults = {
+	prefixCls: "vc-menu",
+	mode: "vertical",
+	subMenuOpenDelay: .1,
+	subMenuCloseDelay: .1,
+	selectable: true,
+	multiple: false,
+	inlineIndent: 24,
+	triggerSubMenuAction: "hover",
+	overflowedIndicator: "..."
+};
+var Menu_default = /* @__PURE__ */ defineComponent((props, { slots, expose, attrs: _attrs }) => {
+	const containerRef = shallowRef();
+	const uuid = useId(props?.id ? `vc-menu-uuid-${props.id}` : "vc-menu-uuid");
+	const isRtl = computed(() => props?.direction === "rtl");
+	const childList = shallowRef([]);
+	const mergedOverflowIndicator = computed(() => props.overflowedIndicator ?? defaults.overflowedIndicator);
+	const overflowIndicatorVersion = ref(0);
+	watch(mergedOverflowIndicator, () => {
+		overflowIndicatorVersion.value += 1;
+	}, { immediate: true });
+	useIdContextProvide(computed(() => uuid));
+	const innerOpenKeys = ref(props?.openKeys ?? props?.defaultOpenKeys);
+	watch(() => props.openKeys, () => {
+		innerOpenKeys.value = props?.openKeys;
+	});
+	const mergedOpenKeys = computed({
+		get() {
+			if (props.openKeys) return props.openKeys;
+			return innerOpenKeys.value ?? EMPTY_LIST;
+		},
+		set(value) {
+			innerOpenKeys.value = value;
+		}
+	});
+	const triggerOpenKeys = (keys, forceFlush = false) => {
+		function doUpdate() {
+			mergedOpenKeys.value = keys;
+			props?.onOpenChange?.(keys);
+		}
+		if (forceFlush) nextTick(doUpdate);
+		else doUpdate();
+	};
+	const inlineCacheOpenKeys = shallowRef(mergedOpenKeys.value);
+	const mountRef = shallowRef(false);
+	const modeMerged = computed(() => {
+		const { mode, inlineCollapsed } = props;
+		if ((mode === "inline" || mode === "vertical") && inlineCollapsed) return ["vertical", inlineCollapsed];
+		return [mode, false];
+	});
+	const mergedMode = computed(() => modeMerged.value[0]);
+	const mergedInlineCollapsed = computed(() => modeMerged.value[1]);
+	const isInlineMode = computed(() => mergedMode.value === "inline");
+	const internalMode = shallowRef(mergedMode.value);
+	const internalInlineCollapsed = shallowRef(mergedInlineCollapsed.value);
+	watch([mergedMode, mergedInlineCollapsed], () => {
+		internalMode.value = mergedMode.value;
+		internalInlineCollapsed.value = mergedInlineCollapsed.value;
+		if (!mountRef.value) return;
+		if (isInlineMode.value) mergedOpenKeys.value = inlineCacheOpenKeys.value;
+		else triggerOpenKeys(EMPTY_LIST);
+	});
+	const lastVisibleIndex = shallowRef(0);
+	watch(mergedOpenKeys, () => {
+		if (isInlineMode.value) inlineCacheOpenKeys.value = mergedOpenKeys.value;
+	});
+	onMounted(() => {
+		mountRef.value = true;
+	});
+	onUnmounted(() => {
+		mountRef.value = false;
+	});
+	const { registerPath, unregisterPath, refreshOverflowKeys, isSubPathKey, getKeyPath, getKeys, getSubPathKeys } = useKeyRecords();
+	const registerPathContext = computed(() => ({
+		registerPath,
+		unregisterPath
+	}));
+	const pathUserContext = computed(() => ({ isSubPathKey }));
+	const mergedActiveKey = shallowRef(props?.activeKey);
+	watch(() => props.activeKey, () => {
+		mergedActiveKey.value = props?.activeKey;
+	});
+	const onActive = useMemoCallback((key) => {
+		mergedActiveKey.value = key;
+	});
+	const onInactive = useMemoCallback(() => {
+		mergedActiveKey.value = void 0;
+	});
+	const innerSelectKeys = ref(props?.selectedKeys ?? props?.defaultSelectedKeys ?? EMPTY_LIST);
+	watch(() => props.selectedKeys, () => {
+		innerSelectKeys.value = props.selectedKeys ?? EMPTY_LIST;
+	});
+	const mergedSelectKeys = computed(() => {
+		const keys = innerSelectKeys.value;
+		if (Array.isArray(keys)) return keys;
+		if (keys === null || keys === void 0) return EMPTY_LIST;
+		return [keys];
+	});
+	const triggerSelection = (info) => {
+		if (props.selectable) {
+			const { key: targetKey } = info;
+			const exist = mergedSelectKeys.value.includes(targetKey);
+			let newSelectKeys;
+			if (props.multiple) if (exist) newSelectKeys = mergedSelectKeys.value.filter((key) => key !== targetKey);
+			else newSelectKeys = [...mergedSelectKeys.value, targetKey];
+			else newSelectKeys = [targetKey];
+			if (props.selectedKeys === void 0) innerSelectKeys.value = newSelectKeys;
+			const selectInfo = {
+				...info,
+				selectedKeys: newSelectKeys
+			};
+			if (exist) props.onDeselect?.(selectInfo);
+			else props.onSelect?.(selectInfo);
+		}
+		if (!props.multiple && mergedOpenKeys.value.length && internalMode.value !== "inline") triggerOpenKeys(EMPTY_LIST);
+	};
+	const onInternalClick = (info) => {
+		props.onClick?.(warnItemProp(info));
+		triggerSelection(info);
+	};
+	const onInternalOpenChange = (key, open) => {
+		let newOpenKeys = mergedOpenKeys.value.filter((k) => k !== key);
+		if (open) newOpenKeys.push(key);
+		else if (internalMode.value !== "inline") {
+			const subPathKeys = getSubPathKeys(key);
+			newOpenKeys = newOpenKeys.filter((k) => !subPathKeys.has(k));
+		}
+		if (!isEqual(mergedOpenKeys.value, newOpenKeys, true)) triggerOpenKeys(newOpenKeys, true);
+	};
+	const triggerAccessibilityOpen = (key, open) => {
+		onInternalOpenChange(key, open ?? !mergedOpenKeys.value.includes(key));
+	};
+	const setMergedActiveKey = (key) => {
+		mergedActiveKey.value = key;
+	};
+	const onInternalKeyDown = useAccessibility(internalMode, mergedActiveKey, isRtl, uuid, containerRef, getKeys, getKeyPath, setMergedActiveKey, triggerAccessibilityOpen, (...args) => {
+		_attrs?.onKeydown?.(...args);
+	});
+	watch(() => [
+		props.activeKey,
+		() => props.defaultActiveFirst,
+		childList.value
+	], () => {
+		if (props.activeKey !== void 0) mergedActiveKey.value = props.activeKey;
+		else if (props.defaultActiveFirst && childList.value[0]) mergedActiveKey.value = childList.value[0]?.key;
+	}, { immediate: true });
+	const allVisible = computed(() => lastVisibleIndex.value >= childList.value.length - 1 || internalMode.value !== "horizontal" || props?.disabledOverflow);
+	watch([
+		lastVisibleIndex,
+		allVisible,
+		childList
+	], () => {
+		refreshOverflowKeys(allVisible.value ? EMPTY_LIST : childList.value.slice(lastVisibleIndex.value + 1).map((child) => child.key));
+	}, { immediate: true });
+	const privateContext = computed(() => ({
+		_internalRenderMenuItem: props._internalRenderMenuItem,
+		_internalRenderSubMenuItem: props._internalRenderSubMenuItem
+	}));
+	useMenuContextProvider(computed(() => {
+		return {
+			prefixCls: props.prefixCls,
+			rootClass: props.rootClass,
+			classes: props.classes,
+			styles: props.styles,
+			mode: internalMode.value,
+			openKeys: mergedOpenKeys.value,
+			rtl: isRtl.value,
+			disabled: props.disabled,
+			motion: props.motion,
+			defaultMotions: props.defaultMotions,
+			activeKey: mergedActiveKey.value,
+			onActive,
+			onInactive,
+			selectedKeys: mergedSelectKeys.value,
+			inlineIndent: props.inlineIndent || defaults.inlineIndent,
+			subMenuOpenDelay: props.subMenuOpenDelay || defaults.subMenuOpenDelay,
+			subMenuCloseDelay: props.subMenuCloseDelay || defaults.subMenuCloseDelay,
+			forceSubMenuRender: props.forceSubMenuRender,
+			builtinPlacements: props.builtinPlacements,
+			triggerSubMenuAction: props.triggerSubMenuAction || defaults.triggerSubMenuAction,
+			getPopupContainer: props.getPopupContainer,
+			itemIcon: props.itemIcon,
+			expandIcon: props.expandIcon,
+			onItemClick: onInternalClick,
+			onOpenChange: onInternalOpenChange,
+			popupRender: props.popupRender
+		};
+	}));
+	expose({
+		list: containerRef,
+		focus: (options) => {
+			const keys = getKeys();
+			const { elements, key2element, element2key } = refreshElements(keys, uuid);
+			const focusableElements = getFocusableElements(containerRef.value, elements);
+			let shouldFocusKey;
+			if (mergedActiveKey.value && keys.includes(mergedActiveKey.value)) shouldFocusKey = mergedActiveKey.value;
+			else shouldFocusKey = focusableElements[0] ? element2key.get(focusableElements[0]) : childList.value.find((node) => !node.props.disabled)?.key;
+			const elementToFocus = key2element.get(shouldFocusKey);
+			if (shouldFocusKey && elementToFocus) elementToFocus?.focus?.(options);
+		},
+		findItem: ({ key: itemKey }) => {
+			const { key2element } = refreshElements(getKeys(), uuid);
+			return key2element.get(itemKey) || null;
+		}
+	});
+	return () => {
+		const { prefixCls, rootClass } = props;
+		const children = filterEmpty(slots.default?.());
+		childList.value = parseItems(children, props?.items, EMPTY_LIST, props?._internalComponents || {}, props?.prefixCls || defaults.prefixCls, {
+			labelRender: props?.labelRender,
+			extraRender: props?.extraRender,
+			iconRender: props?.iconRender
+		});
+		const measureChildList = parseItems(children, props?.items, EMPTY_LIST, {}, props?.prefixCls || defaults.prefixCls);
+		const wrappedChildList = internalMode.value !== "horizontal" || props?.disabledOverflow ? childList.value : childList.value.map((child, index) => createVNode(MenuContext_default, {
+			"key": child.key,
+			"overflowDisabled": index > lastVisibleIndex.value,
+			"classes": props.classes,
+			"styles": props.styles
+		}, _isSlot(child) ? child : { default: () => [child] }));
+		const container = createVNode(Overflow, mergeProps({
+			"ref": containerRef,
+			"prefixCls": `${prefixCls}-overflow`,
+			"component": "ul",
+			"itemComponent": MenuItem_default,
+			"class": classNames(prefixCls, `${prefixCls}-root`, `${prefixCls}-${internalMode.value}`, _attrs.class || "", {
+				[`${prefixCls}-inline-collapsed`]: internalInlineCollapsed.value,
+				[`${prefixCls}-rtl`]: isRtl.value
+			}, rootClass),
+			"style": _attrs.style,
+			"data": wrappedChildList
+		}, {
+			dir: props.direction,
+			role: "menu",
+			tabindex: _attrs.tabindex ?? 0
+		}, {
+			"renderRawItem": (node) => {
+				return node;
+			},
+			"renderRawRest": (omitItems) => {
+				const len = omitItems.length;
+				const originOmitItems = len ? childList.value.slice(-len) : null;
+				return createVNode(SubMenu_default, {
+					"eventKey": OVERFLOW_KEY,
+					"title": mergedOverflowIndicator.value,
+					"disabled": allVisible.value,
+					"internalPopupClose": len === 0,
+					"popupClassName": props.overflowedIndicatorPopupClassName
+				}, _isSlot(originOmitItems) ? originOmitItems : { default: () => [originOmitItems] });
+			},
+			"maxCount": internalMode.value !== "horizontal" || props?.disabledOverflow ? Overflow.INVALIDATE : Overflow.RESPONSIVE,
+			"ssr": "full",
+			"data-menu-list": true,
+			"onVisibleChange": (newLastIndex) => {
+				lastVisibleIndex.value = newLastIndex;
+			}
+		}, { onKeydown: onInternalKeyDown }), null);
+		return createVNode(PrivateContextProvider, privateContext.value, { default: () => [createVNode(PathUserProvider, pathUserContext.value, _isSlot(container) ? container : { default: () => [container] }), createVNode("div", {
+			"style": { display: "none" },
+			"aria-hidden": true
+		}, [createVNode(MeasureProvider, registerPathContext.value, _isSlot(measureChildList) ? measureChildList : { default: () => [measureChildList] })])] });
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		prefixCls: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		rootClass: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		classes: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		items: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		disabledOverflow: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		direction: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		mode: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		inlineCollapsed: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		defaultOpenKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		openKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		activeKey: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		defaultActiveFirst: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		selectable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		multiple: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		defaultSelectedKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		selectedKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		onSelect: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onDeselect: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		inlineIndent: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		motion: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		defaultMotions: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		subMenuOpenDelay: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		subMenuCloseDelay: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		forceSubMenuRender: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		triggerSubMenuAction: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		builtinPlacements: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		itemIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		expandIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		overflowedIndicator: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		overflowedIndicatorPopupClassName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		getPopupContainer: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onOpenChange: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		_internalRenderMenuItem: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		_internalRenderSubMenuItem: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		_internalComponents: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		popupRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		id: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		labelRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		extraRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		iconRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		}
+	}, defaults),
+	name: "VcMenu",
+	inheritAttrs: false
+});
+export { Menu_default as default };

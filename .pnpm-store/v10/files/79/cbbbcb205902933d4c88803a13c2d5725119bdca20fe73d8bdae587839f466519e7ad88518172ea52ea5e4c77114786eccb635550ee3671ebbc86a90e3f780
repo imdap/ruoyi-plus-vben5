@@ -1,0 +1,69 @@
+{
+  "name": "cspell-dictionary",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "version": "9.8.0",
+  "description": "A spelling dictionary library useful for checking words and getting suggestions.",
+  "type": "module",
+  "sideEffects": false,
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildInfo",
+    "!**/__mocks__",
+    "!**/test/**",
+    "!**/*.test.*",
+    "!**/*.spec.*",
+    "!**/*.map"
+  ],
+  "scripts": {
+    "clean": "shx rm -rf dist temp coverage \"*.tsbuildInfo\"",
+    "build": "tsc -p .",
+    "clean-build": "pnpm run clean && pnpm run build",
+    "coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "test": "vitest run",
+    "test:perf": "pnpm test:perf:js --all",
+    "test:perf:ts": "NODE_ENV=production NODE_OPTIONS=--import=@swc-node/register/esm-register insight  --file \"**/*.perf.{mts,ts}\" -t 500",
+    "test:perf:js": "NODE_ENV=production insight -t 500",
+    "test:perf:prof": "NODE_ENV=production node --cpu-prof  ../../node_modules/perf-insight/bin.mjs",
+    "watch": "tsc -p . -w "
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell.git",
+    "directory": "packages/cspell-dictionary"
+  },
+  "keywords": [
+    "cspell"
+  ],
+  "author": "Jason Dent",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell/labels/cspell-dictionary"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell/tree/main/packages/cspell-dictionary#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@cspell/cspell-performance-monitor": "9.8.0",
+    "@cspell/cspell-pipe": "9.8.0",
+    "@cspell/cspell-types": "9.8.0",
+    "cspell-trie-lib": "9.8.0",
+    "fast-equals": "^6.0.0"
+  },
+  "devDependencies": {
+    "@cspell/dict-de-de": "^4.1.2",
+    "gensequence": "^8.0.8",
+    "lorem-ipsum": "^2.0.8"
+  },
+  "gitHead": "c822013ce676dffb5fa5544567c25a3ae666718f"
+}

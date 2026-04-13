@@ -1,0 +1,75 @@
+import { nextSlice } from "../utils/timeUtil.js";
+import { onBeforeUnmount, ref, shallowRef, triggerRef } from "vue";
+var PATH_SPLIT = "__VC_UTIL_PATH_SPLIT__";
+var getPathStr = (keyPath) => keyPath.join(PATH_SPLIT);
+var getPathKeys = (keyPathStr) => keyPathStr.split(PATH_SPLIT);
+const OVERFLOW_KEY = "vc-menu-more";
+function useKeyRecords() {
+	const key2pathRef = shallowRef(/* @__PURE__ */ new Map());
+	const path2keyRef = shallowRef(/* @__PURE__ */ new Map());
+	const overflowKeys = ref([]);
+	const updateRef = ref(0);
+	const destroyRef = ref(false);
+	const schedulePathRegisterUpdate = () => {
+		updateRef.value += 1;
+		const id = updateRef.value;
+		nextSlice(() => {
+			if (!destroyRef.value && id === updateRef.value) {
+				triggerRef(key2pathRef);
+				triggerRef(path2keyRef);
+			}
+		});
+	};
+	const registerPath = (key, keyPath) => {
+		if (process.env.NODE_ENV !== "production") {
+			if (key2pathRef.value.has(key)) console.warn(`Duplicated key '${key}' used in Menu by path [${keyPath.join(" > ")}]`);
+		}
+		const connectedPath = getPathStr(keyPath);
+		path2keyRef.value.set(connectedPath, key);
+		key2pathRef.value.set(key, connectedPath);
+		schedulePathRegisterUpdate();
+	};
+	const unregisterPath = (key, keyPath) => {
+		const connectedPath = getPathStr(keyPath);
+		path2keyRef.value.delete(connectedPath);
+		key2pathRef.value.delete(key);
+		schedulePathRegisterUpdate();
+	};
+	const refreshOverflowKeys = (keys) => {
+		overflowKeys.value = keys;
+	};
+	const getKeyPath = (eventKey, includeOverflow) => {
+		const keys = getPathKeys(key2pathRef.value.get(eventKey) || "");
+		if (includeOverflow && overflowKeys.value.includes(keys[0])) keys.unshift(OVERFLOW_KEY);
+		return keys;
+	};
+	const isSubPathKey = (pathKeys, eventKey) => pathKeys.filter((item) => item !== void 0).some((pathKey) => {
+		return getKeyPath(pathKey, true).includes(eventKey);
+	});
+	const getKeys = () => {
+		const keys = [...key2pathRef.value.keys()];
+		if (overflowKeys.value.length) keys.push(OVERFLOW_KEY);
+		return keys;
+	};
+	const getSubPathKeys = (key) => {
+		const connectedPath = `${key2pathRef.value.get(key)}${PATH_SPLIT}`;
+		const pathKeys = /* @__PURE__ */ new Set();
+		[...path2keyRef.value.keys()].forEach((pathKey) => {
+			if (pathKey.startsWith(connectedPath)) pathKeys.add(path2keyRef.value.get(pathKey));
+		});
+		return pathKeys;
+	};
+	onBeforeUnmount(() => {
+		destroyRef.value = true;
+	});
+	return {
+		registerPath,
+		unregisterPath,
+		refreshOverflowKeys,
+		isSubPathKey,
+		getKeyPath,
+		getKeys,
+		getSubPathKeys
+	};
+}
+export { OVERFLOW_KEY, useKeyRecords as default };

@@ -1,0 +1,14 @@
+import { VueNode } from "../../_util/type.js";
+import * as vue865 from "vue";
+import { PickerMode } from "@v-c/picker";
+
+//#region src/date-picker/generatePicker/SuffixIcon.d.ts
+interface SuffixIconProps {
+  picker?: PickerMode;
+  hasFeedback?: boolean;
+  feedbackIcon?: VueNode;
+  suffixIcon?: VueNode;
+}
+declare const SuffixIcon: vue865.DefineSetupFnComponent<SuffixIconProps, {}, {}, SuffixIconProps & {}, vue865.PublicProps>;
+//#endregion
+export { SuffixIconProps, SuffixIcon as default };

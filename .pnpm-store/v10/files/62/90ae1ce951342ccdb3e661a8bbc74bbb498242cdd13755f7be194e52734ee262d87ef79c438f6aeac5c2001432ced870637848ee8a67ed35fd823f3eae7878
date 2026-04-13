@@ -1,0 +1,86 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { Tab, TabsSlots } from "../tabs/index.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue46 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/card/Card.d.ts
+type CardType = 'inner';
+type CardSize = 'small' | 'medium' | 'middle' | 'default';
+interface CardTabListType extends Omit<Tab, 'label'> {
+  key: string;
+  /** @deprecated Please use `label` instead */
+  tab?: VueNode;
+  label?: VueNode;
+}
+type CardSemanticName = keyof CardSemanticClassNames & keyof CardSemanticStyles;
+interface CardSemanticClassNames {
+  root?: string;
+  header?: string;
+  body?: string;
+  extra?: string;
+  title?: string;
+  actions?: string;
+  cover?: string;
+}
+interface CardSemanticStyles {
+  root?: CSSProperties;
+  header?: CSSProperties;
+  body?: CSSProperties;
+  extra?: CSSProperties;
+  title?: CSSProperties;
+  actions?: CSSProperties;
+  cover?: CSSProperties;
+}
+type CardClassNamesType = SemanticClassNamesType<CardProps, CardSemanticClassNames>;
+type CardStylesType = SemanticStylesType<CardProps, CardSemanticStyles>;
+interface CardProps extends ComponentBaseProps, CardEmitsProps {
+  title?: VueNode;
+  extra?: VueNode;
+  /** @deprecated Please use `variant` instead */
+  bordered?: boolean;
+  /** @deprecated Please use `styles.header` instead */
+  headStyle?: CSSProperties;
+  /** @deprecated Please use `styles.body` instead */
+  bodyStyle?: CSSProperties;
+  loading?: boolean;
+  hoverable?: boolean;
+  id?: string;
+  size?: CardSize;
+  type?: CardType;
+  cover?: VueNode;
+  actions?: VueNode[];
+  tabList?: CardTabListType[];
+  tabBarExtraContent?: VueNode | {
+    [key: string]: VueNode;
+  };
+  activeTabKey?: string;
+  defaultActiveTabKey?: string;
+  tabProps?: Record<string, any>;
+  classes?: CardClassNamesType;
+  styles?: CardStylesType;
+  variant?: 'borderless' | 'outlined';
+}
+interface CardEmits {
+  'tabChange': (key: string) => void;
+  'update:activeTabKey': (key: string) => void;
+}
+interface CardEmitsProps {
+  onTabChange?: CardEmits['tabChange'];
+  'onUpdate:activeTabKey'?: CardEmits['update:activeTabKey'];
+}
+interface CardSlots {
+  default?: () => any;
+  title?: () => any;
+  extra?: () => any;
+  cover?: () => any;
+  actions?: () => any;
+  tabContentRender?: TabsSlots['contentRender'];
+  tabLabelRender?: TabsSlots['labelRender'];
+  tabBarExtraContent?: () => any;
+}
+declare const Card: vue46.DefineSetupFnComponent<CardProps, CardEmits, SlotsType<CardSlots>, CardProps, vue46.PublicProps>;
+//#endregion
+export { CardClassNamesType, CardEmits, CardEmitsProps, CardProps, CardSemanticClassNames, CardSemanticName, CardSemanticStyles, CardSize, CardSlots, CardStylesType, CardTabListType, CardType, Card as default };

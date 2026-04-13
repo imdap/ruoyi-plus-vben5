@@ -1,0 +1,12 @@
+import * as vue556 from "vue";
+
+//#region src/tag/style/presetCmp.d.ts
+declare const _default: vue556.DefineComponent<vue556.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>, () => null, {}, {}, {}, vue556.ComponentOptionsMixin, vue556.ComponentOptionsMixin, {}, string, vue556.PublicProps, Readonly<vue556.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>> & Readonly<{}>, {}, {}, {}, {}, string, vue556.ComponentProvideOptions, true, {}, any>;
+//#endregion
+export { _default as default };

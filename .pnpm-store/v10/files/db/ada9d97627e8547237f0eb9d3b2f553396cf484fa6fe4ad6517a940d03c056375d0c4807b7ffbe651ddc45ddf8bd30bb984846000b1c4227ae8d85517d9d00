@@ -1,0 +1,83 @@
+{
+  "name": "motion-v",
+  "version": "1.10.3",
+  "description": "",
+  "author": "",
+  "license": "MIT",
+  "homepage": "https://github.com/motiondivision/motion-vue",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/motiondivision/motion-vue.git"
+  },
+  "keywords": [
+    "vue",
+    "motion",
+    "motionone",
+    "framer-motion"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/es/index.d.ts",
+      "import": "./dist/es/index.mjs",
+      "require": "./dist/cjs/index.js"
+    },
+    "./nuxt": {
+      "import": {
+        "types": "./dist/nuxt/index.d.mts",
+        "default": "./dist/nuxt/index.mjs"
+      },
+      "require": {
+        "types": "./dist/nuxt/index.d.cts",
+        "default": "./dist/nuxt/index.cjs"
+      }
+    },
+    "./resolver": {
+      "import": {
+        "types": "./dist/resolver/index.d.mts",
+        "default": "./dist/resolver/index.mjs"
+      },
+      "require": {
+        "types": "./dist/resolver/index.d.cts",
+        "default": "./dist/resolver/index.cjs"
+      }
+    }
+  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/es/index.mjs",
+  "types": "./dist/es/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*/index.d.ts",
+        "./dist/es/index.d.ts"
+      ],
+      "nuxt": [
+        "./dist/nuxt/index.d.mts",
+        "./dist/nuxt/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "./LICENSE",
+    "./README.md",
+    "./dist"
+  ],
+  "peerDependencies": {
+    "@vueuse/core": ">=10.0.0",
+    "vue": ">=3.0.0"
+  },
+  "dependencies": {
+    "framer-motion": "^12.25.0",
+    "hey-listen": "^1.0.8",
+    "motion-dom": "^12.23.23"
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "prebuild": "cp ../../README.md ./README.md || true",
+    "build": "rimraf dist && vite build",
+    "test": "vitest --dom",
+    "coverage": "vitest run --coverage",
+    "pub:release": "pnpm publish --access public"
+  }
+}

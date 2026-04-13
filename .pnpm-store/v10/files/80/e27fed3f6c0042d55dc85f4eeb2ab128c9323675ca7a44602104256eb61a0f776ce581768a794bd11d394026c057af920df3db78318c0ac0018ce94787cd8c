@@ -1,0 +1,118 @@
+@use './base.scss';
+@use '../variable.scss' as light_variable;
+
+[data-vxe-ui-theme="light"] {
+  /*font color*/
+  --vxe-ui-font-color: #{light_variable.$vxe-ui-font-color};
+  --vxe-ui-font-tinge-color: #{light_variable.$vxe-ui-font-tinge-color};
+  --vxe-ui-font-lighten-color: #{light_variable.$vxe-ui-font-lighten-color};
+  --vxe-ui-font-darken-color: #{light_variable.$vxe-ui-font-darken-color};
+  --vxe-ui-font-disabled-color: #{light_variable.$vxe-ui-font-disabled-color};
+
+  /*font status color*/
+  --vxe-ui-font-primary-color: #{light_variable.$vxe-ui-font-primary-color};
+  --vxe-ui-font-primary-hover-color: #{light_variable.$vxe-ui-font-primary-hover-color};
+  --vxe-ui-font-primary-tinge-color: #{light_variable.$vxe-ui-font-primary-tinge-color};
+  --vxe-ui-font-primary-lighten-color: #{light_variable.$vxe-ui-font-primary-lighten-color};
+  --vxe-ui-font-primary-darken-color: #{light_variable.$vxe-ui-font-primary-darken-color};
+  --vxe-ui-font-primary-disabled-color: #{light_variable.$vxe-ui-font-primary-disabled-color};
+
+  --vxe-ui-status-success-color: #{light_variable.$vxe-ui-status-success-color};
+  --vxe-ui-status-info-color: #{light_variable.$vxe-ui-status-info-color};
+  --vxe-ui-status-warning-color: #{light_variable.$vxe-ui-status-warning-color};
+  --vxe-ui-status-danger-color: #{light_variable.$vxe-ui-status-danger-color};
+  --vxe-ui-status-error-color: #{light_variable.$vxe-ui-status-error-color};
+
+  --vxe-ui-status-success-tinge-color: #{light_variable.$vxe-ui-status-success-tinge-color};
+  --vxe-ui-status-info-tinge-color: #{light_variable.$vxe-ui-status-info-tinge-color};
+  --vxe-ui-status-warning-tinge-color: #{light_variable.$vxe-ui-status-warning-tinge-color};
+  --vxe-ui-status-danger-tinge-color: var(--vxe-ui-status-error-tinge-color);
+  --vxe-ui-status-error-tinge-color: #{light_variable.$vxe-ui-status-error-tinge-color};
+
+  --vxe-ui-status-success-lighten-color: #{light_variable.$vxe-ui-status-success-lighten-color};
+  --vxe-ui-status-info-lighten-color: #{light_variable.$vxe-ui-status-info-lighten-color};
+  --vxe-ui-status-warning-lighten-color: #{light_variable.$vxe-ui-status-warning-lighten-color};
+  --vxe-ui-status-danger-lighten-color: var(--vxe-ui-status-error-lighten-color);
+  --vxe-ui-status-error-lighten-color: #{light_variable.$vxe-ui-status-error-lighten-color};
+  
+  --vxe-ui-status-success-darken-color: #{light_variable.$vxe-ui-status-success-darken-color};
+  --vxe-ui-status-info-darken-color: #{light_variable.$vxe-ui-status-info-darken-color};
+  --vxe-ui-status-warning-darken-color: #{light_variable.$vxe-ui-status-warning-darken-color};
+  --vxe-ui-status-danger-darken-color: var(--vxe-ui-status-error-darken-color);
+  --vxe-ui-status-error-darken-color: #{light_variable.$vxe-ui-status-error-darken-color};
+  
+  --vxe-ui-status-success-disabled-color: #{light_variable.$vxe-ui-status-success-disabled-color};
+  --vxe-ui-status-info-disabled-color: #{light_variable.$vxe-ui-status-info-disabled-color};
+  --vxe-ui-status-warning-disabled-color: #{light_variable.$vxe-ui-status-warning-disabled-color};
+  --vxe-ui-status-danger-disabled-color: var(--vxe-ui-status-error-disabled-color);
+  --vxe-ui-status-error-disabled-color: #{light_variable.$vxe-ui-status-error-disabled-color};
+
+  /*base*/
+  --vxe-ui-base-popup-border-color: #{light_variable.$vxe-ui-base-popup-border-color};
+  --vxe-ui-base-popup-box-shadow: #{light_variable.$vxe-ui-base-popup-box-shadow};
+  --vxe-ui-base-drag-background-color: #{light_variable.$vxe-ui-base-drag-background-color};
+  --vxe-ui-base-active-background-color: #{light_variable.$vxe-ui-base-active-background-color};
+  --vxe-ui-base-hover-background-color: #{light_variable.$vxe-ui-base-hover-background-color};
+
+  /*layout*/
+  --vxe-ui-layout-background-color: #{light_variable.$vxe-ui-layout-background-color};
+
+  /*input*/
+  --vxe-ui-input-border-color: #{light_variable.$vxe-ui-input-border-color};
+  --vxe-ui-input-placeholder-color: #{light_variable.$vxe-ui-input-placeholder-color};
+  --vxe-ui-input-disabled-background-color: #{light_variable.$vxe-ui-input-disabled-background-color};
+
+  /*number-input*/
+  --vxe-ui-number-input-control-button-color: #f5f7fa;
+  
+  /*modal*/
+  --vxe-ui-modal-header-background-color: #{light_variable.$vxe-ui-modal-header-background-color};
+
+  /*tabs*/
+  --vxe-ui-tabs-card-header-background-color: #{light_variable.$vxe-ui-tabs-card-header-background-color};
+  --vxe-ui-tabs-close-hover-background-color: #{light_variable.$vxe-ui-tabs-close-hover-background-color};
+  --vxe-ui-tabs-bar-scrolling-box-shadow-color: #{light_variable.$vxe-ui-tabs-bar-scrolling-box-shadow-color};
+
+  /*menu*/
+  --vxe-ui-menu-item-hover-color: #{light_variable.$vxe-ui-menu-item-hover-color};
+  --vxe-ui-menu-collapse-wrapper-box-shadow: var(--vxe-ui-base-popup-box-shadow);
+
+  /*loading*/
+  --vxe-ui-loading-background-color: #{light_variable.$vxe-ui-loading-background-color};
+   
+  /*form*/
+  --vxe-ui-form-title-background-color: #{light_variable.$vxe-ui-form-title-background-color};
+  --vxe-ui-form-border-color: #{light_variable.$vxe-ui-form-border-color};
+
+  /*form-design*/
+  --vxe-ui-form-design-widget-hover-background-color: var(--vxe-ui-base-hover-background-color);
+  --vxe-ui-form-design-sub-widget-hover-background-color: #{light_variable.$vxe-ui-form-design-sub-widget-hover-background-color};
+  
+  /*list-design*/
+  --vxe-ui-list-design-table-border-color: #{light_variable.$vxe-ui-list-design-table-border-color};
+  --vxe-ui-list-design-table-header-background-color: #{light_variable.$vxe-ui-list-design-table-header-background-color};
+
+  /*switch*/
+  --vxe-ui-switch-close-background-color: #{light_variable.$vxe-ui-switch-close-background-color};
+
+  /*upload*/
+  --vxe-ui-upload-drag-over-background-color:#{light_variable.$vxe-ui-upload-drag-over-background-color};
+  
+  /*tree*/
+  --vxe-ui-tree-node-hover-background-color: #{light_variable.$vxe-ui-tree-node-hover-background-color};
+  --vxe-ui-tree-node-radio-checked-background-color: #{light_variable.$vxe-ui-tree-node-radio-checked-background-color};
+  --vxe-ui-tree-node-hover-radio-checked-background-color: #{light_variable.$vxe-ui-tree-node-hover-radio-checked-background-color};
+  --vxe-ui-tree-node-checkbox-checked-background-color: #{light_variable.$vxe-ui-tree-node-checkbox-checked-background-color};
+  --vxe-ui-tree-node-hover-checkbox-checked-background-color: #{light_variable.$vxe-ui-tree-node-hover-checkbox-checked-background-color};
+  --vxe-ui-tree-node-current-background-color: #{light_variable.$vxe-ui-tree-node-current-background-color};
+  --vxe-ui-tree-node-hover-current-background-color: #{light_variable.$vxe-ui-tree-node-hover-current-background-color};
+  --vxe-ui-tree-drag-over-background-color: #{light_variable.$vxe-ui-tree-drag-over-background-color};
+
+  /*rate*/
+  --vxe-ui-rate-item-color: #{light_variable.$vxe-ui-rate-item-color};
+
+  /*split*/
+  --vxe-ui-splitter-handle-button-background-color: #{light_variable.$vxe-ui-splitter-handle-button-background-color};
+  --vxe-ui-splitter-handle-bar-background-color: #{light_variable.$vxe-ui-splitter-handle-bar-background-color};
+  --vxe-ui-splitter-handle-bar-hover-background-color: #{light_variable.$vxe-ui-splitter-handle-bar-hover-background-color};
+}

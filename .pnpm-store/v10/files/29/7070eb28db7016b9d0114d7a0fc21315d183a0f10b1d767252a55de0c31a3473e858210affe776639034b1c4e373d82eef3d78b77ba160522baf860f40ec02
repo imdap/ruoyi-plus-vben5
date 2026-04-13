@@ -1,0 +1,121 @@
+import { AliasToken } from "../../theme/interface/alias.js";
+import { FullToken, GenStyleFn } from "../../theme/interface/cssinjs-utils.js";
+import { GenerateStyle } from "../../theme/interface/index.js";
+import "../../theme/internal.js";
+import * as vue619 from "vue";
+import { CSSObject } from "@antdv-next/cssinjs";
+
+//#region src/notification/style/index.d.ts
+/** Component only token. Which will handle additional calculation of alias token */
+interface ComponentToken {
+  /**
+   * @desc 提醒框 z-index
+   * @descEN z-index of Notification
+   */
+  zIndexPopup: number;
+  /**
+   * @desc 提醒框宽度
+   * @descEN Width of Notification
+   */
+  width: number | string;
+  /**
+   * @desc 提醒框进度条背景色
+   * @descEN Background color of Notification progress bar
+   */
+  progressBg: string;
+  /**
+   * @desc 成功提醒框容器背景色
+   * @descEN Background color of success notification container
+   */
+  colorSuccessBg?: string;
+  /**
+   * @desc 错误提醒框容器背景色
+   * @descEN Background color of error notification container
+   */
+  colorErrorBg?: string;
+  /**
+   * @desc 信息提醒框容器背景色
+   * @descEN Background color of info notification container
+   */
+  colorInfoBg?: string;
+  /**
+   * @desc 警告提醒框容器背景色
+   * @descEN Background color of warning notification container
+   */
+  colorWarningBg?: string;
+}
+/**
+ * @desc Notification 组件的 Token
+ * @descEN Token for Notification component
+ */
+interface NotificationToken extends FullToken<'Notification'> {
+  /**
+   * @desc 动画最大高度
+   * @descEN Maximum height of animation
+   */
+  animationMaxHeight: number | string;
+  /**
+   * @desc 提醒框背景色
+   * @descEN Background color of Notification
+   */
+  notificationBg: string;
+  /**
+   * @desc 提醒框内边距
+   * @descEN Padding of Notification
+   */
+  notificationPadding: string;
+  /**
+   * @desc 提醒框垂直内边距
+   * @descEN Vertical padding of Notification
+   */
+  notificationPaddingVertical: number;
+  /**
+   * @desc 提醒框水平内边距
+   * @descEN Horizontal padding of Notification
+   */
+  notificationPaddingHorizontal: number;
+  /**
+   * @desc 提醒框图标尺寸
+   * @descEN Icon size of Notification
+   */
+  notificationIconSize: number | string;
+  /**
+   * @desc 提醒框关闭按钮尺寸
+   * @descEN Close button size of Notification
+   */
+  notificationCloseButtonSize: number | string;
+  /**
+   * @desc 提醒框底部外边距
+   * @descEN Bottom margin of Notification
+   */
+  notificationMarginBottom: number;
+  /**
+   * @desc 提醒框边缘外边距
+   * @descEN Edge margin of Notification
+   */
+  notificationMarginEdge: number;
+  /**
+   * @desc 提醒框堆叠层数
+   * @descEN Stack layer of Notification
+   */
+  notificationStackLayer: number;
+  /**
+   * @desc 提醒框进度条高度
+   * @descEN Height of Notification progress bar
+   */
+  notificationProgressHeight: number;
+}
+declare const genNoticeStyle: GenerateStyle<NotificationToken, CSSObject>;
+declare function prepareComponentToken(token: AliasToken): {
+  zIndexPopup: number;
+  width: number;
+  progressBg: string;
+  colorSuccessBg: undefined;
+  colorErrorBg: undefined;
+  colorInfoBg: undefined;
+  colorWarningBg: undefined;
+};
+declare const prepareNotificationToken: (token: Parameters<GenStyleFn<'Notification'>>[0]) => NotificationToken;
+declare const _default: (prefixCls: vue619.Ref<string>, rootCls?: vue619.Ref<string | undefined>) => readonly [vue619.Ref<string, string>, vue619.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, NotificationToken, _default as default, genNoticeStyle, prepareComponentToken, prepareNotificationToken };

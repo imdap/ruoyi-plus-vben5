@@ -1,0 +1,13 @@
+import Statistic, { InternalStatisticProps, StatisticSlots } from "./Statistic.js";
+import StatisticTimer$1, { InternalStatisticTimerProps, StatisticTimeEmits } from "./Timer.js";
+import * as vue727 from "vue";
+
+//#region src/statistic/index.d.ts
+type StatisticProps = InternalStatisticProps;
+type StatisticTimerProps = InternalStatisticTimerProps;
+declare const StatisticTimer: vue727.DefineSetupFnComponent<InternalStatisticTimerProps, StatisticTimeEmits, vue727.SlotsType<StatisticSlots>, InternalStatisticTimerProps, vue727.PublicProps>;
+declare const _default: typeof Statistic & {
+  Timer: typeof StatisticTimer$1;
+};
+//#endregion
+export { StatisticProps, StatisticTimer, StatisticTimerProps, _default as default };

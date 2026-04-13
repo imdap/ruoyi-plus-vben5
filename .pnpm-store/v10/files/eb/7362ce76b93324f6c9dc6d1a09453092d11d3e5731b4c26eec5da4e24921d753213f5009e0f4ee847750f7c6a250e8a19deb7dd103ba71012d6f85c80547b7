@@ -1,0 +1,10 @@
+import { SkeletonElementProps } from "./Element.js";
+import * as vue684 from "vue";
+
+//#region src/skeleton/Avatar.d.ts
+interface SkeletonAvatarProps extends Omit<SkeletonElementProps, 'shape'> {
+  shape?: 'circle' | 'square';
+}
+declare const SkeletonAvatar: vue684.DefineSetupFnComponent<SkeletonAvatarProps, {}, {}, SkeletonAvatarProps & {}, vue684.PublicProps>;
+//#endregion
+export { SkeletonAvatarProps, SkeletonAvatar as default };

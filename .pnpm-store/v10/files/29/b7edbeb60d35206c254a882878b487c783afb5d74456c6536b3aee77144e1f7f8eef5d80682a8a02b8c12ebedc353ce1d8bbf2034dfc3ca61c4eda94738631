@@ -1,0 +1,12 @@
+import { VueNode } from "../_util/type.js";
+import { BreadcrumbProps, ItemType } from "./Breadcrumb.js";
+import * as vue_jsx_runtime0 from "vue/jsx-runtime";
+
+//#region src/breadcrumb/useItemRender.d.ts
+type AddParameters<TFunction extends (...args: any) => any, TParameters extends [...args: any]> = (...args: [...Parameters<TFunction>, ...TParameters]) => ReturnType<TFunction>;
+type ItemRender = NonNullable<BreadcrumbProps['itemRender']>;
+type InternalItemRenderParams = AddParameters<ItemRender, [href?: string, index?: number]>;
+declare function renderItem(prefixCls: string, item: ItemType, children: VueNode, href?: string): vue_jsx_runtime0.JSX.Element | null;
+declare function useItemRender(prefixCls: string, itemRender?: ItemRender, titleRender?: BreadcrumbProps['titleRender']): InternalItemRenderParams;
+//#endregion
+export { useItemRender as default, renderItem };

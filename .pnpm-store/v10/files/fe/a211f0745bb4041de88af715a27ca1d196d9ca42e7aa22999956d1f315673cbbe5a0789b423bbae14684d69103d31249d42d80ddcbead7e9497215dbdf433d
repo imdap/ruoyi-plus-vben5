@@ -1,0 +1,18 @@
+import { WaveColorSource, WaveComponent } from "./interface.js";
+import * as vue208 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/_util/wave/index.d.ts
+interface WaveProps extends WaveEmitsProps {
+  disabled?: boolean;
+  component?: WaveComponent;
+  colorSource?: WaveColorSource;
+}
+interface WaveEmits {}
+interface WaveEmitsProps {}
+interface WaveSlots {
+  default?: () => any;
+}
+declare const _default: vue208.DefineSetupFnComponent<WaveProps, WaveEmits, SlotsType<WaveSlots>, WaveProps, vue208.PublicProps>;
+//#endregion
+export { WaveEmits, WaveEmitsProps, WaveProps, WaveSlots, _default as default };

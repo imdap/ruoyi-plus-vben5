@@ -1,0 +1,37 @@
+{
+    "id": "csharp",
+    "name": "C#",
+    "version": "0.2",
+    "readonly": true,
+    "description": "C# dictionary.",
+    "dictionaryDefinitions": [
+        {
+            "name": "csharp",
+            "path": "./dict/csharp.txt.gz",
+            "description": "C# dictionary."
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "languageId": "csharp",
+            "description": "These are the language settings for C#",
+            "includeRegExpList": [],
+            "ignoreRegExpList": [],
+            "patterns": [
+                {
+                    "name": "string",
+                    "pattern": "/(?:@\"[\\s\\S]*?(?<![^\"]\"(\"\")*)\"(?!\"))|(?:(?<![@\\\\])\".*?(?<![^\\\\]\\\\(\\\\\\\\)*)\")/g",
+                    "description": "C# String Literal"
+                },
+                {
+                    "name": "string.verbatim",
+                    "pattern": "/@\"[\\s\\S]*?(?<![^\"]\"(\"\")*)\"(?!\")/g",
+                    "description": "C# Verbatim String"
+                }
+            ],
+            "dictionaries": ["csharp", "dotnet", "npm"],
+            "dictionaryDefinitions": []
+        }
+    ]
+}

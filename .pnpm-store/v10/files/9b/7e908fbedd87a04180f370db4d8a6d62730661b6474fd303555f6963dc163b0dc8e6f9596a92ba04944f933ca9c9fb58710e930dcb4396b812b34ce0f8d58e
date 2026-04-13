@@ -1,0 +1,89 @@
+{
+  "name": "@cspell/cspell-types",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "version": "9.8.0",
+  "description": "Types for cspell and cspell-lib",
+  "type": "commonjs",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./Parser": {
+      "import": "./dist/Parser/index.mjs",
+      "require": "./dist/Parser/index.js"
+    },
+    "./cspell.schema.json": {
+      "import": "./cspell.schema.json",
+      "require": "./cspell.schema.json"
+    }
+  },
+  "types": "index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*.d.ts": [
+        "dist/*.d.ts"
+      ],
+      "*.d.mts": [
+        "dist/*.d.mts"
+      ],
+      "index.d.ts": [
+        "dist/index.d.ts"
+      ],
+      "dist/index.d.ts": [
+        "dist/index.d.ts"
+      ],
+      "Parser": [
+        "dist/Parser/index.d.ts"
+      ],
+      "*": [
+        "dist/*.d.ts",
+        "dist/*/index.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "clean": "shx rm -rf dist temp coverage \"*.tsbuildInfo\"",
+    "build": "pnpm build:tsc && pnpm build:tsdown && pnpm run build-schema",
+    "build:tsc": "tsc -p tsconfig.json",
+    "build:tsdown": "tsdown",
+    "build-schema": "pnpm build-cspell-schema",
+    "clean-build": "pnpm run clean && pnpm run build",
+    "coverage": "vitest run --coverage",
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell.git",
+    "directory": "packages/cspell-types"
+  },
+  "files": [
+    "dist",
+    "ajv.config.js",
+    "cspell.schema.json",
+    "!**/*.tsbuildInfo",
+    "!**/__mocks__",
+    "!**/*.test.*",
+    "!**/test/**",
+    "!**/test.*.*",
+    "!**/*.spec.*",
+    "!**/*.map"
+  ],
+  "keywords": [
+    "cspell",
+    "types"
+  ],
+  "author": "Jason Dent",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell/tree/main/packages/cspell-types#readme",
+  "gitHead": "c822013ce676dffb5fa5544567c25a3ae666718f"
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"IResponseCacheFileSystem.d.ts","sourceRoot":"","sources":["../../../../src/fetch/cache/response/IResponseCacheFileSystem.ts"],"names":[],"mappings":"AAAA;;GAEG;AACH,MAAM,CAAC,OAAO,WAAW,wBAAwB;IAChD;;;;OAIG;IACH,IAAI,CAAC,SAAS,EAAE,MAAM,GAAG,OAAO,CAAC,IAAI,CAAC,CAAC;IAEvC;;;;OAIG;IACH,IAAI,CAAC,SAAS,EAAE,MAAM,GAAG,OAAO,CAAC,IAAI,CAAC,CAAC;CACvC"}

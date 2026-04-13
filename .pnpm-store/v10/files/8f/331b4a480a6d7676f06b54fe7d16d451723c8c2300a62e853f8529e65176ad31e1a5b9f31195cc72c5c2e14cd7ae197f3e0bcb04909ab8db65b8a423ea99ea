@@ -1,0 +1,69 @@
+{
+	"name": "@stylistic/stylelint-plugin",
+	"description": "A collection of stylistic/formatting Stylelint rules",
+	"version": "5.1.0",
+	"license": "MIT",
+	"author": {
+		"name": "Sergey Artemov",
+		"email": "firefoxic.dev@gmail.com"
+	},
+	"homepage": "https://github.com/stylelint-stylistic/stylelint-stylistic#readme",
+	"bugs": {
+		"url": "https://github.com/stylelint-stylistic/stylelint-stylistic/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/stylelint-stylistic/stylelint-stylistic.git"
+	},
+	"type": "module",
+	"exports": "./lib/index.js",
+	"files": [
+		"lib/**/*.js",
+		"!**/*.test.js"
+	],
+	"engines": {
+		"node": ">=20.19.0"
+	},
+	"peerDependencies": {
+		"stylelint": "^17.6.0"
+	},
+	"dependencies": {
+		"@csstools/css-parser-algorithms": "^4.0.0",
+		"@csstools/css-tokenizer": "^4.0.0",
+		"@csstools/media-query-list-parser": "^5.0.0",
+		"postcss": "^8.5.8",
+		"postcss-selector-parser": "^7.1.1",
+		"postcss-value-parser": "^4.2.0",
+		"style-search": "^0.1.0"
+	},
+	"scripts": {
+		"prepare": "git config core.hooksPath .githooks",
+		"lint": "oxlint",
+		"pretest": "pnpm lint",
+		"test": "node --test --test-reporter dot",
+		"test:coverage": "node --test --experimental-test-coverage",
+		"test:watch": "node --test --watch"
+	},
+	"devDependencies": {
+		"@firefoxic/oxlint-config": "^0.3.1",
+		"common-tags": "^1.8.2",
+		"oxlint": "^1.57.0",
+		"postcss-html": "^1.8.1",
+		"postcss-less": "^6.0.0",
+		"postcss-scss": "^4.0.9",
+		"postcss-styled-syntax": "^0.7.1",
+		"stylelint": "^17.6.0",
+		"stylelint-test-rule-node": "^1.1.0"
+	},
+	"keywords": [
+		"codeguide",
+		"css",
+		"csslint",
+		"formatting",
+		"lint",
+		"linter",
+		"stylelint",
+		"stylelint-plugin",
+		"stylistic"
+	]
+}

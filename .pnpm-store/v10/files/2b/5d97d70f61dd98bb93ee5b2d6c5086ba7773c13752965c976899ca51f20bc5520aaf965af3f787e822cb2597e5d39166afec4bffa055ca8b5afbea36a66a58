@@ -1,0 +1,25 @@
+{
+    "id": "en-common-misspellings",
+    "version": "0.2",
+    "name": "English - Common Misspellings",
+    "description": "Common English misspellings dictionary.",
+    "readonly": true,
+    "import": ["./dict/dict-en.json", "./dict/dict-en-gb.json", "./dict/dict-en-us.json"],
+    "languageSettings": [
+        {
+            "languageId": "*",
+            "locale": "en",
+            "dictionaries": ["en-common-misspellings"]
+        },
+        {
+            "languageId": "*",
+            "locale": "en-gb",
+            "dictionaries": ["en-common-misspellings", "en-gb-common-misspellings"]
+        },
+        {
+            "languageId": "*",
+            "locale": "en-us",
+            "dictionaries": ["en-common-misspellings", "en-us-common-misspellings"]
+        }
+    ]
+}

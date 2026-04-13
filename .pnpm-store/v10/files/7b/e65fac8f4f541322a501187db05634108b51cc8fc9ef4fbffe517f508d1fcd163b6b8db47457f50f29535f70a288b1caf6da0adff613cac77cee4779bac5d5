@@ -1,0 +1,2 @@
+export { fileTypeDefinitions, findMatchingFileTypes as findMatchingFileTypes, getFileTypesForExt, isBinaryExt, isBinaryFile, isBinaryFileType, isFileTypeGenerated, isGeneratedExt, isGeneratedFile, } from './filetypes.js';
+//# sourceMappingURL=index.js.map

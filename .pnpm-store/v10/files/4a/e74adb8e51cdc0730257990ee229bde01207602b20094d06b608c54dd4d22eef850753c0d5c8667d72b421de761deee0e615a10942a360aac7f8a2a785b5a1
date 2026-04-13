@@ -1,0 +1,91 @@
+import type IRequestInit from './types/IRequestInit.js';
+import type { TRequestInfo } from './types/TRequestInfo.js';
+import type IBrowserFrame from '../browser/types/IBrowserFrame.js';
+import type BrowserWindow from '../window/BrowserWindow.js';
+import type ISyncResponse from './types/ISyncResponse.js';
+import type Headers from './Headers.js';
+/**
+ * Handles synchronous fetch requests.
+ */
+export default class SyncFetch {
+    #private;
+    private request;
+    private redirectCount;
+    private disableCache;
+    private disableSameOriginPolicy;
+    private interceptor;
+    private requestHeaders;
+    /**
+     * Constructor.
+     *
+     * @param options Options.
+     * @param options.browserFrame Browser frame.
+     * @param options.window Window.
+     * @param options.url URL.
+     * @param [options.init] Init.
+     * @param [options.redirectCount] Redirect count.
+     * @param [options.contentType] Content Type.
+     * @param [options.disableCache] Disables the use of cached responses. It will still store the response in the cache.
+     * @param [options.disableSameOriginPolicy] Disables the Same-Origin policy.
+     * @param [options.unfilteredHeaders] Unfiltered headers - necessary for preflight requests.
+     */
+    constructor(options: {
+        browserFrame: IBrowserFrame;
+        window: BrowserWindow;
+        url: TRequestInfo;
+        init?: IRequestInit;
+        redirectCount?: number;
+        contentType?: string | null;
+        disableCache?: boolean;
+        disableSameOriginPolicy?: boolean;
+        unfilteredHeaders?: Headers;
+    });
+    /**
+     * Sends request.
+     *
+     * @returns Response.
+     */
+    send(): ISyncResponse;
+    /**
+     * Returns cached response.
+     *
+     * @returns Response.
+     */
+    getCachedResponse(): ISyncResponse | null;
+    /**
+     * Returns virtual server response.
+     *
+     * @returns Response.
+     */
+    private getVirtualServerResponse;
+    /**
+     * Checks if the request complies with the Cross-Origin policy.
+     *
+     * @returns True if it complies with the policy.
+     */
+    private compliesWithCrossOriginPolicy;
+    /**
+     * Sends request.
+     *
+     * @returns Response.
+     */
+    sendRequest(): ISyncResponse;
+    /**
+     * Parses response body.
+     *
+     * @param options Options.
+     * @param options.headers Headers.
+     * @param options.status Status.
+     * @param options.body Body.
+     * @returns Parsed body.
+     */
+    private parseIResponseBody;
+    /**
+     * Handles redirect response.
+     *
+     * @param response Response.
+     * @returns Redirected response or null.
+     */
+    private handleRedirectResponse;
+}
+//# sourceMappingURL=SyncFetch.d.ts.map

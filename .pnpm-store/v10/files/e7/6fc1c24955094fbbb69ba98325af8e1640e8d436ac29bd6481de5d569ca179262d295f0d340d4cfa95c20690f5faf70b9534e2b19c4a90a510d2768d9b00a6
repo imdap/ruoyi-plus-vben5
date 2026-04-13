@@ -1,0 +1,6 @@
+import * as vue857 from "vue";
+
+//#region src/input/style/search.d.ts
+declare const _default: (prefixCls: vue857.Ref<string>, rootCls?: vue857.Ref<string | undefined>) => readonly [vue857.Ref<string, string>, vue857.ComputedRef<string | undefined>];
+//#endregion
+export { _default as default };

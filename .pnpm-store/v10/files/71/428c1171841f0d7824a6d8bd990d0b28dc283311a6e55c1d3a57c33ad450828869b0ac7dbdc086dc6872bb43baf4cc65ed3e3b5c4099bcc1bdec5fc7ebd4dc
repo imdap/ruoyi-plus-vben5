@@ -1,0 +1,44 @@
+{
+  "name": "@cspell/dict-companies",
+  "version": "3.2.11",
+  "description": "Company names dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "companies",
+    "Company names",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/companies#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/companies"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "files": [
+    "dict/*",
+    "cspell-ext.json"
+  ],
+  "scripts": {
+    "build": "cspell-tools-cli compile --no-compress --split \"src/companies.txt\" -o ./dict",
+    "prepare:dictionary": "pnpm run build",
+    "prepublishOnly": "echo pre-publish",
+    "test": "cspell -c test.cspell.config.yaml"
+  },
+  "gitHead": "86d6d1fc5212a9b9ec281cc238176989e3980f65"
+}

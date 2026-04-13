@@ -1,0 +1,63 @@
+{
+  "name": "@antdv-next/cssinjs",
+  "type": "module",
+  "version": "1.0.6",
+  "description": "cssinjs solution for ant-design-vue",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antdv-next/antdv-next.git",
+    "directory": "packages/cssinjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./cssinjs-utils": {
+      "types": "./dist/cssinjs-utils/index.d.ts",
+      "import": "./dist/cssinjs-utils/index.js",
+      "default": "./dist/cssinjs-utils/index.js"
+    },
+    "./dist/*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "default": "./dist/*.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "peerDependencies": {
+    "vue": ">=3.2.0"
+  },
+  "dependencies": {
+    "@emotion/hash": "^0.8.0",
+    "@emotion/unitless": "^0.7.5",
+    "@v-c/util": "^1.0.19",
+    "csstype": "^3.2.3",
+    "stylis": "^4.3.6"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@types/node": "^25.5.0",
+    "@types/stylis": "^4.2.7",
+    "@types/testing-library__jest-dom": "^6.0.0",
+    "@vue/test-utils": "^2.4.6",
+    "vue": "^3.5.30"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "prepublish": "pnpm build",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "bump": "bumpp --commit \"chore(release): @antdv-next/cssinjs %s\" --push --tag \"@antdv-next/cssinjs@%s\""
+  }
+}

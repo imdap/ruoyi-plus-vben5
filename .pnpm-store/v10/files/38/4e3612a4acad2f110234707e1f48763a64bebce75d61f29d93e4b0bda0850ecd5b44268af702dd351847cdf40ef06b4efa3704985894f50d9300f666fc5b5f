@@ -1,0 +1,75 @@
+import { SlotsDefineType } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { AffixProps } from "../affix/index.js";
+import { AnchorLinkBaseProps } from "./AnchorLink.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue4 from "vue";
+import { CSSProperties, SlotsType, VNodeChild } from "vue";
+import { Key } from "@v-c/util/dist/type";
+
+//#region src/anchor/Anchor.d.ts
+type AnchorContainer = HTMLElement | Window;
+interface AnchorLinkItemProps extends AnchorLinkBaseProps {
+  key: Key;
+  children?: AnchorLinkItemProps[];
+}
+type AnchorDirection = 'vertical' | 'horizontal';
+interface AnchorSemanticClassNames {
+  root?: string;
+  item?: string;
+  itemTitle?: string;
+  indicator?: string;
+}
+interface AnchorSemanticStyles {
+  root?: CSSProperties;
+  item?: CSSProperties;
+  itemTitle?: CSSProperties;
+  indicator?: CSSProperties;
+}
+type AnchorClassNamesType = SemanticClassNamesType<AnchorProps, AnchorSemanticClassNames>;
+type AnchorStylesType = SemanticStylesType<AnchorProps, AnchorSemanticStyles>;
+interface AnchorProps extends ComponentBaseProps, AnchorEmitsProps {
+  classes?: AnchorClassNamesType;
+  styles?: AnchorStylesType;
+  offsetTop?: number;
+  bounds?: number;
+  affix?: boolean | Omit<AffixProps, 'offsetTop' | 'target'>;
+  showInkInFixed?: boolean;
+  getContainer?: () => AnchorContainer;
+  /** Return customize highlight anchor */
+  getCurrentAnchor?: (activeLink: string) => string;
+  /** Scroll to target offset value, if none, it's offsetTop prop value or 0. */
+  targetOffset?: number;
+  items?: AnchorLinkItemProps[];
+  direction?: AnchorDirection;
+  replace?: boolean;
+}
+interface AnchorEmits {
+  click: (e: MouseEvent, link: {
+    title: VNodeChild;
+    href: string;
+  }) => any;
+  change: (currentActiveLink: string) => any;
+}
+interface AnchorEmitsProps {
+  onClick?: AnchorEmits['click'];
+  onChange?: AnchorEmits['change'];
+}
+type AnchorSlots = SlotsDefineType<{
+  item: (item: AnchorLinkItemProps) => any;
+}>;
+interface AntAnchor {
+  registerLink: (link: string) => void;
+  unregisterLink: (link: string) => void;
+  activeLink: string | null;
+  scrollTo: (link: string) => void;
+  onClick: (e: MouseEvent, link: {
+    title: VNodeChild;
+    href: string;
+  }) => void;
+  direction: AnchorDirection;
+}
+declare const Anchor: vue4.DefineSetupFnComponent<AnchorProps, AnchorEmits, SlotsType<AnchorSlots>, AnchorProps, vue4.PublicProps>;
+//#endregion
+export { AnchorClassNamesType, AnchorContainer, AnchorDirection, AnchorEmits, AnchorEmitsProps, AnchorLinkItemProps, AnchorProps, AnchorSemanticClassNames, AnchorSemanticStyles, AnchorSlots, AnchorStylesType, AntAnchor, Anchor as default };

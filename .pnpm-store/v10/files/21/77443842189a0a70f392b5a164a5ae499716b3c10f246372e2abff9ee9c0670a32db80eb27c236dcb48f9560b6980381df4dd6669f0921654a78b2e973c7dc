@@ -1,0 +1,44 @@
+{
+  "name": "@v-c/virtual-list",
+  "type": "module",
+  "version": "1.0.6",
+  "description": "Vue Virtual List Component",
+  "author": "",
+  "license": "MIT",
+  "keywords": [
+    "vue",
+    "virtual-list",
+    "vue-component"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "dependencies": {
+    "@v-c/resize-observer": "^1.0.8",
+    "@v-c/util": "^1.0.14"
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "prepublish": "pnpm build",
+    "bump": "bumpp",
+    "patch": "bumpp --release patch"
+  }
+}

@@ -1,0 +1,8 @@
+import { InternalDescriptionsItemType } from "../index.js";
+import * as vue444 from "vue";
+import { Ref } from "vue";
+
+//#region src/descriptions/hooks/useRow.d.ts
+declare function useRow(mergedColumn: Ref<number>, items: Ref<InternalDescriptionsItemType[]>): vue444.ComputedRef<InternalDescriptionsItemType[][]>;
+//#endregion
+export { useRow as default };

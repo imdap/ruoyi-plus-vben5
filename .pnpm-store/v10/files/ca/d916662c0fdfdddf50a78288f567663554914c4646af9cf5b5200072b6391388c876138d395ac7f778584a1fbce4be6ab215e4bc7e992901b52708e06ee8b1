@@ -1,0 +1,41 @@
+import { EmptyEmit } from "../_util/type.js";
+import { ModalFuncProps, ModalLocale } from "./interface.js";
+import { ThemeConfig } from "../config-provider/context.js";
+import * as vue160 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/modal/ConfirmDialog.d.ts
+interface ConfirmDialogProps extends ModalFuncProps {
+  prefixCls: string;
+  afterClose?: () => void;
+  close?: (...args: any[]) => void;
+  /**
+   * `close` prop support `...args` that pass to the developer
+   * that we can not break this.
+   * Provider `onClose` for internal usage
+   */
+  onConfirm?: (confirmed: boolean) => void;
+  autoFocusButton?: null | 'ok' | 'cancel';
+  rootPrefixCls?: string;
+  iconPrefixCls?: string;
+  /**
+   * Only passed by static method
+   */
+  theme?: ThemeConfig;
+  /** @private Internal Usage. Do not override this */
+  locale?: ModalLocale;
+  /**
+   * Do not throw if is await mode
+   */
+  isSilent?: () => boolean;
+}
+declare const ConfirmContent: vue160.DefineSetupFnComponent<ConfirmDialogProps & {
+  confirmPrefixCls: string;
+}, EmptyEmit, SlotsType<{
+  default?: () => any;
+}>, ConfirmDialogProps & {
+  confirmPrefixCls: string;
+}, vue160.PublicProps>;
+declare const ConfirmDialogWrapper: vue160.DefineSetupFnComponent<ConfirmDialogProps, {}, {}, ConfirmDialogProps & {}, vue160.PublicProps>;
+//#endregion
+export { ConfirmContent, ConfirmDialogProps, ConfirmDialogWrapper as default };

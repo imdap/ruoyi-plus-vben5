@@ -1,0 +1,21 @@
+import { EmptyEmit } from "../_util/type.js";
+import { UploadChangeParam, UploadEmits, UploadFile, UploadProps as UploadProps$1, UploadSlots } from "./interface.js";
+import Dragger, { DraggerProps } from "./Dragger.js";
+import InternalUpload, { InternalUploadProps } from "./Upload.js";
+import { InternalUploadListProps } from "./UploadList/index.js";
+import * as vue196 from "vue";
+import { App } from "vue";
+
+//#region src/upload/index.d.ts
+type UploadProps = InternalUploadProps;
+type UploadListProps = InternalUploadListProps;
+declare const Upload: typeof InternalUpload & {
+  install: (app: App) => void;
+  Dragger: typeof Dragger;
+  LIST_IGNORE: string;
+};
+declare const UploadDragger: vue196.DefineSetupFnComponent<DraggerProps<any>, EmptyEmit, vue196.SlotsType<UploadSlots<any>>, UploadProps$1<any> & {
+  height?: number;
+}, vue196.PublicProps>;
+//#endregion
+export { type DraggerProps, type UploadChangeParam, UploadDragger, type UploadEmits, type UploadFile, UploadListProps, UploadProps, type UploadSlots, Upload as default };

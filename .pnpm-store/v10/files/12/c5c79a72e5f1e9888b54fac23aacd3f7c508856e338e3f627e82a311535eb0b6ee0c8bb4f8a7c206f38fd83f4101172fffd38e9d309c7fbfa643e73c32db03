@@ -1,0 +1,15 @@
+import { EmptyEmit } from "../_util/type.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue1002 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/input/Group.d.ts
+interface InputGroupProps extends ComponentBaseProps {
+  size?: SizeType;
+}
+declare const InputGroup: vue1002.DefineSetupFnComponent<InputGroupProps, EmptyEmit, SlotsType<{
+  default?: () => any;
+}>, InputGroupProps, vue1002.PublicProps>;
+//#endregion
+export { InputGroupProps, InputGroup as default };

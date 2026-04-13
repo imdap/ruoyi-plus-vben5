@@ -1,0 +1,93 @@
+{
+  "name": "commitlint-plugin-function-rules",
+  "version": "4.3.2",
+  "description": "commitlint plugin to use functions as rule value",
+  "keywords": [
+    "commitlint",
+    "commitlintplugin",
+    "function",
+    "plugin",
+    "rules"
+  ],
+  "homepage": "https://github.com/vidavidorra/commitlint-plugin-function-rules#readme",
+  "bugs": {
+    "url": "https://github.com/vidavidorra/commitlint-plugin-function-rules/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vidavidorra/commitlint-plugin-function-rules.git"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "Jeroen de Bruijn",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "files": [
+    "./dist/**/!(*.test).{js,d.ts,cjs}"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.{vue,css,less,scss,html,htm,json,md,markdown,yml,yaml}\" --log-level warn",
+    "format:check": "prettier --ignore-path .gitignore --check \"**/*.{vue,css,less,scss,html,htm,json,md,markdown,yml,yaml}\" --log-level warn",
+    "lint": "npm run format:check && eslint",
+    "lint:fix": "npm run format && eslint --fix",
+    "prepare": "husky .github/husky",
+    "test": "c8 ava"
+  },
+  "prettier": "@vidavidorra/prettier-config",
+  "release": {
+    "extends": "@vidavidorra/semantic-release-config"
+  },
+  "ava": {
+    "files": [
+      "!worktrees",
+      "src/**/*.test.ts"
+    ],
+    "typescript": {
+      "rewritePaths": {
+        "src/": "dist/"
+      },
+      "compile": "tsc"
+    }
+  },
+  "c8": {
+    "include": [
+      "dist/**/*.js"
+    ],
+    "reporter": [
+      "cobertura",
+      "html",
+      "lcovonly",
+      "text-summary"
+    ]
+  },
+  "devDependencies": {
+    "@ava/typescript": "6.0.0",
+    "@commitlint/cli": "20.4.2",
+    "@commitlint/config-conventional": "20.4.2",
+    "@commitlint/lint-19.x": "npm:@commitlint/lint@19.8.1",
+    "@commitlint/lint-20.x": "npm:@commitlint/lint@20.4.2",
+    "@commitlint/load-19.x": "npm:@commitlint/load@19.8.1",
+    "@commitlint/load-20.x": "npm:@commitlint/load@20.4.0",
+    "@commitlint/rules": "20.4.2",
+    "@commitlint/types": "20.4.0",
+    "@types/sinon": "21.0.0",
+    "@vidavidorra/eslint-config": "1.0.3",
+    "@vidavidorra/prettier-config": "1.0.6",
+    "@vidavidorra/semantic-release-config": "1.0.4",
+    "ava": "6.4.1",
+    "c8": "10.1.3",
+    "eslint": "9.39.3",
+    "husky": "9.1.7",
+    "lint-staged": "16.2.7",
+    "prettier": "3.8.1",
+    "semantic-release": "25.0.3",
+    "sinon": "21.0.1",
+    "typescript": "5.9.3"
+  },
+  "peerDependencies": {
+    "@commitlint/lint": ">=19 <21"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

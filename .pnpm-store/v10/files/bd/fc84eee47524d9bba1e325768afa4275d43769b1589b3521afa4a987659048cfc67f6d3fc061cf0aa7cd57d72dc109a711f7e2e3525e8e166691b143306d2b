@@ -1,0 +1,24 @@
+import { VueNode } from "../_util/type.js";
+import { MenuProps } from "./menu.js";
+import * as vue1074 from "vue";
+import { Ref } from "vue";
+
+//#region src/menu/OverrideContext.d.ts
+interface OverrideContextProps {
+  prefixCls?: string;
+  expandIcon?: VueNode;
+  mode?: MenuProps['mode'];
+  selectable?: boolean;
+  validator?: (menuProps: Pick<MenuProps, 'mode'>) => void;
+  onClick?: () => void;
+  rootClass?: string;
+}
+declare function useOverrideContext(): Ref<OverrideContextProps, OverrideContextProps> | null;
+/** @internal Only used for Dropdown component. Do not use this in your production. */
+declare const OverrideProvider: vue1074.DefineSetupFnComponent<{
+  value?: OverrideContextProps | null;
+}, {}, {}, {
+  value?: OverrideContextProps | null;
+} & {}, vue1074.PublicProps>;
+//#endregion
+export { OverrideContextProps, OverrideProvider, useOverrideContext };

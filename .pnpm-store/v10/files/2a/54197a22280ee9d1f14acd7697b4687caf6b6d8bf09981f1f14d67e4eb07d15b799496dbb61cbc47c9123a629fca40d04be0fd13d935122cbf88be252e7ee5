@@ -1,0 +1,11 @@
+import { ColumnsType, ColumnType, DataIndex, ExpandableConfig, FixedType, GetComponentProps, GetRowKey, Reference, RenderedCell } from './interface';
+import { TableProps, default as Table } from './Table';
+import { VirtualTableProps, default as VirtualTable } from './VirtualTable';
+import { EXPAND_COLUMN, INTERNAL_HOOKS } from './constant';
+import { FooterComponents as Summary, SummaryCell, SummaryRow } from './Footer';
+import { default as Column } from './sugar/Column';
+import { default as ColumnGroup } from './sugar/ColumnGroup';
+import { INTERNAL_COL_DEFINE } from './utils/legacyUtil';
+export type { DataIndex, ExpandableConfig, FixedType, GetComponentProps, GetRowKey, RenderedCell, };
+export { Column, ColumnGroup, type ColumnsType, type ColumnType, EXPAND_COLUMN, INTERNAL_COL_DEFINE, INTERNAL_HOOKS, type Reference, Summary, SummaryCell, SummaryRow, type TableProps, VirtualTable, type VirtualTableProps, };
+export default Table;

@@ -1,0 +1,38 @@
+import { VueNode } from "../_util/type.js";
+import { ColProps } from "../grid/col.js";
+import "../grid/index.js";
+import { TooltipProps } from "../tooltip/index.js";
+import { FormLabelAlign } from "./interface.js";
+import { RequiredMark } from "./Form.js";
+import * as vue992 from "vue";
+
+//#region src/form/FormItemLabel.d.ts
+type FormTooltipProps = TooltipProps & {
+  icon?: VueNode;
+};
+type FormItemTooltipType = FormTooltipProps | VueNode;
+type ColPropsWithClass = ColProps & {
+  class?: string;
+};
+interface FormItemLabelProps {
+  colon?: boolean;
+  htmlFor?: string;
+  label?: VueNode;
+  labelAlign?: FormLabelAlign;
+  labelCol?: ColPropsWithClass;
+  /**
+   * @internal Used for pass `requiredMark` from `<Form />`
+   */
+  requiredMark?: RequiredMark;
+  tooltip?: FormItemTooltipType;
+  vertical?: boolean;
+}
+declare const FormItemLabel: vue992.DefineSetupFnComponent<FormItemLabelProps & {
+  required?: boolean;
+  prefixCls: string;
+}, {}, {}, FormItemLabelProps & {
+  required?: boolean;
+  prefixCls: string;
+} & {}, vue992.PublicProps>;
+//#endregion
+export { ColPropsWithClass, FormItemLabelProps, FormItemTooltipType, FormTooltipProps, FormItemLabel as default };

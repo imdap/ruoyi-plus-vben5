@@ -1,0 +1,18 @@
+import { CSSProperties, VNodeChild } from "vue";
+
+//#region src/button/buttonHelper.d.ts
+declare const isTwoCNChar: (string: string) => boolean;
+declare function isUnBorderedButtonVariant(type?: ButtonVariantType): type is "link" | "text";
+declare function spaceChildren(children: VNodeChild[], needInserted: boolean, style?: CSSProperties, className?: string): VNodeChild[];
+declare const _ButtonTypes: readonly ["default", "primary", "dashed", "link", "text"];
+type ButtonType = (typeof _ButtonTypes)[number];
+declare const _ButtonShapes: readonly ["default", "circle", "round", "square"];
+type ButtonShape = (typeof _ButtonShapes)[number];
+declare const _ButtonHTMLTypes: readonly ["submit", "button", "reset"];
+type ButtonHTMLType = (typeof _ButtonHTMLTypes)[number];
+declare const _ButtonVariantTypes: readonly ["outlined", "dashed", "solid", "filled", "text", "link"];
+type ButtonVariantType = (typeof _ButtonVariantTypes)[number];
+declare const _ButtonColorTypes: readonly ["default", "primary", "danger", "blue", "purple", "cyan", "green", "magenta", "pink", "red", "orange", "yellow", "volcano", "geekblue", "lime", "gold"];
+type ButtonColorType = (typeof _ButtonColorTypes)[number];
+//#endregion
+export { ButtonColorType, ButtonHTMLType, ButtonShape, ButtonType, ButtonVariantType, _ButtonColorTypes, _ButtonVariantTypes, isTwoCNChar, isUnBorderedButtonVariant, spaceChildren };

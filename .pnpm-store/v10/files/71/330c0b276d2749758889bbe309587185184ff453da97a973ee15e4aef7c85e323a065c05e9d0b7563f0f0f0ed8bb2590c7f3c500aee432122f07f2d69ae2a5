@@ -1,0 +1,21 @@
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue509 from "vue";
+
+//#region src/popconfirm/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 确认框 z-index
+   * @descEN z-index of Popconfirm
+   */
+  zIndexPopup: number;
+}
+/**
+ * @desc Popconfirm 组件的 Token
+ * @descEN Token for Popconfirm component
+ */
+interface PopconfirmToken extends FullToken<'Popconfirm'> {}
+declare const prepareComponentToken: GetDefaultToken<'Popconfirm'>;
+declare const _default: (prefixCls: vue509.Ref<string>, rootCls?: vue509.Ref<string | undefined>) => readonly [vue509.Ref<string, string>, vue509.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, PopconfirmToken, _default as default, prepareComponentToken };

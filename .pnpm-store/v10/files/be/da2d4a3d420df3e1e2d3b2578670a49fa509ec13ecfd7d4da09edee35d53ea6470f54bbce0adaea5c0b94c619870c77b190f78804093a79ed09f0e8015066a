@@ -1,0 +1,1 @@
+{"version":3,"file":"TEventListenerObject.d.ts","sourceRoot":"","sources":["../../src/event/TEventListenerObject.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,KAAK,MAAM,YAAY,CAAC;AAEpC,MAAM,MAAM,oBAAoB,GAAG;IAClC,WAAW,CAAC,KAAK,EAAE,KAAK,GAAG,IAAI,CAAC;CAChC,CAAC"}

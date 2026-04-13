@@ -1,0 +1,1 @@
+{"version":3,"file":"IModuleImportMap.d.ts","sourceRoot":"","sources":["../../../src/module/types/IModuleImportMap.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,oBAAoB,MAAM,2BAA2B,CAAC;AAClE,OAAO,KAAK,qBAAqB,MAAM,4BAA4B,CAAC;AAEpE;;GAEG;AACH,MAAM,CAAC,OAAO,WAAW,gBAAgB;IACxC,OAAO,EAAE,oBAAoB,EAAE,CAAC;IAChC,MAAM,EAAE,qBAAqB,EAAE,CAAC;CAChC"}

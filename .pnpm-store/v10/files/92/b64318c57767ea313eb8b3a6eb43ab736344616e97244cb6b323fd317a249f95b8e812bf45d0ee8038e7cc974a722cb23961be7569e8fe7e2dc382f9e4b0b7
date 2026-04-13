@@ -1,0 +1,64 @@
+import { computed, defineComponent, inject, provide, ref } from "vue";
+var EmptyList = [];
+var PathRegisterContextKey = Symbol("PathRegisterContext");
+function useMeasure() {
+	return inject(PathRegisterContextKey, null);
+}
+function useMeasureProvider(context) {
+	provide(PathRegisterContextKey, context);
+}
+const MeasureProvider = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	useMeasureProvider(props);
+	return () => {
+		return slots?.default?.();
+	};
+}, { props: {
+	registerPath: {
+		type: Function,
+		required: true,
+		default: void 0
+	},
+	unregisterPath: {
+		type: Function,
+		required: true,
+		default: void 0
+	}
+} });
+var PathTrackerContextKey = Symbol("PathTrackerContext");
+function useFullPath(eventKey) {
+	const parentKeyPath = inject(PathTrackerContextKey, ref(EmptyList));
+	return computed(() => {
+		return eventKey !== void 0 ? [...parentKeyPath.value, eventKey.value] : parentKeyPath.value;
+	});
+}
+const PathTrackerProvider = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	provide(PathTrackerContextKey, computed(() => props.value));
+	return () => {
+		return slots?.default?.();
+	};
+}, { props: { value: {
+	type: Array,
+	required: true,
+	default: void 0
+} } });
+var PathUserContextKey = Symbol("PathUserContext");
+function usePathUserContextProvider(context) {
+	provide(PathUserContextKey, context);
+}
+function usePathUserContext() {
+	return inject(PathUserContextKey, { isSubPathKey: () => false });
+}
+const PathUserProvider = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	usePathUserContextProvider(props);
+	return () => {
+		return slots?.default?.();
+	};
+}, { props: { isSubPathKey: {
+	type: Function,
+	required: true,
+	default: void 0
+} } });
+const PathTrackerContext = { Provider: PathTrackerProvider };
+const PathRegisterContext = { Provider: MeasureProvider };
+const PathUserContext = { Provider: PathUserProvider };
+export { MeasureProvider, PathRegisterContext, PathTrackerContext, PathTrackerProvider, PathUserContext, PathUserProvider, useFullPath, useMeasure, useMeasureProvider, usePathUserContext, usePathUserContextProvider };

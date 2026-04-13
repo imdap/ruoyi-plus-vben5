@@ -1,0 +1,438 @@
+import { devUseWarning, isDev } from "../../../_util/warning.js";
+import { useConfig } from "../../../config-provider/context.js";
+import { toPropsRefs as toPropsRefs$1 } from "../../../_util/tools.js";
+import { useTableMeasureRowContext } from "../../TableMeasureRowContext.js";
+import button_default from "../../../button/index.js";
+import extendsObject_default from "../../../_util/extendsObject.js";
+import empty_default from "../../../empty/index.js";
+import { OverrideProvider } from "../../../menu/OverrideContext.js";
+import menu_default from "../../../menu/index.js";
+import dropdown_default from "../../../dropdown/index.js";
+import radio_default from "../../../radio/index.js";
+import checkbox_default from "../../../checkbox/index.js";
+import tree_default from "../../../tree/index.js";
+import FilterSearch_default from "./FilterSearch.js";
+import FilterWrapper_default from "./FilterWrapper.js";
+import { Fragment, computed, createVNode, defineComponent, isVNode, mergeDefaults, shallowRef, watch } from "vue";
+import { clsx } from "@v-c/util";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+import { FilterFilled } from "@antdv-next/icons";
+import isEqual from "@v-c/util/dist/isEqual";
+
+//#region src/table/hooks/useFilter/FilterDropdown.tsx
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+function flattenKeys(filters) {
+	let keys = [];
+	(filters || []).forEach(({ value, children }) => {
+		keys.push(value);
+		if (children) keys = [...keys, ...flattenKeys(children)];
+	});
+	return keys;
+}
+function hasSubMenu(filters) {
+	return filters.some(({ children }) => children);
+}
+function searchValueMatched(searchValue, text) {
+	if (typeof text === "string" || typeof text === "number") return text?.toString().toLowerCase().includes(searchValue.trim().toLowerCase());
+	return false;
+}
+function renderFilterItems({ filters, prefixCls, filteredKeys, filterMultiple, searchValue, filterSearch }) {
+	return filters.map((filter, index) => {
+		const key = String(filter.value);
+		if (filter.children) return {
+			key: key || index,
+			label: filter.text,
+			popupClassName: `${prefixCls}-dropdown-submenu`,
+			children: renderFilterItems({
+				filters: filter.children,
+				prefixCls,
+				filteredKeys,
+				filterMultiple,
+				searchValue,
+				filterSearch
+			})
+		};
+		const Component = filterMultiple ? checkbox_default : radio_default;
+		const checked = filteredKeys.includes(key);
+		const item = {
+			key: filter.value !== void 0 ? key : index,
+			label: createVNode(Fragment, null, [createVNode(Component, { "checked": checked }, null), createVNode("span", null, [filter.text])])
+		};
+		if (searchValue.trim()) {
+			if (typeof filterSearch === "function") return filterSearch(searchValue, filter) ? item : null;
+			return searchValueMatched(searchValue, filter.text) ? item : null;
+		}
+		return item;
+	});
+}
+function wrapStringListType(keys) {
+	return keys || [];
+}
+function useSyncState(defaultValue) {
+	const stateRef = shallowRef(defaultValue);
+	const setState = (next) => {
+		stateRef.value = typeof next === "function" ? next(stateRef.value) : next;
+	};
+	return [stateRef, setState];
+}
+const FilterDropdown = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	const { filterMode, filterSearch, column } = toPropsRefs$1(props, "filterSearch", "filterMode", "column");
+	const filterDropdownProps = computed(() => column?.value?.filterDropdownProps ?? {});
+	const visible = shallowRef(false);
+	const inMeasureRow = useTableMeasureRowContext();
+	const filtered = computed(() => {
+		const filterState = props.filterState;
+		return !!(filterState && (filterState.filteredKeys?.length || filterState.forceFiltered));
+	});
+	const triggerVisible = (newVisible) => {
+		visible.value = newVisible;
+		filterDropdownProps.value.onOpenChange?.(newVisible);
+		column.value.onFilterDropdownOpenChange?.(newVisible);
+	};
+	if (isDev) {
+		const warning = devUseWarning("Table");
+		[["filterDropdownOpen", "filterDropdownProps.open"], ["onFilterDropdownOpenChange", "filterDropdownProps.onOpenChange"]].forEach(([deprecatedName, newName]) => {
+			warning.deprecated(!(deprecatedName in column.value), deprecatedName, newName);
+		});
+		warning.deprecated(!("filterCheckall" in props.locale), "filterCheckall", "locale.filterCheckAll");
+	}
+	let hasPropDropdownRender = false;
+	const mergedVisible = computed(() => {
+		return filterDropdownProps.value?.open ?? column.value.filterDropdownOpen ?? visible.value;
+	});
+	const propFilteredKeys = computed(() => props.filterState?.filteredKeys);
+	const [filteredKeysSync, setFilteredKeysSync] = useSyncState(wrapStringListType(propFilteredKeys.value));
+	const onSelectKeys = ({ selectedKeys }) => {
+		setFilteredKeysSync(selectedKeys);
+	};
+	const onCheck = (keys, { node, checked }) => {
+		if (!props.filterMultiple) onSelectKeys({ selectedKeys: checked && node.key ? [node.key] : [] });
+		else onSelectKeys({ selectedKeys: keys });
+	};
+	watch([propFilteredKeys, mergedVisible], ([nextKeys, nextVisible]) => {
+		if (!nextVisible) return;
+		onSelectKeys({ selectedKeys: wrapStringListType(nextKeys) });
+	});
+	const openKeys = shallowRef([]);
+	const onOpenChange = (keys) => {
+		openKeys.value = keys;
+	};
+	const searchValue = shallowRef("");
+	const onSearch = (e) => {
+		searchValue.value = e.target?.value || "";
+	};
+	watch(mergedVisible, (nextVisible) => {
+		if (!nextVisible) searchValue.value = "";
+	});
+	const internalTriggerFilter = (keys) => {
+		const filterState = props.filterState;
+		const mergedKeys = keys?.length ? keys : null;
+		if (mergedKeys === null && (!filterState || !filterState.filteredKeys)) return null;
+		if (isEqual(mergedKeys, filterState?.filteredKeys, true)) return null;
+		props.triggerFilter({
+			column: column.value,
+			key: props.columnKey,
+			filteredKeys: mergedKeys
+		});
+	};
+	const onConfirm = () => {
+		triggerVisible(false);
+		internalTriggerFilter(filteredKeysSync.value);
+	};
+	const onReset = ({ confirm, closeDropdown } = {
+		confirm: false,
+		closeDropdown: false
+	}) => {
+		if (confirm) internalTriggerFilter([]);
+		if (closeDropdown) triggerVisible(false);
+		searchValue.value = "";
+		if (column.value.filterResetToDefaultFilteredValue) setFilteredKeysSync((column.value.defaultFilteredValue || []).map((key) => String(key)));
+		else setFilteredKeysSync([]);
+	};
+	const doFilter = ({ closeDropdown } = { closeDropdown: true }) => {
+		if (closeDropdown) triggerVisible(false);
+		internalTriggerFilter(filteredKeysSync.value);
+	};
+	const filterDropdownDefined = computed(() => props.filterDropdownRender !== void 0 || column.value?.filterDropdown !== void 0);
+	const onVisibleChange = (newVisible, info) => {
+		if (info?.source === "trigger") {
+			if (newVisible && propFilteredKeys.value !== void 0) setFilteredKeysSync(wrapStringListType(propFilteredKeys.value));
+			triggerVisible(newVisible);
+			if (!newVisible && !hasPropDropdownRender && props.filterOnClose) onConfirm();
+		}
+	};
+	const dropdownMenuClass = computed(() => clsx({ [`${props.dropdownPrefixCls}-menu-without-submenu`]: !hasSubMenu(column?.value?.filters || []) }));
+	const onCheckAll = (e) => {
+		if (e.target.checked) setFilteredKeysSync(flattenKeys(column.value?.filters).map((key) => String(key)));
+		else setFilteredKeysSync([]);
+	};
+	const getTreeData = ({ filters }) => (filters || []).map((filter, index) => {
+		const key = String(filter.value);
+		const item = {
+			title: filter.text,
+			key: filter.value !== void 0 ? key : String(index)
+		};
+		if (filter.children) item.children = getTreeData({ filters: filter.children });
+		return item;
+	});
+	const getFilterData = (node) => ({
+		...node,
+		text: node.title,
+		value: node.key,
+		children: node.children?.map((item) => getFilterData(item)) || []
+	});
+	const config = useConfig();
+	const direction = computed(() => config.value.direction);
+	const menuItems = computed(() => {
+		if (filterMode.value === "tree") return [];
+		return renderFilterItems({
+			filters: props?.column?.filters || [],
+			filterSearch: filterSearch.value,
+			prefixCls: props.prefixCls,
+			filteredKeys: filteredKeysSync.value,
+			filterMultiple: props.filterMultiple,
+			searchValue: searchValue.value
+		});
+	});
+	return () => {
+		let _slot;
+		const { dropdownPrefixCls, prefixCls, tablePrefixCls } = props;
+		const renderEmpty = config.value.renderEmpty;
+		const getDropdownContent = () => {
+			let dropdownContent;
+			const baseDropdownProps = {
+				prefixCls: `${dropdownPrefixCls}-custom`,
+				setSelectedKeys: (selectedKeys) => onSelectKeys({ selectedKeys }),
+				selectedKeys: filteredKeysSync.value,
+				confirm: doFilter,
+				clearFilters: onReset,
+				filters: column.value.filters,
+				visible: mergedVisible.value,
+				close: () => {
+					triggerVisible(false);
+				}
+			};
+			let filterNode = null;
+			if (props.filterDropdownRender) {
+				const node = props.filterDropdownRender({
+					...baseDropdownProps,
+					column: column.value
+				});
+				if (node) {
+					const _filterDropdown = filterEmpty(Array.isArray(node) ? node : [node]);
+					if (_filterDropdown && _filterDropdown.length > 0) {
+						filterNode = _filterDropdown.length === 1 ? _filterDropdown[0] : _filterDropdown;
+						hasPropDropdownRender = true;
+					} else hasPropDropdownRender = false;
+				} else hasPropDropdownRender = false;
+			}
+			if (filterNode) dropdownContent = filterNode;
+			else if (typeof column.value.filterDropdown === "function") dropdownContent = column.value.filterDropdown({ ...baseDropdownProps });
+			else if (column.value.filterDropdown) dropdownContent = column.value.filterDropdown;
+			else {
+				const selectedKeys = filteredKeysSync.value || [];
+				const getFilterComponent = () => {
+					const empty = renderEmpty?.("Table.filter") ?? createVNode(empty_default, {
+						"image": empty_default.PRESENTED_IMAGE_SIMPLE,
+						"description": props.locale.filterEmptyText,
+						"styles": { image: { height: 24 } },
+						"style": {
+							margin: 0,
+							padding: "16px 0"
+						}
+					}, null);
+					if ((column.value.filters || []).length === 0) return empty;
+					if (filterMode.value === "tree") return createVNode(Fragment, null, [createVNode(FilterSearch_default, {
+						"filterSearch": filterSearch.value,
+						"value": searchValue.value,
+						"onChange": onSearch,
+						"tablePrefixCls": props.tablePrefixCls,
+						"locale": props.locale
+					}, null), createVNode("div", { "class": `${props.tablePrefixCls}-filter-dropdown-tree` }, [props.filterMultiple ? createVNode(checkbox_default, {
+						"checked": selectedKeys.length === flattenKeys(column.value.filters).length,
+						"indeterminate": selectedKeys.length > 0 && selectedKeys.length < flattenKeys(column.value.filters).length,
+						"class": `${props.tablePrefixCls}-filter-dropdown-checkall`,
+						"onChange": onCheckAll
+					}, { default: () => [props.locale?.filterCheckall ?? props.locale?.filterCheckAll] }) : null, createVNode(tree_default, {
+						"checkable": true,
+						"selectable": false,
+						"blockNode": true,
+						"multiple": props.filterMultiple,
+						"checkStrictly": !props.filterMultiple,
+						"class": `${props.dropdownPrefixCls}-menu`,
+						"onCheck": onCheck,
+						"checkedKeys": selectedKeys,
+						"selectedKeys": selectedKeys,
+						"showIcon": false,
+						"treeData": getTreeData({ filters: column.value.filters }),
+						"autoExpandParent": true,
+						"defaultExpandAll": true,
+						"filterTreeNode": searchValue.value.trim() ? (node) => {
+							if (typeof filterSearch.value === "function") return filterSearch.value(searchValue.value, getFilterData(node));
+							return searchValueMatched(searchValue.value, node.title);
+						} : void 0
+					}, null)])]);
+					const isEmpty = menuItems.value?.every?.((item) => item === null);
+					return createVNode(Fragment, null, [createVNode(FilterSearch_default, {
+						"filterSearch": filterSearch.value,
+						"value": searchValue.value,
+						"onChange": onSearch,
+						"tablePrefixCls": props.tablePrefixCls,
+						"locale": props.locale
+					}, null), isEmpty ? empty : createVNode(menu_default, {
+						"selectable": true,
+						"multiple": props.filterMultiple,
+						"prefixCls": `${props.dropdownPrefixCls}-menu`,
+						"class": dropdownMenuClass.value,
+						"onSelect": onSelectKeys,
+						"onDeselect": onSelectKeys,
+						"selectedKeys": selectedKeys,
+						"getPopupContainer": props.getPopupContainer,
+						"openKeys": openKeys.value,
+						"onOpenChange": onOpenChange,
+						"items": menuItems.value
+					}, null)]);
+				};
+				const getResetDisabled = () => {
+					if (column.value.filterResetToDefaultFilteredValue) return isEqual((column.value.defaultFilteredValue || []).map((key) => String(key)), selectedKeys, true);
+					return selectedKeys.length === 0;
+				};
+				dropdownContent = createVNode(Fragment, null, [getFilterComponent(), createVNode("div", { "class": `${props.prefixCls}-dropdown-btns` }, [createVNode(button_default, {
+					"type": "link",
+					"size": "small",
+					"disabled": getResetDisabled(),
+					"onClick": () => onReset()
+				}, { default: () => [props.locale.filterReset] }), createVNode(button_default, {
+					"type": "primary",
+					"size": "small",
+					"onClick": onConfirm
+				}, { default: () => [props.locale.filterConfirm] })])]);
+			}
+			if (filterDropdownDefined.value) {
+				const _dropdownContent = function() {
+					return dropdownContent;
+				}();
+				dropdownContent = createVNode(OverrideProvider, { "value": { selectable: void 0 } }, _isSlot(dropdownContent) ? dropdownContent : { default: () => [_dropdownContent] });
+			}
+			return createVNode(FilterWrapper_default, { "className": `${props.prefixCls}-dropdown` }, _isSlot(dropdownContent) ? dropdownContent : { default: () => [dropdownContent] });
+		};
+		const getDropdownTrigger = () => {
+			let filterIcon;
+			if (props.filterIconRender) filterIcon = props.filterIconRender({
+				column: column.value,
+				filtered: filtered.value
+			});
+			else if (typeof column.value.filterIcon === "function") filterIcon = column.value.filterIcon(filtered.value);
+			else if (column.value.filterIcon) filterIcon = column.value.filterIcon;
+			else filterIcon = createVNode(FilterFilled, null, null);
+			return createVNode("span", {
+				"role": "button",
+				"tabindex": -1,
+				"class": clsx(`${props.prefixCls}-trigger`, { active: filtered.value }),
+				"onClick": (e) => {
+					e.stopPropagation();
+				}
+			}, [filterIcon]);
+		};
+		const getTitle = () => slots.default?.() ?? props.children;
+		const triggerNode = getDropdownTrigger();
+		if (inMeasureRow.value) return createVNode("div", { "class": `${prefixCls}-column` }, [createVNode("span", { "class": `${tablePrefixCls}-column-title` }, [getTitle()]), triggerNode]);
+		const dropdownContent = getDropdownContent();
+		const dropdownRootClassName = clsx(props.rootClassName, filterDropdownProps.value.rootClassName, filterDropdownProps.value.rootClass);
+		const mergedDropdownProps = extendsObject_default({
+			trigger: ["click"],
+			placement: direction.value === "rtl" ? "bottomLeft" : "bottomRight",
+			getPopupContainer: props.getPopupContainer,
+			prefixCls: props.dropdownPrefixCls,
+			rootClass: dropdownRootClassName
+		}, {
+			...filterDropdownProps.value,
+			open: mergedVisible.value,
+			onOpenChange: onVisibleChange,
+			popupRender: () => {
+				if (typeof filterDropdownProps.value.popupRender === "function") return filterDropdownProps.value.popupRender(dropdownContent);
+				if (typeof filterDropdownProps.value.dropdownRender === "function") return filterDropdownProps.value.dropdownRender(dropdownContent);
+				return dropdownContent;
+			}
+		});
+		return createVNode("div", { "class": `${prefixCls}-column` }, [createVNode("span", { "class": `${tablePrefixCls}-column-title` }, [getTitle()]), createVNode(dropdown_default, mergedDropdownProps, _isSlot(_slot = getDropdownTrigger()) ? _slot : { default: () => [_slot] })]);
+	};
+}, { props: /* @__PURE__ */ mergeDefaults({
+	tablePrefixCls: {
+		type: String,
+		required: true
+	},
+	prefixCls: {
+		type: String,
+		required: true
+	},
+	dropdownPrefixCls: {
+		type: String,
+		required: true
+	},
+	column: {
+		type: Object,
+		required: true
+	},
+	filterDropdownRender: {
+		type: Function,
+		required: false
+	},
+	filterIconRender: {
+		type: Function,
+		required: false
+	},
+	filterState: {
+		type: Object,
+		required: false
+	},
+	filterOnClose: {
+		type: Boolean,
+		required: true
+	},
+	filterMultiple: {
+		type: Boolean,
+		required: true
+	},
+	filterMode: {
+		type: String,
+		required: false
+	},
+	filterSearch: {
+		type: [Boolean, Function],
+		required: false,
+		default: void 0
+	},
+	columnKey: {
+		type: [String, Number],
+		required: true
+	},
+	children: { required: false },
+	triggerFilter: {
+		type: Function,
+		required: true
+	},
+	locale: {
+		type: Object,
+		required: true
+	},
+	getPopupContainer: {
+		type: Function,
+		required: false
+	},
+	filterResetToDefaultFilteredValue: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	rootClassName: {
+		type: String,
+		required: false
+	}
+}, { filterSearch: false }) });
+var FilterDropdown_default = FilterDropdown;
+
+//#endregion
+export { FilterDropdown_default as default, flattenKeys };

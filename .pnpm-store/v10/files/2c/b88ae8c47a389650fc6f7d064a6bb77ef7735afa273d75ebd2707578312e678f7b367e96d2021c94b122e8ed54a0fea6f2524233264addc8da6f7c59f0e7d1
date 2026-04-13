@@ -1,0 +1,79 @@
+{
+    "id": "en-us",
+    "name": "English - American",
+    "description": "American English Dictionary",
+    "dictionaryDefinitions": [
+        {
+            "name": "en_us",
+            "path": "./en_US.trie.gz",
+            "repMap": [["'|`|’", "'"]],
+            "description": "American English Dictionary",
+            "dictionaryInformation": {
+                "locale": "en-US",
+                "alphabet": "a-zA-Z",
+                "suggestionEditCosts": [
+                    { "description": "Words like 'break' and 'brake'", "map": "(ate)(eat)|(ake)(eak)", "replace": 75 },
+                    {
+                        "description": "Sounds alike",
+                        "map": "f(ph)(gh)|(sion)(tion)(cion)|(ail)(ale)|(r)(ur)(er)(ure)(or)",
+                        "replace": 75
+                    },
+                    {
+                        "description": "Double letter score",
+                        "map": "l(ll)|s(ss)|t(tt)|e(ee)|b(bb)|d(dd)",
+                        "replace": 75
+                    },
+                    {
+                        "map": "aeiou",
+                        "replace": 98,
+                        "swap": 75,
+                        "insDel": 90
+                    },
+                    {
+                        "description": "Common vowel sounds.",
+                        "map": "o(oh)(oo)|(oo)(ou)|(oa)(ou)|(ee)(ea)",
+                        "replace": 75
+                    },
+                    {
+                        "map": "o(oo)|a(aa)|e(ee)|u(uu)|(eu)(uu)|(ou)(ui)(ow)|(ie)(ei)|i(ie)|e(en)|e(ie)",
+                        "replace": 50
+                    },
+                    {
+                        "description": "Do not rank `'s` high on the list.",
+                        "map": "($)('$)('s$)|(s$)(s'$)(s's$)",
+                        "replace": 10,
+                        "penalty": 180
+                    },
+                    {
+                        "description": "Plurals ending in 'y'",
+                        "map": "(ys)(ies)",
+                        "replace": 75
+                    },
+                    {
+                        "map": "(d$)(t$)(dt$)",
+                        "replace": 75
+                    }
+                ]
+            },
+            "ignoreForbiddenWords": true
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "languageId": "*",
+            "locale": "en,en-US",
+            "includeRegExpList": [],
+            "ignoreRegExpList": [],
+            "patterns": [
+                {
+                    "name": "possessive_s",
+                    "pattern": "/'s\\b/gi"
+                }
+            ],
+            "dictionaries": ["en_us"],
+            "dictionaryDefinitions": [],
+            "flagWords": []
+        }
+    ]
+}

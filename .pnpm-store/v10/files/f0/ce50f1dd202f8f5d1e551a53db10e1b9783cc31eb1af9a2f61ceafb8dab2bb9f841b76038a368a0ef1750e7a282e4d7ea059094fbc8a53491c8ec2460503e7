@@ -1,0 +1,46 @@
+import { AggregationColor } from "./color.js";
+import { ColorFormatType, ColorPickerEmits, ModeType, PresetsItem } from "./interface.js";
+import { ModeOptions } from "./hooks/useModeColor.js";
+import * as vue326 from "vue";
+import { Ref } from "vue";
+
+//#region src/color-picker/context.d.ts
+interface PanelPickerContextProps {
+  prefixCls: string;
+  allowClear?: boolean;
+  disabled?: boolean;
+  disabledAlpha?: boolean;
+  mode: ModeType;
+  onModeChange: (mode: ModeType) => void;
+  modeOptions: ModeOptions;
+  value: AggregationColor;
+  onChange?: (value?: AggregationColor, fromPicker?: boolean) => void;
+  onChangeComplete?: ColorPickerEmits['changeComplete'];
+  format?: ColorFormatType;
+  onFormatChange?: ColorPickerEmits['formatChange'];
+  /** The gradient Slider active handle */
+  activeIndex: number;
+  /** The gradient Slider handle active changed */
+  onActive: (index: number) => void;
+  /** Is gradient Slider dragging */
+  gradientDragging: boolean;
+  /** The gradient Slider dragging changed */
+  onGradientDragging: (dragging: boolean) => void;
+  onClear?: () => void;
+  disabledFormat?: boolean;
+}
+interface PanelPresetsContextProps {
+  prefixCls: string;
+  presets?: PresetsItem[];
+  disabled?: boolean;
+  value: AggregationColor;
+  onChange?: (value: AggregationColor) => void;
+}
+declare function usePanelPickerProvider(value: Ref<PanelPickerContextProps>): void;
+declare function usePanelPickerContext(): Ref<PanelPickerContextProps, PanelPickerContextProps>;
+declare const PanelPickerContextProvider: vue326.DefineSetupFnComponent<PanelPickerContextProps, {}, {}, PanelPickerContextProps & {}, vue326.PublicProps>;
+declare function usePanelPresetsProvider(value: Ref<PanelPresetsContextProps>): void;
+declare function usePanelPresetsContext(): Ref<PanelPresetsContextProps, PanelPresetsContextProps>;
+declare const PanelPresetsContextProvider: vue326.DefineSetupFnComponent<PanelPresetsContextProps, {}, {}, PanelPresetsContextProps & {}, vue326.PublicProps>;
+//#endregion
+export { PanelPickerContextProps, PanelPickerContextProvider, PanelPresetsContextProps, PanelPresetsContextProvider, usePanelPickerContext, usePanelPickerProvider, usePanelPresetsContext, usePanelPresetsProvider };

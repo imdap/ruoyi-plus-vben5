@@ -1,0 +1,47 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import { Orientation } from "../_util/hooks/useOrientation.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { SpaceCompactProps } from "./Compact.js";
+import { SpaceCompactCellProps } from "./Addon.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue705 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/space/index.d.ts
+type SpaceSize = SizeType | number;
+type SpaceSemanticName = keyof SpaceSemanticClassNames & keyof SpaceSemanticStyles;
+interface SpaceSemanticClassNames {
+  root?: string;
+  item?: string;
+  separator?: string;
+}
+interface SpaceSemanticStyles {
+  root?: CSSProperties;
+  item?: CSSProperties;
+  separator?: CSSProperties;
+}
+type SpaceClassNamesType = SemanticClassNamesType<SpaceProps, SpaceSemanticClassNames>;
+type SpaceStylesType = SemanticStylesType<SpaceProps, SpaceSemanticStyles>;
+interface SpaceProps extends ComponentBaseProps {
+  size?: SpaceSize | [SpaceSize, SpaceSize];
+  /** @deprecated please use `orientation` instead */
+  direction?: Orientation;
+  orientation?: Orientation;
+  vertical?: boolean;
+  align?: 'start' | 'end' | 'center' | 'baseline';
+  separator?: VueNode;
+  wrap?: boolean;
+  classes?: SpaceClassNamesType;
+  styles?: SpaceStylesType;
+}
+interface SpaceSlots {
+  default?: () => any;
+  separator?: () => any;
+}
+declare const Space: vue705.DefineSetupFnComponent<SpaceProps, EmptyEmit, SlotsType<SpaceSlots>, SpaceProps, vue705.PublicProps>;
+declare const SpaceCompact: vue705.DefineSetupFnComponent<SpaceCompactProps, {}, {}, SpaceCompactProps & {}, vue705.PublicProps>;
+declare const SpaceAddon: vue705.DefineSetupFnComponent<SpaceCompactCellProps, {}, {}, SpaceCompactCellProps & {}, vue705.PublicProps>;
+//#endregion
+export { SpaceAddon, SpaceClassNamesType, SpaceCompact, SpaceProps, SpaceSemanticClassNames, SpaceSemanticName, SpaceSemanticStyles, SpaceSize, SpaceSlots, SpaceStylesType, Space as default };

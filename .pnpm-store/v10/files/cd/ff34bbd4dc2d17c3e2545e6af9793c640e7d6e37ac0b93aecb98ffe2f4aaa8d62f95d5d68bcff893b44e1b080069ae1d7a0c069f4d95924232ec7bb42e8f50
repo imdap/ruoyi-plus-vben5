@@ -1,0 +1,150 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { InputStatus } from "../_util/statusUtils.js";
+import { SelectCommonPlacement } from "../_util/motion.js";
+import { SwitcherIcon, TreeProps } from "../tree/Tree.js";
+import "../tree/index.js";
+import { Variant } from "../config-provider/context.js";
+import * as vue370 from "vue";
+import { App, CSSProperties, SlotsType } from "vue";
+import { DataNode, SHOW_ALL, SHOW_CHILD, SHOW_PARENT, TreeNode, TreeSelectProps as TreeSelectProps$1 } from "@v-c/tree-select";
+
+//#region src/tree-select/index.d.ts
+type RawValue = string | number;
+interface LabeledValue {
+  key?: string;
+  value: RawValue;
+  label: VueNode;
+}
+type SelectValue = RawValue | RawValue[] | LabeledValue | LabeledValue[];
+type TreeSelectSemanticName = keyof TreeSelectSemanticClassNames & keyof TreeSelectSemanticStyles;
+interface TreeSelectSemanticClassNames {
+  root?: string;
+  prefix?: string;
+  input?: string;
+  suffix?: string;
+  content?: string;
+  placeholder?: string;
+  item?: string;
+  itemContent?: string;
+  itemRemove?: string;
+}
+interface TreeSelectSemanticStyles {
+  root?: CSSProperties;
+  prefix?: CSSProperties;
+  input?: CSSProperties;
+  suffix?: CSSProperties;
+  content?: CSSProperties;
+  placeholder?: CSSProperties;
+  item?: CSSProperties;
+  itemContent?: CSSProperties;
+  itemRemove?: CSSProperties;
+}
+type TreeSelectPopupSemanticName = keyof TreeSelectPopupSemanticClassNames & keyof TreeSelectPopupSemanticStyles;
+interface TreeSelectPopupSemanticClassNames {
+  root?: string;
+  item?: string;
+  itemTitle?: string;
+}
+interface TreeSelectPopupSemanticStyles {
+  root?: CSSProperties;
+  item?: CSSProperties;
+  itemTitle?: CSSProperties;
+}
+type TreeSelectClassNamesType = SemanticClassNamesType<TreeSelectProps, TreeSelectSemanticClassNames> & {
+  popup?: TreeSelectPopupSemanticClassNames;
+};
+type TreeSelectStylesType = SemanticStylesType<TreeSelectProps, TreeSelectSemanticStyles> & {
+  popup?: TreeSelectPopupSemanticStyles;
+};
+interface BaseTreeSelectProps<ValueType = any, OptionType extends DataNode = DataNode> extends Omit<TreeSelectProps$1<ValueType, OptionType>, 'showTreeIcon' | 'treeMotion' | 'mode' | 'getInputElement' | 'backfill' | 'treeLine' | 'switcherIcon' | 'classNames' | 'styles' | 'style' | 'onSelect' | 'onTreeExpand' | 'onTreeLoad' | 'onChange' | 'onDeselect' | 'onPopupScroll' | 'onPopupVisibleChange' | 'onSearch'> {
+  size?: SizeType;
+  disabled?: boolean;
+  status?: InputStatus;
+  variant?: Variant;
+}
+interface TreeSelectProps<ValueType = any, OptionType extends DataNode = DataNode> extends BaseTreeSelectProps<ValueType, OptionType>, TreeSelectEmitsProps {
+  styles?: TreeSelectStylesType;
+  classes?: TreeSelectClassNamesType;
+  suffixIcon?: VueNode;
+  size?: SizeType;
+  disabled?: boolean;
+  placement?: SelectCommonPlacement;
+  /** @deprecated Please use `classNames.popup.root` instead */
+  popupClassName?: string;
+  /** @deprecated Please use `classNames.popup.root` instead */
+  dropdownClassName?: string;
+  /** @deprecated Please use `popupRender` instead */
+  dropdownRender?: (menu: any) => any;
+  popupRender?: (menu: any) => any;
+  /** @deprecated Please use `styles.popup.root` instead */
+  dropdownStyle?: CSSProperties;
+  /** @deprecated Use `variant` instead. */
+  bordered?: boolean;
+  treeLine?: TreeProps['showLine'];
+  status?: InputStatus;
+  switcherIcon?: SwitcherIcon | TreeSelectProps$1<ValueType, OptionType>['switcherIcon'];
+  rootClass?: string;
+  /** @deprecated Please use `popupMatchSelectWidth` instead */
+  dropdownMatchSelectWidth?: boolean | number;
+  popupMatchSelectWidth?: boolean | number;
+  /**
+   * @deprecated `showArrow` is deprecated which will be removed in next major version. It will be a
+   *   default behavior, you can hide it by setting `suffixIcon` to null.
+   */
+  showArrow?: boolean;
+  /**
+   * @since 5.13.0
+   * @default "outlined"
+   */
+  variant?: Variant;
+}
+interface TreeSelectEmits {
+  'focus': (e: FocusEvent) => void;
+  'blur': (e: FocusEvent) => void;
+  'openChange': (open: boolean) => void;
+  'dropdownVisibleChange': (open: boolean) => void;
+  'select': NonNullable<TreeSelectProps$1['onSelect']>;
+  'treeExpand': NonNullable<TreeSelectProps$1['onTreeExpand']>;
+  'treeLoad': NonNullable<TreeSelectProps$1['onTreeLoad']>;
+  'change': NonNullable<TreeSelectProps$1['onChange']>;
+  'update:value': (value: any) => void;
+  'deselect': NonNullable<TreeSelectProps$1['onDeselect']>;
+  'popupScroll': NonNullable<TreeSelectProps$1['onPopupScroll']>;
+  'search': NonNullable<TreeSelectProps$1['onSearch']>;
+}
+interface TreeSelectEmitsProps {
+  onFocus?: TreeSelectEmits['focus'];
+  onBlur?: TreeSelectEmits['blur'];
+  onOpenChange?: TreeSelectEmits['openChange'];
+  onDropdownVisibleChange?: TreeSelectEmits['dropdownVisibleChange'];
+  onSelect?: TreeSelectEmits['select'];
+  onTreeExpand?: TreeSelectEmits['treeExpand'];
+  onTreeLoad?: TreeSelectEmits['treeLoad'];
+  onChange?: TreeSelectEmits['change'];
+  'onUpdate:value'?: TreeSelectEmits['update:value'];
+  onDeselect?: TreeSelectEmits['deselect'];
+  onPopupScroll?: TreeSelectEmits['popupScroll'];
+  onSearch?: TreeSelectEmits['search'];
+}
+interface TreeSelectSlots {
+  suffixIcon?: () => any;
+  tagRender?: (props: any) => any;
+  notFoundContent?: () => any;
+  switcherIcon?: () => any;
+  treeTitleRender?: (nodeData: DataNode) => any;
+}
+declare const InternalTreeSelect: vue370.DefineSetupFnComponent<TreeSelectProps<any, DataNode>, TreeSelectEmits, SlotsType<TreeSelectSlots>, TreeSelectProps<any, DataNode>, vue370.PublicProps>;
+declare const TreeSelect: typeof InternalTreeSelect & {
+  install: (app: App) => void;
+  TreeNode: typeof TreeNode;
+  SHOW_ALL: typeof SHOW_ALL;
+  SHOW_PARENT: typeof SHOW_PARENT;
+  SHOW_CHILD: typeof SHOW_CHILD;
+  _InternalPanelDoNotUseOrYouWillBeFired: any;
+};
+declare const TreeSelectNode: vue370.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any>, vue370.PublicProps>;
+//#endregion
+export { LabeledValue, SelectValue, TreeSelectClassNamesType, TreeSelectEmits, TreeSelectEmitsProps, TreeSelectNode, TreeSelectPopupSemanticClassNames, TreeSelectPopupSemanticName, TreeSelectPopupSemanticStyles, TreeSelectProps, TreeSelectSemanticClassNames, TreeSelectSemanticName, TreeSelectSemanticStyles, TreeSelectSlots, TreeSelectStylesType, TreeSelect as default };

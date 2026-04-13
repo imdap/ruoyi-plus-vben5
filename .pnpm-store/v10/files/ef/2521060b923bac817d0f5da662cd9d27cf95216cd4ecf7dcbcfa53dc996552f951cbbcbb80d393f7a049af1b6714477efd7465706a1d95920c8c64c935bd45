@@ -1,0 +1,41 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import * as vue42 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/card/CardMeta.d.ts
+type CardMetaSemanticName = keyof CardMetaSemanticClassNames & keyof CardMetaSemanticStyles;
+interface CardMetaSemanticClassNames {
+  root?: string;
+  section?: string;
+  avatar?: string;
+  title?: string;
+  description?: string;
+}
+interface CardMetaSemanticStyles {
+  root?: CSSProperties;
+  section?: CSSProperties;
+  avatar?: CSSProperties;
+  title?: CSSProperties;
+  description?: CSSProperties;
+}
+type CardMetaClassNamesType = SemanticClassNamesType<CardMetaProps, CardMetaSemanticClassNames>;
+type CardMetaStylesType = SemanticStylesType<CardMetaProps, CardMetaSemanticStyles>;
+interface CardMetaProps {
+  prefixCls?: string;
+  avatar?: VueNode;
+  title?: VueNode;
+  description?: VueNode;
+  classes?: CardMetaClassNamesType;
+  styles?: CardMetaStylesType;
+}
+interface CardMetaSlots {
+  avatar?: () => any;
+  title?: () => any;
+  description?: () => any;
+  default?: () => any;
+}
+declare const CardMeta: vue42.DefineSetupFnComponent<CardMetaProps, EmptyEmit, SlotsType<CardMetaSlots>, CardMetaProps, vue42.PublicProps>;
+//#endregion
+export { CardMetaClassNamesType, CardMetaProps, CardMetaSemanticClassNames, CardMetaSemanticName, CardMetaSemanticStyles, CardMetaSlots, CardMetaStylesType, CardMeta as default };

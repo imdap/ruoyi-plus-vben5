@@ -1,0 +1,12 @@
+import * as vue863 from "vue";
+import { Ref } from "vue";
+
+//#region src/config-provider/hooks/useCSSVarCls.d.ts
+/**
+ * This hook is only for cssVar to add root className for components.
+ * If root ClassName is needed, this hook could be refactored with `-root`
+ * @param prefixCls
+ */
+declare function useCSSVarCls(prefixCls: Ref<string>): vue863.ComputedRef<string>;
+//#endregion
+export { useCSSVarCls as default };

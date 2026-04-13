@@ -1,0 +1,19 @@
+import { ColorPickerEmits, ColorPickerProps, ColorPickerSlots } from "./interface.js";
+import * as vue244 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/color-picker/ColorPicker.d.ts
+interface InternalColorPickerProps extends ColorPickerProps, ColorPickerEmitsProps {}
+interface ColorPickerEmitsProps {
+  onChange?: ColorPickerEmits['change'];
+  onClear?: ColorPickerEmits['clear'];
+  onChangeComplete?: ColorPickerEmits['changeComplete'];
+  onOpenChange?: ColorPickerEmits['openChange'];
+  'onUpdate:open'?: ColorPickerEmits['update:open'];
+  onFormatChange?: ColorPickerEmits['formatChange'];
+  'onUpdate:value'?: ColorPickerEmits['update:value'];
+  'onUpdate:format'?: ColorPickerEmits['update:format'];
+}
+declare const ColorPicker: vue244.DefineSetupFnComponent<InternalColorPickerProps, ColorPickerEmits, SlotsType<ColorPickerSlots>, InternalColorPickerProps, vue244.PublicProps>;
+//#endregion
+export { ColorPickerEmitsProps, InternalColorPickerProps, ColorPicker as default };

@@ -1,0 +1,17 @@
+import { TransferEmits, TransferProps, TransferSlots } from "./interface.js";
+import * as vue272 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/transfer/Transfer.d.ts
+interface InternalTransferProps extends TransferProps, TransferEmitsProps {}
+interface TransferEmitsProps {
+  onChange?: TransferEmits['change'];
+  onSelectChange?: TransferEmits['selectChange'];
+  onSearch?: TransferEmits['search'];
+  onScroll?: TransferEmits['scroll'];
+  'onUpdate:targetKeys'?: TransferEmits['update:targetKeys'];
+  'onUpdate:selectedKeys'?: TransferEmits['update:selectedKeys'];
+}
+declare const Transfer: vue272.DefineSetupFnComponent<InternalTransferProps, TransferEmits, SlotsType<TransferSlots<any>>, InternalTransferProps, vue272.PublicProps>;
+//#endregion
+export { InternalTransferProps, TransferEmitsProps, Transfer as default };

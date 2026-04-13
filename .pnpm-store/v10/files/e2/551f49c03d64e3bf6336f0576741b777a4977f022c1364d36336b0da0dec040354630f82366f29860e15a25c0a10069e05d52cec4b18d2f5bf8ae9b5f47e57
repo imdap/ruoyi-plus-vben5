@@ -1,0 +1,48 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue945 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import * as vue_jsx_runtime17 from "vue/jsx-runtime";
+
+//#region src/empty/index.d.ts
+interface TransferLocale {
+  description: string;
+}
+declare const defaultEmptyImg: vue_jsx_runtime17.JSX.Element;
+declare const simpleEmptyImg: vue_jsx_runtime17.JSX.Element;
+type EmptySemanticName = keyof EmptySemanticClassNames & keyof EmptySemanticStyles;
+interface EmptySemanticClassNames {
+  root?: string;
+  image?: string;
+  description?: string;
+  footer?: string;
+}
+interface EmptySemanticStyles {
+  root?: CSSProperties;
+  image?: CSSProperties;
+  description?: CSSProperties;
+  footer?: CSSProperties;
+}
+type EmptyClassNamesType = SemanticClassNamesType<EmptyProps, EmptySemanticClassNames>;
+type EmptyStylesType = SemanticStylesType<EmptyProps, EmptySemanticStyles>;
+type SemanticName = EmptySemanticName;
+interface EmptyProps extends ComponentBaseProps {
+  classes?: EmptyClassNamesType;
+  styles?: EmptyStylesType;
+  image?: VueNode;
+  description?: VueNode;
+}
+interface EmptySlots {
+  image: () => any;
+  description: () => any;
+  default: () => any;
+}
+declare const Empty: vue945.DefineSetupFnComponent<EmptyProps, EmptyEmit, SlotsType<EmptySlots>, EmptyProps, vue945.PublicProps>;
+declare const _default: typeof Empty & {
+  PRESENTED_IMAGE_DEFAULT: typeof defaultEmptyImg;
+  PRESENTED_IMAGE_SIMPLE: typeof simpleEmptyImg;
+};
+//#endregion
+export { EmptyClassNamesType, EmptyProps, EmptySemanticClassNames, EmptySemanticName, EmptySemanticStyles, EmptySlots, EmptyStylesType, SemanticName, TransferLocale, _default as default };

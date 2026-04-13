@@ -1,0 +1,224 @@
+{
+  "name": "antdv-next",
+  "type": "module",
+  "version": "1.1.9",
+  "description": "Ant Design Vue3 Component Library",
+  "author": {
+    "email": "aibayanyu@gamil.com",
+    "name": "aibayanyu20"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antdv-next/antdv-next.git",
+    "directory": "packages/antdv-next"
+  },
+  "sideEffects": [
+    "./dist/reset.css",
+    "./dist/antd.css",
+    "./dist/antd-with-locales.js",
+    "./dist/antd-with-locales.esm.js",
+    "./dist/antd.esm.js",
+    "./dist/antd.js"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./dist/*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "default": "./dist/*.js"
+    },
+    "./dist/locale/*": {
+      "types": "./dist/locale/*.d.ts",
+      "import": "./dist/locale/*.js",
+      "default": "./dist/locale/*.js"
+    },
+    "./locale/*": {
+      "types": "./dist/locale/*.d.ts",
+      "import": "./dist/locale/*.js",
+      "default": "./dist/locale/*.js"
+    },
+    "./date-picker/*": {
+      "types": "./dist/date-picker/*.d.ts",
+      "import": "./dist/date-picker/*.js",
+      "default": "./dist/date-picker/*.js"
+    },
+    "./date-picker/locale/*": {
+      "types": "./dist/date-picker/locale/*.d.ts",
+      "import": "./dist/date-picker/locale/*.js",
+      "default": "./dist/date-picker/locale/*.js"
+    },
+    "./time-picker/*": {
+      "types": "./dist/time-picker/*.d.ts",
+      "import": "./dist/time-picker/*.js",
+      "default": "./dist/time-picker/*.js"
+    },
+    "./time-picker/locale/*": {
+      "types": "./dist/date-picker/locale/*.d.ts",
+      "import": "./dist/date-picker/locale/*.js",
+      "default": "./dist/date-picker/locale/*.js"
+    },
+    "./date-picker/generate": {
+      "types": "./dist/date-picker/generate/index.d.ts",
+      "import": "./dist/date-picker/generate/index.js",
+      "default": "./dist/date-picker/generate/index.js"
+    },
+    "./date-picker/generate/*": {
+      "types": "./dist/date-picker/generate/*.d.ts",
+      "import": "./dist/date-picker/generate/*.js",
+      "default": "./dist/date-picker/generate/*.js"
+    },
+    "./global.d.ts": "./global.d.ts",
+    "./global": "./global.d.ts",
+    "./config-provider": {
+      "types": "./dist/config-provider/index.d.ts",
+      "import": "./dist/config-provider/index.js",
+      "default": "./dist/config-provider/index.js"
+    },
+    "./config-provider/context": {
+      "types": "./dist/config-provider/context.d.ts",
+      "import": "./dist/config-provider/context.js",
+      "default": "./dist/config-provider/context.js"
+    },
+    "./config-provider/DisabledContext": {
+      "types": "./dist/config-provider/DisabledContext.d.ts",
+      "import": "./dist/config-provider/DisabledContext.js",
+      "default": "./dist/config-provider/DisabledContext.js"
+    },
+    "./config-provider/hooks/useSize": {
+      "types": "./dist/config-provider/hooks/useSize.d.ts",
+      "import": "./dist/config-provider/hooks/useSize.js",
+      "default": "./dist/config-provider/hooks/useSize.js"
+    },
+    "./config-provider/hooks/useCSSVarCls": {
+      "types": "./dist/config-provider/hooks/useCSSVarCls.d.ts",
+      "import": "./dist/config-provider/hooks/useCSSVarCls.js",
+      "default": "./dist/config-provider/hooks/useCSSVarCls.js"
+    },
+    "./theme/internal": {
+      "types": "./dist/theme/internal.d.ts",
+      "import": "./dist/theme/internal.js",
+      "default": "./dist/theme/internal.js"
+    },
+    "./theme/interface/components": {
+      "types": "./dist/theme/interface/components.d.ts",
+      "import": "./dist/theme/interface/components.js",
+      "default": "./dist/theme/interface/components.js"
+    },
+    "./dist/reset.css": "./dist/reset.css",
+    "./dist/antd.css": "./dist/antd.css",
+    "./dist/antd-with-locales.js": "./dist/antd-with-locales.js",
+    "./dist/antd-with-locales.esm.js": "./dist/antd-with-locales.esm.js",
+    "./dist/antd.esm.js": "./dist/antd.esm.js",
+    "./dist/antd.js": "./dist/antd.js",
+    "./web-types.json": "./web-types.json",
+    "./web-tags.json": "./web-tags.json",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "unpkg": "dist/antd.js",
+  "jsdelivr": "dist/antd.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "README.md",
+    "dist",
+    "global.d.ts",
+    "package.json",
+    "web-tags.json",
+    "web-types.json"
+  ],
+  "contributes": {
+    "html": {
+      "customData": [
+        "./web-tags.json"
+      ]
+    }
+  },
+  "dependencies": {
+    "@ant-design/colors": "^8.0.1",
+    "@ant-design/fast-color": "^3.0.1",
+    "@antdv-next/icons": "^1.0.6",
+    "@v-c/async-validator": "^1.0.1",
+    "@v-c/cascader": "^1.0.3",
+    "@v-c/checkbox": "^1.0.1",
+    "@v-c/collapse": "^1.0.0",
+    "@v-c/color-picker": "^1.0.6",
+    "@v-c/dialog": "^1.0.3",
+    "@v-c/drawer": "^1.0.2",
+    "@v-c/dropdown": "^1.0.2",
+    "@v-c/image": "^1.0.9",
+    "@v-c/input": "^1.0.3",
+    "@v-c/input-number": "^1.0.5",
+    "@v-c/mentions": "^1.0.0",
+    "@v-c/menu": "^1.0.13",
+    "@v-c/mutate-observer": "^1.0.1",
+    "@v-c/notification": "^1.0.0",
+    "@v-c/pagination": "^1.0.0",
+    "@v-c/picker": "^1.0.4",
+    "@v-c/progress": "^1.0.0",
+    "@v-c/qrcode": "^1.0.0",
+    "@v-c/rate": "^1.0.1",
+    "@v-c/resize-observer": "^1.0.8",
+    "@v-c/segmented": "^1.0.1",
+    "@v-c/select": "^1.0.20",
+    "@v-c/slick": "^1.0.2",
+    "@v-c/slider": "^1.0.10",
+    "@v-c/steps": "^1.0.0",
+    "@v-c/switch": "^1.0.0",
+    "@v-c/table": "^1.0.3",
+    "@v-c/tabs": "^1.0.2",
+    "@v-c/textarea": "^1.0.4",
+    "@v-c/tooltip": "^1.0.3",
+    "@v-c/tour": "^1.0.3",
+    "@v-c/tree": "^1.0.5",
+    "@v-c/tree-select": "^1.0.3",
+    "@v-c/trigger": "^1.0.14",
+    "@v-c/upload": "^1.0.0",
+    "@v-c/util": "^1.0.19",
+    "@v-c/virtual-list": "^1.0.6",
+    "@vueuse/core": "^14.2.1",
+    "dayjs": "^1.11.20",
+    "es-toolkit": "1.45.1",
+    "scroll-into-view-if-needed": "^3.1.0",
+    "throttle-debounce": "^5.0.2",
+    "@antdv-next/cssinjs": "^1.0.6"
+  },
+  "web-types": "web-types.json",
+  "browserslist": [
+    "> 1%",
+    "not ie 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@types/throttle-debounce": "^5.0.2",
+    "@v-c/portal": "^1.0.8",
+    "csstype": "^3.2.3"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "build": "run-s build:esm build:vite:parallel build:p",
+    "build:p": "run-p build:web-types build:style",
+    "build:esm": "tsdown",
+    "build:with-locales": "run-p build:with-locales:esm build:with-locales:umd",
+    "build:with-locales:esm": "cross-env WITH_LOCALES_FORMAT=es vite build --config ./vite.with-locales.config.ts",
+    "build:with-locales:umd": "cross-env WITH_LOCALES_FORMAT=umd vite build --config ./vite.with-locales.config.ts",
+    "build:vite:parallel": "run-p build:umd build:full-esm build:with-locales",
+    "build:full-esm": "vite build --config ./vite.esm.config.ts",
+    "build:umd": "vite build",
+    "build:web-types": "tsx ./scripts/web-types/index.ts",
+    "build:llm": "run-p build:llm-text build:llm-semantic",
+    "build:llm-text": "tsx ./scripts/llm/generate-llms.ts",
+    "build:llm-semantic": "tsx ./scripts/llm/generate-llms-semantic.ts",
+    "build:token-meta": "tsx ./scripts/token/generate-token-meta.ts",
+    "build:token-statistic": "cross-env NODE_ENV=production CSSINJS_STATISTIC=1 tsx ./scripts/token/collect-token-statistic.ts",
+    "build:token": "run-p build:token-meta build:token-statistic",
+    "build:style": "cross-env NODE_ENV=production  tsx ./scripts/style/build-style.ts",
+    "prepublish": "pnpm build",
+    "bump": "bumpp --commit \"chore(release): antdv-next %s\" --push --tag \"antdv-next@%s\""
+  }
+}

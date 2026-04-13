@@ -1,0 +1,39 @@
+import { VueNode } from "../_util/type.js";
+import { DropdownProps } from "../dropdown/dropdown.js";
+import "../dropdown/index.js";
+import * as vue36 from "vue";
+import { CSSProperties } from "vue";
+import { Key } from "@v-c/util/dist/type";
+
+//#region src/breadcrumb/BreadcrumbItem.d.ts
+interface SeparatorType {
+  separator?: any;
+  key?: Key;
+}
+type MenuType = NonNullable<DropdownProps['menu']>;
+interface MenuItem {
+  key?: Key;
+  title?: VueNode;
+  label?: VueNode;
+  path?: string;
+  href?: string;
+}
+interface BreadcrumbItemProps extends SeparatorType {
+  prefixCls?: string;
+  href?: string;
+  menu?: Omit<MenuType, 'items'> & {
+    items?: MenuItem[];
+  };
+  dropdownProps?: DropdownProps;
+  dropdownIcon?: VueNode;
+  onClick?: (event: MouseEvent) => void;
+  class?: string;
+  style?: CSSProperties;
+}
+declare const InternalBreadcrumbItem: vue36.DefineSetupFnComponent<Omit<BreadcrumbItemProps, "key">, {}, {}, Omit<BreadcrumbItemProps, "key"> & {}, vue36.PublicProps>;
+declare const BreadcrumbItem: vue36.DefineSetupFnComponent<Omit<BreadcrumbItemProps, "key">, {}, {}, Omit<BreadcrumbItemProps, "key"> & {}, vue36.PublicProps>;
+declare const _default: typeof BreadcrumbItem & {
+  /** @internal */__ANT_BREADCRUMB_ITEM: boolean;
+};
+//#endregion
+export { BreadcrumbItemProps, InternalBreadcrumbItem, MenuItem, SeparatorType, _default as default };

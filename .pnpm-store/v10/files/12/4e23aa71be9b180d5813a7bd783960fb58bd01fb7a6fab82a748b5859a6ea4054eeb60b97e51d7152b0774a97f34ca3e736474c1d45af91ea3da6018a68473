@@ -1,0 +1,26 @@
+import { AnyObject } from "../_util/type.js";
+import { SELECTION_ALL, SELECTION_COLUMN, SELECTION_INVERT, SELECTION_NONE } from "./hooks/useSelection.js";
+import Column from "./Column.js";
+import ColumnGroup from "./ColumnGroup.js";
+import { TableEmits, TableProps as TableProps$1, TableSlots } from "./InternalTable.js";
+import * as vue122 from "vue";
+import { SlotsType } from "vue";
+import { EXPAND_COLUMN, Summary } from "@v-c/table";
+
+//#region src/table/Table.d.ts
+type TableEmitsProps = { [K in keyof TableEmits as `on${Capitalize<string & K>}`]?: TableEmits[K] };
+interface InternalTableProps extends TableProps$1, TableEmitsProps {}
+declare const Table: vue122.DefineSetupFnComponent<InternalTableProps, TableEmits<AnyObject>, SlotsType<TableSlots<AnyObject>>, InternalTableProps, vue122.PublicProps>;
+declare const ForwardTable: typeof Table & {
+  displayName?: string;
+  SELECTION_COLUMN: typeof SELECTION_COLUMN;
+  EXPAND_COLUMN: typeof EXPAND_COLUMN;
+  SELECTION_ALL: typeof SELECTION_ALL;
+  SELECTION_INVERT: typeof SELECTION_INVERT;
+  SELECTION_NONE: typeof SELECTION_NONE;
+  Column: typeof Column;
+  ColumnGroup: typeof ColumnGroup;
+  Summary: typeof Summary;
+};
+//#endregion
+export { TableEmitsProps, ForwardTable as default };

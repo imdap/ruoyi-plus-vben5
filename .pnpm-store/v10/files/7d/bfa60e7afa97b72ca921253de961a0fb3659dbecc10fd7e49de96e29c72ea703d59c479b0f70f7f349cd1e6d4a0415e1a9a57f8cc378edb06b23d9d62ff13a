@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:!0}),exports.globalStore=void 0;let globalStore=exports.globalStore={};

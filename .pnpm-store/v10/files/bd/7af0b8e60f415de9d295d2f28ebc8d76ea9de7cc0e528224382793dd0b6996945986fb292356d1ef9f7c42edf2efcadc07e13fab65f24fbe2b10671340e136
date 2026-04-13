@@ -1,0 +1,1134 @@
+import DropIndicator_default from "./DropIndicator.js";
+import { TreeContextKey } from "./contextTypes.js";
+import getEntity from "./utils/keyUtil.js";
+import { convertDataToEntities, convertNodePropsToEventData, convertTreeToData, fillFieldNames, flattenTreeData, getTreeNodeProps, isLeafNode, warningWithoutKey } from "./utils/treeUtil.js";
+import NodeList_default, { MOTION_KEY, MotionEntity } from "./NodeList.js";
+import { arrAdd, arrDel, calcDropPosition, calcSelectedKeys, conductExpandParent, getDragChildrenKeys, parseCheckedKeys, posToArr } from "./util.js";
+import { conductCheck } from "./utils/conductUtil.js";
+import { computed, createVNode, defineComponent, mergeDefaults, mergeProps, onBeforeUnmount, provide, reactive, ref, shallowRef, watch, watchEffect } from "vue";
+import { clsx } from "@v-c/util";
+import pickAttrs from "@v-c/util/dist/pickAttrs";
+import warning from "@v-c/util/dist/warning";
+import useMergedState from "@v-c/util/dist/hooks/useMergedState";
+import KeyCode from "@v-c/util/dist/KeyCode";
+var MAX_RETRY_TIMES = 10;
+var defaultProps = {
+	prefixCls: "vc-tree",
+	showLine: false,
+	showIcon: true,
+	selectable: true,
+	multiple: false,
+	checkable: false,
+	disabled: false,
+	checkStrictly: false,
+	draggable: false,
+	defaultExpandParent: true,
+	autoExpandParent: false,
+	defaultExpandAll: false,
+	defaultExpandedKeys: [],
+	defaultCheckedKeys: [],
+	defaultSelectedKeys: [],
+	allowDrop: () => true,
+	expandAction: false,
+	focusable: true,
+	tabIndex: 0,
+	virtual: true
+};
+var Tree_default = /* @__PURE__ */ defineComponent((props, { slots, attrs, expose }) => {
+	const mergedPrefixCls = computed(() => props.prefixCls);
+	const mergedShowLine = computed(() => props.showLine);
+	const mergedShowIcon = computed(() => props.showIcon);
+	const mergedSelectable = computed(() => props.selectable);
+	const mergedMultiple = computed(() => props.multiple);
+	const mergedCheckable = computed(() => props.checkable);
+	const mergedCheckStrictly = computed(() => props.checkStrictly);
+	const mergedDisabled = computed(() => props.disabled);
+	const mergedFocusable = computed(() => props.focusable);
+	const mergedTabIndex = computed(() => props.tabIndex);
+	const mergedVirtual = computed(() => props.virtual);
+	const mergedAllowDrop = computed(() => props.allowDrop);
+	const mergedFieldNames = computed(() => fillFieldNames(props.fieldNames));
+	const slotTreeData = shallowRef([]);
+	const slotTreeDataSignature = ref("");
+	const mergedTreeData = computed(() => props.treeData || slotTreeData.value);
+	const getTreeDataSignature = (data) => {
+		const dig = (list) => {
+			return (list || []).map((node) => {
+				const key = String(node?.key);
+				const children = node?.children;
+				return `${key}{${children?.length ? dig(children) : ""}}`;
+			}).join("|");
+		};
+		return dig(data);
+	};
+	watchEffect(() => {
+		warningWithoutKey(mergedTreeData.value, mergedFieldNames.value);
+	});
+	const entities = computed(() => {
+		return convertDataToEntities(mergedTreeData.value, { fieldNames: mergedFieldNames.value });
+	});
+	const keyEntities = computed(() => ({
+		[MOTION_KEY]: MotionEntity,
+		...entities.value.keyEntities
+	}));
+	const getInitExpandedKeys = () => {
+		let keys = [];
+		const defaultExpandAll = props.defaultExpandAll;
+		const defaultExpandParent = props.defaultExpandParent;
+		if (defaultExpandAll) keys = Object.values(keyEntities.value).filter((entity) => entity.key !== MOTION_KEY).map((entity) => entity.key);
+		else keys = props?.expandedKeys || props.defaultExpandedKeys || [];
+		if (defaultExpandParent) keys = conductExpandParent(keys, keyEntities.value);
+		return keys;
+	};
+	const expandedKeys = shallowRef(getInitExpandedKeys());
+	const setExpandedKeys = (keys) => {
+		expandedKeys.value = keys;
+	};
+	watch(() => props.expandedKeys, () => {
+		if (props.expandedKeys === void 0) return;
+		const keys = props.expandedKeys || [];
+		if (props.autoExpandParent) {
+			expandedKeys.value = conductExpandParent(keys, keyEntities.value);
+			return;
+		}
+		expandedKeys.value = keys;
+	});
+	const flattenNodes = computed(() => flattenTreeData(mergedTreeData.value, expandedKeys.value, mergedFieldNames.value));
+	const selectedKeys = shallowRef(calcSelectedKeys(props?.selectedKeys || props.defaultSelectedKeys || [], { multiple: mergedMultiple.value }) || []);
+	watch(() => props.selectedKeys, () => {
+		if (props.selectedKeys === void 0) return;
+		selectedKeys.value = calcSelectedKeys(props.selectedKeys, { multiple: mergedMultiple.value }) || [];
+	});
+	const setSelectedKeys = (keys) => {
+		selectedKeys.value = keys;
+	};
+	const getDefaultCheckedKeyEntity = () => {
+		const parsed = parseCheckedKeys(props?.checkedKeys);
+		if (parsed) return {
+			checkedKeys: parsed.checkedKeys || [],
+			halfCheckedKeys: parsed.halfCheckedKeys || []
+		};
+		return {
+			checkedKeys: props?.defaultCheckedKeys || [],
+			halfCheckedKeys: []
+		};
+	};
+	const defaultCheckedKeyEntity = getDefaultCheckedKeyEntity();
+	const rawCheckedKeys = shallowRef(defaultCheckedKeyEntity.checkedKeys);
+	const setRawCheckedKeys = (keys) => {
+		rawCheckedKeys.value = keys;
+	};
+	watch(() => props.checkedKeys, () => {
+		if (props.checkedKeys === void 0) return;
+		rawCheckedKeys.value = parseCheckedKeys(props.checkedKeys)?.checkedKeys || [];
+	});
+	const rawHalfCheckedKeys = shallowRef(defaultCheckedKeyEntity.halfCheckedKeys);
+	const setRawHalfCheckedKeys = (keys) => {
+		rawHalfCheckedKeys.value = keys;
+	};
+	watch(() => props.checkedKeys, () => {
+		if (props.checkedKeys === void 0) return;
+		rawHalfCheckedKeys.value = parseCheckedKeys(props.checkedKeys)?.halfCheckedKeys || [];
+	});
+	const mergedChecked = computed(() => {
+		if (!mergedCheckable.value) return {
+			checkedKeys: [],
+			halfCheckedKeys: []
+		};
+		let checkedKeysValue = rawCheckedKeys.value || [];
+		let halfCheckedKeysValue = rawHalfCheckedKeys.value || [];
+		if (!mergedCheckStrictly.value) {
+			if (Object.keys(keyEntities.value || {}).some((key) => key !== MOTION_KEY)) {
+				const conductKeys = conductCheck(checkedKeysValue, true, keyEntities.value);
+				checkedKeysValue = conductKeys.checkedKeys;
+				halfCheckedKeysValue = conductKeys.halfCheckedKeys;
+			}
+		}
+		return {
+			checkedKeys: checkedKeysValue,
+			halfCheckedKeys: halfCheckedKeysValue
+		};
+	});
+	const [loadedKeys, setLoadedKeys] = useMergedState(() => [], { value: computed(() => props.loadedKeys === void 0 ? void 0 : props.loadedKeys) });
+	const loadingKeys = ref([]);
+	const listChanging = ref(false);
+	const [activeKey, setActiveKey] = useMergedState(null, { value: computed(() => props.activeKey === void 0 ? void 0 : props.activeKey) });
+	function onListChangeStart() {
+		listChanging.value = true;
+	}
+	function onListChangeEnd() {
+		setTimeout(() => {
+			listChanging.value = false;
+		});
+	}
+	const draggingNodeKey = ref(null);
+	const dragChildrenKeys = ref([]);
+	const indent = ref(null);
+	const dropTargetKey = ref(null);
+	const dropPosition = ref(null);
+	const dropContainerKey = ref(null);
+	const dropLevelOffset = ref(null);
+	const dropTargetPos = ref(null);
+	const dropAllowed = ref(true);
+	const dragOverNodeKey = ref(null);
+	let dragNodeProps = null;
+	let dragStartMousePosition = null;
+	let currentMouseOverDroppableNodeKey = null;
+	const delayedDragEnterLogic = {};
+	const loadingRetryTimes = {};
+	const listRef = ref();
+	let focusedByMouse = false;
+	const getTreeNodeRequiredProps = computed(() => ({
+		expandedKeys: expandedKeys.value || [],
+		selectedKeys: selectedKeys.value || [],
+		loadedKeys: loadedKeys.value || [],
+		loadingKeys: loadingKeys.value || [],
+		checkedKeys: mergedChecked.value.checkedKeys || [],
+		halfCheckedKeys: mergedChecked.value.halfCheckedKeys || [],
+		dragOverNodeKey: dragOverNodeKey.value,
+		dropPosition: dropPosition.value,
+		keyEntities: keyEntities.value
+	}));
+	const getActiveItem = computed(() => {
+		if (activeKey.value === null) return null;
+		return flattenNodes.value.find(({ key }) => key === activeKey.value) || null;
+	});
+	const scrollTo = (scroll) => {
+		listRef.value?.scrollTo(scroll);
+	};
+	expose({
+		scrollTo,
+		onKeyDown
+	});
+	function onActiveChange(newActiveKey) {
+		if (activeKey.value === newActiveKey) return;
+		setActiveKey(newActiveKey);
+		if (newActiveKey !== null) scrollTo({
+			key: newActiveKey,
+			offset: props.itemScrollOffset || 0
+		});
+		props.onActiveChange?.(newActiveKey);
+	}
+	function offsetActiveKey(offset) {
+		const nodes = flattenNodes.value;
+		const currentActiveKey = activeKey.value;
+		let index = nodes.findIndex(({ key }) => key === currentActiveKey);
+		if (index === -1 && offset < 0) index = nodes.length;
+		index = (index + offset + nodes.length) % nodes.length;
+		const item = nodes[index];
+		onActiveChange(item ? item.key : null);
+	}
+	function onFocus(e) {
+		if (!focusedByMouse && !mergedDisabled.value && activeKey.value === null) {
+			const visibleSelectedKey = selectedKeys.value.find((key) => {
+				return flattenNodes.value.some((nodeItem) => nodeItem.key === key);
+			});
+			if (visibleSelectedKey !== void 0) onActiveChange(visibleSelectedKey);
+			else onActiveChange(flattenNodes.value?.[0]?.key || null);
+		}
+		props.onFocus?.(e);
+	}
+	function onBlur(e) {
+		focusedByMouse = false;
+		onActiveChange(null);
+		props.onBlur?.(e);
+	}
+	function onMouseDown(e) {
+		focusedByMouse = true;
+		props.onMouseDown?.(e);
+	}
+	function onMouseUp(e) {
+		focusedByMouse = false;
+		props.onMouseUp?.(e);
+	}
+	function onNodeLoad(treeNode) {
+		const key = treeNode.key;
+		if (getEntity(keyEntities.value, key)?.children?.length) return;
+		const loadData = props.loadData;
+		if (!loadData || loadedKeys.value.includes(key) || loadingKeys.value.includes(key)) return;
+		loadingKeys.value = arrAdd(loadingKeys.value, key);
+		const promise = loadData(treeNode);
+		const wrapped = Promise.resolve(promise).then(() => {
+			const newLoadedKeys = arrAdd(loadedKeys.value, key);
+			props.onLoad?.(newLoadedKeys, {
+				event: "load",
+				node: treeNode
+			});
+			setLoadedKeys(newLoadedKeys);
+			loadingKeys.value = arrDel(loadingKeys.value, key);
+		}).catch((err) => {
+			loadingKeys.value = arrDel(loadingKeys.value, key);
+			loadingRetryTimes[String(key)] = (loadingRetryTimes[String(key)] || 0) + 1;
+			if (loadingRetryTimes[String(key)] >= MAX_RETRY_TIMES) {
+				warning(false, "Retry for `loadData` many times but still failed. No more retry.");
+				setLoadedKeys(arrAdd(loadedKeys.value, key));
+				return;
+			}
+			throw err;
+		});
+		wrapped.catch(() => {});
+		return wrapped;
+	}
+	function onNodeExpand(e, treeNode) {
+		const expanded = treeNode.expanded;
+		const key = treeNode[mergedFieldNames.value.key];
+		if (listChanging.value) return;
+		const targetExpanded = !expanded;
+		const certain = expandedKeys.value.includes(key);
+		warning(expanded && certain || !expanded && !certain, "Expand state not sync with index check");
+		const nextExpandedKeys = targetExpanded ? arrAdd(expandedKeys.value, key) : arrDel(expandedKeys.value, key);
+		setExpandedKeys(nextExpandedKeys);
+		props.onExpand?.(nextExpandedKeys, {
+			node: treeNode,
+			expanded: targetExpanded,
+			nativeEvent: e
+		});
+		if (targetExpanded && props.loadData) {
+			const loadPromise = onNodeLoad(treeNode);
+			if (loadPromise) loadPromise.catch(() => {
+				setExpandedKeys(arrDel(expandedKeys.value, key));
+			});
+		}
+	}
+	function triggerExpandActionExpand(e, treeNode) {
+		const expanded = treeNode.expanded;
+		const key = treeNode.key;
+		if (treeNode.isLeaf || e.shiftKey || e.metaKey || e.ctrlKey) return;
+		const node = flattenNodes.value.find((nodeItem) => nodeItem.key === key);
+		if (!node) return;
+		const eventNode = convertNodePropsToEventData({
+			...getTreeNodeProps(key, getTreeNodeRequiredProps.value),
+			data: node.data
+		});
+		setExpandedKeys(expanded ? arrDel(expandedKeys.value, key) : arrAdd(expandedKeys.value, key));
+		onNodeExpand(e, eventNode);
+	}
+	const onNodeClick = (e, treeNode) => {
+		if (props.expandAction === "click") triggerExpandActionExpand(e, treeNode);
+		props.onClick?.(e, treeNode);
+	};
+	const onNodeDoubleClick = (e, treeNode) => {
+		if (props.expandAction === "doubleClick") triggerExpandActionExpand(e, treeNode);
+		props.onDoubleClick?.(e, treeNode);
+	};
+	const onNodeSelect = (e, treeNode) => {
+		const selected = treeNode.selected;
+		const key = treeNode[mergedFieldNames.value.key];
+		const targetSelected = !selected;
+		let nextSelectedKeys = selectedKeys.value;
+		if (!targetSelected) nextSelectedKeys = arrDel(nextSelectedKeys, key);
+		else if (!mergedMultiple.value) nextSelectedKeys = [key];
+		else nextSelectedKeys = arrAdd(nextSelectedKeys, key);
+		const selectedNodes = nextSelectedKeys.map((selectedKey) => {
+			const entity = getEntity(keyEntities.value, selectedKey);
+			return entity ? entity.node : null;
+		}).filter(Boolean);
+		setSelectedKeys(nextSelectedKeys);
+		props.onSelect?.(nextSelectedKeys, {
+			event: "select",
+			selected: targetSelected,
+			node: treeNode,
+			selectedNodes,
+			nativeEvent: e
+		});
+	};
+	function onNodeCheck(e, treeNode, checked) {
+		const { checkedKeys: oriCheckedKeys, halfCheckedKeys: oriHalfCheckedKeys } = mergedChecked.value;
+		const key = treeNode.key;
+		let checkedObj;
+		const eventObj = {
+			event: "check",
+			node: treeNode,
+			checked,
+			nativeEvent: e
+		};
+		if (mergedCheckStrictly.value) {
+			const nextCheckedKeys = checked ? arrAdd(oriCheckedKeys, key) : arrDel(oriCheckedKeys, key);
+			const nextHalfCheckedKeys = arrDel(oriHalfCheckedKeys, key);
+			checkedObj = {
+				checked: nextCheckedKeys,
+				halfChecked: nextHalfCheckedKeys
+			};
+			eventObj.checkedNodes = nextCheckedKeys.map((checkedKey) => getEntity(keyEntities.value, checkedKey)).filter(Boolean).map((entity) => entity.node);
+			setRawCheckedKeys(nextCheckedKeys);
+			setRawHalfCheckedKeys(nextHalfCheckedKeys);
+		} else {
+			let { checkedKeys: nextCheckedKeys, halfCheckedKeys: nextHalfCheckedKeys } = conductCheck([...oriCheckedKeys, key], true, keyEntities.value);
+			if (!checked) {
+				const keySet = new Set(nextCheckedKeys);
+				keySet.delete(key);
+				({checkedKeys: nextCheckedKeys, halfCheckedKeys: nextHalfCheckedKeys} = conductCheck(Array.from(keySet), {
+					checked: false,
+					halfCheckedKeys: nextHalfCheckedKeys
+				}, keyEntities.value));
+			}
+			checkedObj = nextCheckedKeys;
+			eventObj.checkedNodes = [];
+			eventObj.checkedNodesPositions = [];
+			eventObj.halfCheckedKeys = nextHalfCheckedKeys;
+			nextCheckedKeys.forEach((checkedKey) => {
+				const entity = getEntity(keyEntities.value, checkedKey);
+				if (!entity) return;
+				const { node, pos } = entity;
+				eventObj.checkedNodes.push(node);
+				eventObj.checkedNodesPositions.push({
+					node,
+					pos
+				});
+			});
+			setRawCheckedKeys(nextCheckedKeys);
+			setRawHalfCheckedKeys(nextHalfCheckedKeys);
+		}
+		props.onCheck?.(checkedObj, eventObj);
+	}
+	const onNodeMouseEnter = (e, node) => {
+		props.onMouseEnter?.({
+			event: e,
+			node
+		});
+	};
+	const onNodeMouseLeave = (e, node) => {
+		props.onMouseLeave?.({
+			event: e,
+			node
+		});
+	};
+	const onNodeContextMenu = (e, node) => {
+		if (props.onRightClick) {
+			e.preventDefault();
+			props.onRightClick({
+				event: e,
+				node
+			});
+		}
+	};
+	function resetDragState() {
+		dragOverNodeKey.value = null;
+		dropPosition.value = null;
+		dropLevelOffset.value = null;
+		dropTargetKey.value = null;
+		dropContainerKey.value = null;
+		dropTargetPos.value = null;
+		dropAllowed.value = false;
+	}
+	function cleanDragState() {
+		if (draggingNodeKey.value !== null) {
+			draggingNodeKey.value = null;
+			dropPosition.value = null;
+			dropContainerKey.value = null;
+			dropTargetKey.value = null;
+			dropLevelOffset.value = null;
+			dropAllowed.value = true;
+			dragOverNodeKey.value = null;
+		}
+		dragStartMousePosition = null;
+		currentMouseOverDroppableNodeKey = null;
+		dragChildrenKeys.value = [];
+		indent.value = null;
+	}
+	const onWindowDragEnd = (event) => {
+		onNodeDragEnd(event, null, true);
+		window.removeEventListener("dragend", onWindowDragEnd);
+	};
+	onBeforeUnmount(() => {
+		window.removeEventListener("dragend", onWindowDragEnd);
+		Object.keys(delayedDragEnterLogic).forEach((key) => {
+			clearTimeout(delayedDragEnterLogic[key]);
+		});
+	});
+	const onNodeDragStart = (event, nodeProps) => {
+		dragNodeProps = nodeProps;
+		dragStartMousePosition = {
+			x: event.clientX,
+			y: event.clientY
+		};
+		const newExpandedKeys = arrDel(expandedKeys.value, nodeProps.eventKey);
+		draggingNodeKey.value = nodeProps.eventKey;
+		dragChildrenKeys.value = getDragChildrenKeys(nodeProps.eventKey, keyEntities.value);
+		indent.value = listRef.value?.getIndentWidth() || 0;
+		setExpandedKeys(newExpandedKeys);
+		window.addEventListener("dragend", onWindowDragEnd);
+		props.onDragStart?.({
+			event,
+			node: convertNodePropsToEventData(nodeProps)
+		});
+	};
+	const onNodeDragEnter = (event, nodeProps) => {
+		const { pos, eventKey } = nodeProps;
+		if (currentMouseOverDroppableNodeKey !== eventKey) currentMouseOverDroppableNodeKey = eventKey;
+		if (!dragNodeProps || !dragStartMousePosition) {
+			resetDragState();
+			return;
+		}
+		const { dropPosition: nextDropPosition, dropLevelOffset: nextDropLevelOffset, dropTargetKey: nextDropTargetKey, dropContainerKey: nextDropContainerKey, dropTargetPos: nextDropTargetPos, dropAllowed: nextDropAllowed, dragOverNodeKey: nextDragOverNodeKey } = calcDropPosition(event, dragNodeProps, nodeProps, indent.value || 0, dragStartMousePosition, mergedAllowDrop.value, flattenNodes.value, keyEntities.value, expandedKeys.value, props.direction);
+		if (dragChildrenKeys.value.includes(nextDropTargetKey) || !nextDropAllowed) {
+			resetDragState();
+			return;
+		}
+		Object.keys(delayedDragEnterLogic).forEach((key) => {
+			clearTimeout(delayedDragEnterLogic[key]);
+		});
+		if (dragNodeProps.eventKey !== nodeProps.eventKey) delayedDragEnterLogic[pos] = window.setTimeout(() => {
+			if (draggingNodeKey.value === null) return;
+			let newExpandedKeys = [...expandedKeys.value];
+			const entity = getEntity(keyEntities.value, nodeProps.eventKey);
+			if (entity && (entity.children || []).length) newExpandedKeys = arrAdd(expandedKeys.value, nodeProps.eventKey);
+			if (props.expandedKeys === void 0) setExpandedKeys(newExpandedKeys);
+			props.onExpand?.(newExpandedKeys, {
+				node: convertNodePropsToEventData(nodeProps),
+				expanded: true,
+				nativeEvent: event
+			});
+		}, 800);
+		if (dragNodeProps.eventKey === nextDropTargetKey && nextDropLevelOffset === 0) {
+			resetDragState();
+			return;
+		}
+		dragOverNodeKey.value = nextDragOverNodeKey;
+		dropPosition.value = nextDropPosition;
+		dropLevelOffset.value = nextDropLevelOffset;
+		dropTargetKey.value = nextDropTargetKey;
+		dropContainerKey.value = nextDropContainerKey;
+		dropTargetPos.value = nextDropTargetPos;
+		dropAllowed.value = nextDropAllowed;
+		props.onDragEnter?.({
+			event,
+			node: convertNodePropsToEventData(nodeProps),
+			expandedKeys: expandedKeys.value
+		});
+	};
+	const onNodeDragOver = (event, nodeProps) => {
+		if (!dragNodeProps || !dragStartMousePosition) return;
+		const { dropPosition: nextDropPosition, dropLevelOffset: nextDropLevelOffset, dropTargetKey: nextDropTargetKey, dropContainerKey: nextDropContainerKey, dropTargetPos: nextDropTargetPos, dropAllowed: nextDropAllowed, dragOverNodeKey: nextDragOverNodeKey } = calcDropPosition(event, dragNodeProps, nodeProps, indent.value || 0, dragStartMousePosition, mergedAllowDrop.value, flattenNodes.value, keyEntities.value, expandedKeys.value, props.direction);
+		if (dragChildrenKeys.value.includes(nextDropTargetKey) || !nextDropAllowed) return;
+		if (dragNodeProps.eventKey === nextDropTargetKey && nextDropLevelOffset === 0) {
+			if (!(dropPosition.value === null && dropLevelOffset.value === null && dropTargetKey.value === null && dropContainerKey.value === null && dropTargetPos.value === null && dropAllowed.value === false && dragOverNodeKey.value === null)) resetDragState();
+		} else if (!(nextDropPosition === dropPosition.value && nextDropLevelOffset === dropLevelOffset.value && nextDropTargetKey === dropTargetKey.value && nextDropContainerKey === dropContainerKey.value && nextDropTargetPos === dropTargetPos.value && nextDropAllowed === dropAllowed.value && nextDragOverNodeKey === dragOverNodeKey.value)) {
+			dropPosition.value = nextDropPosition;
+			dropLevelOffset.value = nextDropLevelOffset;
+			dropTargetKey.value = nextDropTargetKey;
+			dropContainerKey.value = nextDropContainerKey;
+			dropTargetPos.value = nextDropTargetPos;
+			dropAllowed.value = nextDropAllowed;
+			dragOverNodeKey.value = nextDragOverNodeKey;
+		}
+		props.onDragOver?.({
+			event,
+			node: convertNodePropsToEventData(nodeProps)
+		});
+	};
+	const onNodeDragLeave = (event, nodeProps) => {
+		const target = event.currentTarget;
+		const related = event.relatedTarget;
+		if (currentMouseOverDroppableNodeKey === nodeProps.eventKey && target && related && !target.contains(related)) {
+			resetDragState();
+			currentMouseOverDroppableNodeKey = null;
+		} else if (currentMouseOverDroppableNodeKey === nodeProps.eventKey && target && !related) {
+			resetDragState();
+			currentMouseOverDroppableNodeKey = null;
+		}
+		props.onDragLeave?.({
+			event,
+			node: convertNodePropsToEventData(nodeProps)
+		});
+	};
+	function onNodeDragEnd(event, nodeProps, _outsideTree) {
+		dragOverNodeKey.value = null;
+		cleanDragState();
+		if (nodeProps) props.onDragEnd?.({
+			event,
+			node: convertNodePropsToEventData(nodeProps)
+		});
+		dragNodeProps = null;
+		window.removeEventListener("dragend", onWindowDragEnd);
+	}
+	const onNodeDrop = (event, _nodeProps, outsideTree = false) => {
+		const dropAllowedValue = dropAllowed.value;
+		const dropPositionValue = dropPosition.value;
+		const dropTargetKeyValue = dropTargetKey.value;
+		const dropTargetPosValue = dropTargetPos.value;
+		const dragChildrenKeysValue = dragChildrenKeys.value;
+		const dragNodePropsValue = dragNodeProps;
+		if (!dropAllowedValue) return;
+		dragOverNodeKey.value = null;
+		cleanDragState();
+		if (dropTargetKeyValue === null) return;
+		const abstractDropNodeProps = {
+			...getTreeNodeProps(dropTargetKeyValue, getTreeNodeRequiredProps.value),
+			active: getActiveItem.value?.key === dropTargetKeyValue,
+			data: getEntity(keyEntities.value, dropTargetKeyValue)?.node
+		};
+		warning(!dragChildrenKeysValue.includes(dropTargetKeyValue), "Can not drop to dragNode's children node. This is a bug of vc-tree. Please report an issue.");
+		const posArr = posToArr(dropTargetPosValue || "0");
+		const dropResult = {
+			event,
+			node: convertNodePropsToEventData(abstractDropNodeProps),
+			dragNode: dragNodePropsValue ? convertNodePropsToEventData(dragNodePropsValue) : null,
+			dragNodesKeys: dragNodePropsValue ? [dragNodePropsValue.eventKey].concat(dragChildrenKeysValue) : dragChildrenKeysValue,
+			dropToGap: dropPositionValue !== 0,
+			dropPosition: (dropPositionValue || 0) + Number(posArr[posArr.length - 1])
+		};
+		if (!outsideTree) props.onDrop?.(dropResult);
+		dragNodeProps = null;
+	};
+	function onKeyDown(e) {
+		if (mergedDisabled.value) return;
+		const nodes = flattenNodes.value;
+		switch (e.which || e.keyCode) {
+			case KeyCode.UP:
+				offsetActiveKey(-1);
+				e.preventDefault();
+				break;
+			case KeyCode.DOWN:
+				offsetActiveKey(1);
+				e.preventDefault();
+				break;
+			case KeyCode.HOME:
+				onActiveChange(nodes[0]?.key ?? null);
+				e.preventDefault();
+				break;
+			case KeyCode.END:
+				onActiveChange(nodes[nodes.length - 1]?.key ?? null);
+				e.preventDefault();
+				break;
+		}
+		const activeItem = getActiveItem.value;
+		if (activeItem && activeItem.data) {
+			const required = getTreeNodeRequiredProps.value;
+			const eventNode = convertNodePropsToEventData({
+				...getTreeNodeProps(activeKey.value, required),
+				data: activeItem.data,
+				active: true
+			});
+			const hasChildren = !!getEntity(keyEntities.value, activeKey.value)?.children?.length;
+			const expandable = !isLeafNode(activeItem.data.isLeaf, props.loadData, hasChildren, eventNode.loaded);
+			const canCheck = mergedCheckable.value && !eventNode.disabled && eventNode.checkable !== false && !eventNode.disableCheckbox;
+			const canSelect = !mergedCheckable.value && mergedSelectable.value && !eventNode.disabled && eventNode.selectable !== false;
+			switch (e.which || e.keyCode) {
+				case KeyCode.LEFT:
+					if (expandable && expandedKeys.value.includes(activeKey.value)) onNodeExpand({}, eventNode);
+					else if (activeItem.parent) onActiveChange(activeItem.parent.key);
+					e.preventDefault();
+					break;
+				case KeyCode.RIGHT:
+					if (expandable && !expandedKeys.value.includes(activeKey.value)) onNodeExpand({}, eventNode);
+					else if (activeItem.children && activeItem.children.length) onActiveChange(activeItem.children[0].key);
+					e.preventDefault();
+					break;
+				case KeyCode.ENTER:
+				case KeyCode.SPACE:
+					if (canCheck) onNodeCheck({}, eventNode, !mergedChecked.value.checkedKeys.includes(activeKey.value));
+					else if (canSelect) onNodeSelect({}, eventNode);
+					break;
+			}
+		}
+		props.onKeyDown?.(e);
+	}
+	const draggableConfig = computed(() => {
+		const draggable = props.draggable ?? defaultProps.draggable;
+		if (!draggable) return void 0;
+		if (typeof draggable === "object") return draggable;
+		if (typeof draggable === "function") return { nodeDraggable: draggable };
+		return {};
+	});
+	const contextValue = reactive({
+		prefixCls: mergedPrefixCls.value,
+		selectable: mergedSelectable.value,
+		showIcon: mergedShowIcon.value,
+		icon: props.icon,
+		switcherIcon: props.switcherIcon,
+		draggable: draggableConfig.value,
+		draggingNodeKey: draggingNodeKey.value,
+		checkable: mergedCheckable.value,
+		checkStrictly: mergedCheckStrictly.value,
+		disabled: mergedDisabled.value,
+		keyEntities: keyEntities.value,
+		dropLevelOffset: dropLevelOffset.value,
+		dropContainerKey: dropContainerKey.value,
+		dropTargetKey: dropTargetKey.value,
+		dropPosition: dropPosition.value,
+		indent: indent.value,
+		dropIndicatorRender: (diProps) => {
+			if (props.dropIndicatorRender) return props.dropIndicatorRender(diProps);
+			return createVNode(DropIndicator_default, {
+				"dropPosition": diProps.dropPosition,
+				"dropLevelOffset": diProps.dropLevelOffset,
+				"indent": diProps.indent
+			}, null);
+		},
+		dragOverNodeKey: dragOverNodeKey.value,
+		direction: props.direction,
+		loadData: props.loadData,
+		filterTreeNode: props.filterTreeNode,
+		titleRender: props.titleRender,
+		allowDrop: mergedAllowDrop.value,
+		styles: props.styles,
+		classNames: props.classNames,
+		onNodeClick,
+		onNodeDoubleClick,
+		onNodeExpand,
+		onNodeSelect,
+		onNodeCheck,
+		onNodeLoad,
+		onNodeMouseEnter,
+		onNodeMouseLeave,
+		onNodeContextMenu,
+		onNodeDragStart,
+		onNodeDragEnter,
+		onNodeDragOver,
+		onNodeDragLeave,
+		onNodeDragEnd,
+		onNodeDrop
+	});
+	watchEffect(() => {
+		contextValue.prefixCls = mergedPrefixCls.value;
+		contextValue.selectable = mergedSelectable.value;
+		contextValue.showIcon = mergedShowIcon.value;
+		contextValue.icon = props.icon;
+		contextValue.switcherIcon = props.switcherIcon;
+		contextValue.draggable = draggableConfig.value;
+		contextValue.draggingNodeKey = draggingNodeKey.value;
+		contextValue.checkable = mergedCheckable.value;
+		contextValue.checkStrictly = mergedCheckStrictly.value;
+		contextValue.disabled = mergedDisabled.value;
+		contextValue.keyEntities = keyEntities.value;
+		contextValue.dropLevelOffset = dropLevelOffset.value;
+		contextValue.dropContainerKey = dropContainerKey.value;
+		contextValue.dropTargetKey = dropTargetKey.value;
+		contextValue.dropPosition = dropPosition.value;
+		contextValue.indent = indent.value;
+		contextValue.dragOverNodeKey = dragOverNodeKey.value;
+		contextValue.direction = props.direction;
+		contextValue.loadData = props.loadData;
+		contextValue.filterTreeNode = props.filterTreeNode;
+		contextValue.titleRender = props.titleRender;
+		contextValue.styles = props.styles;
+		contextValue.classNames = props.classNames;
+		contextValue.allowDrop = mergedAllowDrop.value;
+	});
+	provide(TreeContextKey, contextValue);
+	return () => {
+		const { treeData } = props;
+		if (!treeData) {
+			const parsed = convertTreeToData(slots.default?.());
+			const signature = getTreeDataSignature(parsed);
+			if (signature !== slotTreeDataSignature.value) {
+				slotTreeDataSignature.value = signature;
+				slotTreeData.value = parsed;
+			}
+		}
+		const domProps = pickAttrs(attrs, {
+			aria: true,
+			data: true
+		});
+		return createVNode("div", {
+			"class": clsx(mergedPrefixCls.value, props.className, props.rootClassName, { [`${mergedPrefixCls.value}-show-line`]: mergedShowLine.value }),
+			"style": props.rootStyle
+		}, [createVNode(NodeList_default, mergeProps({
+			"ref": listRef,
+			"prefixCls": mergedPrefixCls.value,
+			"style": props.style,
+			"data": flattenNodes.value,
+			"disabled": mergedDisabled.value,
+			"selectable": mergedSelectable.value,
+			"checkable": !!mergedCheckable.value,
+			"dragging": draggingNodeKey.value !== null,
+			"motion": props.motion,
+			"height": props.height,
+			"itemHeight": props.itemHeight,
+			"virtual": mergedVirtual.value,
+			"focusable": mergedFocusable.value,
+			"tabIndex": mergedTabIndex.value,
+			"activeItem": getActiveItem.value,
+			"onFocus": onFocus,
+			"onMouseDown": onMouseDown,
+			"onMouseUp": onMouseUp,
+			"onBlur": onBlur,
+			"onKeyDown": onKeyDown,
+			"onActiveChange": onActiveChange,
+			"onListChangeStart": onListChangeStart,
+			"onListChangeEnd": onListChangeEnd,
+			"onContextmenu": props.onContextMenu,
+			"onScroll": props.onScroll,
+			"scrollWidth": props.scrollWidth
+		}, getTreeNodeRequiredProps.value, domProps), null)]);
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		prefixCls: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		className: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		style: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		classNames: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		focusable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		activeKey: {
+			type: [
+				String,
+				Number,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		tabIndex: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		treeData: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		fieldNames: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		showLine: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		showIcon: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		icon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		selectable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		expandAction: {
+			type: [Boolean, String],
+			required: false,
+			default: void 0
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		multiple: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		checkable: {
+			type: [
+				Boolean,
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		checkStrictly: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		draggable: {
+			type: [
+				Function,
+				Boolean,
+				Object
+			],
+			required: false,
+			default: void 0
+		},
+		defaultExpandParent: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		autoExpandParent: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		defaultExpandAll: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		defaultExpandedKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		expandedKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		defaultCheckedKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		checkedKeys: {
+			type: [Array, Object],
+			required: false,
+			default: void 0
+		},
+		defaultSelectedKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		selectedKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		allowDrop: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		titleRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		dropIndicatorRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseDown: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseUp: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onFocus: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onBlur: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onKeyDown: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onContextMenu: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onDoubleClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onScroll: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onExpand: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onCheck: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onSelect: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onLoad: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		loadData: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		loadedKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		onMouseEnter: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseLeave: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onRightClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onDragStart: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onDragEnter: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onDragOver: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onDragLeave: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onDragEnd: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onDrop: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onActiveChange: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		filterTreeNode: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		motion: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		switcherIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		height: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		itemHeight: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		scrollWidth: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		itemScrollOffset: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		virtual: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		direction: {
+			type: [String, null],
+			required: false,
+			default: void 0
+		},
+		rootClassName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		rootStyle: {
+			type: Object,
+			required: false,
+			default: void 0
+		}
+	}, defaultProps),
+	name: "Tree",
+	inheritAttrs: false
+});
+export { Tree_default as default };

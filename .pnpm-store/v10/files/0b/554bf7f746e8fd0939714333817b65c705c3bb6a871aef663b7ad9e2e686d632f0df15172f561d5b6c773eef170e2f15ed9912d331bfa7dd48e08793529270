@@ -1,0 +1,52 @@
+{
+  "name": "@cspell/dict-software-terms",
+  "version": "5.2.2",
+  "description": "Software related dictionaries for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "software-terms",
+    "software terms",
+    "networking terms",
+    "web services dictionary",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/software-terms#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/software-terms"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "files": [
+    "dict/*",
+    "!dict/README.md",
+    "!dict/softwareTerms.txt",
+    "cspell-corrections.yaml",
+    "cspell-ext.json"
+  ],
+  "scripts": {
+    "build": "pnpm build:dicts && pnpm build:suggestions",
+    "build:dicts": "cspell-tools-cli build",
+    "build:suggestions": "node ./scripts/build-cspell-corrections.mjs",
+    "prepare:dictionary": "pnpm build",
+    "prepublishOnly": "echo pre-publish",
+    "test": "pnpm test-software-terms && pnpm test-networking-terms",
+    "test-networking-terms": "cspell \"--locale=*\" \"--languageId=*\" --file-list src/source-files-networking.txt",
+    "test-software-terms": "cspell -c ./cspell-ext.json \"--locale=en\" \"--languageId=*\" --file-list src/source-files-software.txt"
+  },
+  "gitHead": "1542eeaa18bb04afd8bff5cdd6875a7c480057f2"
+}

@@ -1,0 +1,6 @@
+import * as vue471 from "vue";
+
+//#region src/_util/instance.d.ts
+declare function getVueInstance(): vue471.AppContext | null;
+//#endregion
+export { getVueInstance };

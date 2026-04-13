@@ -1,0 +1,30 @@
+.vxe-button-group {
+  display: inline-flex;
+  &.is--vertical {
+    flex-direction: column;
+    & > .vxe-button.type--button,
+    & > .vxe-button--dropdown {
+      margin-top: var(--vxe-ui-base-margin-gap-default);
+      &.size--medium {
+        margin-top: var(--vxe-ui-base-margin-gap-medium);
+      }
+      &.size--small {
+        margin-top: var(--vxe-ui-base-margin-gap-small);
+      }
+      &.size--mini {
+        margin-top: var(--vxe-ui-base-margin-gap-mini);
+      }
+      &:first-of-type {
+        margin-top: 0;
+      }
+    }
+    & > .vxe-button.type--button,
+    & > .vxe-button--dropdown {
+      margin-right: 0;
+    }
+    & > .vxe-button+.vxe-button--dropdown,
+    & > .vxe-button--dropdown+.vxe-button {
+      margin-left: 0;
+    }
+  }
+}

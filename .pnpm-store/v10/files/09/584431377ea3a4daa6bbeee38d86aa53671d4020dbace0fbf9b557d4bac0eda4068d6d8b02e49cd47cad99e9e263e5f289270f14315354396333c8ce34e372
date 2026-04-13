@@ -1,0 +1,32 @@
+import { useMenuContext } from "./context/MenuContext.js";
+import { useMeasure } from "./context/PathContext.js";
+import { createVNode, defineComponent } from "vue";
+import { clsx } from "@v-c/util";
+var Divider_default = /* @__PURE__ */ defineComponent((props) => {
+	const menuContext = useMenuContext();
+	const measure = useMeasure();
+	return () => {
+		const { prefixCls } = menuContext?.value ?? {};
+		if (measure) return null;
+		return createVNode("li", {
+			"role": "separator",
+			"class": clsx(`${prefixCls}-item-divider`, props.class),
+			"style": props.style
+		}, null);
+	};
+}, {
+	props: {
+		style: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		class: {
+			type: String,
+			required: false,
+			default: void 0
+		}
+	},
+	name: "Divider"
+});
+export { Divider_default as default };

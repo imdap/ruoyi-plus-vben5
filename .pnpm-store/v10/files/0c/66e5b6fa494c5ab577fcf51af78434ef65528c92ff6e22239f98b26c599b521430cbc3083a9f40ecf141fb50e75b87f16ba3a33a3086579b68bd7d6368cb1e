@@ -1,0 +1,11 @@
+import { TablePaginationConfig } from "../interface.js";
+import * as vue437 from "vue";
+import { Ref } from "vue";
+
+//#region src/table/hooks/usePagination.d.ts
+declare const DEFAULT_PAGE_SIZE = 10;
+declare function getPaginationParam(mergedPagination: TablePaginationConfig, pagination?: TablePaginationConfig | boolean): any;
+type MaybeRef<T> = T | Ref<T>;
+declare function usePagination(total: MaybeRef<number>, onChange: (current: number, pageSize: number) => void, pagination?: MaybeRef<TablePaginationConfig | false>): readonly [vue437.ComputedRef<TablePaginationConfig>, (current?: number, pageSize?: number) => void];
+//#endregion
+export { DEFAULT_PAGE_SIZE, usePagination as default, getPaginationParam };

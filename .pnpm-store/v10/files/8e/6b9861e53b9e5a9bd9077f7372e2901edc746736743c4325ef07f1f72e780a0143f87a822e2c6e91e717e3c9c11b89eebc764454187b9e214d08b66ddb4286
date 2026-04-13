@@ -1,0 +1,12 @@
+import { ItemType } from "./useItems.js";
+import { ResizableInfo } from "./useResizable.js";
+import * as vue656 from "vue";
+import { Ref } from "vue";
+
+//#region src/splitter/hooks/useResize.d.ts
+/**
+ * Handle user drag resize logic.
+ */
+declare function useResize(items: Ref<ItemType[]>, resizableInfos: Ref<ResizableInfo[]>, percentSizes: Ref<number[]>, containerSize: Ref<number | undefined>, updateSizes: (sizes: number[]) => void, reverse: Ref<boolean>): readonly [(index: number) => void, (index: number, offset: number) => number[], () => void, (index: number, type: "start" | "end") => number[], vue656.ComputedRef<number | undefined>];
+//#endregion
+export { useResize as default };

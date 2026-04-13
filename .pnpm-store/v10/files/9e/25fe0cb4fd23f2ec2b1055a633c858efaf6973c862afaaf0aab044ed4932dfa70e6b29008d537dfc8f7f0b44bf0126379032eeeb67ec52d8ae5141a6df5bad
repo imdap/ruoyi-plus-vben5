@@ -1,0 +1,1 @@
+{"version":3,"file":"IFocusEventInit.d.ts","sourceRoot":"","sources":["../../../src/event/events/IFocusEventInit.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,WAAW,MAAM,mBAAmB,CAAC;AACjD,OAAO,KAAK,YAAY,MAAM,oBAAoB,CAAC;AAEnD,MAAM,CAAC,OAAO,WAAW,eAAgB,SAAQ,YAAY;IAC5D,aAAa,CAAC,EAAE,WAAW,GAAG,IAAI,CAAC;CACnC"}

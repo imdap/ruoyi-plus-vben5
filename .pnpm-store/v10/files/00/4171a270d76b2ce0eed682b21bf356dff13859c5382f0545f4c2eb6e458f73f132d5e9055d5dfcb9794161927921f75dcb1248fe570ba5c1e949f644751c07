@@ -1,0 +1,23 @@
+.vxe-layout-aside {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: width .3s;
+  overflow: hidden;
+  &.is--default-width {
+    width: var(--vxe-ui-layout-aside-default-width);
+  }
+  &.is--collapse {
+    width: var(--vxe-ui-layout-aside-collapse-width);
+  }
+  &.is--padding {
+    padding: var(--vxe-ui-layout-padding-default);
+  }
+}
+.vxe-layout-aside--inner {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  outline: 0;
+}

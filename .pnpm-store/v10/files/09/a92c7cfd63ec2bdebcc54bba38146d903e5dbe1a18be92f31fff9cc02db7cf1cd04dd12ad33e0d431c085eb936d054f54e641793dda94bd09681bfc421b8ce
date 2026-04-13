@@ -1,0 +1,4 @@
+import { log } from '@vxe-ui/core';
+const version = `ui v${"4.13.21"}`;
+export const warnLog = log.create('warn', version);
+export const errLog = log.create('error', version);

@@ -1,0 +1,8 @@
+{
+  "name": "@vueuse/motion",
+  "configKey": "motion",
+  "builder": {
+    "@nuxt/module-builder": "0.8.4",
+    "unbuild": "3.5.0"
+  }
+}

@@ -1,0 +1,54 @@
+{
+    "id": "git",
+    "version": "0.2",
+    "name": "Git",
+    "description": "CSpell configuration for GIT",
+    "dictionaryDefinitions": [
+        {
+            "name": "git",
+            "description": "Git Terms",
+            "path": "./dict/git-terms.txt"
+        }
+    ],
+    "dictionaries": [],
+    "ignorePaths": [
+        "**/.git/info/refs",
+        "**/.git/{logs,objects,packed-refs,refs}",
+        "**/.git/HEAD",
+        "**/.git/index",
+        "**/.git/FETCH_HEAD",
+        "**/.git/ORIGIN_HEAD"
+    ],
+    "languageSettings": [
+        {
+            "languageId": "commit-msg",
+            "patterns": [
+                {
+                    "name": "git-commit-msg-comment",
+                    "pattern": "/^#.*/gm",
+                    "description": "Ignore commit comments"
+                }
+            ],
+            "ignoreRegExpList": ["git-commit-msg-comment"]
+        },
+        {
+            "languageId": "commit-msg,git-commit",
+            "dictionaries": ["git"]
+        },
+        {
+            "languageId": "shellscript",
+            "dictionaries": ["git"]
+        }
+    ],
+    "overrides": [
+        {
+            "filename": "**/.git/COMMIT_EDITMSG",
+            "languageId": "commit-msg",
+            "minWordLength": 3
+        },
+        {
+            "filename": ["**/.git/**", "**/.github/**"],
+            "dictionaries": ["git"]
+        }
+    ]
+}

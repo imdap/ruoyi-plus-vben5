@@ -1,0 +1,26 @@
+import { useMenuContext } from "../context/MenuContext.js";
+import { computed, watchEffect } from "vue";
+function useActive(eventKey, disabled, onMouseEnter, onMouseLeave) {
+	const menuContext = useMenuContext();
+	const ret = { active: computed(() => menuContext?.value?.activeKey === eventKey.value) };
+	watchEffect(() => {
+		if (!disabled.value) {
+			ret.onMouseEnter = (domEvent) => {
+				onMouseEnter?.({
+					key: eventKey.value,
+					domEvent
+				});
+				menuContext?.value?.onActive?.(eventKey.value);
+			};
+			ret.onMouseLeave = (domEvent) => {
+				onMouseLeave?.({
+					key: eventKey.value,
+					domEvent
+				});
+				menuContext?.value?.onInactive?.(eventKey.value);
+			};
+		}
+	});
+	return ret;
+}
+export { useActive as default };

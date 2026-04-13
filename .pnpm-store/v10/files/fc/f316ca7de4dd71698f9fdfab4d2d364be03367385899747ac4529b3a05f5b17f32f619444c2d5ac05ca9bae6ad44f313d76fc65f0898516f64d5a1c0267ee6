@@ -1,0 +1,58 @@
+import assert from 'node:assert';
+export function appendParsedText(a, b) {
+    const adjacent = a.range[1] === b.range[0];
+    if (adjacent && !a.map && !b.map) {
+        return {
+            text: a.text + b.text,
+            range: [a.range[0], b.range[1]],
+        };
+    }
+    const aMap = a.map || [a.range[1] - a.range[0], a.text.length];
+    const bMap = b.map || [b.range[1] - b.range[0], b.text.length];
+    const inject = adjacent ? [] : [b.range[0] - a.range[1], 0];
+    const map = [...aMap, ...inject, ...bMap];
+    return {
+        ...a,
+        ...b,
+        text: a.text + b.text,
+        range: [a.range[0], b.range[1]],
+        map,
+    };
+}
+export function appendMappedText(a, b) {
+    if (!a.offsetMap && !b.offsetMap) {
+        return { text: a.text + b.text };
+    }
+    const aLen = a.text.length;
+    const bLen = b.text.length;
+    const aMap = [0, 0, ...(a.offsetMap || [0, 0, aLen, aLen])];
+    const bMap = [0, 0, ...(b.offsetMap || [0, 0, bLen, bLen])];
+    assert(aMap[aMap.length - 1] === aLen);
+    assert(bMap[bMap.length - 1] === bLen);
+    assert((aMap.length & 1) === 0);
+    assert((bMap.length & 1) === 0);
+    return {
+        text: a.text + b.text,
+        offsetMap: joinMaps(aMap, bMap),
+    };
+}
+function joinMaps(aMap, bMap) {
+    const n = aMap.length - 1;
+    const offsets = [aMap[n - 1], aMap[n]];
+    const ab = [...aMap, ...bMap.map((v, i) => v + offsets[i & 1])];
+    // Normalize the map by removing duplicate entries
+    const r = [0, 0];
+    let last0 = 0, last1 = 0;
+    for (let i = 0; i < ab.length; i += 2) {
+        const v0 = ab[i];
+        const v1 = ab[i + 1];
+        if (v0 === last0 && v1 === last1) {
+            continue;
+        }
+        r.push(v0, v1);
+        last0 = v0;
+        last1 = v1;
+    }
+    return r;
+}
+//# sourceMappingURL=appendMappedText.js.map

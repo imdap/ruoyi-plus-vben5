@@ -1,0 +1,632 @@
+import { devUseWarning, isDev } from "../_util/warning.js";
+import { useComponentBaseConfig, useConfig } from "../config-provider/context.js";
+import { useSize } from "../config-provider/hooks/useSize.js";
+import useToken from "../theme/useToken.js";
+import { useMergeSemantic, useToArr, useToProps } from "../_util/hooks/useMergeSemantic.js";
+import { getSlotPropsFnRun, toPropsRefs as toPropsRefs$1 } from "../_util/tools.js";
+import useCSSVarCls_default from "../config-provider/hooks/useCSSVarCls.js";
+import { TableMeasureRowContextProvider } from "./TableMeasureRowContext.js";
+import config_provider_default from "../config-provider/index.js";
+import scrollTo from "../_util/scrollTo.js";
+import en_US_default from "../locale/en_US.js";
+import useLocale_default from "../locale/useLocale.js";
+import { DefaultRenderEmpty } from "../config-provider/defaultRenderEmpty.js";
+import { useBreakpoint } from "../grid/hooks/useBreakpoint.js";
+import spin_default from "../spin/index.js";
+import pagination_default from "../pagination/index.js";
+import useSelection from "./hooks/useSelection.js";
+import ExpandIcon_default from "./ExpandIcon.js";
+import useContainerWidth from "./hooks/useContainerWidth.js";
+import useFilter, { collectFilterStates, generateFilterInfo, getFilterData, getMergedFilterStates } from "./hooks/useFilter/index.js";
+import useLazyKVMap from "./hooks/useLazyKVMap.js";
+import usePagination, { DEFAULT_PAGE_SIZE, getPaginationParam } from "./hooks/usePagination.js";
+import useSorter, { getSortData } from "./hooks/useSorter.js";
+import useTitleColumns from "./hooks/useTitleColumns.js";
+import style_default from "./style/index.js";
+import { convertColumnsToColumnProps } from "./utils.js";
+import { computed, createVNode, defineComponent, isVNode, mergeDefaults, mergeProps, shallowRef, watch, watchEffect } from "vue";
+import { clsx } from "@v-c/util";
+import { getAttrStyleAndClass } from "@v-c/util/dist/props-util";
+import { omit } from "es-toolkit";
+import VcTable, { INTERNAL_HOOKS, VirtualTable } from "@v-c/table";
+
+//#region src/table/InternalTable.tsx
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+const EMPTY_LIST = [];
+function resolvePanelRender(slots, props, key) {
+	if (slots[key] || props[key]) return (data) => getSlotPropsFnRun(slots, props, key, true, data);
+}
+const InternalTable = /* @__PURE__ */ defineComponent((props, { slots, emit, attrs, expose }) => {
+	const { prefixCls, direction, getPrefixCls, class: contextClassName, style: contextStyle, classes: contextClassNames, styles: contextStyles, renderEmpty, getPopupContainer: contextGetPopupContainer, virtual: contextVirtual, bodyCell: contextBodyCell, headerCell: contextHeaderCell, rowKey: contextRowKey, scroll: contextScroll } = useComponentBaseConfig("table", props, [
+		"bodyCell",
+		"headerCell",
+		"rowKey",
+		"scroll"
+	]);
+	const configCtx = useConfig();
+	const { classes, styles } = toPropsRefs$1(props, "classes", "styles");
+	const mergedSize = useSize(computed(() => props.size));
+	const mergedProps = computed(() => {
+		return {
+			...props,
+			size: mergedSize.value,
+			bordered: props.bordered
+		};
+	});
+	const [mergedClassNames, mergedStyles] = useMergeSemantic(useToArr(contextClassNames, classes), useToArr(contextStyles, styles), useToProps(mergedProps), computed(() => ({
+		pagination: { _default: "root" },
+		header: { _default: "wrapper" },
+		body: { _default: "wrapper" }
+	})));
+	const [tableLocale] = useLocale_default("Table", en_US_default.Table);
+	const [globalLocale] = useLocale_default("global", en_US_default.global);
+	const mergedLocale = computed(() => ({
+		...tableLocale?.value,
+		...props.locale || {}
+	}));
+	const rawData = shallowRef(props?.dataSource || EMPTY_LIST);
+	watch(() => props.dataSource, () => {
+		rawData.value = props?.dataSource || EMPTY_LIST;
+	});
+	const internalRefs = { body: shallowRef(null) };
+	const rootCls = useCSSVarCls_default(prefixCls);
+	const [hashId, cssVarCls] = style_default(prefixCls, rootCls);
+	const baseColumns = computed(() => {
+		if (props.columns) return props.columns;
+		return convertColumnsToColumnProps(slots.default?.() ?? []);
+	});
+	const screens = useBreakpoint(computed(() => baseColumns.value.some((col) => col.responsive)), null);
+	const mergedColumns = computed(() => {
+		const matched = new Set(Object.keys(screens.value || {}).filter((m) => screens.value?.[m]));
+		return baseColumns.value.filter((c) => !c.responsive || c.responsive.some((r) => matched.has(r)));
+	});
+	const tableProps = computed(() => omit(props, [
+		"classes",
+		"styles",
+		"dataSource",
+		"columns",
+		"pagination",
+		"loading",
+		"size",
+		"bordered",
+		"rowSelection",
+		"locale",
+		"rootClass",
+		"dropdownPrefixCls",
+		"scroll",
+		"sortDirections",
+		"showSorterTooltip",
+		"virtual",
+		"_renderTimes"
+	]));
+	const mergedExpandable = computed(() => {
+		const { expandable, ...legacyExpandableProps } = props;
+		const baseExpandable = expandable !== void 0 ? {
+			...legacyExpandableProps,
+			...expandable
+		} : { ...legacyExpandableProps };
+		if (baseExpandable.showExpandColumn === false) baseExpandable.expandIconColumnIndex = -1;
+		if (slots.expandIcon) baseExpandable.expandIcon = slots.expandIcon;
+		return baseExpandable;
+	});
+	const childrenColumnName = computed(() => mergedExpandable.value.childrenColumnName || "children");
+	const getRowKey = computed(() => {
+		if (typeof props.rowKey === "function") return props.rowKey;
+		if (!props.rowKey && contextRowKey.value && typeof contextRowKey.value === "function") return contextRowKey.value;
+		const rowKey = props.rowKey || contextRowKey.value || "key";
+		return (record) => record?.[rowKey];
+	});
+	if (isDev) devUseWarning("Table")(!(typeof props.rowKey === "function" && props.rowKey.length > 1), "usage", "`index` parameter of `rowKey` function is deprecated. There is no guarantee that it will work as expected.");
+	const [getRecordByKey] = useLazyKVMap(rawData, childrenColumnName, getRowKey);
+	const changeEventInfo = {};
+	const triggerOnChange = (info, action, reset = false) => {
+		const changeInfo = {
+			...changeEventInfo,
+			...info
+		};
+		if (reset) {
+			changeEventInfo.resetPagination?.();
+			if (changeInfo.pagination?.current) changeInfo.pagination.current = 1;
+			if (props.pagination && typeof props.pagination === "object") props.pagination.onChange?.(1, changeInfo.pagination?.pageSize);
+		}
+		if (props.scroll?.scrollToFirstRowOnChange !== false && internalRefs.body?.value) scrollTo(0, { getContainer: () => internalRefs.body.value });
+		emit("change", changeInfo.pagination, changeInfo.filters, changeInfo.sorter, {
+			currentDataSource: getFilterData(getSortData(rawData.value, changeInfo.sorterStates, childrenColumnName.value), changeInfo.filterStates, childrenColumnName.value),
+			action
+		});
+	};
+	const onSorterChange = (sorter, sorterStates) => {
+		triggerOnChange({
+			sorter,
+			sorterStates
+		}, "sort", false);
+	};
+	const [transformSorterColumns, sortStates, sorterTitleProps, getSorters] = useSorter({
+		prefixCls,
+		mergedColumns,
+		onSorterChange,
+		sortDirections: computed(() => props.sortDirections || ["ascend", "descend"]),
+		tableLocale: mergedLocale,
+		showSorterTooltip: computed(() => props.showSorterTooltip),
+		globalLocale
+	});
+	const sortedData = computed(() => getSortData(rawData.value, sortStates.value, childrenColumnName.value));
+	const filterStates = shallowRef(collectFilterStates(mergedColumns.value, true));
+	const filterStateWarning = isDev ? devUseWarning("Table") : void 0;
+	const mergedFilterStates = computed(() => getMergedFilterStates(mergedColumns.value, filterStates.value, filterStateWarning));
+	const filters = computed(() => generateFilterInfo(mergedFilterStates.value));
+	const onFilterChange = (filters, filterStates) => {
+		triggerOnChange({
+			filters,
+			filterStates
+		}, "filter", true);
+	};
+	const mergedData = computed(() => getFilterData(sortedData.value, mergedFilterStates.value, childrenColumnName.value));
+	const onPaginationChange = (current, pageSize) => {
+		triggerOnChange({ pagination: {
+			...changeEventInfo.pagination,
+			current,
+			pageSize
+		} }, "paginate");
+	};
+	const [mergedPagination, resetPagination] = usePagination(computed(() => mergedData.value.length), onPaginationChange, computed(() => props.pagination));
+	watchEffect(() => {
+		changeEventInfo.sorter = getSorters();
+		changeEventInfo.sorterStates = sortStates.value;
+		changeEventInfo.filters = filters.value;
+		changeEventInfo.filterStates = mergedFilterStates.value;
+		changeEventInfo.pagination = props.pagination === false ? {} : getPaginationParam(mergedPagination.value, props.pagination);
+		changeEventInfo.resetPagination = resetPagination;
+	});
+	const pageData = computed(() => {
+		if (props.pagination === false || !mergedPagination.value.pageSize) return mergedData.value;
+		const { current = 1, total, pageSize = DEFAULT_PAGE_SIZE } = mergedPagination.value;
+		if (isDev) devUseWarning("Table")(current > 0, "usage", "`current` should be positive number.");
+		if (mergedData.value.length < (total || 0)) {
+			if (mergedData.value.length > pageSize) {
+				if (isDev) devUseWarning("Table")(false, "usage", "`dataSource` length is less than `pagination.total` but large than `pagination.pageSize`. Please make sure your config correct data with async mode.");
+				return mergedData.value.slice((current - 1) * pageSize, current * pageSize);
+			}
+			return mergedData.value;
+		}
+		return mergedData.value.slice((current - 1) * pageSize, current * pageSize);
+	});
+	const [transformSelectionColumns, selectedKeySet] = useSelection({
+		prefixCls,
+		data: mergedData,
+		pageData,
+		getRowKey,
+		getRecordByKey,
+		childrenColumnName,
+		locale: mergedLocale,
+		getPopupContainer: computed(() => props.getPopupContainer || contextGetPopupContainer)
+	}, computed(() => props.rowSelection));
+	const internalRowClassName = (record, index, indent) => {
+		const resolvedRowClassName = typeof props.rowClassName === "function" ? props.rowClassName(record, index, indent) : props.rowClassName;
+		return clsx({ [`${prefixCls.value}-row-selected`]: selectedKeySet.value.has(getRowKey.value(record, index)) }, resolvedRowClassName);
+	};
+	const getContainerWidth = useContainerWidth(prefixCls.value);
+	const rootRef = shallowRef(null);
+	const tblRef = shallowRef(null);
+	expose({
+		scrollTo: (...args) => {
+			tblRef.value?.scrollTo?.(...args);
+		},
+		get nativeElement() {
+			return rootRef.value;
+		}
+	});
+	const spinProps = computed(() => {
+		if (typeof props.loading === "boolean") return { spinning: props.loading };
+		if (typeof props.loading === "object" && props.loading !== null) return {
+			spinning: true,
+			...props.loading
+		};
+	});
+	const mergedVirtual = computed(() => props.virtual ?? contextVirtual.value);
+	const TableComponent = computed(() => mergedVirtual.value ? VirtualTable : VcTable);
+	const [, token] = useToken();
+	const listItemHeight = computed(() => {
+		const { fontSize, lineHeight, lineWidth, padding, paddingXS, paddingSM } = token.value;
+		const fontHeight = Math.floor(fontSize * lineHeight);
+		switch (mergedSize.value) {
+			case "middle":
+			case "medium": return paddingSM * 2 + fontHeight + lineWidth;
+			case "small": return paddingXS * 2 + fontHeight + lineWidth;
+			default: return padding * 2 + fontHeight + lineWidth;
+		}
+	});
+	const renderHeaderCell = (ctx) => {
+		const node = getSlotPropsFnRun(slots, props, "headerCell", true, ctx);
+		if (node === null || node === void 0) {
+			if (contextHeaderCell.value) return contextHeaderCell.value(ctx);
+		}
+		return node;
+	};
+	const renderBodyCell = (ctx) => {
+		const node = getSlotPropsFnRun(slots, props, "bodyCell", true, ctx);
+		if (node === null || node === void 0) {
+			if (contextBodyCell.value) return contextBodyCell.value(ctx);
+			else if (configCtx.value?.transformCellText) return configCtx.value.transformCellText(ctx);
+		}
+		return node;
+	};
+	return () => {
+		const columnTitlePropsFn = () => {
+			const mergedFilters = {};
+			Object.keys(filters.value).forEach((filterKey) => {
+				if (filters.value[filterKey] !== null) mergedFilters[filterKey] = filters.value[filterKey];
+			});
+			return {
+				...sorterTitleProps.value,
+				filters: mergedFilters
+			};
+		};
+		const [transformTitleColumns] = useTitleColumns(columnTitlePropsFn());
+		const renderExpandedRow = slots.expandedRowRender ? (record, index, indent, expanded) => getSlotPropsFnRun(slots, props, "expandedRowRender", true, {
+			record,
+			index,
+			indent,
+			expanded
+		}) : void 0;
+		const { locale } = props;
+		const mergedEmptyNodeFn = () => {
+			if (spinProps.value?.spinning && rawData.value === EMPTY_LIST) return null;
+			if (slots.emptyText) return getSlotPropsFnRun(slots, props, "emptyText");
+			if (typeof locale?.emptyText !== "undefined") return locale?.emptyText;
+			return renderEmpty?.value?.("Table") || createVNode(DefaultRenderEmpty, { "componentName": "Table" }, null);
+		};
+		const mergedEmptyNode = mergedEmptyNodeFn();
+		const mergedGetPopupContainer = props.getPopupContainer || contextGetPopupContainer;
+		const renderFilterDropdown = slots.filterDropdown ? (ctx) => getSlotPropsFnRun(slots, props, "filterDropdown", false, ctx) : void 0;
+		const renderFilterIcon = slots.filterIcon ? (ctx) => getSlotPropsFnRun(slots, props, "filterIcon", false, ctx) : void 0;
+		const [transformFilterColumns] = useFilter({
+			prefixCls: prefixCls.value,
+			dropdownPrefixCls: getPrefixCls("dropdown", props.dropdownPrefixCls),
+			mergedFilterStates: mergedFilterStates.value,
+			filterStates,
+			onFilterChange,
+			filterDropdown: renderFilterDropdown,
+			filterIcon: renderFilterIcon,
+			getPopupContainer: mergedGetPopupContainer,
+			locale: mergedLocale.value,
+			rootClassName: clsx(props.rootClass, cssVarCls.value, rootCls.value, hashId.value)
+		});
+		const transformColumns = (innerColumns) => transformTitleColumns(transformSelectionColumns(transformFilterColumns(transformSorterColumns(innerColumns))));
+		const expandType = (() => {
+			if (rawData.value.some((item) => item?.[childrenColumnName.value])) return "nest";
+			if (renderExpandedRow || mergedExpandable.value.expandedRowRender) return "row";
+			return null;
+		})();
+		const mergedExpandableConfig = (() => {
+			const expandable = { ...mergedExpandable.value };
+			expandable.__PARENT_RENDER_ICON__ = expandable.expandIcon;
+			if (renderExpandedRow) expandable.expandedRowRender = renderExpandedRow;
+			expandable.expandIcon = expandable.expandIcon || ExpandIcon_default(mergedLocale.value);
+			if (expandType === "nest" && expandable.expandIconColumnIndex === void 0) expandable.expandIconColumnIndex = props.rowSelection ? 1 : 0;
+			else if (expandType === "nest" && expandable.expandIconColumnIndex > 0 && props.rowSelection) expandable.expandIconColumnIndex -= 1;
+			if (typeof expandable.indentSize !== "number") expandable.indentSize = typeof props.indentSize === "number" ? props.indentSize : 15;
+			return expandable;
+		})();
+		const renderPagination = (placement = "end") => createVNode(pagination_default, mergeProps(mergedPagination.value, {
+			"classes": mergedClassNames.value.pagination,
+			"styles": mergedStyles.value.pagination,
+			"class": clsx(`${prefixCls.value}-pagination ${prefixCls.value}-pagination-${placement}`, mergedPagination.value.class, mergedPagination.value.className),
+			"size": mergedPagination.value.size || (mergedSize.value === "small" || mergedSize.value === "middle" || mergedSize.value === "medium" ? "small" : void 0)
+		}), null);
+		const paginationNodes = (() => {
+			if (props.pagination === false || !mergedPagination.value.total) return {
+				top: null,
+				bottom: null
+			};
+			let topPaginationNode = null;
+			let bottomPaginationNode = null;
+			const { placement, position } = mergedPagination.value;
+			const mergedPlacement = placement ?? position;
+			const normalizePlacement = (pos) => {
+				const lowerPos = pos.toLowerCase();
+				if (lowerPos.includes("center")) return "center";
+				return lowerPos.includes("left") || lowerPos.includes("start") ? "start" : "end";
+			};
+			if (Array.isArray(mergedPlacement)) {
+				const [topPos, bottomPos] = ["top", "bottom"].map((dir) => mergedPlacement.find((p) => p.includes(dir)));
+				const isDisable = mergedPlacement.every((p) => `${p}` === "none");
+				if (!topPos && !bottomPos && !isDisable) bottomPaginationNode = renderPagination();
+				if (topPos) topPaginationNode = renderPagination(normalizePlacement(topPos));
+				if (bottomPos) bottomPaginationNode = renderPagination(normalizePlacement(bottomPos));
+			} else bottomPaginationNode = renderPagination();
+			if (isDev) devUseWarning("Table").deprecated(!position, "pagination.position", "pagination.placement");
+			return {
+				top: topPaginationNode,
+				bottom: bottomPaginationNode
+			};
+		})();
+		const { className, style, restAttrs } = getAttrStyleAndClass(attrs);
+		const wrapperCls = clsx(cssVarCls.value, rootCls.value, `${prefixCls.value}-wrapper`, contextClassName.value, { [`${prefixCls.value}-wrapper-rtl`]: direction.value === "rtl" }, props.rootClass, mergedClassNames.value.root, hashId.value, className);
+		const mergedStyle = {
+			...mergedStyles.value.root,
+			...contextStyle.value,
+			...style
+		};
+		const tableClassName = clsx({
+			[`${prefixCls.value}-medium`]: mergedSize.value === "middle" || mergedSize.value === "medium",
+			[`${prefixCls.value}-small`]: mergedSize.value === "small",
+			[`${prefixCls.value}-bordered`]: props.bordered,
+			[`${prefixCls.value}-empty`]: rawData.value.length === 0
+		}, cssVarCls.value, rootCls.value, hashId.value);
+		const title = resolvePanelRender(slots, props, "title");
+		const footer = resolvePanelRender(slots, props, "footer");
+		const summary = resolvePanelRender(slots, props, "summary");
+		const TableComp = TableComponent.value;
+		const virtualProps = mergedVirtual.value ? { listItemHeight: listItemHeight.value } : {};
+		const mergedScroll = props.scroll ?? contextScroll.value;
+		return createVNode("div", {
+			"ref": rootRef,
+			"class": wrapperCls,
+			"style": mergedStyle,
+			"data-allow-mismatch": true
+		}, [createVNode(spin_default, mergeProps({ "spinning": false }, spinProps.value || {}), { default: () => [
+			paginationNodes.top,
+			createVNode(TableComp, mergeProps(virtualProps, tableProps.value, restAttrs, {
+				"ref": tblRef,
+				"columns": mergedColumns.value,
+				"data": pageData.value,
+				"rowKey": getRowKey.value,
+				"rowClassName": internalRowClassName,
+				"emptyText": mergedEmptyNode,
+				"classNames": mergedClassNames.value,
+				"styles": mergedStyles.value,
+				"expandable": mergedExpandableConfig,
+				"prefixCls": prefixCls.value,
+				"direction": props.direction ?? direction.value,
+				"headerCell": slots.headerCell || contextHeaderCell.value || props.headerCell ? renderHeaderCell : void 0,
+				"bodyCell": slots.bodyCell || props.bodyCell || contextBodyCell.value || configCtx.value?.transformCellText ? renderBodyCell : void 0,
+				"className": tableClassName,
+				"internalHooks": INTERNAL_HOOKS,
+				"internalRefs": internalRefs,
+				"transformColumns": transformColumns,
+				"getContainerWidth": getContainerWidth,
+				"scroll": mergedScroll,
+				"measureRowRender": (measureRow) => createVNode(TableMeasureRowContextProvider, { "value": true }, { default: () => [createVNode(config_provider_default, { "getPopupContainer": (node) => node }, _isSlot(measureRow) ? measureRow : { default: () => [measureRow] })] }),
+				"title": title,
+				"footer": footer,
+				"summary": summary,
+				"onUpdate:expandedRowKeys": (keys) => emit("update:expandedRowKeys", keys)
+			}), null),
+			paginationNodes.bottom
+		] })]);
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		_renderTimes: {
+			type: Number,
+			required: true
+		},
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		},
+		dropdownPrefixCls: {
+			type: String,
+			required: false
+		},
+		dataSource: {
+			type: Array,
+			required: false
+		},
+		columns: {
+			type: Array,
+			required: false
+		},
+		pagination: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		loading: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		size: {
+			type: [String, null],
+			required: false
+		},
+		bordered: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		locale: {
+			type: Object,
+			required: false
+		},
+		rowSelection: {
+			type: Object,
+			required: false
+		},
+		getPopupContainer: {
+			type: Function,
+			required: false
+		},
+		scroll: {
+			type: Object,
+			required: false
+		},
+		sortDirections: {
+			type: Array,
+			required: false
+		},
+		showSorterTooltip: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		virtual: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		rootClass: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		},
+		rowKey: {
+			type: [String, Function],
+			required: false,
+			skipCheck: true
+		},
+		tableLayout: {
+			type: String,
+			required: false
+		},
+		expandable: {
+			type: Object,
+			required: false
+		},
+		indentSize: {
+			type: Number,
+			required: false
+		},
+		rowClassName: {
+			type: [String, Function],
+			required: false
+		},
+		title: {
+			type: Function,
+			required: false
+		},
+		footer: {
+			type: Function,
+			required: false
+		},
+		summary: {
+			type: Function,
+			required: false
+		},
+		headerCell: {
+			type: Function,
+			required: false
+		},
+		bodyCell: {
+			type: Function,
+			required: false
+		},
+		caption: { required: false },
+		id: {
+			type: String,
+			required: false
+		},
+		showHeader: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		components: {
+			type: Object,
+			required: false
+		},
+		onRow: {
+			type: Function,
+			required: false
+		},
+		onHeaderRow: {
+			type: Function,
+			required: false
+		},
+		direction: {
+			type: String,
+			required: false
+		},
+		sticky: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		rowHoverable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		tailor: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		getContainerWidth: {
+			type: Function,
+			required: false
+		},
+		measureRowRender: {
+			type: Function,
+			required: false
+		},
+		expandedRowKeys: {
+			type: Array,
+			required: false
+		},
+		defaultExpandedRowKeys: {
+			type: Array,
+			required: false
+		},
+		expandedRowRender: {
+			type: Function,
+			required: false
+		},
+		expandRowByClick: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		expandIcon: {
+			type: Function,
+			required: false
+		},
+		onExpand: {
+			type: Function,
+			required: false
+		},
+		onExpandedRowsChange: {
+			type: Function,
+			required: false
+		},
+		defaultExpandAllRows: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		expandIconColumnIndex: {
+			type: Number,
+			required: false
+		},
+		expandedRowClassName: {
+			type: Function,
+			required: false
+		},
+		childrenColumnName: {
+			type: String,
+			required: false
+		}
+	}, { showSorterTooltip: { target: "full-header" } }),
+	emits: [
+		"change",
+		"update:expandedRowKeys",
+		"scroll"
+	],
+	name: "AInternalTable",
+	inheritAttrs: false
+});
+var InternalTable_default = InternalTable;
+
+//#endregion
+export { InternalTable_default as default };

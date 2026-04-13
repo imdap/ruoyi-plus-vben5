@@ -1,0 +1,205 @@
+import { genFocusStyle, resetComponent } from "../../style/index.js";
+import { genStyleHooks } from "../../theme/util/genStyleUtils.js";
+import { mergeToken } from "../../theme/internal.js";
+import { CONTAINER_MAX_OFFSET } from "../../_util/hooks/useZIndex.js";
+import placement_default from "./placement.js";
+import stack_default from "./stack.js";
+import { Keyframes, unit } from "@antdv-next/cssinjs";
+
+//#region src/notification/style/index.ts
+const genNoticeStyle = (token) => {
+	const { iconCls, componentCls, boxShadow, fontSizeLG, notificationMarginBottom, borderRadiusLG, colorSuccess, colorInfo, colorWarning, colorError, colorTextHeading, notificationBg, notificationPadding, notificationMarginEdge, progressBg, notificationProgressHeight, fontSize, lineHeight, width, notificationIconSize, colorText, colorSuccessBg, colorErrorBg, colorInfoBg, colorWarningBg, motionDurationMid } = token;
+	const noticeCls = `${componentCls}-notice`;
+	return {
+		position: "relative",
+		marginBottom: notificationMarginBottom,
+		marginInlineStart: "auto",
+		background: notificationBg,
+		borderRadius: borderRadiusLG,
+		boxShadow,
+		[noticeCls]: {
+			padding: notificationPadding,
+			width,
+			maxWidth: `calc(100vw - ${unit(token.calc(notificationMarginEdge).mul(2).equal())})`,
+			lineHeight,
+			wordWrap: "break-word",
+			borderRadius: borderRadiusLG,
+			overflow: "hidden",
+			"&-success": colorSuccessBg ? { background: colorSuccessBg } : {},
+			"&-error": colorErrorBg ? { background: colorErrorBg } : {},
+			"&-info": colorInfoBg ? { background: colorInfoBg } : {},
+			"&-warning": colorWarningBg ? { background: colorWarningBg } : {}
+		},
+		[`${noticeCls}-title`]: {
+			marginBottom: token.marginXS,
+			color: colorTextHeading,
+			fontSize: fontSizeLG,
+			lineHeight: token.lineHeightLG
+		},
+		[`${noticeCls}-description`]: {
+			fontSize,
+			color: colorText,
+			marginTop: token.marginXS
+		},
+		[`${noticeCls}-closable ${noticeCls}-title`]: { paddingInlineEnd: token.paddingLG },
+		[`${noticeCls}-with-icon ${noticeCls}-title`]: {
+			marginBottom: token.marginXS,
+			marginInlineStart: token.calc(token.marginSM).add(notificationIconSize).equal(),
+			fontSize: fontSizeLG
+		},
+		[`${noticeCls}-with-icon ${noticeCls}-description`]: {
+			marginInlineStart: token.calc(token.marginSM).add(notificationIconSize).equal(),
+			fontSize
+		},
+		[`${noticeCls}-icon`]: {
+			position: "absolute",
+			fontSize: notificationIconSize,
+			lineHeight: 1,
+			[`&-success${iconCls}`]: { color: colorSuccess },
+			[`&-info${iconCls}`]: { color: colorInfo },
+			[`&-warning${iconCls}`]: { color: colorWarning },
+			[`&-error${iconCls}`]: { color: colorError }
+		},
+		[`${noticeCls}-close`]: {
+			position: "absolute",
+			top: token.notificationPaddingVertical,
+			insetInlineEnd: token.notificationPaddingHorizontal,
+			color: token.colorIcon,
+			outline: "none",
+			width: token.notificationCloseButtonSize,
+			height: token.notificationCloseButtonSize,
+			borderRadius: token.borderRadiusSM,
+			transition: ["color", "background-color"].map((prop) => `${prop} ${motionDurationMid}`).join(", "),
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center",
+			background: "none",
+			border: "none",
+			"&:hover": {
+				color: token.colorIconHover,
+				backgroundColor: token.colorBgTextHover
+			},
+			"&:active": { backgroundColor: token.colorBgTextActive },
+			...genFocusStyle(token)
+		},
+		[`${noticeCls}-progress`]: {
+			position: "absolute",
+			display: "block",
+			appearance: "none",
+			inlineSize: `calc(100% - ${unit(borderRadiusLG)} * 2)`,
+			left: {
+				_skip_check_: true,
+				value: borderRadiusLG
+			},
+			right: {
+				_skip_check_: true,
+				value: borderRadiusLG
+			},
+			bottom: 0,
+			blockSize: notificationProgressHeight,
+			border: 0,
+			"&, &::-webkit-progress-bar": {
+				borderRadius: borderRadiusLG,
+				backgroundColor: `rgba(0, 0, 0, 0.04)`
+			},
+			"&::-moz-progress-bar": { background: progressBg },
+			"&::-webkit-progress-value": {
+				borderRadius: borderRadiusLG,
+				background: progressBg
+			}
+		},
+		[`${noticeCls}-actions`]: {
+			float: "right",
+			marginTop: token.marginSM
+		}
+	};
+};
+const genNotificationStyle = (token) => {
+	const { componentCls, notificationMarginBottom, notificationMarginEdge, motionDurationMid, motionEaseInOut } = token;
+	const noticeCls = `${componentCls}-notice`;
+	const fadeOut = new Keyframes("antNotificationFadeOut", {
+		"0%": {
+			maxHeight: token.animationMaxHeight,
+			marginBottom: notificationMarginBottom
+		},
+		"100%": {
+			maxHeight: 0,
+			marginBottom: 0,
+			paddingTop: 0,
+			paddingBottom: 0,
+			opacity: 0
+		}
+	});
+	return [{ [componentCls]: {
+		...resetComponent(token),
+		position: "fixed",
+		zIndex: token.zIndexPopup,
+		marginRight: {
+			value: notificationMarginEdge,
+			_skip_check_: true
+		},
+		[`${componentCls}-hook-holder`]: { position: "relative" },
+		[`${componentCls}-fade-appear-prepare`]: { opacity: "0 !important" },
+		[`${componentCls}-fade-enter, ${componentCls}-fade-appear`]: {
+			animationDuration: token.motionDurationMid,
+			animationTimingFunction: motionEaseInOut,
+			animationFillMode: "both",
+			opacity: 0,
+			animationPlayState: "paused"
+		},
+		[`${componentCls}-fade-leave`]: {
+			animationTimingFunction: motionEaseInOut,
+			animationFillMode: "both",
+			animationDuration: motionDurationMid,
+			animationPlayState: "paused"
+		},
+		[`${componentCls}-fade-enter${componentCls}-fade-enter-active, ${componentCls}-fade-appear${componentCls}-fade-appear-active`]: { animationPlayState: "running" },
+		[`${componentCls}-fade-leave${componentCls}-fade-leave-active`]: {
+			animationName: fadeOut,
+			animationPlayState: "running"
+		},
+		"&-rtl": {
+			direction: "rtl",
+			[`${noticeCls}-actions`]: { float: "left" }
+		}
+	} }, { [componentCls]: { [`${noticeCls}-wrapper`]: genNoticeStyle(token) } }];
+};
+function prepareComponentToken(token) {
+	return {
+		zIndexPopup: token.zIndexPopupBase + CONTAINER_MAX_OFFSET + 50,
+		width: 384,
+		progressBg: `linear-gradient(90deg, ${token.colorPrimaryBorderHover}, ${token.colorPrimary})`,
+		colorSuccessBg: void 0,
+		colorErrorBg: void 0,
+		colorInfoBg: void 0,
+		colorWarningBg: void 0
+	};
+}
+const prepareNotificationToken = (token) => {
+	const notificationPaddingVertical = token.paddingMD;
+	const notificationPaddingHorizontal = token.paddingLG;
+	return mergeToken(token, {
+		notificationBg: token.colorBgElevated,
+		notificationPaddingVertical,
+		notificationPaddingHorizontal,
+		notificationIconSize: token.calc(token.fontSizeLG).mul(token.lineHeightLG).equal(),
+		notificationCloseButtonSize: token.calc(token.controlHeightLG).mul(.55).equal(),
+		notificationMarginBottom: token.margin,
+		notificationPadding: `${unit(token.paddingMD)} ${unit(token.paddingContentHorizontalLG)}`,
+		notificationMarginEdge: token.marginLG,
+		animationMaxHeight: 150,
+		notificationStackLayer: 3,
+		notificationProgressHeight: 2
+	});
+};
+var style_default = genStyleHooks("Notification", (token) => {
+	const notificationToken = prepareNotificationToken(token);
+	return [
+		genNotificationStyle(notificationToken),
+		placement_default(notificationToken),
+		stack_default(notificationToken)
+	];
+}, prepareComponentToken);
+
+//#endregion
+export { style_default as default, genNoticeStyle, prepareComponentToken, prepareNotificationToken };

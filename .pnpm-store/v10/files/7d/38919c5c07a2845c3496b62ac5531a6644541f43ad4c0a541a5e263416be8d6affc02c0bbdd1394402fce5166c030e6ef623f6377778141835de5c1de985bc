@@ -1,0 +1,14 @@
+var mn_MN_default = {
+	items_per_page: "/ хуудас",
+	jump_to: "Шилжих",
+	jump_to_confirm: "сонгох",
+	page: "",
+	prev_page: "Өмнөх хуудас",
+	next_page: "Дараагийн хуудас",
+	prev_5: "Дараагийн 5 хуудас",
+	next_5: "Дараагийн 5 хуудас",
+	prev_3: "Дараагийн 3 хуудас",
+	next_3: "Дараагийн 3 хуудас",
+	page_size: "Page Size"
+};
+export { mn_MN_default as default };

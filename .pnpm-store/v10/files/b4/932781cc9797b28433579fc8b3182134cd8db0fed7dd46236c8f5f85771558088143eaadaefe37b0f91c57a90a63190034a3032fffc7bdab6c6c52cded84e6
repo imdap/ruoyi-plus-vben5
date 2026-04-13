@@ -1,0 +1,26 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { Breakpoint } from "../_util/responsiveObserver.js";
+import { CellSemanticClassNames, CellSemanticStyles } from "./DescriptionsContext.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue753 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/descriptions/Item.d.ts
+declare const DESCRIPTIONS_ITEM_MARK = "_ANTDV_NEXT_DESCRIPTIONS_ITEM";
+interface DescriptionsItemProps extends ComponentBaseProps {
+  class?: string;
+  style?: CSSProperties;
+  label?: VueNode;
+  classes?: CellSemanticClassNames;
+  styles?: CellSemanticStyles;
+  content?: VueNode;
+  span?: number | 'filled' | { [key in Breakpoint]?: number };
+}
+interface DescriptionsItemSlots {
+  default?: () => any;
+  label?: () => any;
+  content?: () => any;
+}
+declare const DescriptionsItem: vue753.DefineSetupFnComponent<DescriptionsItemProps, EmptyEmit, SlotsType<DescriptionsItemSlots>, DescriptionsItemProps, vue753.PublicProps>;
+//#endregion
+export { DESCRIPTIONS_ITEM_MARK, DescriptionsItemProps, DescriptionsItemSlots, DescriptionsItem as default };

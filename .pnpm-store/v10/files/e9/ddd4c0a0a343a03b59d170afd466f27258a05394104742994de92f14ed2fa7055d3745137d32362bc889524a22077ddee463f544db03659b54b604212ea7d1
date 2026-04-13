@@ -1,0 +1,66 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { InputEmits, InputProps, InputRef } from "./Input.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import { ButtonSemanticClassNames, ButtonSemanticStyles } from "../button/Button.js";
+import * as vue1012 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/input/Search.d.ts
+type InputSearchSemanticName = keyof InputSearchSemanticClassNames & keyof InputSearchSemanticStyles;
+interface InputSearchSemanticClassNames {
+  root?: string;
+  input?: string;
+  prefix?: string;
+  suffix?: string;
+  count?: string;
+}
+interface InputSearchSemanticStyles {
+  root?: CSSProperties;
+  input?: CSSProperties;
+  prefix?: CSSProperties;
+  suffix?: CSSProperties;
+  count?: CSSProperties;
+}
+type InputSearchClassNamesType = SemanticClassNamesType<SearchProps, InputSearchSemanticClassNames> & {
+  button?: ButtonSemanticClassNames;
+};
+type InputSearchStylesType = SemanticStylesType<SearchProps, InputSearchSemanticStyles> & {
+  button?: ButtonSemanticStyles;
+};
+interface SearchProps extends Omit<InputProps, 'class' | 'style' | 'rootClass'>, ComponentBaseProps, SearchEmitsProps {
+  inputPrefixCls?: string;
+  on?: never;
+  enterButton?: boolean | VueNode;
+  loading?: boolean;
+  size?: SizeType;
+  hidden?: boolean;
+  classes?: InputSearchClassNamesType;
+  styles?: InputSearchStylesType;
+}
+interface SearchEmits extends InputEmits {
+  search: (value: string, event?: Event | MouseEvent | KeyboardEvent, info?: {
+    source?: 'clear' | 'input';
+  }) => void;
+}
+interface SearchEmitsProps {
+  onSearch?: SearchEmits['search'];
+}
+interface InputSearchRef {
+  focus: (...args: Parameters<NonNullable<InputRef['focus']>>) => void;
+  blur: () => void;
+  input: HTMLInputElement | null;
+}
+interface SearchSlots {
+  default?: () => any;
+  prefix?: () => any;
+  suffix?: () => any;
+  addonBefore: () => any;
+  addonAfter: () => any;
+  clearIcon: () => any;
+}
+declare const InternalSearch: vue1012.DefineSetupFnComponent<SearchProps, SearchEmits, SlotsType<SearchSlots>, SearchProps, vue1012.PublicProps>;
+//#endregion
+export { InputSearchClassNamesType, InputSearchRef, InputSearchSemanticClassNames, InputSearchSemanticName, InputSearchSemanticStyles, InputSearchStylesType, SearchEmits, SearchEmitsProps, SearchProps, SearchSlots, InternalSearch as default };

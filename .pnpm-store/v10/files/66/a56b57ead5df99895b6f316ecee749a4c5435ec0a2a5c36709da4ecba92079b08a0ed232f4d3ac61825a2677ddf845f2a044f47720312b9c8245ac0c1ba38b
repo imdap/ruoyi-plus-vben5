@@ -1,0 +1,83 @@
+import { ValidateMessages } from "../form/types.js";
+import { TimePickerLocale } from "../time-picker/index.js";
+import { PickerLocale } from "../date-picker/generatePicker/interface.js";
+import "../date-picker/index.js";
+import { TransferLocale } from "../empty/index.js";
+import { ModalLocale } from "../modal/interface.js";
+import { PaginationLocale } from "../pagination/interface.js";
+import "../pagination/index.js";
+import { PopconfirmLocale } from "../popconfirm/PurePanel.js";
+import { TableLocale } from "../table/interface.js";
+import "../table/index.js";
+import { TourLocale } from "../tour/interface.js";
+import "../tour/index.js";
+import { TransferLocale as TransferLocale$1 } from "../transfer/interface.js";
+import "../transfer/index.js";
+import { UploadLocale } from "../upload/interface.js";
+import * as vue1084 from "vue";
+import { Ref } from "vue";
+
+//#region src/locale/index.d.ts
+type LocaleContextProps = Locale & {
+  exist?: boolean;
+};
+interface LocaleContext {
+  locale: Ref<LocaleContextProps>;
+}
+declare const ANT_MARK = "internalMark";
+interface LocaleProviderProps {
+  locale: Locale;
+  /** @internal */
+  _ANT_MARK__?: string;
+}
+interface Locale {
+  locale: string;
+  Pagination?: PaginationLocale;
+  DatePicker?: PickerLocale;
+  TimePicker?: TimePickerLocale;
+  Calendar?: PickerLocale;
+  Table?: TableLocale;
+  Modal?: ModalLocale;
+  Tour?: TourLocale;
+  Popconfirm?: PopconfirmLocale;
+  Transfer?: TransferLocale$1;
+  Select?: Record<string, any>;
+  Upload?: UploadLocale;
+  Empty?: TransferLocale;
+  global?: {
+    placeholder?: string;
+    close?: string;
+    sortable?: string;
+  };
+  Icon?: Record<string, any>;
+  Text?: {
+    edit?: any;
+    copy?: any;
+    copied?: any;
+    expand?: any;
+    collapse?: any;
+  };
+  Form?: {
+    optional?: string;
+    defaultValidateMessages: ValidateMessages;
+  };
+  Image?: {
+    preview: string;
+  };
+  QRCode?: {
+    expired?: string;
+    refresh?: string;
+    scanned?: string;
+  };
+  ColorPicker?: {
+    presetEmpty: string;
+    transparent: string;
+    singleColor: string;
+    gradientColor: string;
+  };
+}
+declare function useLocaleProvider(props: LocaleContext): void;
+declare const LocaleProvider: vue1084.DefineSetupFnComponent<LocaleProviderProps, {}, {}, LocaleProviderProps & {}, vue1084.PublicProps>;
+declare function useLocaleContext(): LocaleContext;
+//#endregion
+export { ANT_MARK, Locale, LocaleContext, LocaleContextProps, LocaleProvider, LocaleProviderProps, useLocaleContext, useLocaleProvider };

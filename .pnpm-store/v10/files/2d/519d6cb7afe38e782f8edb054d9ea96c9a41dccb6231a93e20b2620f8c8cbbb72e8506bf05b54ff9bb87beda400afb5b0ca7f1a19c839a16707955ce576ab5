@@ -1,0 +1,7 @@
+import type Headers from '../../Headers.js';
+export default interface ICacheableRequest {
+    url: string;
+    method: string;
+    headers: Headers;
+}
+//# sourceMappingURL=ICacheableRequest.d.ts.map

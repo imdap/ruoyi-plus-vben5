@@ -1,0 +1,60 @@
+{
+  "name": "@cspell/strong-weak-map",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "version": "9.8.0",
+  "description": "A Map with weakly referenced values.",
+  "keywords": [
+    "Map",
+    "WeakMap",
+    "Weak",
+    "Values"
+  ],
+  "author": "Jason Dent <jason@streetsidesoftware.nl>",
+  "homepage": "https://github.com/streetsidesoftware/cspell/tree/main/packages/cspell-strong-weak-map#readme",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js"
+    }
+  },
+  "typings": "dist/esm/index.d.ts",
+  "files": [
+    "dist",
+    "!**/*.tsbuildInfo",
+    "!**/__mocks__",
+    "!**/*.spec.*",
+    "!**/examples/**",
+    "!**/*.test.*",
+    "!**/test/**",
+    "!**/*.map"
+  ],
+  "scripts": {
+    "build": "tsc -b . -f",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "watch": "tsc -b . -w -f",
+    "clean": "shx rm -rf dist temp coverage \"*.tsbuildInfo\"",
+    "clean-build": "pnpm run clean && pnpm run build",
+    "coverage": "pnpm run vitest run --coverage",
+    "test-watch": "pnpm vitest",
+    "test": "pnpm vitest run",
+    "vitest": "node --expose-gc ../../node_modules/vitest/vitest.mjs --pool threads"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell.git",
+    "directory": "packages/cspell-strong-weak-map"
+  },
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "gitHead": "c822013ce676dffb5fa5544567c25a3ae666718f"
+}

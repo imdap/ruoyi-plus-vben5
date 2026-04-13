@@ -1,0 +1,354 @@
+import { getKey, getTreeNodeProps } from "./utils/treeUtil.js";
+import MotionTreeNode_default from "./MotionTreeNode.js";
+import { findExpandedKeys, getExpandRange } from "./utils/diffUtil.js";
+import { Fragment, computed, createVNode, defineComponent, mergeProps, ref, shallowRef, watch } from "vue";
+import useId, { getId } from "@v-c/util/dist/hooks/useId";
+import { toPropsRefs } from "@v-c/util/dist/props-util";
+import VirtualList from "@v-c/virtual-list";
+function itemKey(item) {
+	const { key, pos } = item;
+	return String(getKey(key, pos));
+}
+const MOTION_KEY = `VC_TREE_MOTION_${Math.random()}`;
+var MotionNode = { key: MOTION_KEY };
+const MotionEntity = {
+	key: MOTION_KEY,
+	level: 0,
+	index: 0,
+	pos: "0",
+	node: MotionNode,
+	nodes: [MotionNode]
+};
+var MotionFlattenData = {
+	parent: null,
+	children: [],
+	pos: MotionEntity.pos,
+	data: MotionNode,
+	title: null,
+	key: MOTION_KEY,
+	isStart: [],
+	isEnd: []
+};
+function getMinimumRangeTransitionRange(list, virtual, height, itemHeight) {
+	if (virtual === false || !height || !itemHeight) return list;
+	return list.slice(0, Math.ceil(height / itemHeight) + 1);
+}
+var NodeList_default = /* @__PURE__ */ defineComponent((props, { attrs, expose }) => {
+	const treeId = useId();
+	const listRef = ref();
+	const indentMeasurerRef = ref();
+	const { expandedKeys, data } = toPropsRefs(props, "expandedKeys", "data");
+	const treeNodeRequiredProps = computed(() => ({
+		expandedKeys: expandedKeys.value || [],
+		selectedKeys: props.selectedKeys || [],
+		loadedKeys: props.loadedKeys || [],
+		loadingKeys: props.loadingKeys || [],
+		checkedKeys: props.checkedKeys || [],
+		halfCheckedKeys: props.halfCheckedKeys || [],
+		dragOverNodeKey: props.dragOverNodeKey,
+		dropPosition: props.dropPosition,
+		keyEntities: props.keyEntities
+	}));
+	expose({
+		scrollTo: (scroll) => {
+			listRef.value?.scrollTo(scroll);
+		},
+		getIndentWidth: () => indentMeasurerRef.value?.offsetWidth || 0
+	});
+	const VirtualListAny = VirtualList;
+	const prevExpandedKeys = shallowRef(props.expandedKeys);
+	const prevData = shallowRef(props.data || []);
+	const transitionData = shallowRef(props.data || []);
+	const transitionRange = shallowRef([]);
+	const motionType = ref(null);
+	const dataRef = shallowRef(props.data || []);
+	watch(data, (newData) => {
+		dataRef.value = newData || [];
+	}, { immediate: true });
+	function onMotionEnd() {
+		const latestData = dataRef.value;
+		prevData.value = latestData;
+		transitionData.value = latestData;
+		transitionRange.value = [];
+		motionType.value = null;
+		props.onListChangeEnd?.();
+	}
+	watch(() => props.dragging, (dragging) => {
+		if (!dragging) onMotionEnd();
+	}, { immediate: true });
+	watch([expandedKeys, data], () => {
+		const diffExpanded = findExpandedKeys(prevExpandedKeys.value, expandedKeys.value);
+		if (diffExpanded.key !== null) if (diffExpanded.add) {
+			const keyIndex = prevData.value?.findIndex?.(({ key }) => key === diffExpanded.key);
+			const rangeNodes = getMinimumRangeTransitionRange(getExpandRange(prevData.value, data.value, diffExpanded.key), props.virtual, props.height, props.itemHeight);
+			const newTransitionData = prevData.value?.slice?.() ?? [];
+			newTransitionData.splice(keyIndex + 1, 0, MotionFlattenData);
+			transitionData.value = newTransitionData;
+			transitionRange.value = rangeNodes;
+			motionType.value = "show";
+		} else {
+			const keyIndex = data.value?.findIndex?.(({ key }) => key === diffExpanded.key);
+			const rangeNodes = getMinimumRangeTransitionRange(getExpandRange(data.value, prevData.value, diffExpanded.key), props.virtual, props.height, props.itemHeight);
+			const newTransitionData = data.value?.slice?.() ?? [];
+			newTransitionData.splice(keyIndex + 1, 0, MotionFlattenData);
+			transitionData.value = newTransitionData;
+			transitionRange.value = rangeNodes;
+			motionType.value = "hide";
+		}
+		else if (prevData.value !== data.value) {
+			prevData.value = data.value || [];
+			transitionData.value = data.value || [];
+		}
+		prevExpandedKeys.value = expandedKeys.value || [];
+	}, {
+		immediate: true,
+		flush: "post"
+	});
+	const mergedData = computed(() => props.motion ? transitionData.value : props.data || []);
+	return () => {
+		const { motion, activeItem, focusable, disabled, tabIndex, prefixCls, virtual, itemHeight, height, scrollWidth, onScroll, onContextmenu, onKeyDown, onFocus, onBlur, onMouseDown, onMouseUp, onListChangeStart, onActiveChange } = props;
+		return createVNode(Fragment, null, [createVNode("div", {
+			"class": `${prefixCls}-treenode`,
+			"aria-hidden": true,
+			"style": {
+				position: "absolute",
+				pointerEvents: "none",
+				visibility: "hidden",
+				height: 0,
+				overflow: "hidden",
+				border: 0,
+				padding: 0
+			}
+		}, [createVNode("div", { "class": `${prefixCls}-indent` }, [createVNode("div", {
+			"ref": indentMeasurerRef,
+			"class": `${prefixCls}-indent-unit`
+		}, null)])]), createVNode(VirtualListAny, mergeProps(attrs, {
+			"data": mergedData.value,
+			"itemKey": itemKey,
+			"height": height,
+			"fullHeight": false,
+			"virtual": virtual,
+			"itemHeight": itemHeight,
+			"scrollWidth": scrollWidth,
+			"prefixCls": `${prefixCls}-list`,
+			"ref": listRef,
+			"role": "tree",
+			"tabindex": focusable !== false && !disabled ? tabIndex : void 0,
+			"aria-activedescendant": activeItem ? getId(treeId, activeItem.key) : void 0,
+			"style": props.style,
+			"onContextmenu": onContextmenu,
+			"onScroll": onScroll,
+			"onKeydown": onKeyDown,
+			"onFocus": onFocus,
+			"onBlur": onBlur,
+			"onMousedown": onMouseDown,
+			"onMouseup": onMouseUp,
+			"onVisibleChange": (originList) => {
+				if (motionType.value && originList.every((item) => itemKey(item) !== MOTION_KEY)) onMotionEnd();
+			}
+		}), { default: ({ item: treeNode }) => {
+			const { pos, data: nodeData, title, key, isStart, isEnd } = treeNode;
+			const mergedKey = getKey(key, pos);
+			const treeNodeProps = getTreeNodeProps(mergedKey, treeNodeRequiredProps.value);
+			const active = !!props.activeItem && mergedKey === props.activeItem.key;
+			const restProps = { ...nodeData || {} };
+			delete restProps.key;
+			delete restProps.children;
+			return createVNode(MotionTreeNode_default, mergeProps(restProps, treeNodeProps, {
+				"title": title,
+				"active": active,
+				"pos": pos,
+				"data": nodeData,
+				"isStart": isStart,
+				"isEnd": isEnd,
+				"motion": motion,
+				"motionNodes": key === MOTION_KEY ? transitionRange.value : null,
+				"motionType": motionType.value,
+				"onMotionStart": onListChangeStart,
+				"onMotionEnd": onMotionEnd,
+				"treeNodeRequiredProps": treeNodeRequiredProps.value,
+				"treeId": treeId,
+				"onMouseMove": () => onActiveChange?.(null)
+			}), null);
+		} })]);
+	};
+}, {
+	props: {
+		prefixCls: {
+			type: String,
+			required: true,
+			default: void 0
+		},
+		style: {
+			required: false,
+			default: void 0
+		},
+		data: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		focusable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		tabIndex: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		selectable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		checkable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		expandedKeys: {
+			type: Array,
+			required: true,
+			default: void 0
+		},
+		selectedKeys: {
+			type: Array,
+			required: true,
+			default: void 0
+		},
+		checkedKeys: {
+			type: Array,
+			required: true,
+			default: void 0
+		},
+		loadedKeys: {
+			type: Array,
+			required: true,
+			default: void 0
+		},
+		loadingKeys: {
+			type: Array,
+			required: true,
+			default: void 0
+		},
+		halfCheckedKeys: {
+			type: Array,
+			required: true,
+			default: void 0
+		},
+		keyEntities: {
+			type: Object,
+			required: true,
+			default: void 0
+		},
+		dragging: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		dragOverNodeKey: {
+			type: [
+				String,
+				Number,
+				null
+			],
+			required: true,
+			default: void 0
+		},
+		dropPosition: {
+			type: [Number, null],
+			required: true,
+			default: void 0
+		},
+		motion: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		height: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		itemHeight: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		virtual: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		scrollWidth: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		activeItem: {
+			type: [Object, null],
+			required: false,
+			default: void 0
+		},
+		onKeyDown: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onFocus: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onBlur: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseDown: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseUp: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onActiveChange: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onListChangeStart: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onListChangeEnd: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onContextmenu: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onScroll: {
+			type: Function,
+			required: false,
+			default: void 0
+		}
+	},
+	name: "NodeList",
+	inheritAttrs: false
+});
+export { MOTION_KEY, MotionEntity, NodeList_default as default };

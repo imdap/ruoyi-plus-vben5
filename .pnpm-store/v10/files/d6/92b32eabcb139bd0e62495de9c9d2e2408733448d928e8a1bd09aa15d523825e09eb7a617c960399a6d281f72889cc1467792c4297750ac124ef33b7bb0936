@@ -1,0 +1,31 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue652 from "vue";
+
+//#region src/spin/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 内容区域高度
+   * @descEN Height of content area
+   */
+  contentHeight: number | string;
+  /**
+   * @desc 加载图标尺寸
+   * @descEN Loading icon size
+   */
+  dotSize: number;
+  /**
+   * @desc 小号加载图标尺寸
+   * @descEN Small loading icon size
+   */
+  dotSizeSM: number;
+  /**
+   * @desc 大号加载图标尺寸
+   * @descEN Large loading icon size
+   */
+  dotSizeLG: number;
+}
+declare const prepareComponentToken: GetDefaultToken<'Spin'>;
+declare const _default: (prefixCls: vue652.Ref<string>, rootCls?: vue652.Ref<string | undefined>) => readonly [vue652.Ref<string, string>, vue652.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

@@ -1,0 +1,28 @@
+import { VueNode } from "../_util/type.js";
+import { MasonryProps } from "./Masonry.js";
+import * as vue1037 from "vue";
+import { CSSProperties } from "vue";
+import { Key } from "@v-c/util/dist/type";
+
+//#region src/masonry/MasonryItem.d.ts
+interface MasonryItemType {
+  key: Key;
+  column?: number;
+  height?: number;
+  children?: VueNode;
+  data: any;
+  class?: string;
+  style?: CSSProperties;
+}
+interface MasonryItemProps extends Pick<MasonryProps, 'itemRender'> {
+  prefixCls: string;
+  item: MasonryItemType;
+  style: CSSProperties;
+  class?: string;
+  index: number;
+  column: number;
+  onResize?: VoidFunction | null;
+}
+declare const MasonryItem: vue1037.DefineSetupFnComponent<MasonryItemProps, {}, {}, MasonryItemProps & {}, vue1037.PublicProps>;
+//#endregion
+export { MasonryItemType, MasonryItem as default };

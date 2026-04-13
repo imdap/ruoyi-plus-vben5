@@ -1,0 +1,186 @@
+.vxe-tag.color--gray {
+  color: #827d7d;
+  background-color: #f3f3f3;
+}
+.vxe-tag.color--orangered {
+  color: #877568;
+  background-color: #f4e9e1;
+}
+.vxe-tag.color--orange {
+  color: #9a9079;
+  background-color: #fff8e8;
+}
+.vxe-tag.color--green {
+  color: #627865;
+  background-color: #e7ffea;
+}
+.vxe-tag.color--blue {
+  color: #6b7b82;
+  background-color: #e8f8ff;
+}
+.vxe-tag.color--purple {
+  color: #8f7e97;
+  background-color: #f8e8ff;
+}
+.vxe-tag.color--pinkpurple {
+  color: #82687a;
+  background-color: #ffe8f8;
+}
+.vxe-tag.color--magenta {
+  color: #846084;
+  background-color: #f4c9f4;
+}
+.vxe-tag.color--chocolate {
+  color: #7f6e61;
+  background-color: #f7e2d2;
+}
+.vxe-tag.color--cyan {
+  color: #577474;
+  background-color: #d7f7f7;
+}
+
+.vxe-tag {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.25em 0.5em;
+  color: var(--vxe-ui-font-color);
+  border-radius: var(--vxe-ui-base-border-radius);
+}
+.vxe-tag.theme--primary {
+  color: var(--vxe-ui-font-primary-color);
+  background-color: var(--vxe-ui-font-primary-tinge-color);
+}
+.vxe-tag.theme--primary.is--border {
+  border-color: var(--vxe-ui-font-primary-lighten-color);
+}
+.vxe-tag.theme--primary > .vxe-tag--close:hover {
+  background-color: var(--vxe-ui-font-primary-darken-color);
+}
+.vxe-tag.theme--success {
+  color: var(--vxe-ui-status-success-color);
+  background-color: var(--vxe-ui-status-success-tinge-color);
+}
+.vxe-tag.theme--success.is--border {
+  border-color: var(--vxe-ui-status-success-lighten-color);
+}
+.vxe-tag.theme--success > .vxe-tag--close:hover {
+  background-color: var(--vxe-ui-status-success-darken-color);
+}
+.vxe-tag.theme--info {
+  color: var(--vxe-ui-status-info-color);
+  background-color: var(--vxe-ui-status-info-tinge-color);
+}
+.vxe-tag.theme--info.is--border {
+  border-color: var(--vxe-ui-status-info-lighten-color);
+}
+.vxe-tag.theme--info > .vxe-tag--close:hover {
+  background-color: var(--vxe-ui-status-info-darken-color);
+}
+.vxe-tag.theme--warning {
+  color: var(--vxe-ui-status-warning-color);
+  background-color: var(--vxe-ui-status-warning-tinge-color);
+}
+.vxe-tag.theme--warning.is--border {
+  border-color: var(--vxe-ui-status-warning-lighten-color);
+}
+.vxe-tag.theme--warning > .vxe-tag--close:hover {
+  background-color: var(--vxe-ui-status-warning-darken-color);
+}
+.vxe-tag.theme--danger {
+  color: var(--vxe-ui-status-danger-color);
+  background-color: var(--vxe-ui-status-danger-tinge-color);
+}
+.vxe-tag.theme--danger.is--border {
+  border-color: var(--vxe-ui-status-danger-lighten-color);
+}
+.vxe-tag.theme--danger > .vxe-tag--close:hover {
+  background-color: var(--vxe-ui-status-danger-darken-color);
+}
+.vxe-tag.theme--error {
+  color: var(--vxe-ui-status-error-color);
+  background-color: var(--vxe-ui-status-error-tinge-color);
+}
+.vxe-tag.theme--error.is--border {
+  border-color: var(--vxe-ui-status-error-lighten-color);
+}
+.vxe-tag.theme--error > .vxe-tag--close:hover {
+  background-color: var(--vxe-ui-status-error-darken-color);
+}
+.vxe-tag.is--border {
+  border: 1px solid var(--vxe-ui-font-lighten-color);
+}
+.vxe-tag.is--round {
+  border-radius: 1em;
+}
+.vxe-tag.size--medium {
+  font-size: var(--vxe-ui-font-size-medium);
+}
+.vxe-tag.size--small {
+  font-size: var(--vxe-ui-font-size-small);
+}
+.vxe-tag.size--mini {
+  font-size: var(--vxe-ui-font-size-mini);
+}
+.vxe-tag + .vxe-tag {
+  margin-left: 8px;
+}
+
+.vxe-tag--icon {
+  padding: 0 0.1em;
+}
+
+.vxe-tag--content {
+  padding: 0 0.1em;
+}
+
+.vxe-tag--icon > i,
+.vxe-tag--loading > i {
+  font-size: 1em;
+  line-height: 1em;
+}
+
+.vxe-tag--close,
+.vxe-tag--loading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1em 0;
+  border-radius: 50%;
+  width: 1.2em;
+  height: 1.2em;
+  line-height: 1em;
+}
+
+.vxe-tag--close {
+  transition: all 0.3s;
+}
+.vxe-tag--close:hover {
+  color: #fff;
+  background-color: var(--vxe-ui-font-darken-color);
+}
+.vxe-tag--close > i {
+  font-size: 0.7em;
+  line-height: 0.7em;
+}
+.vxe-tag--close {
+  cursor: pointer;
+}
+
+.vxe-tag--icon,
+.vxe-tag--close,
+.vxe-tag--loading {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.vxe-tag.size--medium {
+  font-size: var(--vxe-ui-font-size-medium);
+}
+.vxe-tag.size--small {
+  font-size: var(--vxe-ui-font-size-small);
+}
+.vxe-tag.size--mini {
+  font-size: var(--vxe-ui-font-size-mini);
+}

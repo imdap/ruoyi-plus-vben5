@@ -1,0 +1,14 @@
+{
+    "id": "companies",
+    "name": "Company names",
+    "readonly": true,
+    "description": "Company names dictionary.",
+    "dictionaryDefinitions": [
+        {
+            "name": "companies",
+            "path": "./dict/companies.txt",
+            "description": "Company names dictionary."
+        }
+    ],
+    "dictionaries": ["companies"]
+}

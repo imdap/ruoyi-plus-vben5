@@ -1,0 +1,9 @@
+import * as vue0 from "vue";
+import { Ref } from "vue";
+
+//#region src/_util/zindexContext.d.ts
+declare function useZIndexContext(): Ref<number | null | undefined, number | null | undefined>;
+declare function useZIndexProvider(zIndex: Ref<number | undefined>): void;
+declare const ZIndexProvider: vue0.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue0.PublicProps>;
+//#endregion
+export { ZIndexProvider, useZIndexContext, useZIndexProvider };

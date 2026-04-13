@@ -1,0 +1,22 @@
+import { AliasToken } from "../../theme/interface/alias.js";
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue773 from "vue";
+
+//#region src/grid/style/index.d.ts
+interface ComponentToken {}
+declare const prepareRowComponentToken: GetDefaultToken<'Grid'>;
+declare const prepareColComponentToken: GetDefaultToken<'Grid'>;
+declare const useRowStyle: (prefixCls: vue773.Ref<string>, rootCls?: vue773.Ref<string | undefined>) => readonly [vue773.Ref<string, string>, vue773.ComputedRef<string | undefined>];
+declare function getMediaSize(token: AliasToken): {
+  readonly xs: number;
+  readonly sm: number;
+  readonly md: number;
+  readonly lg: number;
+  readonly xl: number;
+  readonly xxl: number;
+  readonly xxxl: number;
+};
+declare const useColStyle: (prefixCls: vue773.Ref<string>, rootCls?: vue773.Ref<string | undefined>) => readonly [vue773.Ref<string, string>, vue773.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, getMediaSize, prepareColComponentToken, prepareRowComponentToken, useColStyle, useRowStyle };

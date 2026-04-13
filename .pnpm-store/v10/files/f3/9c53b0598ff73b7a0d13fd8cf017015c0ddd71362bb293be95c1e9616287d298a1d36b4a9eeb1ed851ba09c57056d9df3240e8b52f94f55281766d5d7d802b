@@ -1,0 +1,15 @@
+export declare const WANTED_LOCKFILE = "pnpm-lock.yaml";
+export declare const LOCKFILE_MAJOR_VERSION = "9";
+export declare const LOCKFILE_VERSION = "9.0";
+export declare const MANIFEST_BASE_NAMES: readonly ["package.json", "package.json5", "package.yaml"];
+export declare const ENGINE_NAME: string;
+export declare const LAYOUT_VERSION = 5;
+export declare const STORE_VERSION = "v10";
+export declare const WORKSPACE_MANIFEST_FILENAME = "pnpm-workspace.yaml";
+export declare const ABBREVIATED_META_DIR = "metadata-v1.3";
+export declare const FULL_META_DIR = "metadata-full-v1.3";
+export declare const FULL_FILTERED_META_DIR = "metadata-ff-v1.3";
+export declare const USEFUL_NON_ROOT_PNPM_FIELDS: readonly ["executionEnv"];
+export declare function getNodeBinLocationForCurrentOS(platform?: string): string;
+export declare function getDenoBinLocationForCurrentOS(platform?: string): string;
+export declare function getBunBinLocationForCurrentOS(platform?: string): string;

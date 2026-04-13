@@ -1,0 +1,50 @@
+{
+  "name": "@antdv-next/auto-import-resolver",
+  "type": "module",
+  "version": "1.0.7",
+  "description": "antdv-next auto import resolver based on unplugin-vue-components",
+  "homepage": "https://github.com/antdv-next/auto-import-resolver#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antdv-next/auto-import-resolver.git"
+  },
+  "bugs": {
+    "url": "https://github.com/antdv-next/auto-import-resolver/issues"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "peerDependencies": {
+    "unplugin-vue-components": ">=28.0.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^7.2.0",
+    "@types/node": "^25.0.10",
+    "@vue/tsconfig": "^0.8.1",
+    "bumpp": "^10.3.2",
+    "eslint": "^9.39.2",
+    "eslint-plugin-format": "^1.1.0",
+    "esno": "4.8.0",
+    "tsdown": "^0.20.1",
+    "typescript": "~5.9.3",
+    "unplugin-vue-components": "^28.0.0",
+    "vitest": "^4.0.17"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "prepublish": "pnpm build",
+    "bump": "bumpp"
+  }
+}

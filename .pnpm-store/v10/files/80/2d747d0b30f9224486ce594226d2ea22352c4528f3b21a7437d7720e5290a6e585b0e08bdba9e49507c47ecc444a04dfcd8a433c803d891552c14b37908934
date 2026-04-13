@@ -1,0 +1,1 @@
+.vxe-layout-footer{flex-shrink:0;background-color:var(--vxe-ui-layout-background-color);outline:0}.vxe-layout-footer.is--fixed{position:sticky;bottom:0;left:0;z-index:9}.vxe-layout-footer.align--center{text-align:center}

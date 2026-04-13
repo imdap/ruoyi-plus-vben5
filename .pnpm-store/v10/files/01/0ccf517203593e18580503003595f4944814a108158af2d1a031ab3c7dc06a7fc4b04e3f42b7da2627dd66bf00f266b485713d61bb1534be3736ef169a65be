@@ -1,0 +1,59 @@
+import { SeedToken } from "./interface/seeds.js";
+import { MapToken } from "./interface/maps/index.js";
+import { AliasToken } from "./interface/alias.js";
+import { OverrideToken } from "./interface/cssinjs-utils.js";
+import "./interface/index.js";
+import defaultTheme from "./themes/default/theme.js";
+import * as vue130 from "vue";
+import { InjectionKey, Ref } from "vue";
+import { Theme } from "@antdv-next/cssinjs";
+
+//#region src/theme/context.d.ts
+declare const defaultConfig: {
+  token: SeedToken;
+  override: {
+    override: SeedToken;
+  };
+  hashed: boolean;
+};
+type ComponentsToken = { [key in keyof OverrideToken]?: OverrideToken[key] & {
+  theme?: Theme<SeedToken, MapToken>;
+} };
+interface DesignTokenProviderProps {
+  token: Partial<AliasToken>;
+  theme?: Theme<SeedToken, MapToken>;
+  components?: ComponentsToken;
+  /** Just merge `token` & `override` at top to save perf */
+  override: {
+    override: Partial<AliasToken>;
+  } & ComponentsToken;
+  hashed?: string | boolean;
+  cssVar?: {
+    prefix?: string;
+    key?: string;
+  };
+  /**
+   * @descCN 开启零运行时模式，不会在运行时产生样式，需要手动引入 CSS 文件。
+   * @descEN Enable zero-runtime mode, which will not generate style at runtime, need to import additional CSS file.
+   * @default true
+   * @since 6.0.0
+   * @example
+   * ```tsx
+   * import { ConfigProvider } from 'antd';
+   * import 'antd/dist/antd.css';
+   *
+   * const Demo = () => (
+   *   <ConfigProvider theme={{ zeroRuntime: true }}>
+   *     <App />
+   *   </ConfigProvider>
+   *);
+   * ```
+   */
+  zeroRuntime?: boolean;
+}
+declare const DesignTokenContextKey: InjectionKey<Ref<DesignTokenProviderProps>>;
+declare function useDesignTokenProvide(props: Ref<DesignTokenProviderProps>): void;
+declare const DesignTokenProvider: vue130.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue130.PublicProps>;
+declare function useDesignToken(): Ref<DesignTokenProviderProps, DesignTokenProviderProps>;
+//#endregion
+export { ComponentsToken, DesignTokenContextKey, DesignTokenProvider, DesignTokenProviderProps, defaultConfig, defaultTheme, useDesignToken, useDesignTokenProvide };

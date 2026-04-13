@@ -1,0 +1,13 @@
+import { VueNode } from "../../_util/type.js";
+import { ConfirmDialogProps } from "../ConfirmDialog.js";
+import * as vue479 from "vue";
+
+//#region src/modal/components/ConfirmOkBtn.d.ts
+interface ConfirmOkBtnProps extends Pick<ConfirmDialogProps, 'close' | 'isSilent' | 'okType' | 'okButtonProps' | 'rootPrefixCls' | 'onConfirm' | 'onOk'> {
+  autoFocusButton?: false | 'ok' | 'cancel' | null;
+  okTextLocale?: VueNode;
+  onClose?: () => void;
+}
+declare const ConfirmOkBtn: vue479.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue479.PublicProps>;
+//#endregion
+export { ConfirmOkBtnProps, ConfirmOkBtn as default };

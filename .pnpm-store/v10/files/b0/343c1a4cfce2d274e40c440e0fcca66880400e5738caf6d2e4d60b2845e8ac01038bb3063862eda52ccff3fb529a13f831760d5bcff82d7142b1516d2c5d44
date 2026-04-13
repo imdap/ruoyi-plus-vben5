@@ -1,0 +1,22 @@
+import { AbstractCheckboxProps, CheckboxEmits, CheckboxSlots } from "../checkbox/Checkbox.js";
+import * as vue403 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/radio/radioButton.d.ts
+type RadioButtonProps = AbstractCheckboxProps;
+interface RadioButtonEmitsProps {
+  onChange?: CheckboxEmits['change'];
+  'onUpdate:checked'?: CheckboxEmits['update:checked'];
+  'onUpdate:value'?: CheckboxEmits['update:value'];
+  onMouseenter?: CheckboxEmits['mouseenter'];
+  onMouseleave?: CheckboxEmits['mouseleave'];
+  onKeypress?: CheckboxEmits['keypress'];
+  onKeydown?: CheckboxEmits['keydown'];
+  onFocus?: CheckboxEmits['focus'];
+  onBlur?: CheckboxEmits['blur'];
+  onClick?: CheckboxEmits['click'];
+}
+interface InternalRadioButtonProps extends RadioButtonProps, RadioButtonEmitsProps {}
+declare const RadioButton: vue403.DefineSetupFnComponent<InternalRadioButtonProps, CheckboxEmits, SlotsType<CheckboxSlots>, InternalRadioButtonProps, vue403.PublicProps>;
+//#endregion
+export { InternalRadioButtonProps, RadioButtonEmitsProps, RadioButtonProps, RadioButton as default };

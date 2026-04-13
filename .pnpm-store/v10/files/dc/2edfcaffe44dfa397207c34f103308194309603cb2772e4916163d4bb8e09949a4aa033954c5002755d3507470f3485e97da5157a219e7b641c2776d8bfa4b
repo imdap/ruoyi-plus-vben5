@@ -1,0 +1,39 @@
+{
+  "name": "@v-c/upload",
+  "type": "module",
+  "version": "1.0.0",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "dependencies": {
+    "@v-c/util": "^1.0.9"
+  },
+  "devDependencies": {
+    "@types/nise": "^1.4.5",
+    "nise": "^6.1.1",
+    "vue": "^3.5.22"
+  },
+  "scripts": {
+    "build": "vite build",
+    "prepublish": "pnpm build",
+    "patch": "bumpp --release patch",
+    "bump": "bumpp"
+  }
+}

@@ -1,0 +1,15 @@
+import { PaginationEmits, PaginationProps, PaginationSlots } from "./interface.js";
+import * as vue139 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/pagination/Pagination.d.ts
+interface InternalPaginationProps extends PaginationProps, PaginationEmitsProps {}
+interface PaginationEmitsProps {
+  onChange?: PaginationEmits['change'];
+  onShowSizeChange?: PaginationEmits['showSizeChange'];
+  'onUpdate:current'?: PaginationEmits['update:current'];
+  'onUpdate:pageSize'?: PaginationEmits['update:pageSize'];
+}
+declare const Pagination: vue139.DefineSetupFnComponent<InternalPaginationProps, PaginationEmits, SlotsType<PaginationSlots>, InternalPaginationProps, vue139.PublicProps>;
+//#endregion
+export { InternalPaginationProps, PaginationEmitsProps, Pagination as default };

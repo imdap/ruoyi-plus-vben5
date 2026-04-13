@@ -1,0 +1,28 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue463 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/message/style/index.d.ts
+/** Component only token. Which will handle additional calculation of alias token */
+interface ComponentToken {
+  /**
+   * @desc 提示框 z-index
+   * @descEN z-index of Message
+   */
+  zIndexPopup: number;
+  /**
+   * @desc 提示框背景色
+   * @descEN Background color of Message
+   */
+  contentBg: string;
+  /**
+   * @desc 提示框内边距
+   * @descEN Padding of Message
+   */
+  contentPadding: CSSProperties['padding'];
+}
+declare const prepareComponentToken: GetDefaultToken<'Message'>;
+declare const _default: (prefixCls: vue463.Ref<string>, rootCls?: vue463.Ref<string | undefined>) => readonly [vue463.Ref<string, string>, vue463.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

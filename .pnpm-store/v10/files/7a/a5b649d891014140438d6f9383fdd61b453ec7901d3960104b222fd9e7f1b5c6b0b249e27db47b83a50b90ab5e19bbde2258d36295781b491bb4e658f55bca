@@ -1,0 +1,24 @@
+import { Locale } from "../../locale/index.js";
+import { CopyConfig } from "../interface.js";
+import * as vue798 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/typography/Base/CopyBtn.d.ts
+interface CopyBtnProps extends Omit<CopyConfig, 'onCopy'>, CopyBtnEmitsProps {
+  prefixCls: string;
+  copied: boolean;
+  locale: Locale['Text'];
+  iconOnly: boolean;
+  loading: boolean;
+  className?: string;
+  style?: CSSProperties;
+}
+interface CopyBtnEmits {
+  copy: (e: MouseEvent) => void;
+}
+interface CopyBtnEmitsProps {
+  onCopy?: CopyBtnEmits['copy'];
+}
+declare const CopyBtn: vue798.DefineSetupFnComponent<CopyBtnProps, CopyBtnEmits, SlotsType<Record<string, never>>, CopyBtnProps, vue798.PublicProps>;
+//#endregion
+export { CopyBtnEmits, CopyBtnEmitsProps, CopyBtnProps, CopyBtn as default };

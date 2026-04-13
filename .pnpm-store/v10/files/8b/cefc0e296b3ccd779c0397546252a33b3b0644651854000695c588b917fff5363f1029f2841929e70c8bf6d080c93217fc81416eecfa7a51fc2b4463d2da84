@@ -1,0 +1,165 @@
+{
+  "name": "unplugin-dts",
+  "version": "1.0.0-beta.6",
+  "type": "module",
+  "license": "MIT",
+  "author": "qmhc",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "default": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./esbuild": {
+      "import": {
+        "types": "./dist/esbuild.d.mts",
+        "default": "./dist/esbuild.mjs"
+      },
+      "default": {
+        "types": "./dist/esbuild.d.cts",
+        "default": "./dist/esbuild.cjs"
+      }
+    },
+    "./rolldown": {
+      "import": {
+        "types": "./dist/rolldown.d.mts",
+        "default": "./dist/rolldown.mjs"
+      },
+      "default": {
+        "types": "./dist/rolldown.d.cts",
+        "default": "./dist/rolldown.cjs"
+      }
+    },
+    "./rollup": {
+      "import": {
+        "types": "./dist/rollup.d.mts",
+        "default": "./dist/rollup.mjs"
+      },
+      "default": {
+        "types": "./dist/rollup.d.cts",
+        "default": "./dist/rollup.cjs"
+      }
+    },
+    "./rspack": {
+      "import": {
+        "types": "./dist/rspack.d.mts",
+        "default": "./dist/rspack.mjs"
+      },
+      "default": {
+        "types": "./dist/rspack.d.cts",
+        "default": "./dist/rspack.cjs"
+      }
+    },
+    "./vite": {
+      "import": {
+        "types": "./dist/vite.d.mts",
+        "default": "./dist/vite.mjs"
+      },
+      "default": {
+        "types": "./dist/vite.d.cts",
+        "default": "./dist/vite.cjs"
+      }
+    },
+    "./webpack": {
+      "import": {
+        "types": "./dist/webpack.d.mts",
+        "default": "./dist/webpack.mjs"
+      },
+      "default": {
+        "types": "./dist/webpack.d.cts",
+        "default": "./dist/webpack.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "unplugin",
+    "esbuild",
+    "rolldown",
+    "rollup",
+    "rspack",
+    "vite",
+    "webpack",
+    "ts",
+    "dts",
+    "typescript",
+    "tsc",
+    "vue-tsc",
+    "volar",
+    "vue",
+    "svelte"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qmhc/vite-plugin-dts.git",
+    "directory": "packages/unplugin-dts"
+  },
+  "bugs": {
+    "url": "https://github.com/qmhc/vite-plugin-dts/issues"
+  },
+  "dependencies": {
+    "@rollup/pluginutils": "^5.1.4",
+    "@volar/typescript": "^2.4.17",
+    "compare-versions": "^6.1.1",
+    "debug": "^4.4.0",
+    "kolorist": "^1.8.0",
+    "local-pkg": "^1.1.1",
+    "magic-string": "^0.30.17",
+    "unplugin": "^2.3.2"
+  },
+  "peerDependencies": {
+    "@microsoft/api-extractor": ">=7",
+    "@rspack/core": "^1",
+    "@vue/language-core": "~3.0.1",
+    "esbuild": "*",
+    "rolldown": "*",
+    "rollup": ">=3",
+    "typescript": ">=4",
+    "vite": ">=3",
+    "webpack": "^4 || ^5"
+  },
+  "peerDependenciesMeta": {
+    "@microsoft/api-extractor": {
+      "optional": true
+    },
+    "@rspack/core": {
+      "optional": true
+    },
+    "@vue/language-core": {
+      "optional": true
+    },
+    "esbuild": {
+      "optional": true
+    },
+    "rolldown": {
+      "optional": true
+    },
+    "rollup": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    },
+    "webpack": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path .",
+    "dev": "unbuild --stub",
+    "test": "vitest run",
+    "test:dev": "vitest"
+  }
+}

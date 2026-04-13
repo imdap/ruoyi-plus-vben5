@@ -1,0 +1,115 @@
+{
+  "name": "@intlify/unplugin-vue-i18n",
+  "version": "11.0.7",
+  "description": "unplugin for Vue I18n",
+  "author": {
+    "name": "kazuya kawaguchi",
+    "email": "kawakazu80@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/intlify/bundle-tools/issues"
+  },
+  "peerDependencies": {
+    "petite-vue-i18n": "*",
+    "vue": "^3.2.25",
+    "vue-i18n": "*"
+  },
+  "peerDependenciesMeta": {
+    "petite-vue-i18n": {
+      "optional": true
+    },
+    "vue-i18n": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@eslint-community/eslint-utils": "^4.4.0",
+    "@intlify/shared": "^11.1.12",
+    "@intlify/vue-i18n-extensions": "^8.0.0",
+    "@rollup/pluginutils": "^5.1.0",
+    "@typescript-eslint/scope-manager": "^8.13.0",
+    "@typescript-eslint/typescript-estree": "^8.13.0",
+    "debug": "^4.3.3",
+    "pathe": "^2.0.3",
+    "fast-glob": "^3.2.12",
+    "picocolors": "^1.0.0",
+    "unplugin": "^2.3.4",
+    "vue": "^3.5.21",
+    "@intlify/bundle-utils": "11.0.7"
+  },
+  "devDependencies": {
+    "@intlify/core-base": "next",
+    "@types/debug": "^4.1.5",
+    "@types/jsdom": "^16.2.5",
+    "@types/memory-fs": "^0.3.2",
+    "@types/node": "^22.18.4",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "jsdom": "^25.0.1",
+    "memory-fs": "^0.5.0",
+    "source-map-js": "^1.2.1",
+    "ts-loader": "^9.5.4",
+    "unbuild": "^3.6.1",
+    "vite": "^6.3.6",
+    "rollup-vite": "npm:vite@^6.3.5",
+    "vue-loader": "^17.4.2",
+    "webpack": "^5.101.3",
+    "webpack-merge": "^5.9.0"
+  },
+  "engines": {
+    "node": ">= 20"
+  },
+  "files": [
+    "lib",
+    "*.d.ts"
+  ],
+  "homepage": "https://github.com/intlify/bundle-tools/blob/main/packages/unplugin-vue-i18n/README.md",
+  "keywords": [
+    "i18n",
+    "plugin",
+    "unplugin",
+    "transform",
+    "webpack",
+    "vite",
+    "vue",
+    "vue-i18n"
+  ],
+  "license": "MIT",
+  "main": "lib/index.cjs",
+  "module": "./lib/index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
+    },
+    "./vite": {
+      "import": "./lib/vite.mjs",
+      "require": "./lib/vite.cjs"
+    },
+    "./webpack": {
+      "import": "./lib/webpack.mjs",
+      "require": "./lib/webpack.cjs"
+    },
+    "./types": {
+      "import": {
+        "types": "./lib/types.d.mts"
+      },
+      "require": {
+        "types": "./lib/types.d.cts"
+      }
+    },
+    "./messages": {
+      "types": "./messages.d.ts"
+    },
+    "./lib/*": "./lib/*",
+    "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/intlify/bundle-tools.git",
+    "directory": "packages/unplugin-vue-i18n"
+  },
+  "scripts": {
+    "build": "unbuild"
+  }
+}

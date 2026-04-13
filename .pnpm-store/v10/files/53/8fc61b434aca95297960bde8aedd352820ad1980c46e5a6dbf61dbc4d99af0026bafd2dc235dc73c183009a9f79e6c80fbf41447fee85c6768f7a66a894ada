@@ -1,0 +1,32 @@
+{
+  "name": "@alova/shared",
+  "version": "1.3.2",
+  "type": "module",
+  "author": "Scott Hu",
+  "main": "dist/alova-shared.common.cjs",
+  "module": "dist/alova-shared.esm.js",
+  "types": "typings/alova-shared.d.ts",
+  "license": "MIT",
+  "homepage": "https://alova.js.org",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alovajs/alova.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alovajs/alova/issues"
+  },
+  "files": [
+    "dist",
+    "typings"
+  ],
+  "devDependencies": {
+    "@alova/scripts": "1.1.1"
+  },
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "test": "vitest run",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "build": "pnpm run clean && alova-scripts build"
+  }
+}

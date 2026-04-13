@@ -1,0 +1,42 @@
+{
+  "name": "@v-c/tree",
+  "type": "module",
+  "version": "1.0.5",
+  "description": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "",
+  "license": "MIT",
+  "keywords": [
+    "trigger"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "dependencies": {
+    "@v-c/util": "^1.0.18",
+    "@v-c/virtual-list": "^1.0.6"
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest",
+    "prepublish": "pnpm build",
+    "patch": "bumpp --release patch",
+    "bump": "bumpp"
+  }
+}

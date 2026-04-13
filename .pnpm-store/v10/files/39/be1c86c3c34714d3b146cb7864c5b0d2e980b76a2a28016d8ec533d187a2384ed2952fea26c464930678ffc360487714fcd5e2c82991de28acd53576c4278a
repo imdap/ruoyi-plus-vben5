@@ -1,0 +1,46 @@
+import { VueNode } from "../_util/type.js";
+import { InputEmits, InputProps, InputRef } from "./Input.js";
+import * as vue1006 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/input/Password.d.ts
+type VisibilityToggle = boolean | {
+  visible?: boolean;
+  onVisibleChange?: (visible: boolean) => void;
+};
+type PasswordAction = 'click' | 'hover';
+interface PasswordProps extends Omit<InputProps, 'type'>, PasswordEmitsProps {
+  inputPrefixCls?: string;
+  action?: PasswordAction;
+  visibilityToggle?: VisibilityToggle;
+  suffix?: VueNode;
+  iconRender?: (params: {
+    visible: boolean;
+  }) => any;
+  iconVisible?: boolean;
+}
+interface PasswordEmits extends InputEmits {
+  'update:iconVisible': (visible: boolean) => void;
+}
+interface PasswordEmitsProps {
+  'onUpdate:iconVisible'?: PasswordEmits['update:iconVisible'];
+}
+interface InputPasswordRef {
+  focus: (...args: Parameters<NonNullable<InputRef['focus']>>) => void;
+  blur: () => void;
+  input: HTMLInputElement | null;
+}
+interface PasswordSlots {
+  prefix?: () => any;
+  suffix?: () => any;
+  addonBefore?: () => any;
+  addonAfter?: () => any;
+  clearIcon?: () => any;
+  default?: () => any;
+  iconRender?: (params: {
+    visible: boolean;
+  }) => any;
+}
+declare const InternalPassword: vue1006.DefineSetupFnComponent<PasswordProps, PasswordEmits, SlotsType<PasswordSlots>, PasswordProps, vue1006.PublicProps>;
+//#endregion
+export { InputPasswordRef, PasswordEmits, PasswordEmitsProps, PasswordProps, PasswordSlots, InternalPassword as default };

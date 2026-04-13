@@ -1,0 +1,23 @@
+import { EmptyEmit } from "../_util/type.js";
+import { AggregationColor } from "./color.js";
+import { ColorPickerProps, ModeType } from "./interface.js";
+import * as vue266 from "vue";
+
+//#region src/color-picker/ColorPickerPanel.d.ts
+interface ColorPickerPanelProps extends ColorPickerProps {
+  mode: ModeType;
+  onModeChange: (mode: ModeType) => void;
+  modeOptions: any[];
+  value: AggregationColor;
+  onChange: (value?: AggregationColor, fromPicker?: boolean) => void;
+  onChangeComplete?: (value: AggregationColor) => void;
+  activeIndex: number;
+  onActive: (index: number) => void;
+  gradientDragging: boolean;
+  onGradientDragging: (dragging: boolean) => void;
+  onClear?: () => void;
+  panelRender?: ColorPickerProps['panelRender'];
+}
+declare const _default: vue266.DefineSetupFnComponent<ColorPickerPanelProps, EmptyEmit, {}, ColorPickerPanelProps, vue266.PublicProps>;
+//#endregion
+export { ColorPickerPanelProps, _default as default };

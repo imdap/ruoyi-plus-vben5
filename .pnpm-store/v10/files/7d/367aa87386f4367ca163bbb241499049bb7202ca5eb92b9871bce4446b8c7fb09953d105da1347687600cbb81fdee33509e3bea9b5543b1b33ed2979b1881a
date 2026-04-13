@@ -1,0 +1,17 @@
+import babel from '@babel/core';
+import babelPresetTs from '@babel/preset-typescript';
+import babelPluginSyntaxImportAttributes from '@babel/plugin-syntax-import-attributes';
+import { realpath } from 'node:fs';
+import { pathToFileURL } from 'node:url';
+import { s as setPathFns, a as setBabel, b as setBabel$1 } from './generator-88acda98.js';
+export { G as Generator, h as analyzeHtml, c as clearCache, f as fetch, e as getDefaultProviders, d as getPackageBase, g as getPackageConfig, l as lookup, p as parseUrlPkg, i as setFetch } from './generator-88acda98.js';
+import 'sver';
+import '#fetch';
+import '@jspm/import-map';
+import 'es-module-lexer/js';
+import 'es-module-lexer';
+import 'minimatch';
+
+setBabel(babel);
+setBabel$1(babel, babelPresetTs, babelPluginSyntaxImportAttributes);
+setPathFns(realpath, pathToFileURL);

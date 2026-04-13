@@ -1,0 +1,37 @@
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue457 from "vue";
+
+//#region src/float-button/style/index.d.ts
+/** Component only token. Which will handle additional calculation of alias token */
+type ComponentToken = object;
+/**
+ * @desc FloatButton 组件的 Token
+ * @descEN Token for FloatButton component
+ */
+type FloatButtonToken = FullToken<'FloatButton'> & {
+  /**
+   * @desc FloatButton 尺寸
+   * @descEN Size of FloatButton
+   */
+  floatButtonSize: number;
+  /**
+   * @desc FloatButton 图标尺寸
+   * @descEN Icon size of FloatButton
+   */
+  floatButtonIconSize: number | string;
+  /**
+   * @desc FloatButton 底部内边距
+   * @descEN Bottom inset of FloatButton
+   */
+  floatButtonInsetBlockEnd: number;
+  /**
+   * @desc FloatButton 右侧内边距
+   * @descEN Right inset of FloatButton
+   */
+  floatButtonInsetInlineEnd: number;
+};
+declare const prepareComponentToken: GetDefaultToken<'FloatButton'>;
+declare const _default: (prefixCls: vue457.Ref<string>, rootCls?: vue457.Ref<string | undefined>) => readonly [vue457.Ref<string, string>, vue457.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, FloatButtonToken, _default as default, prepareComponentToken };

@@ -1,0 +1,247 @@
+@use "sass:list";
+@use '../helpers/baseMixin.scss';
+@use '../helpers/placement.scss';
+
+.vxe-date-picker--readonly {
+  color: var(--vxe-ui-font-color);
+  display: inline-flex;
+}
+.vxe-date-picker--wrapper {
+  flex-grow: 1;
+  overflow: hidden;
+}
+.vxe-date-picker--inner {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: 0;
+  margin: 0;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  padding: 0 0.5em;
+  color: var(--vxe-ui-font-color);
+  border: 0;
+  border-radius: var(--vxe-ui-base-border-radius);
+  background-color: var(--vxe-ui-layout-background-color);
+  box-shadow: none;
+  &::placeholder {
+    color: var(--vxe-ui-input-placeholder-color);
+  }
+  &::-webkit-autofill {
+    background-color: var(--vxe-ui-layout-background-color);
+  }
+  &[disabled] {
+    cursor: not-allowed;
+    color: var(--vxe-ui-font-disabled-color);
+    background-color: var(--vxe-ui-input-disabled-background-color);
+  }
+}
+
+// 禁用
+.vxe-date-picker {
+  &.is--disabled {
+    background-color: var(--vxe-ui-input-disabled-background-color);
+    .vxe-date-picker--prefix,
+    .vxe-date-picker--suffix,
+    .vxe-date-picker--clear-icon,
+    .vxe-date-picker--control-icon {
+      cursor: not-allowed;
+    }
+    .vxe-date-picker--prefix,
+    .vxe-date-picker--suffix {
+      background-color: var(--vxe-ui-input-disabled-background-color);
+    }
+  }
+}
+
+// 图标
+.vxe-date-picker {
+  display: inline-flex;
+  flex-direction: row;
+  position: relative;
+  border-radius: var(--vxe-ui-base-border-radius);
+  width: 180px;
+  border: 1px solid var(--vxe-ui-input-border-color);
+  &.is--active {
+    border: 1px solid var(--vxe-ui-font-primary-color);
+  }
+  &.show--clear {
+    &:hover {
+      .vxe-date-picker--clear-icon {
+        display: block;
+      }
+    }
+  }
+}
+.vxe-date-picker--prefix,
+.vxe-date-picker--suffix {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  background-color: var(--vxe-ui-layout-background-color);
+}
+.vxe-date-picker--prefix-icon {
+  padding-left: 0.5em;
+}
+.vxe-date-picker--clear-icon,
+.vxe-date-picker--control-icon,
+.vxe-date-picker--suffix-icon {
+  padding-right: 0.5em;
+}
+.vxe-date-picker--clear-icon,
+.vxe-date-picker--control-icon {
+  height: 100%;
+  color: var(--vxe-ui-input-placeholder-color);
+  cursor: pointer;
+}
+.vxe-date-picker--clear-icon {
+  display: none;
+  &:hover {
+    color: var(--vxe-ui-font-color);
+  }
+  &:active {
+    color: var(--vxe-ui-font-primary-color);
+  }
+}
+
+.vxe-date-picker--panel {
+  @include placement.createPlacementPanel();
+}
+
+.vxe-date-picker--panel {
+  pointer-events: none;
+  &.show--top,
+  &.show--right {
+    .vxe-date-picker--layout-wrapper,
+    .vxe-date-picker--layout-datetime-layout-wrapper {
+      border-top-right-radius: 0;
+    }
+  }
+  &.show--right,
+  &.show--bottom {
+    .vxe-date-picker--layout-wrapper,
+    .vxe-date-picker--layout-datetime-layout-wrapper {
+      border-bottom-right-radius: 0;
+    }
+  }
+  &.show--bottom,
+  &.show--left {
+    .vxe-date-picker--layout-wrapper,
+    .vxe-date-picker--layout-datetime-layout-wrapper {
+      border-bottom-left-radius: 0;
+    }
+  }
+  &.show--top,
+  &.show--left {
+    .vxe-date-picker--layout-wrapper,
+    .vxe-date-picker--layout-datetime-layout-wrapper {
+      border-top-left-radius: 0;
+    }
+  }
+  &.show--top {
+    .vxe-date-picker--layout-wrapper,
+    .vxe-date-picker--layout-datetime-layout-wrapper {
+      border-top-width: 1px;
+    }
+  }
+  &.show--bottom {
+    .vxe-date-picker--layout-wrapper,
+    .vxe-date-picker--layout-datetime-layout-wrapper {
+      border-bottom-width: 1px;
+    }
+  }
+  &.show--left {
+    .vxe-date-picker--layout-wrapper,
+    .vxe-date-picker--layout-datetime-layout-wrapper {
+      border-left-width: 1px;
+    }
+  }
+  &.show--right {
+    .vxe-date-picker--layout-wrapper,
+    .vxe-date-picker--layout-datetime-layout-wrapper {
+      border-right-width: 1px;
+    }
+  }
+}
+
+.vxe-date-picker--layout-all-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  pointer-events: auto;
+  background-color: var(--vxe-ui-layout-background-color);
+  border: 1px solid var(--vxe-ui-base-popup-border-color);
+  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.1);
+  border-radius: var(--vxe-ui-base-border-radius);
+}
+.vxe-date-picker--layout-body-layout-wrapper {
+  display: flex;
+  flex-direction: row;
+  white-space: nowrap;
+}
+.vxe-date-picker--layout-body-content-wrapper,
+.vxe-date-picker--layout-body-layout-wrapper,
+.vxe-date-picker--layout-body-wrapper {
+  flex-grow: 1;
+}
+.vxe-date-picker--layout-body-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+.vxe-date-picker--layout-top-wrapper,
+.vxe-date-picker--layout-bottom-wrapper,
+.vxe-date-picker--layout-left-wrapper,
+.vxe-date-picker--layout-right-wrapper,
+.vxe-date-picker--layout-header-wrapper,
+.vxe-date-picker--layout-footer-wrapper {
+  flex-shrink: 0;
+}
+
+.vxe-date-picker--layout-top-wrapper {
+  border-bottom: 1px solid var(--vxe-ui-base-popup-border-color);
+}
+.vxe-date-picker--layout-bottom-wrapper {
+  border-top: 1px solid var(--vxe-ui-base-popup-border-color);
+}
+.vxe-date-picker--layout-left-wrapper {
+  border-right: 1px solid var(--vxe-ui-base-popup-border-color);
+}
+.vxe-date-picker--layout-right-wrapper {
+  border-left: 1px solid var(--vxe-ui-base-popup-border-color);
+}
+
+.vxe-date-picker--layout-footer-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+.vxe-date-picker--layout-footer-custom {
+  flex-grow: 1;
+}
+.vxe-date-picker--layout-footer-btns {
+  flex-shrink: 0;
+  padding: 0 0.8em 0.8em 0.8em;
+  display: flex;
+  align-items: center;
+}
+
+.vxe-date-picker {
+  font-size: var(--vxe-ui-font-size-default);
+  height: var(--vxe-ui-input-height-default);
+  line-height: var(--vxe-ui-input-height-default);
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+    height: var(--vxe-ui-input-height-medium);
+    line-height: var(--vxe-ui-input-height-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+    height: var(--vxe-ui-input-height-small);
+    line-height: var(--vxe-ui-input-height-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+    height: var(--vxe-ui-input-height-mini);
+    line-height: var(--vxe-ui-input-height-mini);
+  }
+}

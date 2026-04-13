@@ -1,0 +1,17 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { SubMenuType } from "./interface.js";
+import * as vue1070 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/menu/SubMenu.d.ts
+interface SubMenuProps extends Omit<SubMenuType, 'key' | 'label' | 'children'> {
+  title?: VueNode;
+}
+interface SubMenuSlots {
+  title: () => any;
+  icon: () => any;
+  default: () => any;
+}
+declare const SubMenu: vue1070.DefineSetupFnComponent<SubMenuProps, EmptyEmit, SlotsType<SubMenuSlots>, SubMenuProps, vue1070.PublicProps>;
+//#endregion
+export { SubMenuProps, SubMenuSlots, SubMenu as default };

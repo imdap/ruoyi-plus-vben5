@@ -1,0 +1,67 @@
+{
+  "name": "vite-plugin-lazy-import",
+  "version": "1.0.7",
+  "description": "Used for vite Lazy import js and style",
+  "scripts": {
+    "update": "npm install --legacy-peer-deps",
+    "lib": "gulp build_lazy"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "typings": "types/index.d.ts",
+  "dependencies": {
+    "rollup": "^4.18.0",
+    "@rollup/pluginutils": "^5.1.0",
+    "es-module-lexer": "^1.5.3",
+    "xe-utils": "^3.5.26"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/runtime": "^7.4.4",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
+    "del": "^6.0.0",
+    "eslint": "^7.13.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-config-standard": "^16.0.1",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.2",
+    "eslint-plugin-typescript": "^0.14.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-replace": "^1.1.3",
+    "gulp-typescript": "^5.0.1",
+    "gulp-uglify": "^3.0.2",
+    "typescript": "^4.6.4",
+    "vite": "^5.2.12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/x-extends/vite-plugin-lazy-import.git"
+  },
+  "keywords": [
+    "vite",
+    "import"
+  ],
+  "author": {
+    "name": "Xu Liangzhan",
+    "email": "xu_liangzhan@163.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/x-extends/vite-plugin-lazy-import/issues"
+  },
+  "homepage": "https://github.com/x-extends/vite-plugin-lazy-import/"
+}

@@ -1,0 +1,131 @@
+@use '../../helpers/baseMixin.scss';
+
+.vxe-cell--filter {
+  padding: 0 0.1em 0 0.2em;
+  text-align: center;
+  vertical-align: middle;
+  display: inline-block;
+  line-height: 0;
+  &.col--filter {
+    .vxe-filter--btn {
+      color: var(--vxe-ui-font-color);
+    }
+  }
+  .vxe-filter--btn {
+    color: var(--vxe-ui-table-column-icon-border-color);
+    cursor: pointer;
+    &:hover {
+      color: var(--vxe-ui-font-color);
+    }
+  }
+}
+.is--filter-active {
+  .vxe-cell--filter {
+    .vxe-filter--btn {
+      color: var(--vxe-ui-font-primary-color);
+    }
+  }
+}
+
+/*筛选容器*/
+.vxe-table--filter-wrapper {
+  display: none;
+  position: absolute;
+  top: 0;
+  min-width: 100px;
+  font-size: var(--vxe-ui-font-size-default);
+  border-radius: var(--vxe-ui-border-radius);
+  background-color: var(--vxe-ui-layout-background-color);
+  border: 1px solid var(--vxe-ui-base-popup-border-color);
+  color: var(--vxe-ui-font-color);
+  box-shadow: var(--vxe-ui-base-popup-box-shadow);
+  z-index: 15;
+  &:not(.is--multiple) {
+    .vxe-table--filter-header,
+    .vxe-table--filter-body {
+      text-align: center;
+    }
+  }
+  &.is--active {
+    display: block;
+  }
+  .vxe-table--filter-header,
+  .vxe-table--filter-body {
+    & > li {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 360px;
+      padding: 0.25em 0.8em;
+      cursor: pointer;
+      &.is--checked {
+        color: var(--vxe-ui-font-primary-color);
+      }
+      &:hover {
+        background-color: var(--vxe-ui-table-row-hover-background-color);
+      }
+    }
+  }
+  .vxe-table--filter-header {
+    padding-top: 0.2em;
+  }
+  .vxe-table--filter-body {
+    max-height: 200px;
+    padding-bottom: 0.2em;
+  }
+  & > ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    outline: 0;
+    overflow: auto;
+    user-select: none;
+  }
+  &.is--multiple {
+    & > ul {
+      & > li {
+        padding: 0.25em 0.8em 0.25em 1em;
+      }
+    }
+  }
+  .vxe-table--filter-footer {
+    border-top: 1px solid var(--vxe-ui-base-popup-border-color);
+    padding: 0.6em;
+    user-select: none;
+    button {
+      background-color: transparent;
+      padding: 0 0.4em;
+      border: 0;
+      color: var(--vxe-ui-font-color);
+      cursor: pointer;
+      &:focus {
+        outline: none;
+      }
+      &:hover {
+        color: var(--vxe-ui-font-primary-color);
+      }
+      &.is--disabled {
+        color: var(--vxe-ui-font-disabled-color);
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+.vxe-table--filter-option {
+  @include baseMixin.createCheckboxIcon();
+}
+
+
+
+.vxe-table--filter-wrapper {
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}

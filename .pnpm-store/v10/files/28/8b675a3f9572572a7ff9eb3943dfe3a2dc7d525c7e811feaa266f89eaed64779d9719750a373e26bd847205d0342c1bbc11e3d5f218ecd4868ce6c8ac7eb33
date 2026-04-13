@@ -1,0 +1,1 @@
+{"version":3,"file":"CSSConditionRule.d.ts","sourceRoot":"","sources":["../../../src/css/rules/CSSConditionRule.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,cAAc,MAAM,yBAAyB,CAAC;AAC1D,OAAO,eAAe,MAAM,sBAAsB,CAAC;AAEnD;;;;GAIG;AACH,MAAM,CAAC,OAAO,CAAC,QAAQ,OAAO,gBAAiB,SAAQ,eAAe;IAC9D,CAAC,cAAc,CAAC,aAAa,CAAC,SAAM;IAE3C;;;;OAIG;IACH,IAAW,aAAa,IAAI,MAAM,CAEjC;CACD"}

@@ -1,0 +1,216 @@
+@use "sass:map";
+@use "sass:list";
+
+$segmentedThemeList: (
+  (
+    name: "primary",
+    activeBgColor: var(--vxe-ui-font-primary-color),
+    activeColor: #fff,
+    bgColor: var(--vxe-ui-font-primary-tinge-color),
+    disabledColor: var(--vxe-ui-font-primary-disabled-color)
+  ),
+  (
+    name: "success",
+    activeBgColor: var(--vxe-ui-status-success-color),
+    activeColor: #fff,
+    bgColor: var(--vxe-ui-status-success-tinge-color),
+    disabledColor: var(--vxe-ui-status-success-disabled-color)
+  ),
+  (
+    name: "info",
+    activeBgColor: var(--vxe-ui-status-info-color),
+    activeColor: #fff,
+    bgColor: var(--vxe-ui-status-info-tinge-color),
+    disabledColor: var(--vxe-ui-status-info-disabled-color)
+  ),
+  (
+    name: "warning",
+    activeBgColor: var(--vxe-ui-status-warning-color),
+    activeColor: #fff,
+    bgColor: var(--vxe-ui-status-warning-tinge-color),
+    disabledColor: var(--vxe-ui-status-warning-disabled-color)
+  ),
+  (
+    name: "danger",
+    activeBgColor: var(--vxe-ui-status-danger-color),
+    activeColor: #fff,
+    bgColor: var(--vxe-ui-status-danger-tinge-color),
+    disabledColor: var(--vxe-ui-status-danger-disabled-color)
+  ),
+  (
+    name: "error",
+    activeBgColor: var(--vxe-ui-status-error-color),
+    activeColor: #fff,
+    bgColor: var(--vxe-ui-status-error-tinge-color),
+    disabledColor: var(--vxe-ui-status-error-disabled-color)
+  )
+);
+
+.vxe-segmented {
+  display: block;
+  color: var(--vxe-ui-font-color);
+  font-family: var(--vxe-ui-font-family);
+}
+
+.vxe-segmented--group {
+  display: inline-flex;
+  position: relative;
+  background-color: var(--vxe-ui-segmented-item-background-color);
+}
+.vxe-segmented--inner {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  white-space: nowrap;
+}
+.vxe-segmented--item {
+  display: block;
+  padding: 0 0.8em;
+  margin: 0;
+  &:not(.is--disabled) {
+    cursor: pointer;
+  }
+}
+.vxe-segmented--input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 0;
+  appearance: none;
+  pointer-events: none;
+}
+.vxe-segmented--content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.4em 0;
+  transition: color 0.3s;
+}
+.vxe-segmented--label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vxe-segmented--selected {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+.vxe-segmented {
+  &.type--round {
+    .vxe-segmented--group {
+      border-radius: 1em;
+    }
+    .vxe-segmented--selected {
+      border-radius: 1em;
+    }
+    .vxe-segmented--item {
+      &:hover {
+        border-radius: 1em;
+      }
+    }
+  }
+  &.type--default,
+  &.type--round {
+    .vxe-segmented--content {
+      min-height: 2.2em;
+      height: 100%;
+    }
+    .vxe-segmented--item {
+      &:hover {
+        background-color: var(--vxe-ui-segmented-item-hover-background-color);
+      }
+      &.is--checked {
+        .vxe-segmented--content {
+          color: #fff;
+        }
+      }
+    }
+    .vxe-segmented--selected {
+      background-color: var(--vxe-ui-font-primary-color);
+    }
+    @for $index from 0 to list.length($segmentedThemeList) {
+      $item: list.nth($segmentedThemeList, $index + 1);
+      &.theme--#{map.get($item, name)} {
+        .vxe-segmented--group {
+          background-color: map.get($item, bgColor);
+        }
+        .vxe-segmented--selected {
+          background-color: map.get($item, activeBgColor);
+        }
+        .vxe-segmented--item {
+          &.is--checked {
+            color: map.get($item, activeColor);
+          }
+        }
+      }
+    }
+  }
+  &.type--default,
+  &.type--inside {
+    .vxe-segmented--group {
+      border-radius: var(--vxe-ui-base-border-radius);
+    }
+    .vxe-segmented--selected {
+      border-radius: var(--vxe-ui-base-border-radius);
+    }
+  }
+  &.type--inside {
+    .vxe-segmented--content {
+      min-height: 1.8em;
+    }
+    .vxe-segmented--inner {
+      padding: 0.2em;
+    }
+    .vxe-segmented--item {
+      &:hover {
+        .vxe-segmented--content {
+          color: var(--vxe-ui-font-primary-color);
+        }
+      }
+      &.is--checked {
+        .vxe-segmented--content {
+          color: var(--vxe-ui-font-primary-color);
+        }
+      }
+    }
+    .vxe-segmented--selected {
+      top: 0.2em;
+      height: calc(100% - 0.4em);
+      background-color: #fff;
+    }
+    @for $index from 0 to list.length($segmentedThemeList) {
+      $item: list.nth($segmentedThemeList, $index + 1);
+      &.theme--#{map.get($item, name)} {
+        .vxe-segmented--item {
+          &.is--checked {
+            color: map.get($item, bgColor);
+          }
+        }
+      }
+    }
+  }
+}
+
+.vxe-segmented {
+  font-size: var(--vxe-ui-font-size-default);
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}

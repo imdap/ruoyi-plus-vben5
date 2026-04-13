@@ -1,0 +1,117 @@
+import { AnyObject } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { PaginationSemanticClassNames, PaginationSemanticStyles } from "../pagination/interface.js";
+import { ColumnType, ColumnsType, FilterDropdownProps, FilterValue, GetPopupContainer, Key, SortOrder, SorterResult, SorterTooltipProps, TableCurrentDataSource, TableLocale, TablePaginationConfig, TableRowSelection } from "./interface.js";
+import { SpinProps } from "../spin/index.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue117 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { TableProps as TableProps$1 } from "@v-c/table";
+
+//#region src/table/InternalTable.d.ts
+type TableSemanticName = keyof TableSemanticClassNames & keyof TableSemanticStyles;
+interface TableSemanticClassNames {
+  root?: string;
+  section?: string;
+  title?: string;
+  footer?: string;
+  content?: string;
+}
+interface TableSemanticStyles {
+  root?: CSSProperties;
+  section?: CSSProperties;
+  title?: CSSProperties;
+  footer?: CSSProperties;
+  content?: CSSProperties;
+}
+type ComponentsSemantic = keyof ComponentsSemanticClassNames & keyof ComponentsSemanticStyles;
+interface ComponentsSemanticClassNames {
+  wrapper?: string;
+  cell?: string;
+  row?: string;
+}
+interface ComponentsSemanticStyles {
+  wrapper?: CSSProperties;
+  cell?: CSSProperties;
+  row?: CSSProperties;
+}
+type TableClassNamesType<RecordType = AnyObject> = SemanticClassNamesType<TableProps<RecordType>, TableSemanticClassNames, {
+  body?: ComponentsSemanticClassNames;
+  header?: ComponentsSemanticClassNames;
+  pagination?: PaginationSemanticClassNames;
+}>;
+type TableStylesType<RecordType = AnyObject> = SemanticStylesType<TableProps<RecordType>, TableSemanticStyles, {
+  body?: ComponentsSemanticStyles;
+  header?: ComponentsSemanticStyles;
+  pagination?: PaginationSemanticStyles;
+}>;
+interface TableProps<RecordType = AnyObject> extends ComponentBaseProps, Omit<TableProps$1<RecordType>, 'transformColumns' | 'internalHooks' | 'internalRefs' | 'data' | 'columns' | 'scroll' | 'emptyText' | 'className' | 'style' | 'classNames' | 'styles' | 'getPopupContainer' | 'onUpdate:expandedRowKeys' | 'onScroll'> {
+  classes?: TableClassNamesType<RecordType>;
+  styles?: TableStylesType<RecordType>;
+  dropdownPrefixCls?: string;
+  dataSource?: TableProps$1<RecordType>['data'];
+  columns?: ColumnsType<RecordType>;
+  pagination?: false | TablePaginationConfig;
+  loading?: boolean | SpinProps;
+  size?: SizeType;
+  bordered?: boolean;
+  locale?: TableLocale;
+  rowSelection?: TableRowSelection<RecordType>;
+  getPopupContainer?: GetPopupContainer;
+  scroll?: TableProps$1<RecordType>['scroll'] & {
+    scrollToFirstRowOnChange?: boolean;
+  };
+  sortDirections?: SortOrder[];
+  showSorterTooltip?: boolean | SorterTooltipProps;
+  virtual?: boolean;
+}
+interface InternalTableProps<RecordType = AnyObject> extends TableProps<RecordType>, TableEmitsProps {
+  _renderTimes: number;
+}
+interface TableEmits<RecordType = AnyObject> {
+  'change': (pagination: TablePaginationConfig, filters: Record<string, FilterValue | null>, sorter: SorterResult<RecordType> | SorterResult<RecordType>[], extra: TableCurrentDataSource<RecordType>) => void;
+  'update:expandedRowKeys': (keys: readonly Key[]) => void;
+  'scroll': NonNullable<TableProps$1['onScroll']>;
+}
+interface TableEmitsProps<RecordType = AnyObject> {
+  onChange?: TableEmits<RecordType>['change'];
+  'onUpdate:expandedRowKeys'?: TableEmits<RecordType>['update:expandedRowKeys'];
+  onScroll?: TableEmits<RecordType>['scroll'];
+}
+interface TableSlots<RecordType = AnyObject> {
+  default?: () => any;
+  title?: (data: readonly RecordType[]) => any;
+  footer?: (data: readonly RecordType[]) => any;
+  summary?: (data: readonly RecordType[]) => any;
+  emptyText?: () => any;
+  expandIcon?: (info: any) => any;
+  expandedRowRender?: (ctx: {
+    record: RecordType;
+    index: number;
+    indent: number;
+    expanded: boolean;
+  }) => any;
+  headerCell?: (ctx: {
+    column: ColumnType<RecordType>;
+    index: number;
+    text: any;
+  }) => any;
+  bodyCell?: (ctx: {
+    column: ColumnType<RecordType>;
+    index: number;
+    text: any;
+    record: RecordType;
+  }) => any;
+  filterDropdown?: (ctx: FilterDropdownProps & {
+    column: ColumnType<RecordType>;
+  }) => any;
+  filterIcon?: (ctx: {
+    column: ColumnType<RecordType>;
+    filtered: boolean;
+  }) => any;
+}
+declare const InternalTable: vue117.DefineSetupFnComponent<InternalTableProps<AnyObject>, TableEmits<AnyObject>, SlotsType<TableSlots<AnyObject>>, InternalTableProps<AnyObject>, vue117.PublicProps>;
+//#endregion
+export { ComponentsSemantic, ComponentsSemanticClassNames, ComponentsSemanticStyles, InternalTableProps, TableClassNamesType, TableEmits, TableEmitsProps, TableProps, TableSemanticClassNames, TableSemanticName, TableSemanticStyles, TableSlots, TableStylesType, InternalTable as default };

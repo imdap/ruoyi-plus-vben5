@@ -1,0 +1,198 @@
+import { useComponentBaseConfig } from "../config-provider/context.js";
+import { getAttrStyleAndClass as getAttrStyleAndClass$1, useMergeSemantic, useToArr, useToProps } from "../_util/hooks/useMergeSemantic.js";
+import { getSlotPropsFnRun, toPropsRefs as toPropsRefs$1 } from "../_util/tools.js";
+import { useBreadcrumbProvider } from "./BreadcrumbContext.js";
+import BreadcrumbSeparator_default from "./BreadcrumbSeparator.js";
+import useItemRender from "./useItemRender.js";
+import BreadcrumbItem_default, { InternalBreadcrumbItem } from "./BreadcrumbItem.js";
+import style_default from "./style/index.js";
+import { cloneVNode, computed, createVNode, defineComponent, isVNode, mergeProps } from "vue";
+import { clsx } from "@v-c/util";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+import { DownOutlined } from "@antdv-next/icons";
+import pickAttrs from "@v-c/util/dist/pickAttrs";
+
+//#region src/breadcrumb/Breadcrumb.tsx
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+function getPath(params, path) {
+	if (path === void 0) return path;
+	let mergedPath = (path || "").replace(/^\//, "");
+	Object.keys(params).forEach((key) => {
+		mergedPath = mergedPath.replace(`:${key}`, params[key]);
+	});
+	return mergedPath;
+}
+const Breadcrumb = /* @__PURE__ */ defineComponent((props, { slots, attrs, emit }) => {
+	const { prefixCls, direction, class: contextClassName, style: contextStyle, classes: contextClassNames, styles: contextStyles, separator: contextSeparator, dropdownIcon: contextDropdownIcon } = useComponentBaseConfig("breadcrumb", props, ["separator", "dropdownIcon"]);
+	const { classes, styles } = toPropsRefs$1(props, "classes", "styles");
+	const mergedSeparator = computed(() => {
+		const separator = getSlotPropsFnRun(slots, props, "separator");
+		const contextSep = getSlotPropsFnRun({}, { separator: contextSeparator.value }, "separator");
+		return separator ?? contextSep ?? "/";
+	});
+	const [hashId, cssVarCls] = style_default(prefixCls);
+	const mergedItems = computed(() => props.items ?? []);
+	const mergedProps = computed(() => {
+		return {
+			...props,
+			separator: mergedSeparator.value
+		};
+	});
+	const [mergedClassNames, mergedStyles] = useMergeSemantic(useToArr(contextClassNames, classes), useToArr(contextStyles, styles), useToProps(mergedProps));
+	useBreadcrumbProvider(computed(() => {
+		return {
+			classes: mergedClassNames.value,
+			styles: mergedStyles.value
+		};
+	}));
+	return () => {
+		const { params = {}, rootClass } = props;
+		const itemRender = slots?.itemRender ?? props?.itemRender;
+		const mergedDropdownIcon = getSlotPropsFnRun(slots, props, "dropdownIcon") ?? contextDropdownIcon.value ?? createVNode(DownOutlined, null, null);
+		const children = filterEmpty(slots?.default?.() ?? []);
+		let crumbs;
+		const titleRender = slots?.titleRender ?? props?.titleRender;
+		const mergedItemRender = useItemRender(prefixCls.value, itemRender, titleRender);
+		if (mergedItems.value && mergedItems.value.length > 0) {
+			const paths = [];
+			const itemRenderRoutes = props?.items;
+			crumbs = mergedItems.value.map((item, index) => {
+				let _slot;
+				const { path, key, type, menu, onClick, class: itemClassName, style, dropdownProps } = item;
+				const handleClick = (event) => {
+					onClick?.(event);
+					emit("clickItem", item, event);
+				};
+				const itemSeparator = getSlotPropsFnRun({}, { separator: item.separator }, "separator");
+				const mergedPath = getPath(params || {}, path);
+				if (mergedPath !== void 0) paths.push(mergedPath);
+				const mergedKey = key ?? index;
+				if (type === "separator") return createVNode(BreadcrumbSeparator_default, { "key": mergedKey }, _isSlot(itemSeparator) ? itemSeparator : { default: () => [itemSeparator] });
+				const itemProps = {};
+				const isLastItem = index === mergedItems.value.length - 1;
+				if (menu) {
+					const menuLabelRender = slots?.menuLabelRender ?? props.menuLabelRender;
+					if (menuLabelRender) menu.labelRender = (menuItem) => menuLabelRender({
+						item,
+						index,
+						menu: menuItem
+					});
+					const menuExtraRender = slots?.menuExtraRender ?? props.menuExtraRender;
+					if (menuExtraRender) menu.extraRender = (menuItem) => menuExtraRender({
+						item,
+						index,
+						menu: menuItem
+					});
+					itemProps.menu = menu;
+				}
+				let { href } = item;
+				if (paths.length && mergedPath !== void 0) href = `#/${paths.join("/")}`;
+				return createVNode(InternalBreadcrumbItem, mergeProps({ "key": mergedKey }, itemProps, pickAttrs(item, {
+					data: true,
+					aria: true
+				}), {
+					"class": itemClassName,
+					"style": style,
+					"dropdownProps": dropdownProps,
+					"dropdownIcon": mergedDropdownIcon,
+					"href": href,
+					"separator": isLastItem ? "" : mergedSeparator.value,
+					"onClick": handleClick,
+					"prefixCls": prefixCls.value
+				}), _isSlot(_slot = mergedItemRender(item, params, itemRenderRoutes, paths, href, index)) ? _slot : { default: () => [_slot] });
+			});
+		} else {
+			const childrenLength = children.length;
+			crumbs = children.map((element, index) => {
+				if (!element || !isVNode(element)) return element;
+				const isLastItem = index === childrenLength - 1;
+				const isBreadcrumbItem = Boolean(element.type?.__ANT_BREADCRUMB_ITEM);
+				return cloneVNode(element, {
+					separator: isLastItem ? "" : mergedSeparator.value,
+					...isBreadcrumbItem ? { dropdownIcon: mergedDropdownIcon } : {},
+					key: index
+				});
+			});
+		}
+		const { className, style, restAttrs } = getAttrStyleAndClass$1(attrs);
+		const breadcrumbClassName = clsx(prefixCls.value, contextClassName.value, { [`${prefixCls}-rtl`]: direction.value === "rtl" }, className, rootClass, mergedClassNames.value?.root, hashId.value, cssVarCls.value);
+		const mergedStyle = {
+			...mergedStyles.value?.root,
+			...contextStyle.value,
+			...style
+		};
+		return createVNode("nav", mergeProps({
+			"class": breadcrumbClassName,
+			"style": mergedStyle
+		}, restAttrs), [createVNode("ol", null, [crumbs])]);
+	};
+}, {
+	props: {
+		prefixCls: {
+			type: String,
+			required: false
+		},
+		params: { required: false },
+		separator: { required: false },
+		rootClass: {
+			type: String,
+			required: false
+		},
+		items: {
+			type: Array,
+			required: false
+		},
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		},
+		dropdownIcon: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		itemRender: {
+			type: Function,
+			required: false
+		},
+		titleRender: {
+			type: Function,
+			required: false
+		},
+		menuLabelRender: {
+			type: Function,
+			required: false
+		},
+		menuExtraRender: {
+			type: Function,
+			required: false
+		}
+	},
+	emits: ["clickItem"],
+	name: "ABreadcrumb",
+	inheritAttrs: false
+});
+Breadcrumb.Item = BreadcrumbItem_default;
+Breadcrumb.Separator = BreadcrumbSeparator_default;
+Breadcrumb.install = (app) => {
+	app.component(Breadcrumb.name, Breadcrumb);
+	app.component(BreadcrumbItem_default.name, BreadcrumbItem_default);
+	app.component(BreadcrumbSeparator_default.name, BreadcrumbSeparator_default);
+};
+var Breadcrumb_default = Breadcrumb;
+
+//#endregion
+export { BreadcrumbItem_default as BreadcrumbItem, BreadcrumbSeparator_default as BreadcrumbSeparator, Breadcrumb_default as default };

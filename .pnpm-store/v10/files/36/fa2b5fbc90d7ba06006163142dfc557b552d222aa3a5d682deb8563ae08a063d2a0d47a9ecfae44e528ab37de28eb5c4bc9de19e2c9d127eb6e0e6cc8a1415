@@ -1,0 +1,62 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import NoFound from "./noFound.js";
+import ServerError from "./serverError.js";
+import Unauthorized from "./unauthorized.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue453 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/result/index.d.ts
+declare const IconMap: Record<string, any>;
+declare const ExceptionMap: {
+  404: typeof NoFound;
+  500: typeof ServerError;
+  403: typeof Unauthorized;
+};
+type ExceptionStatusType = 403 | 404 | 500 | '403' | '404' | '500';
+type ResultStatusType = ExceptionStatusType | keyof typeof IconMap;
+type ResultSemanticName = keyof ResultSemanticClassNames & keyof ResultSemanticStyles;
+interface ResultSemanticClassNames {
+  root?: string;
+  title?: string;
+  subTitle?: string;
+  body?: string;
+  extra?: string;
+  icon?: string;
+}
+interface ResultSemanticStyles {
+  root?: CSSProperties;
+  title?: CSSProperties;
+  subTitle?: CSSProperties;
+  body?: CSSProperties;
+  extra?: CSSProperties;
+  icon?: CSSProperties;
+}
+type ResultClassNamesType = SemanticClassNamesType<ResultProps, ResultSemanticClassNames>;
+type ResultStylesType = SemanticStylesType<ResultProps, ResultSemanticStyles>;
+interface ResultProps extends ComponentBaseProps {
+  icon?: VueNode;
+  status?: ResultStatusType;
+  title?: VueNode;
+  subTitle?: VueNode;
+  extra?: VueNode;
+  classes?: ResultClassNamesType;
+  styles?: ResultStylesType;
+}
+interface ResultSlots {
+  icon?: () => any;
+  title?: () => any;
+  subTitle?: () => any;
+  extra?: () => any;
+  default?: () => any;
+}
+declare const Result: vue453.DefineSetupFnComponent<ResultProps, EmptyEmit, SlotsType<ResultSlots>, ResultProps, vue453.PublicProps>;
+declare const _default: typeof Result & {
+  PRESENTED_IMAGE_403: (typeof ExceptionMap)["403"];
+  PRESENTED_IMAGE_404: (typeof ExceptionMap)["404"];
+  PRESENTED_IMAGE_500: (typeof ExceptionMap)["500"];
+};
+//#endregion
+export { ExceptionMap, ExceptionStatusType, IconMap, ResultClassNamesType, ResultProps, ResultSemanticClassNames, ResultSemanticName, ResultSemanticStyles, ResultSlots, ResultStatusType, ResultStylesType, _default as default };

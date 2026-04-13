@@ -1,0 +1,116 @@
+.vxe-row {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+.vxe-row.is--vertical {
+  flex-direction: column;
+}
+.vxe-row.is--wrap {
+  flex-wrap: wrap;
+}
+
+.vxe-col {
+  display: block;
+}
+.vxe-col.is--ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.vxe-col.is--fill {
+  flex-grow: 1;
+}
+.vxe-col:not(.is--fill) {
+  flex-shrink: 0;
+}
+.vxe-col.align--left {
+  text-align: left;
+}
+.vxe-col.align--center {
+  text-align: center;
+}
+.vxe-col.align--right {
+  text-align: right;
+}
+.vxe-col.span1 {
+  width: 4.16667%;
+}
+.vxe-col.span2 {
+  width: 8.33333%;
+}
+.vxe-col.span3 {
+  width: 12.5%;
+}
+.vxe-col.span4 {
+  width: 16.66667%;
+}
+.vxe-col.span5 {
+  width: 20.83333%;
+}
+.vxe-col.span6 {
+  width: 25%;
+}
+.vxe-col.span7 {
+  width: 29.16667%;
+}
+.vxe-col.span8 {
+  width: 33.33333%;
+}
+.vxe-col.span9 {
+  width: 37.5%;
+}
+.vxe-col.span10 {
+  width: 41.66667%;
+}
+.vxe-col.span11 {
+  width: 45.83333%;
+}
+.vxe-col.span12 {
+  width: 50%;
+}
+.vxe-col.span13 {
+  width: 54.16667%;
+}
+.vxe-col.span14 {
+  width: 58.33333%;
+}
+.vxe-col.span15 {
+  width: 62.5%;
+}
+.vxe-col.span16 {
+  width: 66.66667%;
+}
+.vxe-col.span17 {
+  width: 70.83333%;
+}
+.vxe-col.span18 {
+  width: 75%;
+}
+.vxe-col.span19 {
+  width: 79.16667%;
+}
+.vxe-col.span20 {
+  width: 83.33333%;
+}
+.vxe-col.span21 {
+  width: 87.5%;
+}
+.vxe-col.span22 {
+  width: 91.66667%;
+}
+.vxe-col.span23 {
+  width: 95.83333%;
+}
+.vxe-col.span24 {
+  width: 100%;
+}
+
+.vxe-col--inner {
+  width: 100%;
+}
+
+.vxe-col.is--span > .vxe-col--inner > .vxe-default-textarea, .vxe-col.is--span > .vxe-col--inner > .vxe-default-select, .vxe-col.is--span > .vxe-col--inner > .vxe-input, .vxe-col.is--span > .vxe-col--inner > .vxe-number-input, .vxe-col.is--span > .vxe-col--inner > .vxe-password-input, .vxe-col.is--span > .vxe-col--inner > .vxe-date-picker, .vxe-col.is--span > .vxe-col--inner > .vxe-textarea, .vxe-col.is--span > .vxe-col--inner > .vxe-select, .vxe-col.is--span > .vxe-col--inner > .vxe-tree-select, .vxe-col.is--span > .vxe-col--inner > .vxe-table-select, .vxe-col.is--span > .vxe-col--inner > .vxe-ico-picker, .vxe-col.is--width > .vxe-col--inner > .vxe-default-textarea, .vxe-col.is--width > .vxe-col--inner > .vxe-default-select, .vxe-col.is--width > .vxe-col--inner > .vxe-input, .vxe-col.is--width > .vxe-col--inner > .vxe-number-input, .vxe-col.is--width > .vxe-col--inner > .vxe-password-input, .vxe-col.is--width > .vxe-col--inner > .vxe-date-picker, .vxe-col.is--width > .vxe-col--inner > .vxe-textarea, .vxe-col.is--width > .vxe-col--inner > .vxe-select, .vxe-col.is--width > .vxe-col--inner > .vxe-tree-select, .vxe-col.is--width > .vxe-col--inner > .vxe-table-select, .vxe-col.is--width > .vxe-col--inner > .vxe-ico-picker {
+  width: 100%;
+}

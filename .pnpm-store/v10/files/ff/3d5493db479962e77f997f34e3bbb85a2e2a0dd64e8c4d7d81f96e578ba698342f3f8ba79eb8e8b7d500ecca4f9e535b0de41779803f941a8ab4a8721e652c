@@ -1,0 +1,46 @@
+{
+  "name": "@cspell/dict-npm",
+  "version": "5.2.38",
+  "description": "Dictionary of common NPM packages for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "npm",
+    "NPM",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/npm#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/npm"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "files": [
+    "dict/npm.txt",
+    "cspell-ext.json"
+  ],
+  "scripts": {
+    "#update-dictionary": "# Update dictionary will download the latest list of npm packages and build the dictionary.",
+    "build": "cspell-tools-cli build",
+    "prepare:dictionary": "pnpm run build",
+    "prepublishOnly": "echo pre-publish",
+    "test": "cspell samples/list.txt -c ./cspell-ext.json \"--locale=*\" --languageId=javascript",
+    "update-dictionary": "pnpm update-npm-package-list --silent && pnpm run build",
+    "update-npm-package-list": "./scripts/update-npm-package-list.mjs"
+  },
+  "gitHead": "81587936e4538521cccf069cebdf03872f2a478c"
+}

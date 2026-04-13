@@ -1,0 +1,18 @@
+import { EmptyEmit } from "../_util/type.js";
+import { ProgressProps, ProgressSemanticClassNames, ProgressSemanticStyles } from "./progress.js";
+import * as vue286 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/progress/Circle.d.ts
+interface CircleProps extends Omit<ProgressProps, 'classes' | 'styles'> {
+  prefixCls: string;
+  progressStatus: string;
+  strokeColor?: string | Record<string, string>;
+  classes: ProgressSemanticClassNames;
+  styles: ProgressSemanticStyles;
+}
+declare const Circle: vue286.DefineSetupFnComponent<CircleProps, EmptyEmit, SlotsType<{
+  default?: () => any;
+}>, CircleProps, vue286.PublicProps>;
+//#endregion
+export { CircleProps, Circle as default };

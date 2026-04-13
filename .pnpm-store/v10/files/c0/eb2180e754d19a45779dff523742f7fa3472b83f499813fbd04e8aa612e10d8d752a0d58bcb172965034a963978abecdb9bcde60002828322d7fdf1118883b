@@ -1,0 +1,59 @@
+import { VueNode } from "../../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../../_util/hooks/useMergeSemantic.js";
+import "../../_util/hooks/index.js";
+import { SizeType } from "../../config-provider/SizeContext.js";
+import { InputStatus } from "../../_util/statusUtils.js";
+import { ComponentBaseProps, Variant } from "../../config-provider/context.js";
+import * as vue433 from "vue";
+import { CSSProperties, HTMLAttributes, SlotsType } from "vue";
+
+//#region src/input/OTP/index.d.ts
+interface OTPSemanticClassNames {
+  root?: string;
+  input?: string;
+  separator?: string;
+}
+interface OTPSemanticStyles {
+  root?: CSSProperties;
+  input?: CSSProperties;
+  separator?: CSSProperties;
+}
+type OTPClassNamesType = SemanticClassNamesType<OTPProps, OTPSemanticClassNames>;
+type OTPStylesType = SemanticStylesType<OTPProps, OTPSemanticStyles>;
+interface OTPProps extends ComponentBaseProps, Omit<HTMLAttributes, 'onChange' | 'onInput'>, OTPEmitsProps {
+  length?: number;
+  variant?: Variant;
+  size?: SizeType;
+  defaultValue?: string;
+  value?: string;
+  formatter?: (value: string) => string;
+  separator?: VueNode | ((index: number) => VueNode);
+  disabled?: boolean;
+  status?: InputStatus;
+  mask?: boolean | string;
+  type?: HTMLInputElement['type'];
+  inputMode?: string;
+  autoFocus?: boolean;
+  classes?: OTPClassNamesType;
+  styles?: OTPStylesType;
+}
+interface OTPEmits {
+  'change': (value: string) => void;
+  'input': (cells: string[]) => void;
+  'update:value': (value: string) => void;
+}
+interface OTPEmitsProps {
+  onChange?: OTPEmits['change'];
+  onInput?: OTPEmits['input'];
+  'onUpdate:value'?: OTPEmits['update:value'];
+}
+interface OTPSlots {
+  default: () => any;
+  separator: (params: {
+    index: number;
+  }) => any;
+}
+type OPTSlots = OTPSlots;
+declare const OTP: vue433.DefineSetupFnComponent<OTPProps, OTPEmits, SlotsType<OTPSlots>, OTPProps, vue433.PublicProps>;
+//#endregion
+export { OPTSlots, OTPClassNamesType, OTPEmits, OTPEmitsProps, OTPProps, OTPSemanticClassNames, OTPSemanticStyles, OTPSlots, OTPStylesType, OTP as default };

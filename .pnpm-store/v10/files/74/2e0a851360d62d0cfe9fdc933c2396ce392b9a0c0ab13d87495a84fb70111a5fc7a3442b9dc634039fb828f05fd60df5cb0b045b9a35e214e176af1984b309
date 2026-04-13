@@ -1,0 +1,26 @@
+{
+    "id": "fsharp",
+    "version": "0.2",
+    "name": "F#",
+    "description": "F# dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "fsharp",
+            "path": "./dict/fsharp.txt",
+            "description": "F# dictionary."
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "languageId": "fsharp",
+            "locale": "*",
+            "includeRegExpList": [],
+            "ignoreRegExpList": [],
+            "patterns": [],
+            "dictionaries": ["fsharp", "dotnet"],
+            "dictionaryDefinitions": []
+        }
+    ]
+}

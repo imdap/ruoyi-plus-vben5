@@ -1,0 +1,57 @@
+import { VueNode } from "../_util/type.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue32 from "vue";
+import { SlotsType } from "vue";
+import { SlickProps } from "@v-c/slick";
+
+//#region src/carousel/index.d.ts
+type CarouselEffect = 'scrollx' | 'fade';
+type DotPlacement = 'top' | 'bottom' | 'start' | 'end';
+interface CarouselProps extends Omit<SlickProps, 'prevArrow' | 'nextArrow' | 'dots' | 'className' | 'style' | 'dotsClass' | 'autoplay' | 'onInit' | 'onReInit' | 'onEdge' | 'onSwipe' | 'onLazyLoad' | 'onLazyLoadError'>, ComponentBaseProps, CarouselEmitsProps {
+  effect?: CarouselEffect;
+  id?: string;
+  slickGoTo?: number;
+  /** @deprecated Please use `dotPlacement` instead  */
+  dotPosition?: DotPlacement | 'left' | 'right';
+  dotPlacement?: DotPlacement;
+  dots?: boolean | {
+    class?: string;
+  };
+  waitForAnimate?: boolean;
+  autoplay?: boolean | {
+    dotDuration?: boolean;
+  };
+  prevArrow?: VueNode;
+  nextArrow?: VueNode;
+}
+interface CarouselSlots {
+  default: () => any;
+  prevArrow: () => any;
+  nextArrow: () => any;
+}
+interface CarouselEmits {
+  init: NonNullable<SlickProps['onInit']>;
+  reInit: NonNullable<SlickProps['onReInit']>;
+  edge: NonNullable<SlickProps['onEdge']>;
+  swipe: NonNullable<SlickProps['onSwipe']>;
+  lazyLoad: NonNullable<SlickProps['onLazyLoad']>;
+  lazyLoadError: NonNullable<SlickProps['onLazyLoadError']>;
+}
+interface CarouselEmitsProps {
+  onInit?: CarouselEmits['init'];
+  onReInit?: CarouselEmits['reInit'];
+  onEdge?: CarouselEmits['edge'];
+  onSwipe?: CarouselEmits['swipe'];
+  onLazyLoad?: CarouselEmits['lazyLoad'];
+  onLazyLoadError?: CarouselEmits['lazyLoadError'];
+}
+interface CarouselRef {
+  goTo: (slide: number, dontAnimate?: boolean) => void;
+  next: () => void;
+  prev: () => void;
+  autoPlay: (playType?: 'update' | 'leave' | 'blur') => void;
+  innerSlider: any;
+}
+declare const Carousel: vue32.DefineSetupFnComponent<CarouselProps, CarouselEmits, SlotsType<CarouselSlots>, CarouselProps, vue32.PublicProps>;
+//#endregion
+export { CarouselEffect, CarouselEmits, CarouselEmitsProps, CarouselProps, CarouselRef, CarouselSlots, DotPlacement, Carousel as default };

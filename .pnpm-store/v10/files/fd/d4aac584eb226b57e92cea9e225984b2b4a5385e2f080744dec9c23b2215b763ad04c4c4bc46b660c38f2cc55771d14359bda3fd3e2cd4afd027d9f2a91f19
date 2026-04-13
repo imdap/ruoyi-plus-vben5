@@ -1,0 +1,28 @@
+import { TourProps, TourStepProps } from "./interface.js";
+import * as vue158 from "vue";
+
+//#region src/tour/panelRender.d.ts
+interface TourPanelProps {
+  stepProps: Omit<TourStepProps, 'closable' | 'classNames'> & {
+    closable?: Exclude<TourStepProps['closable'], boolean>;
+  };
+  current: number;
+  type?: TourProps['type'];
+  indicatorsRender?: TourProps['indicatorsRender'];
+  classes?: TourProps['classes'];
+  styles?: TourProps['styles'];
+  actionsRender?: TourProps['actionsRender'];
+  prevButtonProps?: (params: {
+    current: number;
+    isFirst: boolean;
+    isLast: boolean;
+  }) => any;
+  nextButtonProps?: (params: {
+    current: number;
+    isFirst: boolean;
+    isLast: boolean;
+  }) => any;
+}
+declare const TourPanel: vue158.DefineSetupFnComponent<TourPanelProps, {}, {}, TourPanelProps & {}, vue158.PublicProps>;
+//#endregion
+export { TourPanel as default };

@@ -1,0 +1,193 @@
+import { useComponentBaseConfig } from "../config-provider/context.js";
+import { useMergeSemantic, useToArr, useToProps } from "../_util/hooks/useMergeSemantic.js";
+import { clsx as clsx$1, getSlotPropsFnRun, toPropsRefs } from "../_util/tools.js";
+import skeleton_default from "../skeleton/index.js";
+import Number_default from "./Number.js";
+import style_default from "./style/index.js";
+import { computed, createVNode, defineComponent, mergeDefaults, mergeProps, shallowRef } from "vue";
+import { classNames } from "@v-c/util";
+import pickAttrs from "@v-c/util/dist/pickAttrs";
+
+//#region src/statistic/Statistic.tsx
+const Statistic = /* @__PURE__ */ defineComponent((props, { slots, attrs, emit, expose }) => {
+	const { direction, prefixCls, class: contextClassName, style: contextStyle, classes: contextClassNames, styles: contextStyles } = useComponentBaseConfig("statistic", props);
+	const { classes, styles } = toPropsRefs(props, "classes", "styles");
+	const [hashId, cssVarCls] = style_default(prefixCls);
+	const internalRef = shallowRef();
+	const mergedProps = computed(() => props);
+	const [mergedClassNames, mergedStyles] = useMergeSemantic(useToArr(contextClassNames, classes), useToArr(contextStyles, styles), useToProps(mergedProps));
+	expose({ nativeElement: internalRef });
+	const handleMouseEnter = (e) => {
+		emit("mouseenter", e);
+	};
+	const handleMouseLeave = (e) => {
+		emit("mouseleave", e);
+	};
+	return () => {
+		const { decimalSeparator, groupSeparator, formatter, precision, value, rootClass, loading, valueStyle, valueRender } = props;
+		const title = getSlotPropsFnRun(slots, props, "title");
+		const prefix = getSlotPropsFnRun(slots, props, "prefix");
+		const suffix = getSlotPropsFnRun(slots, props, "suffix");
+		const valueNode = createVNode(Number_default, {
+			"decimalSeparator": decimalSeparator,
+			"groupSeparator": groupSeparator,
+			"prefixCls": prefixCls.value,
+			"formatter": formatter,
+			"precision": precision,
+			"value": value
+		}, null);
+		const cls = classNames(prefixCls.value, { [`${prefixCls.value}-rtl`]: direction.value === "rtl" }, contextClassName.value, attrs.class, rootClass, mergedClassNames.value.root, hashId.value, cssVarCls.value);
+		const restProps = pickAttrs(attrs, {
+			data: true,
+			aria: true
+		});
+		const headerClassNames = clsx$1(`${prefixCls.value}-header`, mergedClassNames.value.header);
+		const titleClassNames = clsx$1(`${prefixCls.value}-title`, mergedClassNames.value.title);
+		const contentClassNames = clsx$1(`${prefixCls.value}-content`, mergedClassNames.value.content);
+		const prefixClassNames = clsx$1(`${prefixCls.value}-content-prefix`, mergedClassNames.value.prefix);
+		const suffixClassNames = clsx$1(`${prefixCls.value}-content-suffix`, mergedClassNames.value.suffix);
+		return createVNode("div", mergeProps(restProps, {
+			"ref": internalRef,
+			"class": cls,
+			"style": [
+				mergedStyles.value.root,
+				contextStyle.value,
+				attrs.style
+			],
+			"onMouseenter": handleMouseEnter,
+			"onMouseleave": handleMouseLeave
+		}), [!!title && createVNode("div", {
+			"class": headerClassNames,
+			"style": mergedStyles.value.header
+		}, [createVNode("div", {
+			"class": titleClassNames,
+			"style": mergedStyles.value.title
+		}, [title])]), createVNode(skeleton_default, {
+			"paragraph": false,
+			"loading": loading,
+			"class": `${prefixCls.value}-skeleton`,
+			"active": true
+		}, { default: () => [createVNode("div", {
+			"style": [valueStyle, mergedStyles.value.content],
+			"class": contentClassNames
+		}, [
+			!!prefix && createVNode("span", {
+				"class": prefixClassNames,
+				"style": mergedStyles.value.prefix
+			}, [prefix]),
+			valueRender ? valueRender(valueNode) : valueNode,
+			!!suffix && createVNode("span", {
+				"class": suffixClassNames,
+				"style": mergedStyles.value.suffix
+			}, [suffix])
+		])] })]);
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		formatter: {
+			type: [
+				Boolean,
+				String,
+				Function
+			],
+			required: false,
+			default: void 0
+		},
+		decimalSeparator: {
+			type: String,
+			required: false
+		},
+		groupSeparator: {
+			type: String,
+			required: false
+		},
+		precision: {
+			type: Number,
+			required: false
+		},
+		rootClass: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		},
+		value: {
+			type: [Number, String],
+			required: false
+		},
+		valueStyle: {
+			type: Object,
+			required: false
+		},
+		valueRender: {
+			type: Function,
+			required: false
+		},
+		title: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		prefix: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		suffix: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		loading: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		}
+	}, {
+		value: 0,
+		decimalSeparator: ".",
+		groupSeparator: ",",
+		loading: false,
+		title: void 0,
+		suffix: void 0,
+		prefix: void 0
+	}),
+	emits: ["mouseenter", "mouseleave"],
+	name: "AStatistic",
+	inheritAttrs: false
+});
+var Statistic_default = Statistic;
+
+//#endregion
+export { Statistic_default as default };

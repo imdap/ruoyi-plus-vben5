@@ -1,0 +1,102 @@
+@use 'sass:map';
+@use "sass:list";
+
+$btnThemeList: (
+  (
+    name: "primary",
+    ftColor: var(--vxe-ui-font-primary-color),
+    brColor: var(--vxe-ui-font-primary-lighten-color),
+    bgColor: var(--vxe-ui-font-primary-tinge-color)
+  ),
+  (
+    name: "success",
+    ftColor: var(--vxe-ui-status-success-color),
+    brColor: var(--vxe-ui-status-success-lighten-color),
+    bgColor: var(--vxe-ui-status-success-tinge-color)
+  ),
+  (
+    name: "info",
+    ftColor: var(--vxe-ui-status-info-color),
+    brColor: var(--vxe-ui-status-info-lighten-color),
+    bgColor: var(--vxe-ui-status-info-tinge-color)
+  ),
+  (
+    name: "warning",
+    ftColor: var(--vxe-ui-status-warning-color),
+    brColor: var(--vxe-ui-status-warning-lighten-color),
+    bgColor: var(--vxe-ui-status-warning-tinge-color)
+  ),
+  (
+    name: "danger",
+    ftColor: var(--vxe-ui-status-danger-color),
+    brColor: var(--vxe-ui-status-danger-lighten-color),
+    bgColor: var(--vxe-ui-status-danger-tinge-color)
+  ),
+  (
+    name: "error",
+    ftColor: var(--vxe-ui-status-error-color),
+    brColor: var(--vxe-ui-status-error-lighten-color),
+    bgColor: var(--vxe-ui-status-error-tinge-color)
+  )
+);
+
+.vxe-alert {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  color: var(--vxe-ui-font-color);
+  padding: var(--vxe-ui-layout-padding-default);
+  margin-bottom: var(--vxe-ui-layout-padding-default);
+  font-size: var(--vxe-ui-font-size-default);
+  border-radius: var(--vxe-ui-base-border-radius);
+  @for $index from 0 to list.length($btnThemeList) {
+    $item: list.nth($btnThemeList, $index + 1);
+    &.theme--#{map.get($item, name)} {
+      color: map.get($item, ftColor);
+      border: 1px solid map.get($item, brColor);
+      background-color: map.get($item, bgColor);
+      &::after {
+        background-color: map.get($item, ftColor);
+      }
+      .vxe-alert--icon {
+        color: map.get($item, ftColor);
+      }
+      .vxe-alert--close-btn {
+        &:hover {
+          color: map.get($item, brColor);
+        }
+      }
+    }
+  }
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}
+.vxe-alert--icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.5em;
+  padding: 0 var(--vxe-ui-layout-padding-default);
+}
+.vxe-alert--body {
+  flex-grow: 1;
+}
+.vxe-alert--title {
+  font-size: 1.1em;
+  font-weight: 700;
+  line-height: 2em;
+}
+.vxe-alert--close-btn {
+  padding: 0 0.4em;
+  line-height: 2.2em;
+  cursor: pointer;
+}

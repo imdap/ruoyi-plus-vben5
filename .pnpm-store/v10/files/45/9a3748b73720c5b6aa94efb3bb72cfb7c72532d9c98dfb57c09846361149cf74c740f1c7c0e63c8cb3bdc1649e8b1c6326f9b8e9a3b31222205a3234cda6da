@@ -1,0 +1,143 @@
+.vxe-slider {
+  position: relative;
+  display: block;
+  padding: 0.5em 1em;
+}
+.vxe-slider.theme--primary .vxe-slider--bar-track {
+  background-color: var(--vxe-ui-font-primary-color);
+}
+.vxe-slider.theme--primary .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-font-primary-lighten-color);
+}
+.vxe-slider.theme--primary .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-font-primary-darken-color);
+}
+.vxe-slider.theme--primary .vxe-slider--bar-btn {
+  background-color: var(--vxe-ui-font-primary-color);
+}
+.vxe-slider.theme--success .vxe-slider--bar-track {
+  background-color: var(--vxe-ui-status-success-color);
+}
+.vxe-slider.theme--success .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-status-success-lighten-color);
+}
+.vxe-slider.theme--success .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-status-success-darken-color);
+}
+.vxe-slider.theme--success .vxe-slider--bar-btn {
+  background-color: var(--vxe-ui-status-success-color);
+}
+.vxe-slider.theme--info .vxe-slider--bar-track {
+  background-color: var(--vxe-ui-status-info-color);
+}
+.vxe-slider.theme--info .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-status-info-lighten-color);
+}
+.vxe-slider.theme--info .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-status-info-darken-color);
+}
+.vxe-slider.theme--info .vxe-slider--bar-btn {
+  background-color: var(--vxe-ui-status-info-color);
+}
+.vxe-slider.theme--warning .vxe-slider--bar-track {
+  background-color: var(--vxe-ui-status-warning-color);
+}
+.vxe-slider.theme--warning .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-status-warning-lighten-color);
+}
+.vxe-slider.theme--warning .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-status-warning-darken-color);
+}
+.vxe-slider.theme--warning .vxe-slider--bar-btn {
+  background-color: var(--vxe-ui-status-warning-color);
+}
+.vxe-slider.theme--danger .vxe-slider--bar-track {
+  background-color: var(--vxe-ui-status-danger-color);
+}
+.vxe-slider.theme--danger .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-status-danger-lighten-color);
+}
+.vxe-slider.theme--danger .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-status-danger-darken-color);
+}
+.vxe-slider.theme--danger .vxe-slider--bar-btn {
+  background-color: var(--vxe-ui-status-danger-color);
+}
+.vxe-slider.theme--error .vxe-slider--bar-track {
+  background-color: var(--vxe-ui-status-error-color);
+}
+.vxe-slider.theme--error .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-status-error-lighten-color);
+}
+.vxe-slider.theme--error .vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-status-error-darken-color);
+}
+.vxe-slider.theme--error .vxe-slider--bar-btn {
+  background-color: var(--vxe-ui-status-error-color);
+}
+.vxe-slider.is--disabled .vxe-slider--bar-btn {
+  cursor: not-allowed;
+}
+.vxe-slider:not(.is--disabled) .vxe-slider--bar-wrapper,
+.vxe-slider:not(.is--disabled) .vxe-slider--inner {
+  cursor: pointer;
+}
+.vxe-slider:not(.is--disabled) .vxe-slider--bar-btn:hover {
+  transform: scale(1.2);
+}
+.vxe-slider:not(.is--disabled) .vxe-slider--bar-btn:active {
+  transform: scale(1.1);
+}
+.vxe-slider.is--readonly .vxe-slider--bar-wrapper,
+.vxe-slider.is--readonly .vxe-slider--inner {
+  cursor: default;
+}
+
+.vxe-slider--inner {
+  position: relative;
+}
+
+.vxe-slider--bar-wrapper {
+  background-color: #e4e7ed;
+}
+
+.vxe-slider--bar-track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  background-color: var(--vxe-ui-font-primary-color);
+}
+.vxe-slider--bar-track:hover {
+  background-color: var(--vxe-ui-font-primary-lighten-color);
+}
+.vxe-slider--bar-track:active {
+  background-color: var(--vxe-ui-font-primary-darken-color);
+}
+
+.vxe-slider--bar-wrapper,
+.vxe-slider--bar-track {
+  height: 0.3em;
+  border-radius: var(--vxe-ui-base-border-radius);
+}
+
+.vxe-slider--bar-btn {
+  position: absolute;
+  width: 0.9em;
+  height: 0.9em;
+  top: -0.3em;
+  border-radius: 50%;
+  border: 0.15em solid var(--vxe-ui-font-primary-color);
+  background-color: #fff;
+  cursor: pointer;
+  z-index: 1;
+  transition: transform 0.1s ease-in-out;
+}
+
+.vxe-slider--start-btn {
+  left: -0.45em;
+}
+
+.vxe-slider--end-btn {
+  right: -0.45em;
+}

@@ -1,0 +1,8 @@
+import { AntdIconProps } from "../components/AntdIcon.js";
+import * as vue from "vue";
+
+//#region src/icons/InsertRowBelowOutlined.d.ts
+/**![insert-row-below](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiNjYWNhY2EiIHZpZXdCb3g9IjY0IDY0IDg5NiA4OTYiIGZvY3VzYWJsZT0iZmFsc2UiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHN0eWxlIC8+PC9kZWZzPjxwYXRoIGQ9Ik05MDQgNzY4SDEyMGMtNC40IDAtOCAzLjYtOCA4djgwYzAgNC40IDMuNiA4IDggOGg3ODRjNC40IDAgOC0zLjYgOC04di04MGMwLTQuNC0zLjYtOC04LTh6bS0yNS4zLTYwOEgxNDUuM2MtMTguNCAwLTMzLjMgMTQuMy0zMy4zIDMydjQ2NGMwIDE3LjcgMTQuOSAzMiAzMy4zIDMyaDczMy4zYzE4LjQgMCAzMy4zLTE0LjMgMzMuMy0zMlYxOTJjLjEtMTcuNy0xNC44LTMyLTMzLjItMzJ6TTM2MCA2MTZIMTg0VjQ1NmgxNzZ2MTYwem0wLTIyNEgxODRWMjMyaDE3NnYxNjB6bTI0MCAyMjRINDI0VjQ1NmgxNzZ2MTYwem0wLTIyNEg0MjRWMjMyaDE3NnYxNjB6bTI0MCAyMjRINjY0VjQ1NmgxNzZ2MTYwem0wLTIyNEg2NjRWMjMyaDE3NnYxNjB6IiAvPjwvc3ZnPg==) */
+declare const InsertRowBelowOutlined: vue.DefineSetupFnComponent<AntdIconProps, {}, {}, AntdIconProps & {}, vue.PublicProps>;
+//#endregion
+export { InsertRowBelowOutlined };

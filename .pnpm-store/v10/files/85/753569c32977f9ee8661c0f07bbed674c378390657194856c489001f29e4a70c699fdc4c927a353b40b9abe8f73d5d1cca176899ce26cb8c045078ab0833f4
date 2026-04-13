@@ -1,0 +1,69 @@
+@use "sass:list";
+@use '../helpers/baseVar.scss' as base_var;
+
+.vxe-row {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  &.is--vertical {
+    flex-direction: column;
+  }
+  &.is--wrap {
+    flex-wrap: wrap;
+  }
+}
+
+.vxe-col {
+  display: block;
+  &.is--ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  &.is--fill {
+    flex-grow: 1;
+  }
+  &:not(.is--fill) {
+    flex-shrink: 0;
+  }
+  &.align--left {
+    text-align: left;
+  }
+  &.align--center {
+    text-align: center;
+  }
+  &.align--right {
+    text-align: right;
+  }
+  @for $i from 0 to list.length(base_var.$colSpanList) {
+    &.span#{$i + 1} {
+      width: list.nth(base_var.$colSpanList, $i + 1);
+    }
+  }
+}
+
+.vxe-col--inner {
+  width: 100%;
+}
+
+.vxe-col {
+  &.is--span,
+  &.is--width {
+    & > .vxe-col--inner {
+      & > .vxe-default-textarea,
+      & > .vxe-default-select,
+      & > .vxe-input,
+      & > .vxe-number-input,
+      & > .vxe-password-input,
+      & > .vxe-date-picker,
+      & > .vxe-textarea,
+      & > .vxe-select,
+      & > .vxe-tree-select,
+      & > .vxe-table-select,
+      & > .vxe-ico-picker {
+        width: 100%;
+      }
+    }
+  }
+}

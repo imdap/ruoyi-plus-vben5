@@ -1,0 +1,42 @@
+{
+  "name": "@cspell/dict-html",
+  "version": "4.0.15",
+  "description": "HTML dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "html",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/html#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/html"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "files": [
+    "dict/html.txt.gz",
+    "cspell-ext.json"
+  ],
+  "scripts": {
+    "build": "cspell-tools-cli build",
+    "prepare:dictionary": "pnpm run build",
+    "prepublishOnly": "echo pre-publish",
+    "test": "shx head -n 100 src/html.txt | cspell -c ./cspell-ext.json \"--locale=*\" --language-id=html stdin"
+  },
+  "gitHead": "86d6d1fc5212a9b9ec281cc238176989e3980f65"
+}

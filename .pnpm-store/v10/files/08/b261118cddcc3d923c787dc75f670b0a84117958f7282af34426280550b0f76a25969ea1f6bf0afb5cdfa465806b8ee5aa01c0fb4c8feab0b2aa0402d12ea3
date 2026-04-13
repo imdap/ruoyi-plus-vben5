@@ -1,0 +1,111 @@
+/*font color*/
+$vxe-ui-font-color: #606266 !default;
+$vxe-ui-font-tinge-color: #d4d5d7 !default;
+$vxe-ui-font-lighten-color: #797b80 !default;
+$vxe-ui-font-darken-color: #47494c !default;
+$vxe-ui-font-disabled-color: #BFBFBF !default;
+
+/*font status color*/
+$vxe-ui-font-primary-color: #409eff !default;
+$vxe-ui-font-primary-hover-color: #f5f7fa !default;
+$vxe-ui-font-primary-tinge-color: #e8f3ff !default;
+$vxe-ui-font-primary-lighten-color: #73b8ff !default;
+$vxe-ui-font-primary-darken-color: #0d84ff !default;
+$vxe-ui-font-primary-disabled-color: #a6d2ff !default;
+
+$vxe-ui-status-success-color: #67c23a !default;
+$vxe-ui-status-info-color: #909399 !default;
+$vxe-ui-status-warning-color: #e6a23c !default;
+$vxe-ui-status-danger-color: #f56c6c !default;
+$vxe-ui-status-error-color: #f56c6c !default;
+
+$vxe-ui-status-success-tinge-color: #eef8e9 !default;
+$vxe-ui-status-info-tinge-color: #f5f5f6 !default;
+$vxe-ui-status-warning-tinge-color: #fcf4e8 !default;
+$vxe-ui-status-error-tinge-color: #fef2f2 !default;
+$vxe-ui-status-danger-tinge-color: $vxe-ui-status-error-tinge-color !default;
+
+$vxe-ui-status-success-lighten-color: #85cf60 !default;
+$vxe-ui-status-info-lighten-color: #abadb1 !default;
+$vxe-ui-status-warning-lighten-color: #ecb869 !default;
+$vxe-ui-status-error-lighten-color: #f89c9c !default;
+$vxe-ui-status-danger-lighten-color: $vxe-ui-status-error-lighten-color !default;
+
+$vxe-ui-status-success-darken-color: #529b2e !default;
+$vxe-ui-status-info-darken-color: #767980 !default;
+$vxe-ui-status-warning-darken-color: #d48a1b !default;
+$vxe-ui-status-error-darken-color: #f56c6c !default;
+$vxe-ui-status-danger-darken-color: $vxe-ui-status-error-darken-color !default;
+
+$vxe-ui-status-success-disabled-color: #a3db87 !default;
+$vxe-ui-status-info-disabled-color: #c5c7ca !default;
+$vxe-ui-status-warning-disabled-color: #f2cd96 !default;
+$vxe-ui-status-error-disabled-color: #f5a8a8 !default;
+$vxe-ui-status-danger-disabled-color: $vxe-ui-status-error-disabled-color !default;
+
+/*base*/
+$vxe-ui-base-popup-border-color: #DADCE0 !default;
+$vxe-ui-base-popup-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.16) !default;
+$vxe-ui-base-drag-background-color: #dde9fd !default;
+$vxe-ui-base-active-background-color: #e6f4ff !default;
+$vxe-ui-base-hover-background-color: rgba(0, 0, 0, 0.1) !default;
+
+/*layout*/
+$vxe-ui-layout-background-color: #ffffff !default;
+
+/*input*/
+$vxe-ui-input-border-color: #dcdfe6 !default;
+$vxe-ui-input-placeholder-color: #C0C4CC !default;
+$vxe-ui-input-disabled-background-color: #f3f3f3 !default;
+
+/*modal*/
+$vxe-ui-modal-header-background-color: #F8F8F8 !default;
+
+/*tabs*/
+$vxe-ui-tabs-card-header-background-color: #f5f7fa !default;
+$vxe-ui-tabs-close-hover-background-color: rgba(0, 0, 0, 0.1) !default;
+$vxe-ui-tabs-bar-scrolling-box-shadow-color: rgba(0, 0, 0, 0.12) !default;
+
+/*menu*/
+$vxe-ui-menu-item-hover-color: $vxe-ui-font-primary-color !default;
+$vxe-ui-menu-collapse-wrapper-box-shadow: $vxe-ui-base-popup-box-shadow !default;
+
+/*loading*/
+$vxe-ui-loading-background-color: rgba(255, 255, 255, 0.5) !default;
+ 
+/*form*/
+$vxe-ui-form-title-background-color: #f8f8f9 !default;
+$vxe-ui-form-border-color: #e8eaec !default;
+
+/*form-design*/
+$vxe-ui-form-design-widget-hover-background-color: $vxe-ui-base-hover-background-color !default;
+$vxe-ui-form-design-sub-widget-hover-background-color: rgba(0, 0, 0, 0.05) !default;
+
+/*list-design*/
+$vxe-ui-list-design-table-border-color: #e8eaec !default;
+$vxe-ui-list-design-table-header-background-color: #f8f8f9 !default;
+
+/*switch*/
+$vxe-ui-switch-close-background-color: rgba(0,0,0,0.35) !default;
+
+/*upload*/
+$vxe-ui-upload-drag-over-background-color:rgba(255,255,200,0.8) !default;
+
+/*tree*/
+$vxe-ui-tree-node-hover-background-color: #f5f7fa !default;
+$vxe-ui-tree-node-radio-checked-background-color: #fff3e0 !default;
+$vxe-ui-tree-node-hover-radio-checked-background-color: #ffebbc !default;
+$vxe-ui-tree-node-checkbox-checked-background-color: #fff3e0 !default;
+$vxe-ui-tree-node-hover-checkbox-checked-background-color: #ffebbc !default;
+$vxe-ui-tree-node-current-background-color: #e6f7ff !default;
+$vxe-ui-tree-node-hover-current-background-color: #d7effb !default;
+$vxe-ui-tree-drag-over-background-color: rgba(255,255,200,0.3) !default;
+
+/*rate*/
+$vxe-ui-rate-item-color: #f7ba2a !default;
+
+/*split*/
+$vxe-ui-splitter-handle-button-background-color: #8b8b8b;
+$vxe-ui-splitter-handle-bar-background-color: #e2e2e3;
+$vxe-ui-splitter-handle-bar-hover-background-color: #d8d8d8;
+

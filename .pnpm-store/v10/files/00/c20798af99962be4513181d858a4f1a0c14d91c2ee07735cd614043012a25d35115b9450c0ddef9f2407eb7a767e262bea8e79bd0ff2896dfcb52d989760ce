@@ -1,0 +1,60 @@
+{
+    "id": "software-terms",
+    "name": "Software Terms",
+    "readonly": true,
+    "description": "Software terms dictionary.",
+    "import": ["./dict/cspell-corrections.yaml"],
+    "dictionaryDefinitions": [
+        {
+            // changing the name is a breaking change.
+            "name": "softwareTerms",
+            "path": "./dict/softwareTerms.txt.gz",
+            "description": "Software terms dictionary."
+        },
+        {
+            // changing the name is a breaking change.
+            "name": "software-tools",
+            "path": "./dict/software-tools.txt",
+            "description": "Software tools dictionary."
+        },
+        {
+            // Note this dictionary name is not consistent with `softwareTerms` but it is
+            // consistent with other dictionaries.
+            "name": "networking-terms",
+            "path": "./dict/networkingTerms.txt",
+            "description": "Software networking terms dictionary."
+        },
+        {
+            // Note this dictionary name is not consistent with `softwareTerms` but it is
+            // consistent with other dictionaries.
+            "name": "web-services",
+            "path": "./dict/webServices.txt",
+            "description": "Web Services and APIs dictionary."
+        },
+        {
+            "name": "computing-acronyms",
+            "path": "./dict/computing-acronyms.txt",
+            "description": "Common acronyms related to computing."
+        },
+        {
+            "name": "coding-compound-terms",
+            "path": "./dict/coding-compound-terms.txt",
+            "description": "Common coding compound terms."
+        },
+        {
+            "name": "software-terms-alternative",
+            "path": "./dict/software-terms-alternative.txt",
+            "description": "Alternative software terms dictionary."
+        }
+    ],
+    // Enable `softwareTerms` by default if this extension is imported.
+    "dictionaries": [
+        "softwareTerms",
+        "coding-compound-terms",
+        "computing-acronyms",
+        "software-term-suggestions",
+        "software-tools",
+        // "networking-terms" - is not included by default because it is very specific.
+        "web-services"
+    ]
+}

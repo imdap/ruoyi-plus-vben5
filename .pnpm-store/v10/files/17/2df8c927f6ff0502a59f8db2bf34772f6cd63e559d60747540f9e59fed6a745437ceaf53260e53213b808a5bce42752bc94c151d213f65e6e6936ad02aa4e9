@@ -1,0 +1,2 @@
+export { findMatchingFileTypes as getLanguagesForBasename, getFileTypesForExt as getLanguagesForExt, isFileTypeGenerated as isGenerated, } from '@cspell/filetypes';
+//# sourceMappingURL=fileTypes.js.map

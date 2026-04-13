@@ -1,0 +1,81 @@
+{
+  "name": "@v-c/util",
+  "type": "module",
+  "version": "1.0.19",
+  "description": "Vue3 components utils",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": {
+    "name": "aibayanyu20",
+    "email": "aibayanyu@qq.com",
+    "url": "https://yanyu.me"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./dist/*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "default": "./dist/*.js"
+    },
+    "./dist/Children/*": {
+      "types": "./dist/Children/*.d.ts",
+      "import": "./dist/Children/*.js",
+      "default": "./dist/Children/*.js"
+    },
+    "./dist/Dom/*": {
+      "types": "./dist/Dom/*.d.ts",
+      "import": "./dist/Dom/*.js",
+      "default": "./dist/Dom/*.js"
+    },
+    "./dist/hooks/*": {
+      "types": "./dist/hooks/*.d.ts",
+      "import": "./dist/hooks/*.js",
+      "default": "./dist/hooks/*.js"
+    },
+    "./dist/props-util": {
+      "types": "./dist/props-util/index.d.ts",
+      "import": "./dist/props-util/index.js",
+      "default": "./dist/props-util/index.js"
+    },
+    "./dist/props-util/index.js": {
+      "types": "./dist/props-util/index.d.ts",
+      "import": "./dist/props-util/index.js",
+      "default": "./dist/props-util/index.js"
+    },
+    "./dist/utils/*": {
+      "types": "./dist/utils/*.d.ts",
+      "import": "./dist/utils/*.js",
+      "default": "./dist/utils/*.js"
+    },
+    "./dist/vueuse/*": {
+      "types": "./dist/vueuse/*.d.ts",
+      "import": "./dist/vueuse/*.js",
+      "default": "./dist/vueuse/*.js"
+    },
+    "./dist/debug/*": {
+      "types": "./dist/debug/*.d.ts",
+      "import": "./dist/debug/*.js",
+      "default": "./dist/debug/*.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "prepublish": "pnpm build",
+    "bump": "bumpp --release patch"
+  }
+}

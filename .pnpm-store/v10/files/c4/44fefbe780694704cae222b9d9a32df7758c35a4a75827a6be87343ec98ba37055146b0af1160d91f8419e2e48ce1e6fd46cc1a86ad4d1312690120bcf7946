@@ -1,0 +1,16 @@
+import * as vue199 from "vue";
+import { Ref } from "vue";
+
+//#region src/_util/hooks/useMergedMask.d.ts
+interface MaskConfig {
+  enabled?: boolean;
+  blur?: boolean;
+  closable?: boolean;
+}
+type MaskType = MaskConfig | boolean;
+declare function normalizeMaskConfig(mask?: MaskType, maskClosable?: boolean): MaskConfig;
+declare function useMergedMask(mask: Ref<MaskType | undefined>, contextMask: Ref<MaskType | undefined>, prefixCls: Ref<string | undefined>, maskClosable?: Ref<boolean | undefined>): readonly [vue199.ComputedRef<boolean>, vue199.ComputedRef<{
+  mask: string | undefined;
+}>, vue199.ComputedRef<boolean>];
+//#endregion
+export { MaskConfig, MaskType, normalizeMaskConfig, useMergedMask };

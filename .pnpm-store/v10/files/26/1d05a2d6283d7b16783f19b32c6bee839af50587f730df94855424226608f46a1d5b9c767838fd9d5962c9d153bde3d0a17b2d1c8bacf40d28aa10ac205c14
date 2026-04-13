@@ -1,0 +1,128 @@
+import { SemanticClassNames, SemanticStyles } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { FormLabelAlign } from "./interface.js";
+import { ColPropsWithClass, FormTooltipProps } from "./FormItemLabel.js";
+import { InternalNamePath, Meta, NamePath, Rule, ValidateMessages } from "./types.js";
+import { FormLayout, FormSemanticName, RequiredMark } from "./Form.js";
+import { FeedbackIcons, ValidateStatus } from "./FormItem/index.js";
+import { Variant } from "../config-provider/context.js";
+import * as vue994 from "vue";
+import { Ref } from "vue";
+import { Key } from "@v-c/util/dist/type";
+
+//#region src/form/context.d.ts
+/** Form Context. Set top form style and pass to Form Item usage. */
+interface FormFieldRegister {
+  namePath: () => InternalNamePath;
+  getValue: () => any;
+  getMeta: () => Meta;
+  rules?: () => Rule[];
+  validateRules: (options?: Record<string, any>) => Promise<void>;
+  resetField: () => void;
+  clearValidate: () => void;
+  setFieldState?: (state: Partial<Meta> & {
+    errors?: any[];
+    warnings?: any[];
+    value?: any;
+  }) => void;
+}
+interface FormContextProps {
+  classes?: SemanticClassNames<FormSemanticName>;
+  styles?: SemanticStyles<FormSemanticName>;
+  layout: FormLayout;
+  name?: string;
+  colon?: boolean;
+  labelAlign?: FormLabelAlign;
+  labelWrap?: boolean;
+  labelCol?: ColPropsWithClass;
+  wrapperCol?: ColPropsWithClass;
+  requiredMark?: RequiredMark;
+  feedbackIcons?: FeedbackIcons;
+  model?: Record<string, any>;
+  rules?: Record<string, Rule[]>;
+  validateTrigger?: string | string[] | false;
+  validateMessages?: ValidateMessages;
+  preserve?: boolean;
+  clearOnDestroy?: boolean;
+  addField?: (eventKey: string, field: FormFieldRegister) => void;
+  removeField?: (eventKey: string) => void;
+  onValidate?: (name: InternalNamePath, status: boolean, errors: any[] | null) => void;
+  triggerValuesChange?: (namePath: InternalNamePath, value: any) => void;
+  triggerFieldsChange?: (namePathList?: InternalNamePath[]) => void;
+  getFieldValue?: (namePath: InternalNamePath) => any;
+  getFieldsValue?: (nameList?: InternalNamePath[] | true) => any;
+  tooltip?: FormTooltipProps;
+}
+declare function useFormContextProvider(value: Ref<FormContextProps>): void;
+declare function useFormContext(): Ref<FormContextProps>;
+/** Used for ErrorList only */
+interface FormItemPrefixContextProps {
+  prefixCls: string;
+  status?: ValidateStatus;
+}
+declare function useFormItemPrefixContextProvider(value: Ref<FormItemPrefixContextProps>): void;
+declare const FormItemPrefixContextProvider: vue994.DefineSetupFnComponent<FormItemPrefixContextProps, {}, {}, FormItemPrefixContextProps & {}, vue994.PublicProps>;
+declare function useFormItemPrefixContext(): Ref<{
+  prefixCls: string;
+}, {
+  prefixCls: string;
+} | {
+  prefixCls: string;
+}>;
+declare function useVariantContextProvider(variant: Ref<Variant | undefined>): void;
+declare function useVariantContext(): Ref<"outlined" | "borderless" | "filled" | "underlined" | undefined, "outlined" | "borderless" | "filled" | "underlined" | undefined>;
+interface FormItemStatusContextProps {
+  isFormItemInput?: boolean;
+  status?: ValidateStatus;
+  errors?: any[];
+  warnings?: any[];
+  hasFeedback?: boolean;
+  feedbackIcon?: any;
+  name?: NamePath;
+}
+declare function useFormItemInputContextProvider(value: Ref<FormItemStatusContextProps>): void;
+declare function useFormItemInputContext(): Ref<{
+  isFormItemInput?: boolean | undefined;
+  status?: ValidateStatus | undefined;
+  errors?: any[] | undefined;
+  warnings?: any[] | undefined;
+  hasFeedback?: boolean | undefined;
+  feedbackIcon?: any;
+  name?: NamePath;
+}, FormItemStatusContextProps | {
+  isFormItemInput?: boolean | undefined;
+  status?: ValidateStatus | undefined;
+  errors?: any[] | undefined;
+  warnings?: any[] | undefined;
+  hasFeedback?: boolean | undefined;
+  feedbackIcon?: any;
+  name?: NamePath;
+}>;
+/** `noStyle` Form Item Context. Used for error collection */
+type ReportMetaChange = (meta: Meta, uniqueKeys: Key[]) => void;
+declare function useNoStyleItemContextProvider(value: ReportMetaChange): void;
+declare const NoStyleItemContextProvider: vue994.DefineSetupFnComponent<{
+  value: ReportMetaChange;
+}, {}, {}, {
+  value: ReportMetaChange;
+} & {}, vue994.PublicProps>;
+declare function useNoStyleItemContext(): ReportMetaChange | null;
+declare const NoFormStyle: vue994.DefineSetupFnComponent<{
+  override?: boolean;
+  status?: boolean;
+}, {}, {}, {
+  override?: boolean;
+  status?: boolean;
+} & {}, vue994.PublicProps>;
+interface FormItemProviderProps {
+  fieldId: Ref<string | undefined>;
+  triggerChange: () => void;
+  triggerBlur: () => void;
+  triggerFocus: () => void;
+  clearValidate: () => void;
+}
+declare function useFormItemProvider(value: FormItemProviderProps): void;
+declare function useFormItemContext(rest?: boolean): FormItemProviderProps | undefined;
+declare function useFormItemProviderRest(): void;
+//#endregion
+export { FormContextProps, FormFieldRegister, FormItemPrefixContextProps, FormItemPrefixContextProvider, FormItemProviderProps, FormItemStatusContextProps, NoFormStyle, NoStyleItemContextProvider, ReportMetaChange, useFormContext, useFormContextProvider, useFormItemContext, useFormItemInputContext, useFormItemInputContextProvider, useFormItemPrefixContext, useFormItemPrefixContextProvider, useFormItemProvider, useFormItemProviderRest, useNoStyleItemContext, useNoStyleItemContextProvider, useVariantContext, useVariantContextProvider };

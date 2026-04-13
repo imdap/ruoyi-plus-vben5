@@ -1,0 +1,61 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { TooltipEmits, TooltipRef } from "../tooltip/index.js";
+import { PopoverProps, PopoverSemanticClassNames, PopoverSemanticName, PopoverSemanticStyles } from "../popover/index.js";
+import PurePanel from "./PurePanel.js";
+import { ButtonProps, LegacyButtonType } from "../button/Button.js";
+import "../button/index.js";
+import * as vue240 from "vue";
+import { App, SlotsType } from "vue";
+
+//#region src/popconfirm/index.d.ts
+type PopconfirmSemanticName = PopoverSemanticName;
+type PopconfirmSemanticClassNames = PopoverSemanticClassNames;
+type PopconfirmSemanticStyles = PopoverSemanticStyles;
+type PopconfirmClassNamesType = SemanticClassNamesType<PopconfirmProps, PopconfirmSemanticClassNames>;
+type PopconfirmStylesType = SemanticStylesType<PopconfirmProps, PopconfirmSemanticStyles>;
+interface PopconfirmProps extends Omit<PopoverProps, 'title' | 'content' | 'classes' | 'styles'>, PopconfirmEmitsProps {
+  title?: VueNode;
+  description?: VueNode;
+  disabled?: boolean;
+  okText?: VueNode;
+  cancelText?: VueNode;
+  okType?: LegacyButtonType;
+  okButtonProps?: ButtonProps;
+  cancelButtonProps?: ButtonProps;
+  showCancel?: boolean;
+  icon?: VueNode;
+  classes?: PopconfirmClassNamesType;
+  styles?: PopconfirmStylesType;
+  onConfirm?: (e?: MouseEvent) => void;
+}
+interface PopconfirmRef extends TooltipRef {}
+interface PopconfirmEmits extends TooltipEmits {
+  openChange: (open: boolean, e?: MouseEvent | KeyboardEvent) => void;
+  confirm: (e?: MouseEvent) => void;
+  cancel: (e?: MouseEvent) => void;
+  popupClick: (e: MouseEvent) => void;
+}
+interface PopconfirmEmitsProps {
+  onOpenChange?: PopconfirmEmits['openChange'];
+  onConfirm?: PopconfirmEmits['confirm'];
+  onCancel?: PopconfirmEmits['cancel'];
+  onPopupClick?: PopconfirmEmits['popupClick'];
+}
+interface PopconfirmSlots {
+  default?: () => any;
+  title?: () => any;
+  description?: () => any;
+  icon?: () => any;
+  okText?: () => any;
+  cancelText?: () => any;
+}
+declare const InternalPopconfirm: vue240.DefineSetupFnComponent<PopconfirmProps, PopconfirmEmits, SlotsType<PopconfirmSlots>, PopconfirmProps, vue240.PublicProps>;
+type PopconfirmType = typeof InternalPopconfirm & {
+  install: (app: App) => void;
+  _InternalPanelDoNotUseOrYouWillBeFired: typeof PurePanel;
+};
+declare const Popconfirm: PopconfirmType;
+//#endregion
+export { PopconfirmClassNamesType, PopconfirmEmits, PopconfirmEmitsProps, PopconfirmProps, PopconfirmRef, PopconfirmSemanticClassNames, PopconfirmSemanticName, PopconfirmSemanticStyles, PopconfirmSlots, PopconfirmStylesType, Popconfirm as default };

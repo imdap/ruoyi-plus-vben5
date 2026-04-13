@@ -1,0 +1,329 @@
+import { useDrawerContext, useDrawerProvide } from "./context.js";
+import DrawerPanel_default from "./DrawerPanel.js";
+import useDrag from "./hooks/useDrag.js";
+import useFocusable from "./hooks/useFocusable.js";
+import { parseWidthHeight } from "./util.js";
+import { Transition, computed, createVNode, defineComponent, mergeProps, onBeforeUnmount, shallowRef, vShow, watch, withDirectives } from "vue";
+import { clsx } from "@v-c/util";
+import pickAttrs from "@v-c/util/dist/pickAttrs";
+import { getAttrStyleAndClass, toPropsRefs } from "@v-c/util/dist/props-util";
+import { getTransitionProps } from "@v-c/util/dist/utils/transition";
+//#region src/DrawerPopup.tsx
+var DrawerPopup = /* @__PURE__ */ defineComponent((props, { expose, attrs, slots }) => {
+	const panelRef = shallowRef();
+	const { open, autoFocus, placement, push, maxSize, focusTrap, mask } = toPropsRefs(props, "open", "autoFocus", "push", "placement", "maxSize", "focusTrap", "mask");
+	expose({ panelRef });
+	useFocusable(() => panelRef.value, open, autoFocus, focusTrap, mask);
+	const pushed = shallowRef(false);
+	const parentContext = useDrawerContext();
+	const pushConfig = computed(() => {
+		if (typeof push.value === "boolean") return push.value ? {} : { distance: 0 };
+		else return push.value || {};
+	});
+	const pushDistance = computed(() => pushConfig.value?.distance ?? parentContext.value?.pushDistance ?? 180);
+	useDrawerProvide(computed(() => {
+		return {
+			pushDistance: pushDistance.value,
+			push: () => {
+				pushed.value = true;
+			},
+			pull: () => {
+				pushed.value = false;
+			}
+		};
+	}));
+	watch(open, () => {
+		if (open.value) parentContext?.value?.push?.();
+		else parentContext.value?.pull?.();
+	}, { immediate: true });
+	onBeforeUnmount(() => {
+		parentContext.value?.pull?.();
+	});
+	const currentSize = shallowRef();
+	const isHorizontal = computed(() => placement.value === "left" || placement.value === "right");
+	const mergedSize = computed(() => {
+		const legacySize = isHorizontal.value ? props.width : props.height;
+		return parseWidthHeight(props?.size ?? legacySize ?? currentSize.value ?? props?.defaultSize ?? (isHorizontal.value ? 378 : void 0));
+	});
+	const wrapperStyle = computed(() => {
+		const nextWrapperStyle = {};
+		if (pushed.value && pushDistance.value) switch (placement.value) {
+			case "top":
+				nextWrapperStyle.transform = `translateY(${pushDistance.value}px)`;
+				break;
+			case "bottom":
+				nextWrapperStyle.transform = `translateY(${-pushDistance.value}px)`;
+				break;
+			case "left":
+				nextWrapperStyle.transform = `translateX(${pushDistance.value}px)`;
+				break;
+			default:
+				nextWrapperStyle.transform = `translateX(${-pushDistance.value}px)`;
+				break;
+		}
+		if (isHorizontal.value) {
+			const parseWidth = parseWidthHeight(mergedSize.value);
+			nextWrapperStyle.width = typeof parseWidth === "number" ? `${parseWidth}px` : parseWidth;
+		} else {
+			const parseHeight = parseWidthHeight(mergedSize.value);
+			nextWrapperStyle.height = typeof parseHeight === "number" ? `${parseHeight}px` : parseHeight;
+		}
+		return nextWrapperStyle;
+	});
+	const wrapperRef = shallowRef();
+	const isResizeable = computed(() => !!props.resizable);
+	const resizeConfig = computed(() => typeof props?.resizable === "object" ? props?.resizable : {});
+	const onInternalResize = (size) => {
+		currentSize.value = size;
+		resizeConfig?.value?.onResize?.(size);
+	};
+	const { dragElementProps, isDragging } = useDrag({
+		prefixCls: computed(() => `${props.prefixCls}-resizable`),
+		direction: placement,
+		className: computed(() => props?.classNames?.dragger),
+		style: computed(() => props?.styles?.dragger),
+		maxSize,
+		containerRef: wrapperRef,
+		currentSize: mergedSize,
+		onResize: onInternalResize,
+		onResizeStart: () => resizeConfig?.value?.onResizeStart?.(),
+		onResizeEnd: () => resizeConfig?.value?.onResizeEnd?.()
+	});
+	return () => {
+		const { onMouseEnter, onMouseOver, onMouseLeave, onClick, onKeyDown, onKeyUp, maskMotion, maskStyle, styles, prefixCls, classNames: drawerClassNames, maskClassName, maskClosable, onClose, id, drawerRender, motion, rootStyle, rootClassName, zIndex, inline, mask } = props;
+		const { className, style, restAttrs } = getAttrStyleAndClass(attrs);
+		const maskMotionProps = getTransitionProps(maskMotion?.name, maskMotion);
+		const onMaskClose = (e) => {
+			if (maskClosable && open.value) onClose?.(e);
+		};
+		const maskNode = createVNode(Transition, mergeProps({ "key": "mask" }, maskMotionProps), { default: () => [withDirectives(createVNode("div", {
+			"class": clsx(`${prefixCls}-mask`, drawerClassNames?.mask, maskClassName),
+			"style": [maskStyle, styles?.mask],
+			"onClick": onMaskClose
+		}, null), [[vShow, open.value]])] });
+		const eventHandlers = {
+			onMouseEnter,
+			onMouseOver,
+			onMouseLeave,
+			onClick,
+			onKeyDown,
+			onKeyUp
+		};
+		const content = createVNode(DrawerPanel_default, mergeProps({
+			"id": id,
+			"prefixCls": prefixCls,
+			"class": clsx(className, drawerClassNames?.section),
+			"style": [style, styles?.section]
+		}, restAttrs, eventHandlers), { default: () => [slots?.default?.()] });
+		const motionProps = typeof motion === "function" ? motion(placement.value) : motion;
+		const panelNode = createVNode(Transition, mergeProps(getTransitionProps(motionProps?.name, motionProps), {
+			"onBeforeEnter": () => {
+				props?.afterOpenChange?.(true);
+			},
+			"onAfterLeave": () => {
+				props?.afterOpenChange?.(false);
+			}
+		}), { default: () => [withDirectives(createVNode("div", mergeProps({
+			"ref": wrapperRef,
+			"class": clsx(`${prefixCls}-content-wrapper`, isDragging.value && `${prefixCls}-content-wrapper-dragging`, drawerClassNames?.wrapper),
+			"style": [wrapperStyle.value, styles?.wrapper]
+		}, pickAttrs(restAttrs, { data: true })), [isResizeable.value && createVNode("div", dragElementProps.value, null), drawerRender ? drawerRender(content) : content]), [[vShow, open.value]])] });
+		const containerStyle = { ...rootStyle };
+		if (zIndex) containerStyle.zIndex = zIndex;
+		return createVNode("div", {
+			"class": clsx(prefixCls, `${prefixCls}-${placement.value}`, rootClassName, {
+				[`${prefixCls}-open`]: open.value,
+				[`${prefixCls}-inline`]: inline
+			}),
+			"style": containerStyle,
+			"tabindex": -1,
+			"ref": panelRef
+		}, [mask && maskNode, panelNode]);
+	};
+}, {
+	props: {
+		prefixCls: {
+			type: String,
+			required: true
+		},
+		open: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		inline: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		push: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		forceRender: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		autoFocus: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		focusTrap: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		keyboard: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		rootClassName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		rootStyle: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		zIndex: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		placement: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		id: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		width: {
+			type: [Number, String],
+			required: false,
+			default: void 0
+		},
+		height: {
+			type: [Number, String],
+			required: false,
+			default: void 0
+		},
+		size: {
+			type: [Number, String],
+			required: false,
+			default: void 0
+		},
+		maxSize: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		mask: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		maskClosable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		maskClassName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		maskStyle: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		motion: {
+			type: [Object, Function],
+			required: false,
+			default: void 0
+		},
+		maskMotion: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		afterOpenChange: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onClose: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		classNames: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		drawerRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		defaultSize: {
+			type: [Number, String],
+			required: false,
+			default: void 0
+		},
+		resizable: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		onMouseEnter: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseOver: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseLeave: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onKeyDown: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onKeyUp: {
+			type: Function,
+			required: false,
+			default: void 0
+		}
+	},
+	name: "DrawerPopup",
+	inheritAttrs: false
+});
+//#endregion
+export { DrawerPopup as default };

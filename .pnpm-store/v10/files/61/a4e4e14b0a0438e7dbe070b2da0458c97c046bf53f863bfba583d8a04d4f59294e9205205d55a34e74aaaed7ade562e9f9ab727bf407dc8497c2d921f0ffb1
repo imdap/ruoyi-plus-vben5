@@ -1,0 +1,18 @@
+import { RenderNodeFn } from "../_util/type.js";
+import "./generatePicker/index.js";
+import { PickerLocale, PickerProps as PickerProps$1 } from "./generatePicker/interface.js";
+import * as vue63 from "vue";
+import { PickerMode } from "@v-c/picker";
+
+//#region src/date-picker/util.d.ts
+declare function getPlaceholder(locale: PickerLocale, picker?: PickerMode, customizePlaceholder?: string): string;
+declare function getRangePlaceholder(locale: PickerLocale, picker?: PickerMode, customizePlaceholder?: [string, string]): [string, string] | undefined;
+declare function useIcons(props: Pick<PickerProps$1, 'allowClear' | 'removeIcon'>, prefixCls: string): readonly [false, string | number | boolean | vue63.VNode<vue63.RendererNode, vue63.RendererElement, {
+  [key: string]: any;
+}> | RenderNodeFn<any[]> | null] | readonly [{
+  clearIcon: VueNode;
+}, string | number | boolean | vue63.VNode<vue63.RendererNode, vue63.RendererElement, {
+  [key: string]: any;
+}> | RenderNodeFn<any[]> | null];
+//#endregion
+export { getPlaceholder, getRangePlaceholder, useIcons };

@@ -1,0 +1,7 @@
+import { ComponentToken } from "./token.js";
+import * as vue736 from "vue";
+
+//#region src/input-number/style/index.d.ts
+declare const _default: (prefixCls: vue736.Ref<string>, rootCls?: vue736.Ref<string | undefined>) => readonly [vue736.Ref<string, string>, vue736.ComputedRef<string | undefined>];
+//#endregion
+export { type ComponentToken, _default as default };

@@ -1,0 +1,15 @@
+import { Locale } from "../locale/index.js";
+import { QRCodeProps, StatusRenderInfo } from "./interface.js";
+import * as vue318 from "vue";
+
+//#region src/qrcode/QrcodeStatus.d.ts
+interface QRcodeStatusProps {
+  prefixCls: string;
+  locale?: Locale['QRCode'];
+  onRefresh?: () => void;
+  statusRender?: QRCodeProps['statusRender'];
+  status: StatusRenderInfo['status'];
+}
+declare const QRcodeStatus: vue318.DefineSetupFnComponent<QRcodeStatusProps, {}, {}, QRcodeStatusProps & {}, vue318.PublicProps>;
+//#endregion
+export { QRcodeStatusProps, QRcodeStatus as default };

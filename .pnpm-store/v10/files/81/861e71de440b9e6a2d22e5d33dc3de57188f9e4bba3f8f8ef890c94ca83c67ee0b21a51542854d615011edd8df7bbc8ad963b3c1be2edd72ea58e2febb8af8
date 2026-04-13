@@ -1,0 +1,66 @@
+import { FullToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue851 from "vue";
+
+//#region src/color-picker/style/index.d.ts
+interface ComponentToken {}
+/**
+ * @desc ColorPicker 组件的 Token
+ * @descEN Token for ColorPicker component
+ */
+interface ColorPickerToken extends FullToken<'ColorPicker'> {
+  /**
+   * @desc ColorPicker 宽度
+   * @descEN Width of ColorPicker
+   */
+  colorPickerWidth: number;
+  /**
+   * @desc ColorPicker 内嵌阴影
+   * @descEN Inset shadow of ColorPicker
+   */
+  colorPickerInsetShadow: string;
+  /**
+   * @desc ColorPicker 处理器尺寸
+   * @descEN Handler size of ColorPicker
+   */
+  colorPickerHandlerSize: number;
+  /**
+   * @desc ColorPicker 小号处理器尺寸
+   * @descEN Small handler size of ColorPicker
+   */
+  colorPickerHandlerSizeSM: number;
+  /**
+   * @desc ColorPicker 滑块高度
+   * @descEN Slider height of ColorPicker
+   */
+  colorPickerSliderHeight: number;
+  /**
+   * @desc ColorPicker 预览尺寸
+   * @descEN Preview size of ColorPicker
+   */
+  colorPickerPreviewSize: number;
+  /**
+   * @desc ColorPicker Alpha 输入宽度
+   * @descEN Alpha input width of ColorPicker
+   */
+  colorPickerAlphaInputWidth: number;
+  /**
+   * @desc ColorPicker 输入数字处理器宽度
+   * @descEN Input number handle width of ColorPicker
+   */
+  colorPickerInputNumberHandleWidth: number;
+  /**
+   * @desc ColorPicker 预设颜色尺寸
+   * @descEN Preset color size of ColorPicker
+   */
+  colorPickerPresetColorSize: number;
+}
+declare function genActiveStyle(token: ColorPickerToken, borderColor: string, outlineColor: string): {
+  borderInlineEndWidth: number;
+  borderColor: string;
+  boxShadow: string;
+  outline: number;
+};
+declare const _default: (prefixCls: vue851.Ref<string>, rootCls?: vue851.Ref<string | undefined>) => readonly [vue851.Ref<string, string>, vue851.ComputedRef<string | undefined>];
+//#endregion
+export { ColorPickerToken, ComponentToken, _default as default, genActiveStyle };

@@ -1,0 +1,70 @@
+import { MatcherType, SelectorKind } from "../../types/rule.js";
+export const TV_STRINGS = {
+    kind: SelectorKind.Callee,
+    match: [
+        {
+            type: MatcherType.String
+        }
+    ],
+    name: "^tv$"
+};
+export const TV_VARIANT_VALUES = {
+    kind: SelectorKind.Callee,
+    match: [
+        {
+            path: "^variants.*$",
+            type: MatcherType.ObjectValue
+        }
+    ],
+    name: "^tv$"
+};
+export const TV_BASE_VALUES = {
+    kind: SelectorKind.Callee,
+    match: [
+        {
+            path: "^base$",
+            type: MatcherType.ObjectValue
+        }
+    ],
+    name: "^tv$"
+};
+export const TV_SLOTS_VALUES = {
+    kind: SelectorKind.Callee,
+    match: [
+        {
+            path: "^slots.*$",
+            type: MatcherType.ObjectValue
+        }
+    ],
+    name: "^tv$"
+};
+export const TV_COMPOUND_VARIANTS_CLASS = {
+    kind: SelectorKind.Callee,
+    match: [
+        {
+            path: "^compoundVariants\\[\\d+\\]\\.(?:className|class).*$",
+            type: MatcherType.ObjectValue
+        }
+    ],
+    name: "^tv$"
+};
+export const TV_COMPOUND_SLOTS_CLASS = {
+    kind: SelectorKind.Callee,
+    match: [
+        {
+            path: "^compoundSlots\\[\\d+\\]\\.(?:className|class).*$",
+            type: MatcherType.ObjectValue
+        }
+    ],
+    name: "^tv$"
+};
+/** @see https://github.com/nextui-org/tailwind-variants?tab=readme-ov-file */
+export const TV = [
+    TV_STRINGS,
+    TV_VARIANT_VALUES,
+    TV_COMPOUND_VARIANTS_CLASS,
+    TV_BASE_VALUES,
+    TV_SLOTS_VALUES,
+    TV_COMPOUND_SLOTS_CLASS
+];
+//# sourceMappingURL=tv.js.map

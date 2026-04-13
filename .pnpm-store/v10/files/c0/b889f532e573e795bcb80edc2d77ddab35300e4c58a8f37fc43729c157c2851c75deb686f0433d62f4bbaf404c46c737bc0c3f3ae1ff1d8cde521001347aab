@@ -1,0 +1,19 @@
+import { AnyObject, EmptyEmit } from "../_util/type.js";
+import { ColumnType } from "./interface.js";
+import { ColumnProps } from "./Column.js";
+import * as vue113 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/table/ColumnGroup.d.ts
+interface ColumnGroupProps<RecordType = AnyObject> extends Omit<ColumnType<RecordType>, 'children'> {
+  children: ColumnProps<RecordType> | ColumnProps<RecordType>[];
+}
+interface ColumnGroupSlots {
+  default?: () => any;
+}
+/**
+ * Syntactic sugar for `columns` prop. HOC will not work on this.
+ */
+declare const ColumnGroup: vue113.DefineSetupFnComponent<ColumnGroupProps<AnyObject>, EmptyEmit, SlotsType<ColumnGroupSlots>, ColumnGroupProps<AnyObject>, vue113.PublicProps>;
+//#endregion
+export { ColumnGroupProps, ColumnGroupSlots, ColumnGroup as default };

@@ -1,0 +1,30 @@
+{
+    "name": "@types/nprogress",
+    "version": "0.2.3",
+    "description": "TypeScript definitions for nprogress",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/nprogress",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Judah Gabriel Himango",
+            "githubUsername": "JudahGabriel",
+            "url": "https://github.com/JudahGabriel"
+        },
+        {
+            "name": "Ovyerus",
+            "githubUsername": "Ovyerus",
+            "url": "https://github.com/Ovyerus"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/nprogress"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "8de1efbcdfa84590c057c3811de164746f7f005fb802f694a9cb661062f2f4f4",
+    "typeScriptVersion": "4.5"
+}

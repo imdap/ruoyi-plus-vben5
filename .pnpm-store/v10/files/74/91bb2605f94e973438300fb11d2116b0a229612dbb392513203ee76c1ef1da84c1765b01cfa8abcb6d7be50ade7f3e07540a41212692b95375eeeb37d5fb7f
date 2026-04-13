@@ -1,0 +1,135 @@
+{
+  "name": "pinia-plugin-persistedstate",
+  "type": "module",
+  "version": "4.7.1",
+  "packageManager": "pnpm@10.20.0",
+  "description": "Configurable persistence and rehydration of Pinia stores.",
+  "author": "praz <dev@praz.me> (https://praz.me)",
+  "license": "MIT",
+  "homepage": "https://praz.codeberg.page/pinia-plugin-persistedstate",
+  "repository": {
+    "type": "git",
+    "url": "https://codeberg.org/praz/pinia-plugin-persistedstate.git"
+  },
+  "bugs": {
+    "url": "https://codeberg.org/praz/pinia-plugin-persistedstate/issues"
+  },
+  "keywords": [
+    "vue",
+    "store",
+    "pinia",
+    "persistence",
+    "pinia-plugin",
+    "nuxt",
+    "nuxt-module"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./nuxt": {
+      "import": {
+        "types": "./dist/nuxt/types.d.mts",
+        "default": "./dist/nuxt/module.mjs"
+      }
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm build:plugin && pnpm build:module",
+    "build:plugin": "tsdown",
+    "build:module": "nuxt-module-build build --outDir dist/nuxt",
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build prepare && nuxi prepare playground",
+    "release": "changelogen --release --push",
+    "docs": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "publint": "publint",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "test:ui": "vitest --ui",
+    "typecheck": "nuxi typecheck"
+  },
+  "peerDependencies": {
+    "@nuxt/kit": ">=3.0.0",
+    "@pinia/nuxt": ">=0.10.0",
+    "pinia": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@nuxt/kit": {
+      "optional": true
+    },
+    "@pinia/nuxt": {
+      "optional": true
+    },
+    "pinia": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "defu": "^6.1.4"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^6.2.0",
+    "@iconify-json/catppuccin": "^1.2.17",
+    "@nuxt/devtools": "^3.0.1",
+    "@nuxt/kit": "^4.2.0",
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.2.0",
+    "@pinia/nuxt": "^0.11.2",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@shikijs/vitepress-twoslash": "^3.14.0",
+    "@types/node": "^24.9.2",
+    "@vitest/coverage-v8": "^4.0.6",
+    "@vitest/ui": "^4.0.6",
+    "changelogen": "^0.6.2",
+    "esbuild": "^0.25.11",
+    "eslint": "^9.39.0",
+    "eslint-plugin-format": "^1.0.2",
+    "happy-dom": "^20.0.10",
+    "lint-staged": "^16.2.6",
+    "nuxt": "^4.2.0",
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "link:",
+    "publint": "^0.3.15",
+    "rollup": "^4.52.5",
+    "rollup-plugin-esbuild": "^6.2.1",
+    "simple-git-hooks": "^2.13.1",
+    "tsdown": "^0.15.12",
+    "tsup": "^8.5.0",
+    "typescript": "~5.9.3",
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-group-icons": "^1.6.5",
+    "vitest": "^4.0.6",
+    "vue": "^3.5.22",
+    "vue-tsc": "^3.1.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "esbuild",
+      "simple-git-hooks"
+    ]
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+}

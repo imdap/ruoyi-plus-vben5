@@ -1,0 +1,32 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue759 from "vue";
+
+//#region src/splitter/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 拖拽标识元素大小
+   * @descEN Drag and drop the identity element size
+   * @deprecated Please use `splitBarDraggableSize` instead.
+   */
+  resizeSpinnerSize: number;
+  /**
+   * @desc 拖拽标识元素大小
+   * @descEN Drag and drop the identity element size
+   */
+  splitBarDraggableSize: number;
+  /**
+   * @desc 拖拽元素显示大小
+   * @descEN Drag the element display size
+   */
+  splitBarSize: number;
+  /**
+   * @desc 拖拽触发区域大小
+   * @descEN Drag and drop trigger area size
+   */
+  splitTriggerSize: number;
+}
+declare const prepareComponentToken: GetDefaultToken<'Splitter'>;
+declare const _default: (prefixCls: vue759.Ref<string>, rootCls?: vue759.Ref<string | undefined>) => readonly [vue759.Ref<string, string>, vue759.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

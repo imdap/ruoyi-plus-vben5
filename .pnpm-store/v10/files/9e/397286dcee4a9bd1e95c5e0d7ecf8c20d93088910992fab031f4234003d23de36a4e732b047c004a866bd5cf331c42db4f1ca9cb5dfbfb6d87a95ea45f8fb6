@@ -1,0 +1,6 @@
+import * as vue581 from "vue";
+
+//#region src/layout/style/sider.d.ts
+declare const _default: (prefixCls: vue581.Ref<string>, rootCls?: vue581.Ref<string | undefined>) => readonly [vue581.Ref<string, string>, vue581.ComputedRef<string | undefined>];
+//#endregion
+export { _default as default };

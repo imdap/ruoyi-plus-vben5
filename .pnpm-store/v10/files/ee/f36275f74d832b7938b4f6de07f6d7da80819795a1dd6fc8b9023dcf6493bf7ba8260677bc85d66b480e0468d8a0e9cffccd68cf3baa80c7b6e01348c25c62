@@ -1,0 +1,11 @@
+import { ConfigProviderProps } from "../../config-provider/define.js";
+import { Variant } from "../../config-provider/context.js";
+import * as vue579 from "vue";
+import { Ref } from "vue";
+
+//#region src/form/hooks/useVariant.d.ts
+type VariantComponents = keyof Pick<ConfigProviderProps, 'input' | 'inputNumber' | 'textArea' | 'mentions' | 'select' | 'cascader' | 'treeSelect' | 'datePicker' | 'timePicker' | 'rangePicker' | 'card'>;
+declare function useVariant(component: VariantComponents, variant?: Ref<Variant | undefined>, legacyBordered?: Ref<boolean | undefined> | boolean): readonly [vue579.ComputedRef<"outlined" | "borderless" | "filled" | "underlined">, vue579.ComputedRef<boolean>];
+declare const useVariants: typeof useVariant;
+//#endregion
+export { useVariant as default, useVariants };

@@ -1,0 +1,461 @@
+import { MaskType } from "../_util/hooks/useMergedMask.js";
+import { AnyObject, VueNode } from "../_util/type.js";
+import "../_util/hooks/index.js";
+import { WarningContextProps } from "../_util/warning.js";
+import { SeedToken } from "../theme/interface/seeds.js";
+import { MapToken } from "../theme/interface/maps/index.js";
+import { AliasToken } from "../theme/interface/alias.js";
+import { OverrideToken } from "../theme/interface/cssinjs-utils.js";
+import "../theme/interface/index.js";
+import { TooltipProps } from "../tooltip/index.js";
+import { FormProps } from "../form/Form.js";
+import { TimePickerProps } from "../time-picker/index.js";
+import { DatePickerProps, RangePickerProps } from "../date-picker/index.js";
+import { EmptyProps } from "../empty/index.js";
+import { ModalProps } from "../modal/interface.js";
+import { SelectProps } from "../select/index.js";
+import { PaginationProps } from "../pagination/interface.js";
+import { PopoverProps } from "../popover/index.js";
+import { PopconfirmProps } from "../popconfirm/index.js";
+import { CheckboxProps } from "../checkbox/Checkbox.js";
+import "../checkbox/index.js";
+import { MenuProps } from "../menu/index.js";
+import { DropdownProps } from "../dropdown/dropdown.js";
+import "../dropdown/index.js";
+import { SpinProps } from "../spin/index.js";
+import { TableProps } from "../table/InternalTable.js";
+import "../table/index.js";
+import { TourProps } from "../tour/index.js";
+import { TransferProps } from "../transfer/interface.js";
+import { ProgressProps } from "../progress/progress.js";
+import "../progress/index.js";
+import { UploadProps } from "../upload/interface.js";
+import { Locale } from "../locale/index.js";
+import { RenderEmptyHandler } from "./defaultRenderEmpty.js";
+import { ConfigProviderProps } from "./index.js";
+import { ShowWaveEffect } from "../_util/wave/interface.js";
+import { AlertProps } from "../alert/Alert.js";
+import "../alert/index.js";
+import { AnchorProps } from "../anchor/Anchor.js";
+import "../anchor/index.js";
+import { RibbonProps } from "../badge/Ribbon.js";
+import { BadgeProps } from "../badge/index.js";
+import { BreadcrumbProps } from "../breadcrumb/Breadcrumb.js";
+import { CalendarProps } from "../calendar/generateCalendar.js";
+import "../calendar/index.js";
+import { TabsProps } from "../tabs/index.js";
+import { CardProps } from "../card/Card.js";
+import { CardMetaProps } from "../card/CardMeta.js";
+import { CascaderProps } from "../cascader/index.js";
+import { CollapseProps } from "../collapse/Collapse.js";
+import "../collapse/index.js";
+import { ColorPickerProps } from "../color-picker/index.js";
+import { DescriptionsProps } from "../descriptions/index.js";
+import { DividerProps } from "../divider/index.js";
+import { DrawerProps } from "../drawer/index.js";
+import { FlexProps } from "../flex/interface.js";
+import "../flex/index.js";
+import { FloatButtonProps } from "../float-button/FloatButton.js";
+import { FloatButtonGroupProps } from "../float-button/FloatButtonGroup.js";
+import "../float-button/index.js";
+import { ImageProps } from "../image/index.js";
+import { InputNumberProps } from "../input-number/index.js";
+import { InputProps } from "../input/Input.js";
+import { OTPProps } from "../input/OTP/index.js";
+import { SearchProps } from "../input/Search.js";
+import { TextAreaProps } from "../input/TextArea.js";
+import { MasonryProps } from "../masonry/Masonry.js";
+import { ArgsProps } from "../notification/interface.js";
+import "../notification/index.js";
+import { QRCodeProps } from "../qrcode/index.js";
+import { RadioProps } from "../radio/interface.js";
+import { ResultProps } from "../result/index.js";
+import { SegmentedProps } from "../segmented/index.js";
+import { SkeletonProps } from "../skeleton/Skeleton.js";
+import "../skeleton/index.js";
+import { SliderProps } from "../slider/index.js";
+import { SpaceProps } from "../space/index.js";
+import { SplitterProps } from "../splitter/index.js";
+import { StatisticProps } from "../statistic/index.js";
+import { StepsProps } from "../steps/index.js";
+import { SwitchProps } from "../switch/index.js";
+import { TagProps } from "../tag/index.js";
+import { TimelineProps } from "../timeline/Timeline.js";
+import "../timeline/index.js";
+import { TreeProps } from "../tree/Tree.js";
+import { TreeSelectProps } from "../tree-select/index.js";
+import { BlockProps } from "../typography/interface.js";
+import { ButtonProps } from "../button/Button.js";
+import "../button/index.js";
+import * as vue334 from "vue";
+import { CSSProperties, Ref } from "vue";
+import { DerivativeFunc } from "@antdv-next/cssinjs";
+
+//#region src/config-provider/context.d.ts
+declare const defaultPrefixCls = "ant";
+declare const defaultIconPrefixCls = "anticon";
+type GetClassNamesOrEmptyObject<Config extends {
+  classes?: any;
+}> = Config extends {
+  classes?: infer ClassNames;
+} ? ClassNames : object;
+type GetStylesOrEmptyObject<Config extends {
+  styles?: any;
+}> = Config extends {
+  styles?: infer Styles;
+} ? Styles : object;
+type ComponentReturnType<T extends keyof ConfigComponentProps> = Omit<NonNullable<ConfigComponentProps[T]>, 'classes' | 'styles'> & {
+  classes: GetClassNamesOrEmptyObject<NonNullable<ConfigComponentProps[T]>>;
+  styles: GetStylesOrEmptyObject<NonNullable<ConfigComponentProps[T]>>;
+  getPrefixCls: ConfigConsumerProps['getPrefixCls'];
+  direction: ConfigConsumerProps['direction'];
+  getPopupContainer: ConfigConsumerProps['getPopupContainer'];
+};
+interface Theme {
+  primaryColor?: string;
+  infoColor?: string;
+  successColor?: string;
+  processingColor?: string;
+  errorColor?: string;
+  warningColor?: string;
+}
+interface CSPConfig {
+  nonce?: string;
+}
+type DirectionType = 'ltr' | 'rtl' | undefined;
+type MappingAlgorithm = DerivativeFunc<SeedToken, MapToken>;
+interface ComponentBaseProps {
+  rootClass?: string;
+  prefixCls?: string;
+}
+type ComponentsConfig = { [key in keyof OverrideToken]?: OverrideToken[key] & {
+  algorithm?: boolean | MappingAlgorithm | MappingAlgorithm[];
+} };
+interface ThemeConfig {
+  /**
+   * @descCN 用于修改 Design Token。
+   * @descEN Modify Design Token.
+   */
+  token?: Partial<AliasToken>;
+  /**
+   * @descCN 用于修改各个组件的 Component Token 以及覆盖该组件消费的 Alias Token。
+   * @descEN Modify Component Token and Alias Token applied to components.
+   */
+  components?: ComponentsConfig;
+  /**
+   * @descCN 用于修改 Seed Token 到 Map Token 的算法。
+   * @descEN Modify the algorithms of theme.
+   * @default defaultAlgorithm
+   */
+  algorithm?: MappingAlgorithm | MappingAlgorithm[];
+  /**
+   * @descCN 是否继承外层 `ConfigProvider` 中配置的主题。
+   * @descEN Whether to inherit the theme configured in the outer layer `ConfigProvider`.
+   * @default true
+   */
+  inherit?: boolean;
+  /**
+   * @descCN 是否开启 `hashed` 属性。如果你的应用中只存在一个版本的 antd，你可以设置为 `false` 来进一步减小样式体积。
+   * @descEN Whether to enable the `hashed` attribute. If there is only one version of antd in your application, you can set `false` to reduce the bundle size.
+   * @default true
+   * @since 5.0.0
+   */
+  hashed?: boolean;
+  /**
+   * @descCN 通过 `cssVar` 配置来开启 CSS 变量模式，这个配置会被继承。
+   * @descEN Enable CSS variable mode through `cssVar` configuration, This configuration will be inherited.
+   * @default false
+   * @since 5.12.0
+   */
+  cssVar?: {
+    /**
+     * @descCN css 变量的前缀
+     * @descEN Prefix for css variable.
+     * @default ant
+     */
+    prefix?: string;
+    /**
+     * @descCN 主题的唯一 key，版本低于 react@18 时需要手动设置。
+     * @descEN Unique key for theme, should be set manually < react@18.
+     */
+    key?: string;
+  };
+  /**
+   * @descCN 开启零运行时模式，不会在运行时产生样式，需要手动引入 CSS 文件。
+   * @descEN Enable zero-runtime mode, which will not generate style at runtime, need to import additional CSS file.
+   * @default true
+   * @since 6.0.0
+   * @example
+   * ```tsx
+   * import { ConfigProvider } from 'antd';
+   * import 'antdv-next/dist/antd.css';
+   *
+   * const Demo = () => (
+   *   <ConfigProvider theme={{ zeroRuntime: true }}>
+   *     <App />
+   *   </ConfigProvider>
+   *);
+   * ```
+   */
+  zeroRuntime?: boolean;
+}
+interface ComponentStyleConfig {
+  class?: string;
+  style?: CSSProperties;
+  classes?: any;
+  styles?: any;
+}
+type PopupOverflow = 'viewport' | 'scroll';
+declare const Variants: readonly ["outlined", "borderless", "filled", "underlined"];
+type Variant = (typeof Variants)[number];
+interface WaveConfig {
+  /**
+   * @descCN 是否禁用水波纹效果。
+   * @descEN Whether to disable wave effect.
+   * @default false
+   */
+  disabled?: boolean;
+  /**
+   * @descCN 自定义水波纹效果。
+   * @descEN Customized wave effect.
+   */
+  showEffect?: ShowWaveEffect;
+}
+type SpaceConfig = ComponentStyleConfig & Pick<SpaceProps, 'size' | 'classes' | 'styles'>;
+type ButtonConfig = ComponentStyleConfig & Pick<ButtonProps, 'classes' | 'styles' | 'autoInsertSpace' | 'variant' | 'color' | 'shape'> & {
+  loadingIcon?: VueNode;
+};
+type FlexConfig = ComponentStyleConfig & Pick<FlexProps, 'vertical'>;
+type AlertConfig = ComponentStyleConfig & Pick<AlertProps, 'closable' | 'closeIcon' | 'classes' | 'styles'> & {
+  successIcon?: VueNode;
+  infoIcon?: VueNode;
+  warningIcon?: VueNode;
+  errorIcon?: VueNode;
+};
+type BadgeConfig = ComponentStyleConfig & Pick<BadgeProps, 'classes' | 'styles'>;
+type TagConfig = ComponentStyleConfig & Pick<TagProps, 'variant' | 'closeIcon' | 'closable' | 'classes' | 'styles'>;
+type EmptyConfig = ComponentStyleConfig & Pick<EmptyProps, 'classes' | 'styles' | 'image'>;
+type SpinConfig = ComponentStyleConfig & Pick<SpinProps, 'indicator'>;
+type DescriptionsConfig = ComponentStyleConfig & Pick<DescriptionsProps, 'styles' | 'classes'>;
+type CollapseConfig = ComponentStyleConfig & Pick<CollapseProps, 'expandIcon'>;
+type QRcodeConfig = ComponentStyleConfig & Pick<QRCodeProps, 'classes' | 'styles'>;
+type ResultConfig = ComponentStyleConfig & Pick<ResultProps, 'classes' | 'styles'>;
+type AnchorStyleConfig = ComponentStyleConfig & Pick<AnchorProps, 'classes' | 'styles'>;
+type PaginationConfig = ComponentStyleConfig & Pick<PaginationProps, 'showSizeChanger'>;
+type DividerConfig = ComponentStyleConfig & Pick<DividerProps, 'classes' | 'styles'>;
+type SkeletonConfig = ComponentStyleConfig & Pick<SkeletonProps, 'styles' | 'classes'>;
+type StatisticConfig = ComponentStyleConfig & Pick<StatisticProps, 'classes' | 'styles'>;
+type TypographyConfig = ComponentStyleConfig & Pick<BlockProps, 'classes' | 'styles'>;
+type SplitterConfig = ComponentStyleConfig & Pick<SplitterProps, 'classes' | 'styles'>;
+type CalendarConfig = ComponentStyleConfig & Pick<CalendarProps<any>, 'classes' | 'styles'>;
+type FloatButtonConfig = ComponentStyleConfig & Pick<FloatButtonProps, 'classes' | 'styles'> & {
+  backTopIcon?: VueNode;
+};
+type FloatButtonGroupConfig = ComponentStyleConfig & Pick<FloatButtonGroupProps, 'classes' | 'styles'> & {
+  closeIcon?: VueNode;
+};
+type TooltipConfig = ComponentStyleConfig & Pick<TooltipProps, 'styles' | 'classes' | 'arrow' | 'trigger'> & {
+  /**
+   * @descCN 是否开启 Tooltip 流畅过渡动画
+   * @descEN Whether to enable smooth transition for tooltips
+   * @default false
+   */
+  unique?: boolean;
+};
+type PopoverConfig = ComponentStyleConfig & Pick<PopoverProps, 'classes' | 'styles' | 'arrow' | 'trigger'>;
+type PopconfirmConfig = ComponentStyleConfig & Pick<PopconfirmProps, 'classes' | 'styles' | 'arrow' | 'trigger'>;
+type SegmentedConfig = ComponentStyleConfig & Pick<SegmentedProps, 'classes' | 'styles'>;
+type MenuConfig = ComponentStyleConfig & Pick<MenuProps, 'expandIcon' | 'classes' | 'styles'>;
+type TourConfig = ComponentStyleConfig & Pick<TourProps, 'closeIcon' | 'classes' | 'styles'>;
+type NotificationConfig = ComponentStyleConfig & Pick<ArgsProps, 'closeIcon' | 'classes' | 'styles'>;
+type BreadcrumbConfig = ComponentStyleConfig & Pick<BreadcrumbProps, 'classes' | 'styles' | 'separator' | 'dropdownIcon'>;
+type MasonryConfig = ComponentStyleConfig & Pick<MasonryProps, 'classes' | 'styles'>;
+type FormConfig = ComponentStyleConfig & Pick<FormProps, 'requiredMark' | 'colon' | 'scrollToFirstError' | 'validateMessages' | 'variant' | 'classes' | 'styles' | 'tooltip'>;
+type RadioConfig = ComponentStyleConfig & Pick<RadioProps, 'classes' | 'styles'>;
+type CheckboxConfig = ComponentStyleConfig & Pick<CheckboxProps, 'classes' | 'styles'>;
+type SwitchStyleConfig = ComponentStyleConfig & Pick<SwitchProps, 'classes' | 'styles'>;
+type TransferConfig = ComponentStyleConfig & Pick<TransferProps, 'selectionsIcon' | 'classes' | 'styles'>;
+type InputConfig = ComponentStyleConfig & Pick<InputProps, 'autoComplete' | 'classes' | 'styles' | 'allowClear' | 'variant' | 'changeOnComposing'>;
+type InputNumberConfig = ComponentStyleConfig & Pick<InputNumberProps, 'classes' | 'styles' | 'variant'>;
+type TextAreaConfig = ComponentStyleConfig & Pick<TextAreaProps, 'classes' | 'styles' | 'allowClear' | 'variant' | 'changeOnComposing'>;
+type MentionsConfig = ComponentStyleConfig & Pick<TextAreaProps, 'classes' | 'styles' | 'allowClear' | 'variant'>;
+type InputSearchConfig = ComponentStyleConfig & Pick<SearchProps, 'classes' | 'styles'>;
+type OTPConfig = ComponentStyleConfig & Pick<OTPProps, 'classes' | 'styles' | 'variant'>;
+type SliderConfig = ComponentStyleConfig & Pick<SliderProps, 'styles' | 'classes'>;
+type TabsConfig = ComponentStyleConfig & Pick<TabsProps, 'indicator' | 'indicatorSize' | 'more' | 'moreIcon' | 'addIcon' | 'removeIcon' | 'classes' | 'styles'>;
+type SelectConfig = ComponentStyleConfig & Pick<SelectProps, 'showSearch' | 'variant' | 'classes' | 'styles'>;
+type CascaderConfig = ComponentStyleConfig & Pick<CascaderProps, 'variant' | 'classes' | 'styles' | 'expandIcon' | 'loadingIcon'>;
+type CardMetaConfig = ComponentStyleConfig & Pick<CardMetaProps, 'classes' | 'styles'>;
+type CardConfig = ComponentStyleConfig & Pick<CardProps, 'classes' | 'styles' | 'variant'>;
+type DrawerConfig = ComponentStyleConfig & Pick<DrawerProps, 'classes' | 'styles' | 'closeIcon' | 'closable' | 'mask'>;
+type ModalConfig = ComponentStyleConfig & Pick<ModalProps, 'classes' | 'styles' | 'closeIcon' | 'closable' | 'centered' | 'okButtonProps' | 'cancelButtonProps' | 'mask'>;
+type StepsConfig = ComponentStyleConfig & Pick<StepsProps, 'classes' | 'styles'>;
+type TimelineConfig = ComponentStyleConfig & Pick<TimelineProps, 'classes' | 'styles'>;
+type ImageConfig = ComponentStyleConfig & Pick<ImageProps, 'classes' | 'styles'> & {
+  preview?: Partial<Record<'closeIcon', any>> & Pick<ImageProps, 'classes' | 'styles'> & {
+    mask?: MaskType;
+  };
+  fallback?: string;
+};
+type TreeConfig = ComponentStyleConfig & Pick<TreeProps, 'classes' | 'styles'>;
+type TreeSelectConfig = ComponentStyleConfig & Pick<TreeSelectProps, 'variant' | 'classes' | 'styles' | 'switcherIcon'>;
+type UploadConfig = ComponentStyleConfig & Pick<UploadProps, 'classes' | 'styles' | 'customRequest'>;
+type DatePickerConfig = ComponentStyleConfig & Pick<DatePickerProps, 'classes' | 'styles' | 'variant' | 'suffixIcon'>;
+type RangePickerConfig = ComponentStyleConfig & Pick<RangePickerProps, 'classes' | 'styles' | 'variant' | 'separator'>;
+type TimePickerConfig = ComponentStyleConfig & Pick<TimePickerProps, 'classes' | 'styles' | 'variant' | 'suffixIcon'>;
+interface TableConfig<RecordType extends AnyObject = AnyObject> extends ComponentStyleConfig {
+  expandable?: {
+    expandIcon?: NonNullable<TableProps['expandable']>['expandIcon'];
+  };
+  rowKey?: TableProps<RecordType>['rowKey'];
+  classes?: TableProps['classes'];
+  styles?: TableProps['styles'];
+  scroll?: TableProps<RecordType>['scroll'];
+  bodyCell?: TableProps['bodyCell'];
+  headerCell?: TableProps['headerCell'];
+}
+type RibbonConfig = ComponentStyleConfig & Pick<RibbonProps, 'classes' | 'styles'>;
+type ColorPickerConfig = ComponentStyleConfig & Pick<ColorPickerProps, 'classes' | 'styles' | 'arrow'>;
+type DropdownConfig = ComponentStyleConfig & Pick<DropdownProps, 'classes' | 'styles'>;
+type ProgressConfig = ComponentStyleConfig & Pick<ProgressProps, 'classes' | 'styles'>;
+interface ConfigComponentProps {
+  input?: InputConfig;
+  inputNumber?: InputNumberConfig;
+  textArea?: TextAreaConfig;
+  mentions?: MentionsConfig;
+  pagination?: PaginationConfig;
+  inputSearch?: InputSearchConfig;
+  otp?: OTPConfig;
+  space?: SpaceConfig;
+  splitter?: SplitterConfig;
+  form?: FormConfig;
+  select?: SelectConfig;
+  app?: ComponentStyleConfig;
+  alert?: AlertConfig;
+  anchor?: AnchorStyleConfig;
+  button?: ButtonConfig;
+  divider?: DividerConfig;
+  drawer?: DrawerConfig;
+  calendar?: CalendarConfig;
+  carousel?: ComponentStyleConfig;
+  cascader?: CascaderConfig;
+  treeSelect?: TreeSelectConfig;
+  collapse?: CollapseConfig;
+  floatButton?: FloatButtonConfig;
+  floatButtonGroup?: FloatButtonGroupConfig;
+  typography?: TypographyConfig;
+  skeleton?: SkeletonConfig;
+  spin?: SpinConfig;
+  segmented?: SegmentedConfig;
+  steps?: StepsConfig;
+  statistic?: StatisticConfig;
+  image?: ImageConfig;
+  layout?: ComponentStyleConfig;
+  modal?: ModalConfig;
+  progress?: ProgressConfig;
+  result?: ResultConfig;
+  slider?: SliderConfig;
+  breadcrumb?: BreadcrumbConfig;
+  masonry?: MasonryConfig;
+  menu?: MenuConfig;
+  checkbox?: CheckboxConfig;
+  descriptions?: DescriptionsConfig;
+  empty?: EmptyConfig;
+  badge?: BadgeConfig;
+  radio?: RadioConfig;
+  rate?: ComponentStyleConfig;
+  switch?: SwitchStyleConfig;
+  transfer?: TransferConfig;
+  avatar?: ComponentStyleConfig;
+  message?: ComponentStyleConfig;
+  tag?: TagConfig;
+  table?: TableConfig;
+  card?: CardConfig;
+  cardMeta?: CardMetaConfig;
+  tabs?: TabsConfig;
+  timeline?: TimelineConfig;
+  timePicker?: TimePickerConfig;
+  tour?: TourConfig;
+  tooltip?: TooltipConfig;
+  popover?: PopoverConfig;
+  popconfirm?: PopconfirmConfig;
+  upload?: UploadConfig;
+  notification?: NotificationConfig;
+  tree?: TreeConfig;
+  colorPicker?: ColorPickerConfig;
+  datePicker?: DatePickerConfig;
+  ribbon?: RibbonConfig;
+  rangePicker?: RangePickerConfig;
+  dropdown?: DropdownConfig;
+  flex?: FlexConfig;
+  qrcode?: QRcodeConfig;
+  wave?: WaveConfig;
+}
+interface ConfigConsumerProps extends ConfigComponentProps {
+  getTargetContainer?: () => HTMLElement;
+  getPopupContainer?: (triggerNode?: HTMLElement) => HTMLElement;
+  rootPrefixCls?: string;
+  iconPrefixCls: string;
+  getPrefixCls: (suffixCls?: string, customizePrefixCls?: string) => string;
+  renderEmpty?: RenderEmptyHandler;
+  transformCellText?: ConfigProviderProps['transformCellText'];
+  /**
+   * @descCN 设置 [Content Security Policy](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP) 配置。
+   * @descEN Set the [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) config.
+   */
+  csp?: CSPConfig;
+  /** @deprecated Please use `{ button: { autoInsertSpace: boolean }}` instead */
+  autoInsertSpaceInButton?: boolean;
+  variant?: Variant;
+  virtual?: boolean;
+  locale?: Locale;
+  direction?: DirectionType;
+  popupMatchSelectWidth?: boolean;
+  popupOverflow?: PopupOverflow;
+  theme?: ThemeConfig;
+  warning?: WarningContextProps;
+  wave?: WaveConfig;
+}
+declare function useConfigProvider(props: Ref<ConfigConsumerProps>): void;
+declare function useConfig(): Ref<ConfigConsumerProps, ConfigConsumerProps>;
+/**
+ * Utility type to convert ConfigConsumerProps to a reactive refs structure.
+ * Functions remain as-is, other values are wrapped in Ref.
+ */
+type ConfigRefs<R extends ConfigConsumerProps = ConfigConsumerProps> = { [K in keyof R]?: R[K] extends ((...args: any[]) => any) ? R[K] : R[K] extends object | undefined ? Ref<R[K]> : Ref<R[K]> };
+declare function useBaseConfig<K extends string>(suffixCls?: K, props?: ComponentBaseProps): {
+  result: vue334.ComputedRef<ResultConfig | undefined>;
+  modal: vue334.ComputedRef<ModalConfig | undefined>;
+  timeline: vue334.ComputedRef<TimelineConfig | undefined>;
+  notification: vue334.ComputedRef<NotificationConfig | undefined>;
+  getPrefixCls: (suffixCls?: string, prefixCls?: string) => string;
+  prefixCls: vue334.ComputedRef<string>;
+  direction: vue334.ComputedRef<DirectionType>;
+  getPopupContainer: ((triggerNode?: HTMLElement) => HTMLElement) | undefined;
+};
+/**
+ * Get ConfigProvider configured component props.
+ * This help to reduce bundle size for saving `?.` operator.
+ * Do not use as `useMemo` deps since we do not cache the object here.
+ *
+ * NOTE: not refactor this with `useMemo` since memo will cost another memory space,
+ * which will waste both compare calculation & memory.
+ */
+declare function useComponentConfig<T extends keyof ConfigComponentProps>(propName: T): vue334.ComputedRef<ComponentReturnType<T>>;
+declare function useComponentBaseConfig<T extends keyof ConfigComponentProps, K extends keyof NonNullable<ConfigComponentProps[T]> = keyof NonNullable<ConfigComponentProps[T]>>(propName: T, props?: ComponentBaseProps, keys?: readonly K[], suffixCls?: string): ({
+  classes?: any;
+  styles?: any;
+} & ConfigComponentProps[T] extends infer T_1 ? { [Key in keyof T_1]-?: Ref<T_1[Key], T_1[Key]> } : never) & {
+  direction: vue334.ComputedRef<DirectionType>;
+  prefixCls: vue334.ComputedRef<string>;
+  rootPrefixCls: vue334.ComputedRef<string>;
+  getPopupContainer: ((triggerNode?: HTMLElement) => HTMLElement) | undefined;
+  getPrefixCls: (suffixCls?: string, customizePrefixCls?: string) => string;
+  getTargetContainer: (() => HTMLElement) | undefined;
+  virtual: vue334.ComputedRef<boolean | undefined>;
+  renderEmpty: vue334.ComputedRef<RenderEmptyHandler | undefined>;
+  popupMatchSelectWidth: vue334.ComputedRef<boolean | undefined>;
+  popupOverflow: vue334.ComputedRef<PopupOverflow | undefined>;
+};
+//#endregion
+export { AlertConfig, AnchorStyleConfig, BadgeConfig, BreadcrumbConfig, ButtonConfig, CSPConfig, CalendarConfig, CardConfig, CardMetaConfig, CascaderConfig, CheckboxConfig, CollapseConfig, ColorPickerConfig, ComponentBaseProps, ComponentStyleConfig, ConfigComponentProps, ConfigConsumerProps, ConfigRefs, DatePickerConfig, DescriptionsConfig, DirectionType, DividerConfig, DrawerConfig, DropdownConfig, EmptyConfig, FlexConfig, FloatButtonConfig, FloatButtonGroupConfig, FormConfig, ImageConfig, InputConfig, InputNumberConfig, InputSearchConfig, MappingAlgorithm, MasonryConfig, MentionsConfig, MenuConfig, ModalConfig, NotificationConfig, OTPConfig, PaginationConfig, PopconfirmConfig, PopoverConfig, PopupOverflow, ProgressConfig, QRcodeConfig, RadioConfig, RangePickerConfig, ResultConfig, RibbonConfig, SegmentedConfig, SelectConfig, SkeletonConfig, SliderConfig, SpaceConfig, SpinConfig, SplitterConfig, StatisticConfig, StepsConfig, SwitchStyleConfig, TableConfig, TabsConfig, TagConfig, TextAreaConfig, Theme, ThemeConfig, TimePickerConfig, TimelineConfig, TooltipConfig, TourConfig, TransferConfig, TreeConfig, TreeSelectConfig, TypographyConfig, UploadConfig, Variant, Variants, WaveConfig, defaultIconPrefixCls, defaultPrefixCls, useBaseConfig, useComponentBaseConfig, useComponentConfig, useConfig, useConfigProvider };

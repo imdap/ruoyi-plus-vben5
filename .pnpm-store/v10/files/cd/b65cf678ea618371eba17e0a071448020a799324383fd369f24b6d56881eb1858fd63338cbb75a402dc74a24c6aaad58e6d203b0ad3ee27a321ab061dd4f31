@@ -1,0 +1,136 @@
+import { AggregationColor } from "../../color.js";
+import { genAlphaColor, generateColor } from "../../util.js";
+import segmented_default from "../../../segmented/index.js";
+import { usePanelPickerContext } from "../../context.js";
+import ColorClear_default from "../ColorClear.js";
+import ColorInput_default from "../ColorInput.js";
+import ColorSlider_default from "../ColorSlider.js";
+import GradientColorBar_default from "./GradientColorBar.js";
+import { Fragment, createVNode, defineComponent, mergeProps, shallowRef, watch } from "vue";
+import VcColorPicker from "@v-c/color-picker";
+
+//#region src/color-picker/components/PanelPicker/index.tsx
+var PanelPicker_default = /* @__PURE__ */ defineComponent(() => {
+	const panelPickerContext = usePanelPickerContext();
+	const colors = () => {
+		const ctx = panelPickerContext.value;
+		if (ctx?.value && !ctx.value.cleared) return ctx.value.getColors();
+		return [{
+			percent: 0,
+			color: new AggregationColor("")
+		}, {
+			percent: 100,
+			color: new AggregationColor("")
+		}];
+	};
+	const isSingle = () => !panelPickerContext.value?.value?.isGradient();
+	const lockedColor = shallowRef(panelPickerContext.value?.value ?? new AggregationColor(""));
+	watch(() => [
+		isSingle(),
+		panelPickerContext.value?.gradientDragging,
+		panelPickerContext.value?.activeIndex,
+		panelPickerContext.value?.value?.toHexString?.()
+	], () => {
+		if (!isSingle()) lockedColor.value = colors()[panelPickerContext.value?.activeIndex || 0]?.color;
+	}, { immediate: true });
+	const activeColor = () => {
+		const ctx = panelPickerContext.value;
+		if (isSingle()) return ctx.value;
+		if (ctx.gradientDragging) return lockedColor.value;
+		return colors()[ctx.activeIndex]?.color ?? ctx.value;
+	};
+	const pickerColor = shallowRef(activeColor());
+	const forceSync = shallowRef(0);
+	const mergedPickerColor = () => pickerColor.value?.equals(activeColor()) ? activeColor() : pickerColor.value;
+	watch(() => [activeColor()?.toHexString?.(), forceSync.value], () => {
+		pickerColor.value = activeColor();
+	}, { immediate: true });
+	const fillColor = (nextColor, info) => {
+		const ctx = panelPickerContext.value;
+		let submitColor = generateColor(nextColor);
+		if (ctx.value?.cleared) {
+			const rgb = submitColor.toRgb();
+			if (!rgb.r && !rgb.g && !rgb.b && info) {
+				const { type: infoType, value: infoValue = 0 } = info;
+				submitColor = new AggregationColor({
+					h: infoType === "hue" ? infoValue : 0,
+					s: 1,
+					b: 1,
+					a: infoType === "alpha" ? infoValue / 100 : 1
+				});
+			} else submitColor = genAlphaColor(submitColor);
+		}
+		if (ctx.mode === "single") return submitColor;
+		const nextColors = [...colors()];
+		const activeIndex = ctx.activeIndex || 0;
+		nextColors[activeIndex] = {
+			...nextColors[activeIndex],
+			color: submitColor
+		};
+		return new AggregationColor(nextColors);
+	};
+	const onPickerChange = (colorValue, info) => {
+		const nextColor = fillColor(generateColor(colorValue), info);
+		const activeIndex = panelPickerContext.value?.activeIndex || 0;
+		pickerColor.value = nextColor.isGradient() ? nextColor.getColors()[activeIndex].color : nextColor;
+		panelPickerContext.value?.onChange?.(nextColor, true);
+	};
+	const onInternalChangeComplete = (nextColor, info) => {
+		panelPickerContext.value?.onChangeComplete?.(fillColor(nextColor, info));
+		forceSync.value += 1;
+	};
+	const onInputChange = (colorValue) => {
+		panelPickerContext.value?.onChange?.(fillColor(colorValue));
+	};
+	return () => {
+		const { prefixCls, allowClear, disabledAlpha, mode, onModeChange, modeOptions, disabled, onClear, format, onFormatChange, disabledFormat } = panelPickerContext.value;
+		const showMode = (modeOptions?.length || 0) > 1;
+		const operationNode = allowClear || showMode ? createVNode("div", { "class": `${prefixCls}-operation` }, [showMode && createVNode(segmented_default, {
+			"size": "small",
+			"options": modeOptions,
+			"value": mode,
+			"onChange": (val) => onModeChange(val)
+		}, null), createVNode(ColorClear_default, {
+			"prefixCls": prefixCls,
+			"value": panelPickerContext.value?.value,
+			"disabled": disabled,
+			"onChange": (clearColor) => {
+				panelPickerContext.value?.onChange?.(clearColor);
+				onClear?.();
+			}
+		}, null)]) : null;
+		const active = activeColor();
+		return createVNode(Fragment, null, [
+			operationNode,
+			createVNode(GradientColorBar_default, mergeProps(panelPickerContext.value, { "colors": colors() }), null),
+			createVNode(VcColorPicker, {
+				"prefixCls": prefixCls,
+				"value": mergedPickerColor()?.toHsb(),
+				"disabledAlpha": disabledAlpha,
+				"disabled": disabled,
+				"onChange": (colorValue, info) => {
+					onPickerChange(colorValue, info);
+				},
+				"onChangeComplete": (colorValue, info) => {
+					onInternalChangeComplete(colorValue, info);
+				},
+				"components": { slider: ColorSlider_default }
+			}, null),
+			createVNode(ColorInput_default, {
+				"value": active,
+				"onChange": onInputChange,
+				"prefixCls": prefixCls,
+				"disabledAlpha": disabledAlpha,
+				"format": format,
+				"onFormatChange": onFormatChange,
+				"disabledFormat": disabledFormat
+			}, null)
+		]);
+	};
+}, {
+	name: "ColorPanelPicker",
+	inheritAttrs: false
+});
+
+//#endregion
+export { PanelPicker_default as default };

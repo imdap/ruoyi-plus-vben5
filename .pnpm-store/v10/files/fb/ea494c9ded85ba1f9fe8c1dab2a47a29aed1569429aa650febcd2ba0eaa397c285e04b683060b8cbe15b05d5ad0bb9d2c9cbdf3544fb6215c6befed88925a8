@@ -1,0 +1,10 @@
+import { ref } from "vue";
+function useMemoCallback(callback) {
+	const fnRef = ref(callback);
+	fnRef.value = callback;
+	const memoFn = ((...args) => {
+		return fnRef.value(...args);
+	});
+	return memoFn;
+}
+export { useMemoCallback as default };

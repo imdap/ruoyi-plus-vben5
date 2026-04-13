@@ -1,0 +1,111 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { InputStatus } from "../_util/statusUtils.js";
+import { InternalSelectProps, SelectPopupSemanticClassNames, SelectPopupSemanticStyles } from "../select/index.js";
+import * as vue8 from "vue";
+import { App, CSSProperties, SlotsType } from "vue";
+import { Option, SelectProps } from "@v-c/select";
+
+//#region src/auto-complete/index.d.ts
+type AutoCompleteSemanticName = 'root' | 'prefix' | 'input' | 'placeholder' | 'content' | 'clear';
+interface AutoCompleteSemanticClassNames {
+  root?: string;
+  prefix?: string;
+  input?: string;
+  placeholder?: string;
+  content?: string;
+  clear?: string;
+}
+interface AutoCompleteSemanticStyles {
+  root?: CSSProperties;
+  prefix?: CSSProperties;
+  input?: CSSProperties;
+  placeholder?: CSSProperties;
+  content?: CSSProperties;
+  clear?: CSSProperties;
+}
+interface DataSourceItemObject {
+  value: string;
+  text: string;
+}
+type DataSourceItemType = DataSourceItemObject | VueNode;
+type AutoCompleteClassNamesType = SemanticClassNamesType<AutoCompleteProps, AutoCompleteSemanticClassNames, {
+  popup?: SelectPopupSemanticClassNames;
+}>;
+type AutoCompleteStylesType = SemanticStylesType<AutoCompleteProps, AutoCompleteSemanticStyles, {
+  popup?: SelectPopupSemanticStyles;
+}>;
+type RcEventKeys = 'onClear' | 'onKeyUp' | 'onKeyDown' | 'onBlur' | 'onClick' | 'onActive' | 'onChange' | 'onDeselect' | 'onInputKeyDown' | 'onMouseDown' | 'onMouseLeave' | 'onMouseEnter' | 'onFocus' | 'onPopupScroll' | 'onPopupVisibleChange' | 'onSelect' | 'onSearch';
+interface AutoCompleteProps extends Omit<InternalSelectProps, 'loading' | 'mode' | 'optionLabelProp' | 'labelInValue' | 'classes' | 'styles' | 'getInputElement' | 'getRawInputElement' | RcEventKeys>, AutoCompleteEmitsProps {
+  /** @deprecated Please use `options` instead */
+  dataSource?: DataSourceItemType[];
+  status?: InputStatus;
+  /** @deprecated Please use `classes.popup.root` instead */
+  popupClassName?: string;
+  /** @deprecated Please use `classes.popup.root` instead */
+  dropdownClassName?: string;
+  /** @deprecated Please use `popupMatchSelectWidth` instead */
+  dropdownMatchSelectWidth?: boolean | number;
+  popupMatchSelectWidth?: boolean | number;
+  styles?: AutoCompleteStylesType;
+  classes?: AutoCompleteClassNamesType;
+  /** @deprecated Please use `popupRender` instead */
+  dropdownRender?: (menu: VueNode) => any;
+  popupRender?: (menu: VueNode) => any;
+  /** @deprecated Please use `styles.popup.root` instead */
+  dropdownStyle?: CSSProperties;
+}
+interface AutoCompleteEmits {
+  'openChange': (open: boolean) => void;
+  'dropdownVisibleChange': (open: boolean) => void;
+  'clear': NonNullable<SelectProps['onClear']>;
+  'keydown': NonNullable<SelectProps['onKeyDown']>;
+  'keyup': NonNullable<SelectProps['onKeyUp']>;
+  'blur': NonNullable<SelectProps['onBlur']>;
+  'update:value': (value: any) => void;
+  'click': NonNullable<SelectProps['onClick']>;
+  'active': NonNullable<SelectProps['onActive']>;
+  'change': NonNullable<SelectProps['onChange']>;
+  'deselect': NonNullable<SelectProps['onDeselect']>;
+  'inputKeydown': NonNullable<SelectProps['onInputKeyDown']>;
+  'mousedown': NonNullable<SelectProps['onMouseDown']>;
+  'mouseleave': NonNullable<SelectProps['onMouseLeave']>;
+  'mouseenter': NonNullable<SelectProps['onMouseEnter']>;
+  'focus': NonNullable<SelectProps['onFocus']>;
+  'popupScroll': NonNullable<SelectProps['onPopupScroll']>;
+  'select': NonNullable<SelectProps['onSelect']>;
+  'search': NonNullable<SelectProps['onSearch']>;
+}
+interface AutoCompleteEmitsProps {
+  onOpenChange?: AutoCompleteEmits['openChange'];
+  onDropdownVisibleChange?: AutoCompleteEmits['dropdownVisibleChange'];
+  onClear?: AutoCompleteEmits['clear'];
+  onKeydown?: AutoCompleteEmits['keydown'];
+  onKeyup?: AutoCompleteEmits['keyup'];
+  onBlur?: AutoCompleteEmits['blur'];
+  'onUpdate:value'?: AutoCompleteEmits['update:value'];
+  onClick?: AutoCompleteEmits['click'];
+  onActive?: AutoCompleteEmits['active'];
+  onChange?: AutoCompleteEmits['change'];
+  onDeselect?: AutoCompleteEmits['deselect'];
+  onInputKeydown?: AutoCompleteEmits['inputKeydown'];
+  onMousedown?: AutoCompleteEmits['mousedown'];
+  onMouseleave?: AutoCompleteEmits['mouseleave'];
+  onMouseenter?: AutoCompleteEmits['mouseenter'];
+  onFocus?: AutoCompleteEmits['focus'];
+  onPopupScroll?: AutoCompleteEmits['popupScroll'];
+  onSelect?: AutoCompleteEmits['select'];
+  onSearch?: AutoCompleteEmits['search'];
+}
+interface AutoCompleteSlots {
+  default?: () => any;
+}
+declare const InternalAutoComplete: vue8.DefineSetupFnComponent<AutoCompleteProps, AutoCompleteEmits, SlotsType<AutoCompleteSlots>, AutoCompleteProps, vue8.PublicProps>;
+declare const AutoComplete: typeof InternalAutoComplete & {
+  Option: typeof Option;
+  install: (app: App) => void;
+  _InternalPanelDoNotUseOrYouWillBeFired: any;
+};
+//#endregion
+export { AutoCompleteClassNamesType, AutoCompleteEmits, AutoCompleteEmitsProps, AutoCompleteProps, AutoCompleteSemanticClassNames, AutoCompleteSemanticName, AutoCompleteSemanticStyles, AutoCompleteSlots, AutoCompleteStylesType, DataSourceItemObject, DataSourceItemType, Option, AutoComplete as default };

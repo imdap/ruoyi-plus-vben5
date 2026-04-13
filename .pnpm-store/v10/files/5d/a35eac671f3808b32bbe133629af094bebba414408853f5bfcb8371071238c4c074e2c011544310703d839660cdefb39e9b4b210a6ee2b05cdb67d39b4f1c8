@@ -1,0 +1,29 @@
+import { EmptyEmit } from "../_util/type.js";
+import MenuItem$1, { MenuItemProps, MenuItemSlots } from "./MenuItem.js";
+import { ItemType } from "./interface.js";
+import { MenuEmits, MenuEmitsProps, MenuProps as MenuProps$2, MenuSlots } from "./menu.js";
+import MenuItemGroup, { MenuItemGroupProps } from "./MenuItemGroup.js";
+import SubMenu, { SubMenuProps } from "./SubMenu.js";
+import MenuDivider from "./MenuDivider.js";
+import * as vue178 from "vue";
+import { SlotsType } from "vue";
+import { MenuRef as MenuRef$1 } from "@v-c/menu";
+
+//#region src/menu/index.d.ts
+type MenuItemType = ItemType;
+interface MenuRef {
+  menu: MenuRef$1 | null;
+  focus: (options?: FocusOptions) => void;
+}
+interface InternalMenuProps extends MenuProps$2, MenuEmitsProps {}
+type MenuProps = InternalMenuProps;
+declare const Menu: vue178.DefineSetupFnComponent<InternalMenuProps, MenuEmits, SlotsType<MenuSlots>, InternalMenuProps, vue178.PublicProps>;
+declare const MenuItem: vue178.DefineSetupFnComponent<MenuItemProps, EmptyEmit, SlotsType<MenuItemSlots>, MenuItemProps, vue178.PublicProps>;
+declare const _default: typeof Menu & {
+  Item: typeof MenuItem$1;
+  SubMenu: typeof SubMenu;
+  ItemGroup: typeof MenuItemGroup;
+  Divider: typeof MenuDivider;
+};
+//#endregion
+export { InternalMenuProps, MenuDivider, type MenuEmits, MenuItem, MenuItemGroup, type MenuItemGroupProps, type MenuItemProps, MenuItemType, MenuProps, MenuRef, type MenuSlots, SubMenu, type SubMenuProps, _default as default };

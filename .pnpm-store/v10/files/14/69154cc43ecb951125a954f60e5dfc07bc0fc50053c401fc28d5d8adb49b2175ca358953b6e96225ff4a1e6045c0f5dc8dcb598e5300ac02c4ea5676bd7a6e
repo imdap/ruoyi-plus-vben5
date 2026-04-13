@@ -1,0 +1,21 @@
+{
+    "id": "monkeyc",
+    "version": "0.2",
+    "name": "Monkey C",
+    "description": "Monkey C dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "monkeyc",
+            "path": "./dict/monkeyc_keywords.txt.gz",
+            "description": "Monkey C dictionary."
+        }
+    ],
+    "languageSettings": [
+        {
+            "languageId": "monkeyc",
+            "locale": "*",
+            "dictionaries": ["monkeyc"]
+        }
+    ]
+}

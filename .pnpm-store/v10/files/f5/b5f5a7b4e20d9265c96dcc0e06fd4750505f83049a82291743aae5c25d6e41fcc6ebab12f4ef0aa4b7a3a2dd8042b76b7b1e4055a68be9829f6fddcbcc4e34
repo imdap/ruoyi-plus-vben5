@@ -1,0 +1,107 @@
+import { getSources } from '../Settings/index.js';
+import { createCollection, getInlineConfigDictionaries, mapSpecialDictionaryNamesToSettings, } from '../SpellingDictionary/index.js';
+import { toFileUrl } from '../util/url.js';
+import { uniqueFn } from '../util/util.js';
+import { split } from '../util/wordSplitter.js';
+export function traceWord(word, dictCollection, config) {
+    const opts = {
+        ignoreCase: config.ignoreCase ?? true,
+        useCompounds: config.allowCompoundWords || false,
+        compoundSeparator: '•',
+    };
+    const splits = split({ text: word, offset: 0 }, 0, checkWord);
+    const wfSplits = splits.words.map((s) => ({ word: s.text, found: s.isFound }));
+    const unique = uniqueFn((w) => w.word + '|' + w.found);
+    const wsFound = { word, found: dictCollection.has(word, opts) };
+    const wordSplits = wfSplits.some((s) => s.word === word) ? wfSplits : [wsFound, ...wfSplits];
+    const traces = wordSplits
+        .filter(unique)
+        .map((s) => s.word)
+        .flatMap((word) => dictCollection.dictionaries.map((dict) => ({ dict, word })))
+        .map(({ dict, word }) => ({ dict, findResult: dict.find(word, opts), word }))
+        .flatMap((r) => unpackDictionaryFindResult(r, config));
+    const r = new CTraceResult(...traces);
+    r.splits = wordSplits;
+    return r;
+    function checkWord(wo) {
+        return dictCollection.has(wo.text, opts);
+    }
+}
+/**
+ * Map FindInDictResult to DictionaryTraceResult
+ * If the word was found in a dictionary based upon a config field setting, then find the source config.
+ * @param found - a word found in a dictionary
+ * @param config - the trace config
+ * @returns DictionaryTraceResult[]
+ */
+function unpackDictionaryFindResult(found, config) {
+    const { word, dict, findResult } = found;
+    const dictPreferred = getPreferred(dict, word);
+    const baseResult = {
+        word,
+        found: !!findResult?.found,
+        foundWord: findResult?.found || undefined,
+        forbidden: findResult?.forbidden || false,
+        noSuggest: findResult?.noSuggest || false,
+        dictName: dict.name,
+        dictSource: dict.source,
+        configSource: undefined,
+        preferredSuggestions: dictPreferred,
+        errors: normalizeErrors(dict.getErrors?.()),
+    };
+    const configFieldName = mapSpecialDictionaryNamesToSettings.get(dict.name);
+    if (!findResult?.found || !configFieldName || !config.source) {
+        return [baseResult];
+    }
+    const opts = {
+        ignoreCase: true,
+        useCompounds: config.allowCompoundWords || false,
+    };
+    const sources = getSources(config);
+    const results = [];
+    for (const src of sources) {
+        if (!src[configFieldName] ||
+            !Array.isArray(src[configFieldName]) ||
+            !src[configFieldName]?.length ||
+            !src.source?.filename) {
+            continue;
+        }
+        // We found a possible config, build a dictionary result for it.
+        const configSource = toFileUrl(src.source.filename).href;
+        const cfg = { [configFieldName]: src[configFieldName] };
+        const cfgDict = createCollection(getInlineConfigDictionaries(cfg), dict.name, configSource);
+        const findResult = cfgDict.find(word, opts);
+        const preferredSuggestions = getPreferred(cfgDict, word);
+        if (!findResult?.found && !preferredSuggestions)
+            continue;
+        const result = {
+            word,
+            found: !!findResult?.found,
+            foundWord: findResult?.found || undefined,
+            forbidden: findResult?.forbidden || false,
+            noSuggest: findResult?.noSuggest || false,
+            dictName: dict.name,
+            dictSource: configSource,
+            configSource,
+            preferredSuggestions,
+            errors: normalizeErrors(dict.getErrors?.()),
+        };
+        results.push(result);
+    }
+    return results.length ? results : [baseResult];
+}
+function normalizeErrors(errors) {
+    return errors?.length ? errors : undefined;
+}
+function getPreferred(dict, word) {
+    const sugs = dict.getPreferredSuggestions?.(word);
+    const preferred = sugs?.length ? sugs.filter((s) => s.isPreferred).map((s) => s.word) : undefined;
+    return preferred;
+}
+class CTraceResult extends Array {
+    splits = [];
+    constructor(...items) {
+        super(...items);
+    }
+}
+//# sourceMappingURL=traceWord.js.map

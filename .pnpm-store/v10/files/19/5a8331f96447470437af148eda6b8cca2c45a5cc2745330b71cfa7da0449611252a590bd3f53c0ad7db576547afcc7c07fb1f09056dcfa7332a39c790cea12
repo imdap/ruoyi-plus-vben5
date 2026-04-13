@@ -1,0 +1,33 @@
+import * as vue980 from "vue";
+import { LiteralUnion } from "@v-c/util/dist/type";
+
+//#region src/grid/col.d.ts
+type ColSpanType = number | string;
+type FlexType = number | LiteralUnion<'none' | 'auto'>;
+interface ColSize {
+  flex?: FlexType;
+  span?: ColSpanType;
+  order?: ColSpanType;
+  offset?: ColSpanType;
+  push?: ColSpanType;
+  pull?: ColSpanType;
+}
+interface ColProps {
+  flex?: FlexType;
+  span?: ColSpanType;
+  order?: ColSpanType;
+  offset?: ColSpanType;
+  push?: ColSpanType;
+  pull?: ColSpanType;
+  prefixCls?: string;
+  xs?: ColSpanType | ColSize;
+  sm?: ColSpanType | ColSize;
+  md?: ColSpanType | ColSize;
+  lg?: ColSpanType | ColSize;
+  xl?: ColSpanType | ColSize;
+  xxl?: ColSpanType | ColSize;
+  xxxl?: ColSpanType | ColSize;
+}
+declare const Col: vue980.DefineSetupFnComponent<ColProps, {}, {}, ColProps & {}, vue980.PublicProps>;
+//#endregion
+export { ColProps, ColSize, Col as default };

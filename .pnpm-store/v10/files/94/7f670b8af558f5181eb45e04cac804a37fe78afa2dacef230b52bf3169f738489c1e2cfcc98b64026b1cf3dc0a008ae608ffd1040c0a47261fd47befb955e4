@@ -1,0 +1,15 @@
+import { SizeType } from "../config-provider/SizeContext.js";
+import { SkeletonElementProps } from "./Element.js";
+import * as vue682 from "vue";
+
+//#region src/skeleton/Input.d.ts
+interface SkeletonInputProps extends Omit<SkeletonElementProps, 'size' | 'shape'> {
+  /**
+   * Note: `default` is deprecated and will be removed in v7, please use `medium` instead.
+   */
+  size?: SizeType | 'default';
+  block?: boolean;
+}
+declare const SkeletonInput: vue682.DefineSetupFnComponent<SkeletonInputProps, {}, {}, SkeletonInputProps & {}, vue682.PublicProps>;
+//#endregion
+export { SkeletonInputProps, SkeletonInput as default };

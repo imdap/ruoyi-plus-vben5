@@ -1,0 +1,1 @@
+{"version":3,"file":"ICloseEventInit.d.ts","sourceRoot":"","sources":["../../../src/event/events/ICloseEventInit.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,UAAU,MAAM,kBAAkB,CAAC;AAE/C,MAAM,CAAC,OAAO,WAAW,eAAgB,SAAQ,UAAU;IAC1D,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,QAAQ,CAAC,EAAE,OAAO,CAAC;CACnB"}

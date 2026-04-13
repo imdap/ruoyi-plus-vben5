@@ -1,0 +1,30 @@
+import { env } from "node:process";
+import { boolean, description, literal, number, optional, pipe, strictObject, string, union } from "valibot";
+export const ENTRYPOINT_OPTION_SCHEMA = strictObject({
+    entryPoint: optional(pipe(string(), description("The path to the css entry point of the project. If not specified, the plugin will fall back to the default tailwind classes.")), undefined)
+});
+export const TAILWIND_OPTION_SCHEMA = strictObject({
+    tailwindConfig: optional(pipe(string(), description("The path to the tailwind config file. If not specified, the plugin will try to find it automatically or falls back to the default configuration.")), undefined)
+});
+export const TSCONFIG_OPTION_SCHEMA = strictObject({
+    tsconfig: optional(pipe(string(), description("The path to the tsconfig file. Is used to resolve path aliases in the tsconfig.")), undefined)
+});
+export const MESSAGE_STYLE_OPTION_SCHEMA = strictObject({
+    messageStyle: optional(pipe(union([
+        literal("visual"),
+        literal("compact"),
+        literal("raw")
+    ]), description("How linting messages are displayed.")), env.CI === "true" || env.CI === "1"
+        ? "compact"
+        : "visual")
+});
+export const DETECT_COMPONENT_CLASSES_OPTION_SCHEMA = strictObject({
+    detectComponentClasses: optional(pipe(boolean(), description("Whether to automatically detect custom component classes from the tailwindcss config.")), false)
+});
+export const ROOT_FONT_SIZE_OPTION_SCHEMA = strictObject({
+    rootFontSize: optional(pipe(number(), description("The root font size in pixels.")), undefined)
+});
+export const CWD_OPTION_SCHEMA = strictObject({
+    cwd: optional(pipe(string(), description("The working directory to resolve tailwindcss and the config from. Useful in monorepo setups.")), undefined)
+});
+//# sourceMappingURL=common.js.map

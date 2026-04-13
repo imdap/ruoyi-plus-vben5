@@ -1,0 +1,10 @@
+import { BlockProps, TypographyBaseEmits, TypographySlots } from "./interface.js";
+import * as vue354 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/typography/Paragraph.d.ts
+type TypographyBaseEmitsProps = { [K in keyof TypographyBaseEmits as `on${Capitalize<string & K>}`]?: TypographyBaseEmits[K] };
+interface ParagraphProps extends BlockProps, TypographyBaseEmitsProps {}
+declare const Paragraph: vue354.DefineSetupFnComponent<ParagraphProps, TypographyBaseEmits, SlotsType<TypographySlots>, ParagraphProps, vue354.PublicProps>;
+//#endregion
+export { ParagraphProps, TypographyBaseEmitsProps, Paragraph as default };

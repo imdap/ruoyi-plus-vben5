@@ -1,0 +1,6 @@
+import * as vue_jsx_runtime11 from "vue/jsx-runtime";
+
+//#region src/result/noFound.d.ts
+declare function NoFound(): vue_jsx_runtime11.JSX.Element;
+//#endregion
+export { NoFound as default };

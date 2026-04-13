@@ -1,0 +1,187 @@
+import { computed, defineComponent, inject, provide } from "vue";
+import omit from "@v-c/util/dist/omit";
+var MenuContextKey = Symbol("MenuContextKey");
+function mergeProps$1(origin, target) {
+	const clone = { ...origin };
+	Object.keys(target).forEach((key) => {
+		const value = target[key];
+		if (value !== void 0) clone[key] = value;
+	});
+	return clone;
+}
+function useMenuContext() {
+	return inject(MenuContextKey, null);
+}
+function useMenuContextProvider(context) {
+	provide(MenuContextKey, context);
+}
+var MenuContext_default = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	const context = useMenuContext();
+	useMenuContextProvider(computed(() => {
+		return mergeProps$1(context?.value ?? {}, omit(props, ["locked"]));
+	}));
+	return () => {
+		return slots?.default?.();
+	};
+}, {
+	props: {
+		locked: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		prefixCls: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		classes: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		rootClass: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		openKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		rtl: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		mode: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		overflowDisabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		activeKey: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		onActive: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onInactive: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		selectedKeys: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		inlineIndent: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		motion: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		defaultMotions: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		subMenuOpenDelay: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		subMenuCloseDelay: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		forceSubMenuRender: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		builtinPlacements: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		triggerSubMenuAction: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		popupRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		itemIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		expandIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		onItemClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onOpenChange: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		getPopupContainer: {
+			type: Function,
+			required: false,
+			default: void 0
+		}
+	},
+	inheritAttrs: false
+});
+export { MenuContext_default as default, useMenuContext, useMenuContextProvider };

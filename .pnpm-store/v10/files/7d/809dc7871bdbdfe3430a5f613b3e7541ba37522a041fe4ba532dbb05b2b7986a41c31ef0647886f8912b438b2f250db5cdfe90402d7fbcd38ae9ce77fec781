@@ -1,0 +1,72 @@
+import { RenderNodeFn, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import { ButtonColorType, ButtonHTMLType, ButtonShape, ButtonType, ButtonVariantType } from "./buttonHelper.js";
+import * as vue71 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/button/Button.d.ts
+type LegacyButtonType = ButtonType | 'danger';
+type ButtonSemanticName = keyof ButtonSemanticClassNames & keyof ButtonSemanticStyles;
+interface ButtonSemanticClassNames {
+  root?: string;
+  icon?: string;
+  content?: string;
+}
+interface ButtonSemanticStyles {
+  root?: CSSProperties;
+  icon?: CSSProperties;
+  content?: CSSProperties;
+}
+type ButtonClassNamesType = SemanticClassNamesType<BaseButtonProps, ButtonSemanticClassNames>;
+type ButtonStylesType = SemanticStylesType<BaseButtonProps, ButtonSemanticStyles>;
+interface BaseButtonProps extends ComponentBaseProps {
+  type?: ButtonType;
+  color?: ButtonColorType;
+  variant?: ButtonVariantType;
+  icon?: VueNode;
+  iconPlacement?: 'start' | 'end';
+  shape?: ButtonShape;
+  size?: SizeType;
+  disabled?: boolean;
+  loading?: boolean | {
+    delay?: number;
+    icon?: RenderNodeFn;
+  };
+  ghost?: boolean;
+  danger?: boolean;
+  block?: boolean;
+  [key: `data-${string}`]: string;
+  classes?: ButtonClassNamesType;
+  styles?: ButtonStylesType;
+  autoFocus?: boolean;
+  /** @private Only for internal usage. Do not use in your production */
+  _skipSemantic?: boolean;
+}
+declare function convertLegacyProps(type?: LegacyButtonType): Pick<BaseButtonProps, 'danger' | 'type'>;
+interface ButtonEmitsProps {
+  onClick?: ButtonEmits['click'];
+}
+interface ButtonProps extends BaseButtonProps, ButtonEmitsProps {
+  href?: string;
+  htmlType?: ButtonHTMLType;
+  target?: '_self' | '_blank' | '_parent' | '_top' | string;
+  autoInsertSpace?: boolean;
+}
+interface ButtonEmits {
+  click: (e: MouseEvent) => void;
+}
+interface ButtonSlots {
+  default?: () => any;
+  icon?: () => any;
+  loadingIcon?: () => any;
+}
+declare const InternalCompoundedButton: vue71.DefineSetupFnComponent<ButtonProps, ButtonEmits, SlotsType<ButtonSlots>, ButtonProps, vue71.PublicProps>;
+type CompoundedComponent = typeof InternalCompoundedButton & {
+  /** @internal */__ANT_BUTTON: boolean;
+};
+declare const Button: CompoundedComponent;
+//#endregion
+export { BaseButtonProps, ButtonClassNamesType, ButtonEmits, ButtonEmitsProps, ButtonProps, ButtonSemanticClassNames, ButtonSemanticName, ButtonSemanticStyles, ButtonSlots, ButtonStylesType, LegacyButtonType, convertLegacyProps, Button as default };

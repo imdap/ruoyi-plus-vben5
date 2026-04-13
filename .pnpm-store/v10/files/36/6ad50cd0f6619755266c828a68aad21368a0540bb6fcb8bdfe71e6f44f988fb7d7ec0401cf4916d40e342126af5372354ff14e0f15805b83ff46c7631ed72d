@@ -1,0 +1,26 @@
+import * as vue0 from "vue";
+
+//#region src/_util/responsiveObserver.d.ts
+declare const responsiveArray: readonly ["xxxl", "xxl", "xl", "lg", "md", "sm", "xs"];
+declare const responsiveArrayReversed: ("xxxl" | "xxl" | "xl" | "lg" | "md" | "sm" | "xs")[];
+type Breakpoint = (typeof responsiveArray)[number];
+type BreakpointMap = Record<Breakpoint, string>;
+type ScreenMap = Partial<Record<Breakpoint, boolean>>;
+type ScreenSizeMap = Partial<Record<Breakpoint, number>>;
+type SubscribeFunc = (screens: ScreenMap) => void;
+declare function matchScreen(screens: ScreenMap, screenSizes?: ScreenSizeMap): number | undefined;
+interface ResponsiveObserverType {
+  responsiveMap: BreakpointMap;
+  dispatch: (map: ScreenMap) => boolean;
+  subscribe: (func: SubscribeFunc) => number;
+  unsubscribe: (token: number) => void;
+  register: () => void;
+  unregister: () => void;
+  matchHandlers: Record<PropertyKey, {
+    mql: MediaQueryList;
+    listener: (this: MediaQueryList, ev: MediaQueryListEvent) => void;
+  }>;
+}
+declare function useResponsiveObserver(): vue0.ComputedRef<ResponsiveObserverType>;
+//#endregion
+export { Breakpoint, BreakpointMap, ScreenMap, ScreenSizeMap, useResponsiveObserver as default, matchScreen, responsiveArray, responsiveArrayReversed };

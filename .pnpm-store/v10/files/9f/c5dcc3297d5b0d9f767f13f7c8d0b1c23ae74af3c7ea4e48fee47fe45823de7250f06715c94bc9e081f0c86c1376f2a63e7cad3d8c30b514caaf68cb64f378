@@ -1,0 +1,14 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.coreVersion = exports.VxeCore = void 0;
+const coreVersion = exports.coreVersion = "4.4.4";
+const VxeCore = exports.VxeCore = {
+  coreVersion,
+  uiVersion: '',
+  tableVersion: '',
+  designVersion: '',
+  ganttVersion: ''
+};

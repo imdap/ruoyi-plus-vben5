@@ -1,0 +1,218 @@
+import getEntity from "./keyUtil.js";
+import { toArray } from "@v-c/util/dist/Children/toArray";
+import { omit } from "@v-c/util/dist/utils/omit";
+import warning from "@v-c/util/dist/warning";
+function getPosition(level, index) {
+	return `${level}-${index}`;
+}
+function isTreeNode(node) {
+	return !!(node && node.type && node.type.isTreeNode);
+}
+function getKey(key, pos) {
+	if (key !== null && key !== void 0) return key;
+	return pos;
+}
+function fillFieldNames(fieldNames) {
+	const { title, _title, key, children } = fieldNames || {};
+	const mergedTitle = title || "title";
+	return {
+		title: mergedTitle,
+		_title: _title || [mergedTitle],
+		key: key || "key",
+		children: children || "children"
+	};
+}
+function warningWithoutKey(treeData, fieldNames) {
+	const keys = /* @__PURE__ */ new Map();
+	const mergedFieldNames = fillFieldNames(fieldNames);
+	function dig(list, path = "") {
+		(list || []).forEach((treeNode) => {
+			const key = treeNode[mergedFieldNames.key];
+			const children = treeNode[mergedFieldNames.children];
+			warning(key !== null && key !== void 0, `Tree node must have a certain key: [${path}${key}]`);
+			const recordKey = String(key);
+			warning(!keys.has(recordKey) || key === null || key === void 0, `Same 'key' exist in the Tree: ${recordKey}`);
+			keys.set(recordKey, true);
+			dig(children, `${path}${recordKey} > `);
+		});
+	}
+	dig(treeData);
+}
+function convertTreeToData(rootNodes) {
+	function dig(node) {
+		return toArray(node).map((treeNode) => {
+			if (!isTreeNode(treeNode)) {
+				warning(!treeNode, "Tree/TreeNode can only accept TreeNode as children.");
+				return null;
+			}
+			const dataNode = {
+				key: treeNode.key,
+				...treeNode.props || {}
+			};
+			let childrenNodes = [];
+			if (treeNode.children) {
+				const children = treeNode.children;
+				if (typeof children === "object" && children.default) childrenNodes = children.default();
+				else childrenNodes = children;
+			}
+			const parsedChildren = dig(childrenNodes);
+			if (parsedChildren.length) dataNode.children = parsedChildren;
+			return dataNode;
+		}).filter((dataNode) => !!dataNode);
+	}
+	return dig(rootNodes);
+}
+function flattenTreeData(treeNodeList, expandedKeys, fieldNames) {
+	const { _title: fieldTitles, key: fieldKey, children: fieldChildren } = fillFieldNames(fieldNames);
+	const expandedKeySet = new Set(expandedKeys === true ? [] : expandedKeys);
+	const flattenList = [];
+	function dig(list, parent = null) {
+		return (list || []).map((treeNode, index) => {
+			const pos = getPosition(parent ? parent.pos : "0", index);
+			const mergedKey = getKey(treeNode[fieldKey], pos);
+			let mergedTitle;
+			for (let i = 0; i < fieldTitles.length; i += 1) {
+				const fieldTitle = fieldTitles[i];
+				if (treeNode[fieldTitle] !== void 0) {
+					mergedTitle = treeNode[fieldTitle];
+					break;
+				}
+			}
+			const flattenNode = Object.assign(omit(treeNode, [
+				...fieldTitles,
+				fieldKey,
+				fieldChildren
+			]), {
+				title: mergedTitle,
+				key: mergedKey,
+				parent,
+				pos,
+				children: [],
+				data: treeNode,
+				isStart: [...parent ? parent.isStart : [], index === 0],
+				isEnd: [...parent ? parent.isEnd : [], index === list.length - 1]
+			});
+			flattenList.push(flattenNode);
+			if (expandedKeys === true || expandedKeySet.has(mergedKey)) flattenNode.children = dig(treeNode[fieldChildren] || [], flattenNode);
+			else flattenNode.children = [];
+			return flattenNode;
+		});
+	}
+	dig(treeNodeList || []);
+	return flattenList;
+}
+function traverseDataNodes(dataNodes, callback, config) {
+	let mergedConfig = {};
+	if (typeof config === "object") mergedConfig = config;
+	else mergedConfig = { externalGetKey: config };
+	mergedConfig = mergedConfig || {};
+	const { childrenPropName, externalGetKey, fieldNames } = mergedConfig;
+	const { key: fieldKey, children: fieldChildren } = fillFieldNames(fieldNames);
+	const mergeChildrenPropName = childrenPropName || fieldChildren;
+	let syntheticGetKey;
+	if (externalGetKey) if (typeof externalGetKey === "string") syntheticGetKey = (node) => node[externalGetKey];
+	else syntheticGetKey = (node) => externalGetKey(node);
+	else syntheticGetKey = (node, pos) => getKey(node[fieldKey], pos);
+	function processNode(node, index, parent, pathNodes) {
+		const children = node ? node[mergeChildrenPropName] : dataNodes;
+		const pos = node ? getPosition(parent.pos, index) : "0";
+		const connectNodes = node ? [...pathNodes || [], node] : [];
+		if (node) callback({
+			node,
+			index,
+			pos,
+			key: syntheticGetKey(node, pos),
+			parentPos: parent.node ? parent.pos : null,
+			level: parent.level + 1,
+			nodes: connectNodes
+		});
+		if (children) children.forEach((subNode, subIndex) => {
+			processNode(subNode, subIndex, {
+				node,
+				pos,
+				level: parent ? parent.level + 1 : -1
+			}, connectNodes);
+		});
+	}
+	processNode(null);
+}
+function convertDataToEntities(dataNodes, { initWrapper, processEntity, onProcessFinished, externalGetKey, childrenPropName, fieldNames } = {}, legacyExternalGetKey) {
+	const mergedExternalGetKey = externalGetKey || legacyExternalGetKey;
+	const posEntities = {};
+	const keyEntities = {};
+	let wrapper = {
+		posEntities,
+		keyEntities
+	};
+	if (initWrapper) wrapper = initWrapper(wrapper) || wrapper;
+	traverseDataNodes(dataNodes, (item) => {
+		const { node, index, pos, key, parentPos, level, nodes } = item;
+		const entity = {
+			node,
+			nodes,
+			index,
+			key,
+			pos,
+			level
+		};
+		const mergedKey = getKey(key, pos);
+		posEntities[pos] = entity;
+		keyEntities[String(mergedKey)] = entity;
+		entity.parent = posEntities[String(parentPos)];
+		if (entity.parent) {
+			entity.parent.children = entity.parent.children || [];
+			entity.parent.children.push(entity);
+		}
+		processEntity?.(entity, wrapper);
+	}, {
+		externalGetKey: mergedExternalGetKey,
+		childrenPropName,
+		fieldNames
+	});
+	onProcessFinished?.(wrapper);
+	return wrapper;
+}
+function getTreeNodeProps(key, { expandedKeys, selectedKeys, loadedKeys, loadingKeys, checkedKeys, halfCheckedKeys, dragOverNodeKey, dropPosition, keyEntities }) {
+	const entity = getEntity(keyEntities, key);
+	return {
+		eventKey: key,
+		expanded: expandedKeys.includes(key),
+		selected: selectedKeys.includes(key),
+		loaded: loadedKeys.includes(key),
+		loading: loadingKeys.includes(key),
+		checked: checkedKeys.includes(key),
+		halfChecked: halfCheckedKeys.includes(key),
+		pos: String(entity ? entity.pos : ""),
+		dragOver: dragOverNodeKey === key && dropPosition === 0,
+		dragOverGapTop: dragOverNodeKey === key && dropPosition === -1,
+		dragOverGapBottom: dragOverNodeKey === key && dropPosition === 1
+	};
+}
+function convertNodePropsToEventData(props) {
+	const { data, expanded, selected, checked, loaded, loading, halfChecked, dragOver, dragOverGapTop, dragOverGapBottom, pos, active, eventKey } = props;
+	const eventData = {
+		...data,
+		expanded,
+		selected,
+		checked,
+		loaded,
+		loading,
+		halfChecked,
+		dragOver,
+		dragOverGapTop,
+		dragOverGapBottom,
+		pos,
+		active,
+		key: eventKey
+	};
+	if (!("props" in eventData)) Object.defineProperty(eventData, "props", { get() {
+		warning(false, "Second param return from event is node data instead of TreeNode instance. Please read value directly instead of reading from `props`.");
+		return props;
+	} });
+	return eventData;
+}
+function isLeafNode(isLeaf, loadData, hasChildren, loaded) {
+	if (isLeaf === false) return false;
+	return !!isLeaf || !loadData && !hasChildren || !!(loadData && loaded && !hasChildren);
+}
+export { convertDataToEntities, convertNodePropsToEventData, convertTreeToData, fillFieldNames, flattenTreeData, getKey, getPosition, getTreeNodeProps, isLeafNode, isTreeNode, traverseDataNodes, warningWithoutKey };

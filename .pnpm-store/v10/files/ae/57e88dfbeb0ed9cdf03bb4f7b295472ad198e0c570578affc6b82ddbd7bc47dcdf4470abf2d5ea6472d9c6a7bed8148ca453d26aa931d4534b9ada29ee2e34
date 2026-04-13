@@ -1,0 +1,329 @@
+import { useMenuContext } from "./context/MenuContext.js";
+import { useFullPath, useMeasure } from "./context/PathContext.js";
+import Icon_default from "./Icon.js";
+import { useMenuId } from "./context/IdContext.js";
+import { usePrivateContext } from "./context/PrivateContext.js";
+import useActive from "./hooks/useActive.js";
+import useDirectionStyle from "./hooks/useDirectionStyle.js";
+import { warnItemProp } from "./utils/warnUtil.js";
+import { computed, createVNode, defineComponent, mergeProps, shallowRef, watch } from "vue";
+import { clsx, warning } from "@v-c/util";
+import omit from "@v-c/util/dist/omit";
+import { toPropsRefs } from "@v-c/util/dist/props-util";
+import Overflow from "@v-c/overflow";
+import KeyCode from "@v-c/util/dist/KeyCode";
+var LegacyMenuItem = /* @__PURE__ */ defineComponent((props, { slots, attrs }) => {
+	return () => {
+		const { title, attribute, ...restProps } = attrs;
+		const { elementRef } = props;
+		const passedProps = omit(restProps, [
+			"eventKey",
+			"popupClassName",
+			"popupOffset",
+			"onTitleClick"
+		]);
+		warning(!attribute, "`attribute` of Menu.Item is deprecated. Please pass attribute directly.");
+		return createVNode(Overflow.Item, mergeProps(attribute, { "title": typeof title === "string" ? title : void 0 }, passedProps, { "ref": elementRef }), { default: () => [slots?.default?.()] });
+	};
+}, {
+	props: { elementRef: {
+		required: false,
+		default: void 0
+	} },
+	name: "LegacyMenuItem",
+	inheritAttrs: false
+});
+var InternalMenuItem = /* @__PURE__ */ defineComponent((props, { slots, attrs }) => {
+	const { eventKey } = toPropsRefs(props, "eventKey");
+	const domDataId = useMenuId(eventKey);
+	const menuContext = useMenuContext();
+	const privateContext = usePrivateContext();
+	const legacyMenuItemRef = shallowRef();
+	const elementRef = shallowRef();
+	const mergedDisabled = computed(() => props.disabled ?? menuContext?.value?.disabled);
+	const connectedKeys = useFullPath(eventKey);
+	if (process.env.NODE_ENV !== "production" && props.warnKey) warning(false, "MenuItem should not leave undefined `key`.");
+	const getEventInfo = (e) => {
+		return {
+			key: eventKey.value,
+			keyPath: connectedKeys.value,
+			item: legacyMenuItemRef.value,
+			domEvent: e
+		};
+	};
+	const ret = useActive(eventKey, mergedDisabled, props?.onMouseEnter, props?.onMouseLeave);
+	const active = ret.active;
+	const selected = computed(() => !!menuContext?.value?.selectedKeys?.includes?.(eventKey.value));
+	const directionStyle = useDirectionStyle(computed(() => connectedKeys.value.length));
+	const onInternalClick = (e) => {
+		if (mergedDisabled.value) return;
+		const info = getEventInfo(e);
+		props?.onClick?.(warnItemProp(info));
+		menuContext?.value?.onItemClick?.(info);
+	};
+	const onInternalKeyDown = (e) => {
+		props?.onKeyDown?.(e);
+		if (e.which === KeyCode.ENTER) {
+			const info = getEventInfo(e);
+			props?.onClick?.(warnItemProp(info));
+			menuContext?.value?.onItemClick?.(info);
+		}
+	};
+	const onInternalFocus = (e) => {
+		menuContext?.value?.onActive?.(eventKey.value);
+		props?.onFocus?.(e);
+	};
+	return () => {
+		const { role, disabled, itemIcon, ...restProps } = props;
+		const optionRoleProps = {};
+		if (role === "option") optionRoleProps["aria-selected"] = selected.value;
+		const { prefixCls, overflowDisabled, itemIcon: contextItemIcon } = menuContext?.value ?? {};
+		const mergedItemIcon = itemIcon || contextItemIcon;
+		const itemCls = `${prefixCls}-item`;
+		const activeProps = {
+			onMouseenter: ret.onMouseEnter,
+			onMouseleave: ret.onMouseLeave
+		};
+		let renderNode = createVNode(LegacyMenuItem, mergeProps({
+			"ref": legacyMenuItemRef,
+			"elementRef": elementRef,
+			"role": role === null ? "none" : role || "menuitem",
+			"tabIndex": disabled ? null : -1,
+			"data-menu-id": overflowDisabled && domDataId.value ? null : domDataId.value
+		}, omit({
+			...restProps,
+			...attrs
+		}, ["extra"]), activeProps, optionRoleProps, {
+			"component": "li",
+			"aria-disabled": disabled,
+			"style": [directionStyle.value, props?.style],
+			"className": clsx(itemCls, {
+				[`${itemCls}-active`]: active.value,
+				[`${itemCls}-selected`]: selected.value,
+				[`${itemCls}-disabled`]: mergedDisabled.value
+			}, props.class),
+			"onClick": onInternalClick,
+			"onKeydown": onInternalKeyDown,
+			"onFocus": onInternalFocus
+		}), { default: () => [slots?.default?.(), createVNode(Icon_default, {
+			"props": {
+				...props,
+				isSelected: selected.value
+			},
+			"icon": mergedItemIcon
+		}, null)] });
+		if (privateContext._internalRenderMenuItem) renderNode = privateContext._internalRenderMenuItem(renderNode, props, { selected: selected.value });
+		return renderNode;
+	};
+}, {
+	props: {
+		eventKey: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		warnKey: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		attribute: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		onKeyDown: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onFocus: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		role: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		type: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		itemIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		extra: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		onMouseEnter: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseLeave: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		style: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		class: {
+			type: String,
+			required: false,
+			default: void 0
+		}
+	},
+	name: "InternalMenuItem",
+	inheritAttrs: false
+});
+var MenuItem_default = /* @__PURE__ */ defineComponent((props, { slots, attrs }) => {
+	const { eventKey } = toPropsRefs(props, "eventKey");
+	const measure = useMeasure();
+	const connectedKeyPath = useFullPath(eventKey);
+	watch([connectedKeyPath], (_n, _o, onCleanup) => {
+		if (measure) measure.registerPath(eventKey.value, connectedKeyPath.value);
+		onCleanup(() => {
+			measure?.unregisterPath(eventKey.value, connectedKeyPath.value);
+		});
+	}, { immediate: true });
+	return () => {
+		if (measure) return null;
+		return createVNode(InternalMenuItem, {
+			...attrs,
+			...props
+		}, slots);
+	};
+}, {
+	props: {
+		eventKey: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		warnKey: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		attribute: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		onKeyDown: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onFocus: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		role: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		type: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		itemIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		extra: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		onMouseEnter: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseLeave: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		style: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		class: {
+			type: String,
+			required: false,
+			default: void 0
+		}
+	},
+	name: "MenuItem",
+	inheritAttrs: false
+});
+export { MenuItem_default as default };

@@ -1,0 +1,106 @@
+.vxe-context-menu {
+  display: none;
+  top: 0;
+  left: 0;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.vxe-context-menu.is--visible {
+  display: block;
+}
+.vxe-context-menu.is--fixed {
+  position: fixed;
+}
+.vxe-context-menu.is--absolute {
+  position: absolute;
+}
+
+.vxe-context-menu--group-wrapper {
+  border-top: 1px solid var(--vxe-ui-base-popup-border-color);
+}
+.vxe-context-menu--group-wrapper:first-child {
+  border: 0;
+}
+
+.vxe-context-menu--wrapper,
+.vxe-context-menu--children-wrapper {
+  padding: 0;
+  color: var(--vxe-ui-font-color);
+  font-family: var(--vxe-ui-font-family);
+  border: 1px solid var(--vxe-ui-base-popup-border-color);
+  background-color: var(--vxe-ui-layout-background-color);
+  border-radius: var(--vxe-ui-base-border-radius);
+  box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.3);
+}
+
+.vxe-context-menu--children-wrapper {
+  display: none;
+  position: absolute;
+  transform: translate(0, -5px);
+}
+
+.vxe-context-menu--item-wrapper {
+  position: relative;
+  min-width: 12em;
+  max-width: 20em;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.vxe-context-menu--item-wrapper.is--active {
+  background-color: var(--vxe-ui-base-hover-background-color);
+}
+
+.vxe-context-menu--first-item.is--subactive .vxe-context-menu--children-wrapper {
+  display: block;
+}
+
+.vxe-context-menu--item-inner {
+  height: var(--vxe-ui-context-menu-option-height);
+  display: flex;
+  align-items: center;
+  padding: 0 0.8em;
+  cursor: pointer;
+}
+.vxe-context-menu--item-inner.is--loading {
+  opacity: 0.5;
+  cursor: progress;
+}
+.vxe-context-menu--item-inner.is--disabled {
+  color: var(--vxe-ui-font-disabled-color);
+  cursor: no-drop;
+}
+
+.vxe-context-menu--item-prefix {
+  min-width: 1em;
+  text-align: center;
+}
+
+.vxe-context-menu--item-prefix,
+.vxe-context-menu--item-suffix {
+  flex-shrink: 0;
+  font-size: 0.9em;
+}
+
+.vxe-context-menu--item-label {
+  font-size: 0.9em;
+  padding: 0 0.5em;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vxe-context-menu {
+  font-size: var(--vxe-ui-font-size-default);
+}
+.vxe-context-menu.size--medium {
+  font-size: var(--vxe-ui-font-size-medium);
+}
+.vxe-context-menu.size--small {
+  font-size: var(--vxe-ui-font-size-small);
+}
+.vxe-context-menu.size--mini {
+  font-size: var(--vxe-ui-font-size-mini);
+}

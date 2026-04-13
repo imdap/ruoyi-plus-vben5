@@ -1,0 +1,135 @@
+import { AnyObject, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { InputStatus } from "../_util/statusUtils.js";
+import "../date-picker/generatePicker/index.js";
+import { PickerProps as PickerProps$1, RangePickerProps as RangePickerProps$1 } from "../date-picker/generatePicker/interface.js";
+import * as vue48 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { PickerMode } from "@v-c/picker";
+
+//#region src/time-picker/index.d.ts
+type TimePickerSemanticName = keyof TimePickerSemanticClassNames & keyof TimePickerSemanticStyles;
+interface TimePickerSemanticClassNames {
+  root?: string;
+  prefix?: string;
+  input?: string;
+  suffix?: string;
+}
+interface TimePickerSemanticStyles {
+  root?: CSSProperties;
+  prefix?: CSSProperties;
+  input?: CSSProperties;
+  suffix?: CSSProperties;
+}
+type TimePickerPanelSemanticName = keyof TimePickerPanelSemanticClassNames & keyof TimePickerPanelSemanticStyles;
+interface TimePickerPanelSemanticClassNames {
+  root?: string;
+  content?: string;
+  item?: string;
+  footer?: string;
+  container?: string;
+}
+interface TimePickerPanelSemanticStyles {
+  root?: CSSProperties;
+  content?: CSSProperties;
+  item?: CSSProperties;
+  footer?: CSSProperties;
+  container?: CSSProperties;
+}
+type TimePickerClassNames = SemanticClassNamesType<TimePickerProps, TimePickerSemanticClassNames, {
+  popup?: string | TimePickerPanelSemanticClassNames;
+}>;
+type TimePickerStyles = SemanticStylesType<TimePickerProps, TimePickerSemanticStyles, {
+  popup?: TimePickerPanelSemanticStyles;
+}>;
+interface PickerTimeProps<DateType extends AnyObject> extends Omit<PickerProps$1<DateType>, 'picker' | 'showTime'> {}
+interface RangePickerTimeProps<DateType extends AnyObject> extends Omit<RangePickerProps$1<DateType>, 'showTime' | 'picker'> {
+  /** @deprecated Please use `classes.popup` instead */
+  popupClassName?: string;
+  /** @deprecated Please use `styles.popup` instead */
+  popupStyle?: CSSProperties;
+}
+interface TimePickerLocale {
+  placeholder?: string;
+  rangePlaceholder?: [string, string];
+}
+interface TimeRangePickerProps extends Omit<RangePickerTimeProps<AnyObject>, 'picker'>, TimeRangePickerEmitsProps {
+  /** @deprecated Please use `classes.popup` instead */
+  popupClassName?: string;
+  /** @deprecated Please use `styles.popup` instead */
+  popupStyle?: CSSProperties;
+}
+interface TimeRangePickerEmits<DateType = AnyObject> {
+  'change': (dates: DateType[] | null, dateStrings: [string, string]) => void;
+  'update:value': (dates: DateType[] | null) => void;
+  'calendarChange': (dates: DateType[], dateStrings: [string, string], info: any) => void;
+  'panelChange': (dates: DateType[], modes: [PickerMode, PickerMode]) => void;
+  'openChange': (open: boolean) => void;
+  'ok': (dates: DateType[]) => void;
+  'focus': (e: FocusEvent, info: any) => void;
+  'blur': (e: FocusEvent, info: any) => void;
+  'keydown': (e: KeyboardEvent, preventDefault: VoidFunction) => void;
+}
+declare const RangePicker$1: vue48.DefineSetupFnComponent<TimeRangePickerProps, TimeRangePickerEmits<AnyObject>, {}, TimeRangePickerProps, vue48.PublicProps>;
+interface TimePickerProps extends Omit<PickerTimeProps<AnyObject>, 'picker' | 'classes' | 'styles'>, TimePickerEmitsProps {
+  addon?: () => VueNode;
+  status?: InputStatus;
+  /** @deprecated Please use `classes.popup` instead */
+  popupClassName?: string;
+  /** @deprecated Please use `styles.popup` instead */
+  popupStyle?: CSSProperties;
+  rootClass?: string;
+  classes?: TimePickerClassNames;
+  styles?: TimePickerStyles;
+}
+interface TimePickerSlots {
+  addon?: () => any;
+  renderExtraFooter?: (mode: PickerMode) => any;
+  suffixIcon?: () => any;
+  [key: string]: any;
+}
+interface TimePickerEmits<DateType = AnyObject> {
+  'change': (date: DateType | DateType[] | null, dateString: string | string[]) => void;
+  'update:value': (date: DateType | DateType[] | null) => void;
+  'calendarChange': (date: DateType | DateType[], dateString: string | string[], info: any) => void;
+  'panelChange': (date: DateType, mode: PickerMode) => void;
+  'openChange': (open: boolean) => void;
+  'ok': (date: DateType | DateType[]) => void;
+  'select': (date: DateType) => void;
+  'focus': (e: FocusEvent, info: any) => void;
+  'blur': (e: FocusEvent, info: any) => void;
+  'keydown': (e: KeyboardEvent, preventDefault: VoidFunction) => void;
+}
+interface TimeRangePickerEmitsProps<DateType = AnyObject> {
+  onChange?: TimeRangePickerEmits<DateType>['change'];
+  'onUpdate:value'?: TimeRangePickerEmits<DateType>['update:value'];
+  onCalendarChange?: TimeRangePickerEmits<DateType>['calendarChange'];
+  onPanelChange?: TimeRangePickerEmits<DateType>['panelChange'];
+  onOpenChange?: TimeRangePickerEmits<DateType>['openChange'];
+  onOk?: TimeRangePickerEmits<DateType>['ok'];
+  onFocus?: TimeRangePickerEmits<DateType>['focus'];
+  onBlur?: TimeRangePickerEmits<DateType>['blur'];
+  onKeydown?: TimeRangePickerEmits<DateType>['keydown'];
+}
+interface TimePickerEmitsProps<DateType = AnyObject> {
+  onChange?: TimePickerEmits<DateType>['change'];
+  'onUpdate:value'?: TimePickerEmits<DateType>['update:value'];
+  onCalendarChange?: TimePickerEmits<DateType>['calendarChange'];
+  onPanelChange?: TimePickerEmits<DateType>['panelChange'];
+  onOpenChange?: TimePickerEmits<DateType>['openChange'];
+  onOk?: TimePickerEmits<DateType>['ok'];
+  onSelect?: TimePickerEmits<DateType>['select'];
+  onFocus?: TimePickerEmits<DateType>['focus'];
+  onBlur?: TimePickerEmits<DateType>['blur'];
+  onKeydown?: TimePickerEmits<DateType>['keydown'];
+}
+declare const TimePicker: vue48.DefineSetupFnComponent<TimePickerProps, TimePickerEmits<AnyObject>, SlotsType<TimePickerSlots>, TimePickerProps, vue48.PublicProps>;
+type MergedTimePicker = typeof TimePicker & {
+  RangePicker: typeof RangePicker$1;
+  _InternalPanelDoNotUseOrYouWillBeFired: any;
+};
+declare const _default: MergedTimePicker;
+declare const TimeRangePicker: vue48.DefineSetupFnComponent<TimeRangePickerProps, TimeRangePickerEmits<AnyObject>, {}, TimeRangePickerProps, vue48.PublicProps>;
+//#endregion
+export { MergedTimePicker, PickerTimeProps, RangePickerTimeProps, TimePickerClassNames, TimePickerEmits, TimePickerEmitsProps, TimePickerLocale, TimePickerPanelSemanticClassNames, TimePickerPanelSemanticName, TimePickerPanelSemanticStyles, TimePickerProps, TimePickerSemanticClassNames, TimePickerSemanticName, TimePickerSemanticStyles, TimePickerSlots, TimePickerStyles, TimeRangePicker, TimeRangePickerEmits, TimeRangePickerEmitsProps, TimeRangePickerProps, _default as default };

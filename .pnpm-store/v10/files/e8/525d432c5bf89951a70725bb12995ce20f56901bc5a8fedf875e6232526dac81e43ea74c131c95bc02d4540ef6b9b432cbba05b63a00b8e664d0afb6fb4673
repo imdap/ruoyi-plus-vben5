@@ -1,0 +1,28 @@
+import { existsSync, statSync } from "node:fs";
+import { basename, dirname, resolve } from "node:path";
+export function findPathRecursive(cwd, startDirectory, entries) {
+    const resolvedPaths = entries.map(p => resolve(startDirectory, p));
+    for (let resolvedPath = resolvedPaths.shift(); resolvedPath !== undefined; resolvedPath = resolvedPaths.shift()) {
+        if (existsSync(resolvedPath)) {
+            return resolvedPath;
+        }
+        const fileName = basename(resolvedPath);
+        const directory = dirname(resolvedPath);
+        const parentDirectory = resolve(directory, "..");
+        const parentPath = resolve(parentDirectory, fileName);
+        if (parentDirectory === directory || directory === cwd) {
+            continue;
+        }
+        resolvedPaths.push(parentPath);
+    }
+}
+export function getModifiedDate(filePath) {
+    try {
+        const stats = statSync(filePath);
+        return stats.mtime;
+    }
+    catch {
+        return new Date();
+    }
+}
+//# sourceMappingURL=fs.js.map

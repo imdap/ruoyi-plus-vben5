@@ -1,0 +1,10 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue505 from "vue";
+
+//#region src/qrcode/style/index.d.ts
+interface ComponentToken {}
+declare const prepareComponentToken: GetDefaultToken<'QRCode'>;
+declare const _default: (prefixCls: vue505.Ref<string>, rootCls?: vue505.Ref<string | undefined>) => readonly [vue505.Ref<string, string>, vue505.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

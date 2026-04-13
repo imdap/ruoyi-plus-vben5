@@ -1,0 +1,20 @@
+import { FloatButtonProps, FloatButtonShape } from "./FloatButton.js";
+import * as vue1068 from "vue";
+import { Ref } from "vue";
+
+//#region src/float-button/context.d.ts
+interface GroupContextProps {
+  shape?: FloatButtonShape;
+  individual?: boolean;
+  classNames?: FloatButtonProps['classes'];
+  styles?: FloatButtonProps['styles'];
+}
+declare function useGroupContext(): Ref<GroupContextProps | null, GroupContextProps | null> | undefined;
+declare function useGroupContextProvider(value: Ref<GroupContextProps | null>): void;
+declare const GroupContextProvider: vue1068.DefineSetupFnComponent<{
+  value: GroupContextProps;
+}, {}, {}, {
+  value: GroupContextProps;
+} & {}, vue1068.PublicProps>;
+//#endregion
+export { GroupContextProps, GroupContextProvider, useGroupContext, useGroupContextProvider };

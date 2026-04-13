@@ -1,0 +1,73 @@
+import { MaskType } from "../_util/hooks/useMergedMask.js";
+import "../_util/hooks/index.js";
+import { FocusableConfig, OmitFocusType } from "./useFocusable.js";
+import { DrawerPanelProps } from "./DrawerPanel.js";
+import * as vue911 from "vue";
+import { SlotsType } from "vue";
+import { DrawerProps as DrawerProps$1 } from "@v-c/drawer";
+
+//#region src/drawer/index.d.ts
+declare const _SizeTypes: readonly ["default", "large"];
+type sizeType = (typeof _SizeTypes)[number];
+interface PushState {
+  distance: string | number;
+}
+interface DrawerResizableConfig {
+  onResize?: (size: number) => void;
+  onResizeStart?: () => void;
+  onResizeEnd?: () => void;
+}
+interface DrawerProps extends Omit<DrawerProps$1, 'maskStyle' | 'destroyOnHidden' | 'rootClassName' | 'mask' | 'resizable' | 'classNames' | 'styles' | 'onClose' | 'onKeyUp' | 'onKeyDown' | 'onMouseEnter' | 'onMouseLeave' | 'onMouseOver' | 'onClick' | 'maskClosable' | OmitFocusType>, Omit<DrawerPanelProps, 'prefixCls' | 'ariaId' | 'onClose'>, DrawerEmitsProps {
+  size?: sizeType | number | string;
+  resizable?: boolean | DrawerResizableConfig;
+  rootClass?: string;
+  open?: boolean;
+  afterOpenChange?: (open: boolean) => void;
+  /** @deprecated Please use `destroyOnHidden` instead */
+  destroyOnClose?: boolean;
+  /**
+   * @since 5.25.0
+   */
+  destroyOnHidden?: boolean;
+  mask?: MaskType;
+  /** @deprecated Please use `mask.closable` instead */
+  maskClosable?: boolean;
+  focusable?: FocusableConfig;
+}
+interface DrawerEmits {
+  'update:open': (open: boolean) => void;
+  'afterOpenChange': (open: boolean) => void;
+  'close': (e: MouseEvent | KeyboardEvent) => void;
+  'keydown': (e: KeyboardEvent) => void;
+  'keyup': (e: KeyboardEvent) => void;
+  'mouseenter': (e: MouseEvent) => void;
+  'mouseleave': (e: MouseEvent) => void;
+  'mouseover': (e: MouseEvent) => void;
+  'click': (e: MouseEvent) => void;
+}
+interface DrawerEmitsProps {
+  'onUpdate:open'?: DrawerEmits['update:open'];
+  onAfterOpenChange?: DrawerEmits['afterOpenChange'];
+  onClose?: DrawerEmits['close'];
+  onKeydown?: DrawerEmits['keydown'];
+  onKeyup?: DrawerEmits['keyup'];
+  onMouseenter?: DrawerEmits['mouseenter'];
+  onMouseleave?: DrawerEmits['mouseleave'];
+  onMouseover?: DrawerEmits['mouseover'];
+  onClick?: DrawerEmits['click'];
+}
+interface DrawerSlots {
+  title?: () => any;
+  footer?: () => any;
+  extra?: () => any;
+  default?: () => any;
+  closeIcon?: () => any;
+}
+declare const Drawer: vue911.DefineSetupFnComponent<DrawerProps, DrawerEmits, SlotsType<DrawerSlots>, DrawerProps, vue911.PublicProps>;
+interface PurePanelInterface {
+  prefixCls?: string;
+  placement?: DrawerProps['placement'];
+}
+declare const PurePanel: vue911.DefineSetupFnComponent<Omit<DrawerPanelProps, "prefixCls"> & PurePanelInterface, {}, {}, Omit<DrawerPanelProps, "prefixCls"> & PurePanelInterface & {}, vue911.PublicProps>;
+//#endregion
+export { DrawerEmits, DrawerEmitsProps, DrawerProps, DrawerResizableConfig, DrawerSlots, PurePanel, PushState, Drawer as default };

@@ -1,0 +1,12 @@
+import { AggregationColor } from "../color.js";
+import * as vue847 from "vue";
+
+//#region src/color-picker/components/ColorRgbInput.d.ts
+interface ColorRgbInputProps {
+  prefixCls: string;
+  value?: AggregationColor;
+  onChange?: (value: AggregationColor) => void;
+}
+declare const _default: vue847.DefineSetupFnComponent<ColorRgbInputProps, {}, {}, ColorRgbInputProps & {}, vue847.PublicProps>;
+//#endregion
+export { ColorRgbInputProps, _default as default };

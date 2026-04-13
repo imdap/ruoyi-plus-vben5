@@ -1,0 +1,35 @@
+import { cloneDeep } from "es-toolkit";
+
+//#region src/form/util.ts
+const formItemNameBlackList = ["parentNode"];
+const defaultItemNamePrefixCls = "form_item";
+function toArray(candidate) {
+	if (candidate === void 0 || candidate === false) return [];
+	return Array.isArray(candidate) ? candidate : [candidate];
+}
+function getFieldId(namePath, formName) {
+	if (!namePath.length) return;
+	const mergedId = namePath.join("_");
+	if (formName) return `${formName}_${mergedId}`;
+	return formItemNameBlackList.includes(mergedId) ? `${defaultItemNamePrefixCls}_${mergedId}` : mergedId;
+}
+/**
+* Get merged status by meta or passed `validateStatus`.
+*/
+function getStatus(errors, warnings, meta, defaultValidateStatus, hasFeedback, validateStatus) {
+	let status = defaultValidateStatus;
+	if (validateStatus !== void 0) status = validateStatus;
+	else if (meta.validating) status = "validating";
+	else if (errors.length) status = "error";
+	else if (warnings.length) status = "warning";
+	else if (meta.touched || hasFeedback && meta.validated) status = "success";
+	return status;
+}
+function initialValueFormat(value) {
+	if (value === void 0 || value === null || value === "") return value;
+	if (Array.isArray(value) || typeof value === "object") return cloneDeep(value);
+	return value;
+}
+
+//#endregion
+export { getFieldId, getStatus, initialValueFormat, toArray };

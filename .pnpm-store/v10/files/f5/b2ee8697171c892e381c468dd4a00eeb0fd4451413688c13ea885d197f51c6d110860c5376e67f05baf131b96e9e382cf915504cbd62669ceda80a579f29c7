@@ -1,0 +1,7 @@
+import { ComponentToken } from "./token.js";
+import * as vue883 from "vue";
+
+//#region src/button/style/index.d.ts
+declare const _default: (prefixCls: vue883.Ref<string>, rootCls?: vue883.Ref<string | undefined>) => readonly [vue883.Ref<string, string>, vue883.ComputedRef<string | undefined>];
+//#endregion
+export { type ComponentToken, _default as default };

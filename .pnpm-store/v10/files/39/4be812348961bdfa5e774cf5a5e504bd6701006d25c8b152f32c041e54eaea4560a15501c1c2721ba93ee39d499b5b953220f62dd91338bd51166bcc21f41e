@@ -1,0 +1,69 @@
+{
+  "name": "uqr",
+  "type": "module",
+  "version": "0.1.3",
+  "description": "Generate QR Code universally, in any runtime, to ANSI, Unicode or SVG.",
+  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/unjs/uqr#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unjs/uqr.git"
+  },
+  "bugs": "https://github.com/unjs/uqr/issues",
+  "keywords": [],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@antfu/eslint-config": "^8.0.0",
+    "@antfu/ni": "^30.0.0",
+    "@antfu/utils": "^9.3.0",
+    "@types/node": "^25.5.0",
+    "bumpp": "^11.0.1",
+    "eslint": "^10.1.0",
+    "lint-staged": "^16.4.0",
+    "pnpm": "^10.33.0",
+    "rimraf": "^6.1.3",
+    "rollup": "^4.60.1",
+    "simple-git-hooks": "^2.13.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "unbuild": "^3.6.1",
+    "vite": "^8.0.3",
+    "vitest": "^4.1.2"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild --stub",
+    "lint": "eslint .",
+    "release": "bumpp && npm publish",
+    "play": "tsx play/run.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  }
+}

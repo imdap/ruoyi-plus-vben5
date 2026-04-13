@@ -1,0 +1,59 @@
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { Breakpoint } from "../_util/responsiveObserver.js";
+import { RowProps } from "../grid/row.js";
+import "../grid/index.js";
+import { MasonryItemType } from "./MasonryItem.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue1082 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/masonry/Masonry.d.ts
+type Gap = number | undefined;
+type Key = string | number;
+type MasonrySemanticName = keyof MasonrySemanticClassNames & keyof MasonrySemanticStyles;
+interface MasonrySemanticClassNames {
+  root?: string;
+  item?: string;
+}
+interface MasonrySemanticStyles {
+  root?: CSSProperties;
+  item?: CSSProperties;
+}
+type MasonryClassNamesType = SemanticClassNamesType<MasonryProps, MasonrySemanticClassNames>;
+type MasonryStylesType = SemanticStylesType<MasonryProps, MasonrySemanticStyles>;
+interface MasonryProps extends ComponentBaseProps, MasonryEmitsProps {
+  classes?: MasonryClassNamesType;
+  styles?: MasonryStylesType;
+  /** Spacing between items */
+  gutter?: RowProps['gutter'];
+  items?: MasonryItemType[];
+  itemRender?: (itemInfo: MasonryItemType & {
+    index: number;
+  }) => any;
+  /** Number of columns in the masonry grid layout */
+  columns?: number | Partial<Record<Breakpoint, number>>;
+  /** Trigger when item layout order changed */
+  fresh?: boolean;
+}
+interface MasonryEmits {
+  layoutChange: (sortInfo: {
+    key: Key;
+    column: number;
+  }[]) => void;
+}
+interface MasonryEmitsProps {
+  onLayoutChange?: MasonryEmits['layoutChange'];
+}
+interface MasonrySlots {
+  default: () => any;
+  itemRender?: (itemInfo: MasonryItemType & {
+    index: number;
+  }) => any;
+}
+interface MasonryRef {
+  nativeElement: HTMLDivElement;
+}
+declare const Masonry: vue1082.DefineSetupFnComponent<MasonryProps, MasonryEmits, SlotsType<MasonrySlots>, MasonryProps, vue1082.PublicProps>;
+//#endregion
+export { Gap, Key, MasonryClassNamesType, MasonryEmits, MasonryEmitsProps, MasonryProps, MasonryRef, MasonrySemanticClassNames, MasonrySemanticName, MasonrySemanticStyles, MasonrySlots, MasonryStylesType, Masonry as default };

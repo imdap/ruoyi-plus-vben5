@@ -1,0 +1,1 @@
+@keyframes pulse-95cda1e2{50%{opacity:.5}}.recording-btn[data-v-95cda1e2]{width:.875rem;height:.875rem;display:inline-flex;cursor:pointer;border-radius:50%}.recording[data-v-95cda1e2]{animation:pulse-95cda1e2 2s cubic-bezier(.4,0,.6,1) infinite;transition-duration:1s;box-shadow:#ef4444 0 0 8px}

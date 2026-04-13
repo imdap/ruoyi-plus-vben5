@@ -1,0 +1,12 @@
+import { BlockProps, EllipsisConfig, TypographyBaseEmits, TypographySlots } from "./interface.js";
+import * as vue364 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/typography/Text.d.ts
+type TypographyBaseEmitsProps = { [K in keyof TypographyBaseEmits as `on${Capitalize<string & K>}`]?: TypographyBaseEmits[K] };
+interface TextProps extends BlockProps, TypographyBaseEmitsProps {
+  ellipsis?: boolean | Omit<EllipsisConfig, 'expandable' | 'rows' | 'onExpand'>;
+}
+declare const Text: vue364.DefineSetupFnComponent<TextProps, TypographyBaseEmits, SlotsType<TypographySlots>, TextProps, vue364.PublicProps>;
+//#endregion
+export { TextProps, TypographyBaseEmitsProps, Text as default };

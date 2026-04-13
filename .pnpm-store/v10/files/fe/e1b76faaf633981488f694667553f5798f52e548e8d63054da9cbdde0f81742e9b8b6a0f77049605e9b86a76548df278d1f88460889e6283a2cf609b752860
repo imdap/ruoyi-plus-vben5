@@ -1,0 +1,180 @@
+import { useInjectTableContext } from "../context/TableContext.js";
+import useFlattenRecords from "../hooks/useFlattenRecords.js";
+import { useInjectStaticContext, useProvideGridContext } from "./context.js";
+import BodyLine from "./BodyLine.js";
+import { computed, createVNode, defineComponent, reactive, ref, toRaw, watch, watchEffect } from "vue";
+import { getStylePxValue } from "@v-c/util/dist/props-util";
+import VirtualList from "@v-c/virtual-list";
+//#region src/VirtualTable/BodyGrid.tsx
+var ALIGN_MAP = {
+	start: "top",
+	end: "bottom",
+	nearest: "auto"
+};
+var BodyGrid = /* @__PURE__ */ defineComponent({
+	name: "TableBodyGrid",
+	props: ["data", "onScroll"],
+	setup(props, { expose }) {
+		const tableContext = useInjectTableContext();
+		const staticContext = useInjectStaticContext();
+		const listRef = ref(null);
+		const flattenData = useFlattenRecords(computed(() => props.data), computed(() => tableContext.childrenColumnName), computed(() => tableContext.expandedKeys), computed(() => tableContext.getRowKey));
+		const columnsWidth = computed(() => {
+			let total = 0;
+			return tableContext.flattenColumns.map(({ width, minWidth, key }) => {
+				const finalWidth = Math.max(width || 0, minWidth || 0);
+				total += finalWidth;
+				return [
+					key,
+					finalWidth,
+					total
+				];
+			});
+		});
+		const columnsOffset = computed(() => columnsWidth.value.map((colWidth) => colWidth[2]));
+		watch(columnsWidth, (newColumns) => {
+			newColumns.forEach(([key, width]) => {
+				tableContext.onColumnResize(key, width);
+			});
+		}, { immediate: true });
+		const gridContext = reactive({ columnsOffset: [] });
+		watchEffect(() => {
+			gridContext.columnsOffset = columnsOffset.value;
+		});
+		useProvideGridContext(gridContext);
+		const getRowSpan = (column, index, data) => {
+			const record = (data ?? toRaw(flattenData.value))[index]?.record;
+			const { onCell } = column;
+			if (onCell) return onCell(record, index)?.rowSpan ?? 1;
+			return 1;
+		};
+		const extraRender = (info) => {
+			const { start, end, getSize, offsetY } = info;
+			const { flattenColumns } = toRaw(tableContext);
+			if (end < 0) return null;
+			const rawData = toRaw(flattenData.value);
+			let firstRowSpanColumns = flattenColumns.filter((column) => getRowSpan(column, start, rawData) === 0);
+			let startIndex = start;
+			for (let i = start; i >= 0; i -= 1) {
+				firstRowSpanColumns = firstRowSpanColumns.filter((column) => getRowSpan(column, i, rawData) === 0);
+				if (!firstRowSpanColumns.length) {
+					startIndex = i;
+					break;
+				}
+			}
+			let lastRowSpanColumns = flattenColumns.filter((column) => getRowSpan(column, end, rawData) !== 1);
+			let endIndex = end;
+			for (let i = end; i < rawData.length; i += 1) {
+				lastRowSpanColumns = lastRowSpanColumns.filter((column) => getRowSpan(column, i, rawData) !== 1);
+				if (!lastRowSpanColumns.length) {
+					endIndex = Math.max(i - 1, end);
+					break;
+				}
+			}
+			const spanLines = [];
+			for (let i = startIndex; i <= endIndex; i += 1) {
+				if (!rawData[i]) continue;
+				if (flattenColumns.some((column) => getRowSpan(column, i, rawData) > 1)) spanLines.push(i);
+			}
+			if (!spanLines.length) return null;
+			return spanLines.map((index) => {
+				const item = rawData[index];
+				if (!item) return null;
+				const rowKey = item.rowKey;
+				const getHeight = (rowSpan) => {
+					const endItemIndex = index + rowSpan - 1;
+					const endItem = rawData[endItemIndex];
+					if (!endItem || !endItem.record) {
+						const endItemKey = rawData[Math.min(endItemIndex, rawData.length - 1)].rowKey;
+						const sizeInfo = getSize(rowKey, endItemKey);
+						return sizeInfo.bottom - sizeInfo.top;
+					}
+					const endItemKey = endItem.rowKey;
+					const sizeInfo = getSize(rowKey, endItemKey);
+					return sizeInfo.bottom - sizeInfo.top;
+				};
+				const sizeInfo = getSize(rowKey);
+				return createVNode(BodyLine, {
+					"key": index,
+					"data": item,
+					"rowKey": rowKey,
+					"index": index,
+					"style": { top: getStylePxValue(-offsetY + sizeInfo.top) },
+					"extra": true,
+					"getHeight": getHeight
+				}, null);
+			});
+		};
+		const exposed = {
+			scrollTo: (config) => {
+				if (!listRef.value) return;
+				const { align, offset, ...restConfig } = config || {};
+				const virtualAlign = ALIGN_MAP[align] ?? (offset ? "top" : "auto");
+				listRef.value.scrollTo({
+					...restConfig,
+					offset,
+					align: virtualAlign
+				});
+			},
+			get nativeElement() {
+				const native = listRef.value?.nativeElement;
+				return native && typeof native === "object" && "value" in native ? native.value : native;
+			}
+		};
+		Object.defineProperty(exposed, "scrollLeft", {
+			get: () => listRef.value?.getScrollInfo().x || 0,
+			set: (value) => {
+				listRef.value?.scrollTo({ left: value });
+			}
+		});
+		Object.defineProperty(exposed, "scrollTop", {
+			get: () => listRef.value?.getScrollInfo().y || 0,
+			set: (value) => {
+				listRef.value?.scrollTo({ top: value });
+			}
+		});
+		expose(exposed);
+		return () => {
+			const tblPrefixCls = `${tableContext.prefixCls}-tbody`;
+			const wrapperComponent = staticContext.getComponent?.(["body", "wrapper"], "div") || "div";
+			const horizontalScrollBarStyle = {};
+			if (staticContext.sticky) {
+				horizontalScrollBarStyle.position = "sticky";
+				horizontalScrollBarStyle.bottom = 0;
+				if (typeof staticContext.sticky === "object" && staticContext.sticky.offsetScroll) horizontalScrollBarStyle.bottom = staticContext.sticky.offsetScroll;
+			}
+			return createVNode(VirtualList, {
+				"fullHeight": false,
+				"ref": listRef,
+				"prefixCls": `${tblPrefixCls}-virtual`,
+				"styles": { horizontalScrollBar: horizontalScrollBarStyle },
+				"class": tblPrefixCls,
+				"height": staticContext.scrollY,
+				"itemHeight": staticContext.listItemHeight || 24,
+				"data": flattenData.value,
+				"itemKey": (item) => item.rowKey,
+				"component": wrapperComponent,
+				"scrollWidth": tableContext.scrollX,
+				"direction": tableContext.direction,
+				"onVirtualScroll": ({ x }) => {
+					props.onScroll?.({
+						currentTarget: exposed.nativeElement,
+						scrollLeft: x
+					});
+				},
+				"onScroll": staticContext.onScroll,
+				"extraRender": extraRender
+			}, { default: (dataInfo) => {
+				const { item, index, ...itemProps } = dataInfo;
+				return createVNode(BodyLine, {
+					"data": dataInfo.item,
+					"rowKey": item.rowKey,
+					"index": index,
+					"style": itemProps?.style
+				}, null);
+			} });
+		};
+	}
+});
+//#endregion
+export { BodyGrid as default };

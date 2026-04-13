@@ -1,0 +1,56 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { PresetColorKey } from "../theme/interface/presetColors.js";
+import "../theme/interface/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { PresetStatusColorType } from "../_util/colors.js";
+import _default, { RibbonProps, RibbonSlots } from "./Ribbon.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue28 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { LiteralUnion } from "@v-c/util/dist/type";
+
+//#region src/badge/index.d.ts
+type BadgeSemanticName = keyof BadgeSemanticClassNames & keyof BadgeSemanticStyles;
+interface BadgeSemanticClassNames {
+  root?: string;
+  indicator?: string;
+}
+interface BadgeSemanticStyles {
+  root?: CSSProperties;
+  indicator?: CSSProperties;
+}
+type BadgeClassNamesType = SemanticClassNamesType<BadgeProps, BadgeSemanticClassNames>;
+type BadgeStylesType = SemanticStylesType<BadgeProps, BadgeSemanticStyles>;
+interface BadgeProps extends ComponentBaseProps {
+  /** Number to show in badge */
+  count?: VueNode;
+  showZero?: boolean;
+  /** Max count to show */
+  overflowCount?: number;
+  /** Whether to show red dot without number */
+  dot?: boolean;
+  scrollNumberPrefixCls?: string;
+  status?: PresetStatusColorType;
+  color?: LiteralUnion<PresetColorKey>;
+  text?: VueNode;
+  size?: Exclude<SizeType, 'large'> | 'default';
+  offset?: [number | string, number | string];
+  title?: string;
+  classes?: BadgeClassNamesType;
+  styles?: BadgeStylesType;
+}
+interface BadgeSlots {
+  default?: () => any;
+  count?: () => any;
+  text?: () => any;
+}
+declare const InternalBadge: vue28.DefineSetupFnComponent<BadgeProps, EmptyEmit, SlotsType<BadgeSlots>, BadgeProps, vue28.PublicProps>;
+declare const Badge: typeof InternalBadge & {
+  Ribbon: typeof _default;
+};
+declare const BadgeRibbon: vue28.DefineSetupFnComponent<RibbonProps, EmptyEmit, SlotsType<RibbonSlots>, RibbonProps, vue28.PublicProps>;
+type BadgeRibbonProps = RibbonProps;
+//#endregion
+export { BadgeClassNamesType, BadgeProps, BadgeRibbon, BadgeRibbonProps, BadgeSemanticClassNames, BadgeSemanticName, BadgeSemanticStyles, BadgeSlots, BadgeStylesType, Badge as default };

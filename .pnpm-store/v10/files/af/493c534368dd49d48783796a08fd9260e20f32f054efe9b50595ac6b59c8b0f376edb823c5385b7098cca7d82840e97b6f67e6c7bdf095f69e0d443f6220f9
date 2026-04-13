@@ -1,0 +1,11 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue785 from "vue";
+
+//#region src/space/style/index.d.ts
+/** Component only token. Which will handle additional calculation of alias token */
+interface ComponentToken {}
+declare const prepareComponentToken: GetDefaultToken<'Space'>;
+declare const _default: (prefixCls: vue785.Ref<string>, rootCls?: vue785.Ref<string | undefined>) => readonly [vue785.Ref<string, string>, vue785.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

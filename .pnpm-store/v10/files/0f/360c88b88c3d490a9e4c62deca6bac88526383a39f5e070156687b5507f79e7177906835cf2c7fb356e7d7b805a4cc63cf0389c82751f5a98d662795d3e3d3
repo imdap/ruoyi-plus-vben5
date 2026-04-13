@@ -1,0 +1,38 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { PresetColorType } from "../_util/colors.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue20 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { LiteralUnion } from "@v-c/util/dist/type";
+
+//#region src/badge/Ribbon.d.ts
+type RibbonPlacement = 'start' | 'end';
+type RibbonSemanticName = keyof RibbonSemanticClassNames & keyof RibbonSemanticStyles;
+interface RibbonSemanticClassNames {
+  root?: string;
+  content?: string;
+  indicator?: string;
+}
+interface RibbonSemanticStyles {
+  root?: CSSProperties;
+  content?: CSSProperties;
+  indicator?: CSSProperties;
+}
+type RibbonClassNamesType = SemanticClassNamesType<RibbonProps, RibbonSemanticClassNames>;
+type RibbonStylesType = SemanticStylesType<RibbonProps, RibbonSemanticStyles>;
+interface RibbonProps extends ComponentBaseProps {
+  text?: VueNode;
+  color?: LiteralUnion<PresetColorType>;
+  placement?: RibbonPlacement;
+  classes?: RibbonClassNamesType;
+  styles?: RibbonStylesType;
+}
+interface RibbonSlots {
+  default?: () => any;
+  text?: () => any;
+}
+declare const _default: vue20.DefineSetupFnComponent<RibbonProps, EmptyEmit, SlotsType<RibbonSlots>, RibbonProps, vue20.PublicProps>;
+//#endregion
+export { RibbonClassNamesType, RibbonProps, RibbonSemanticClassNames, RibbonSemanticName, RibbonSemanticStyles, RibbonSlots, RibbonStylesType, _default as default };

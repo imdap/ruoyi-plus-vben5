@@ -1,0 +1,270 @@
+.vxe-number-input--readonly {
+  color: var(--vxe-ui-font-color);
+  display: inline-flex;
+}
+
+.vxe-number-input--input-inner {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.vxe-number-input--input {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: 0;
+  margin: 0;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  padding: 0 0.5em;
+  color: var(--vxe-ui-font-color);
+  border: 0;
+  border-radius: var(--vxe-ui-base-border-radius);
+  background-color: var(--vxe-ui-layout-background-color);
+  box-shadow: none;
+}
+.vxe-number-input--input::-moz-placeholder {
+  color: var(--vxe-ui-input-placeholder-color);
+}
+.vxe-number-input--input::placeholder {
+  color: var(--vxe-ui-input-placeholder-color);
+}
+.vxe-number-input--input::-webkit-autofill {
+  background-color: var(--vxe-ui-layout-background-color);
+}
+.vxe-number-input--input[type=number] {
+  -webkit-appearance: none;
+          appearance: none;
+  -moz-appearance: textfield;
+}
+.vxe-number-input--input[type=number]::-webkit-outer-spin-button, .vxe-number-input--input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+          appearance: none;
+}
+.vxe-number-input--input[disabled] {
+  cursor: not-allowed;
+  color: var(--vxe-ui-font-disabled-color);
+  background-color: var(--vxe-ui-input-disabled-background-color);
+}
+
+.vxe-number-input--input-wrapper {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.vxe-number-input.is--disabled {
+  background-color: var(--vxe-ui-input-disabled-background-color);
+}
+.vxe-number-input.is--disabled .vxe-number-input--prefix,
+.vxe-number-input.is--disabled .vxe-number-input--suffix,
+.vxe-number-input.is--disabled .vxe-number-input--clear-icon {
+  cursor: not-allowed;
+}
+.vxe-number-input.is--disabled .vxe-number-input--prefix,
+.vxe-number-input.is--disabled .vxe-number-input--suffix {
+  background-color: var(--vxe-ui-input-disabled-background-color);
+}
+
+.vxe-number-input {
+  display: inline-flex;
+  flex-direction: row;
+  position: relative;
+  border-radius: var(--vxe-ui-base-border-radius);
+  width: 180px;
+  border: 1px solid var(--vxe-ui-input-border-color);
+  overflow: hidden;
+}
+.vxe-number-input.is--active {
+  border: 1px solid var(--vxe-ui-font-primary-color);
+}
+.vxe-number-input.show--clear:hover .vxe-number-input--clear-icon {
+  display: block;
+}
+
+.vxe-number-input--prefix,
+.vxe-number-input--suffix {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  background-color: var(--vxe-ui-layout-background-color);
+}
+
+.vxe-number-input--prefix {
+  border-radius: var(--vxe-ui-base-border-radius) 0 0 var(--vxe-ui-base-border-radius);
+}
+
+.vxe-number-input--suffix {
+  border-radius: 0 var(--vxe-ui-base-border-radius) var(--vxe-ui-base-border-radius) 0;
+}
+
+.vxe-number-input--prefix-icon,
+.vxe-number-input--suffix-icon,
+.vxe-number-input--clear-icon,
+.vxe-number-input--control-icon {
+  color: var(--vxe-ui-input-placeholder-color);
+}
+
+.vxe-number-input--prefix-icon {
+  padding-left: 0.5em;
+}
+
+.vxe-number-input--prefix-text,
+.vxe-number-input--suffix-text {
+  padding: 0 0.5em;
+}
+
+.vxe-number-input--clear-icon,
+.vxe-number-input--suffix-icon {
+  padding-right: 0.5em;
+}
+
+.vxe-number-input--clear-icon {
+  height: 100%;
+  cursor: pointer;
+}
+
+.vxe-number-input--clear-icon {
+  display: none;
+}
+.vxe-number-input--clear-icon:hover {
+  color: var(--vxe-ui-font-color);
+}
+.vxe-number-input--clear-icon:active {
+  color: var(--vxe-ui-font-primary-color);
+}
+
+.vxe-number-input--count {
+  flex-shrink: 0;
+  color: var(--vxe-ui-input-count-color);
+  background-color: var(--vxe-ui-layout-background-color);
+  padding-right: 0.6em;
+}
+.vxe-number-input--count.is--error {
+  color: var(--vxe-ui-input-count-error-color);
+}
+
+.vxe-number-input.is--left .vxe-number-input--input {
+  text-align: left;
+}
+.vxe-number-input.is--center .vxe-number-input--input {
+  text-align: center;
+}
+.vxe-number-input.is--right .vxe-number-input--input {
+  text-align: right;
+}
+
+.vxe-number-input--minus-btn,
+.vxe-number-input--plus-btn {
+  border: 0;
+  outline: 0;
+  width: 2.8em;
+  flex-shrink: 0;
+  font-family: inherit;
+  color: var(--vxe-ui-font-color);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  cursor: pointer;
+  background-color: var(--vxe-ui-number-input-control-button-color);
+  transform: scale(1);
+  transition: transform 0.1s ease-in-out;
+}
+.vxe-number-input--minus-btn:focus, .vxe-number-input--minus-btn:hover,
+.vxe-number-input--plus-btn:focus,
+.vxe-number-input--plus-btn:hover {
+  color: var(--vxe-ui-font-primary-color);
+}
+.vxe-number-input--minus-btn:active,
+.vxe-number-input--plus-btn:active {
+  transform: scale(0.9);
+}
+.vxe-number-input--minus-btn.is--disabled,
+.vxe-number-input--plus-btn.is--disabled {
+  cursor: not-allowed;
+  color: var(--vxe-ui-font-disabled-color);
+}
+
+.vxe-number-input--side-control {
+  display: inline-flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100%;
+}
+.vxe-number-input--side-control > .vxe-number-input--plus-btn {
+  border-bottom: 1px solid var(--vxe-ui-input-border-color);
+}
+.vxe-number-input--side-control > .vxe-number-input--minus-btn, .vxe-number-input--side-control > .vxe-number-input--plus-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50%;
+}
+.vxe-number-input--side-control > .vxe-number-input--minus-btn i, .vxe-number-input--side-control > .vxe-number-input--plus-btn i {
+  font-size: 0.72em;
+}
+
+.vxe-number-input.is--controls > .vxe-number-input--input-wrapper .vxe-number-input--input {
+  border-radius: 0;
+}
+.vxe-number-input.ctl--default > .vxe-number-input--minus-btn {
+  border-right: 1px solid var(--vxe-ui-input-border-color);
+  border-radius: var(--vxe-ui-base-border-radius) 0 0 var(--vxe-ui-base-border-radius);
+}
+.vxe-number-input.ctl--default > .vxe-number-input--plus-btn {
+  border-left: 1px solid var(--vxe-ui-input-border-color);
+  border-radius: 0 var(--vxe-ui-base-border-radius) var(--vxe-ui-base-border-radius) 0;
+}
+.vxe-number-input.ctl--left .vxe-number-input--side-control {
+  border-right: 1px solid var(--vxe-ui-input-border-color);
+}
+.vxe-number-input.ctl--left .vxe-number-input--side-control > .vxe-number-input--plus-btn {
+  border-radius: var(--vxe-ui-base-border-radius) 0 0 0;
+}
+.vxe-number-input.ctl--left .vxe-number-input--side-control > .vxe-number-input--minus-btn {
+  border-radius: 0 0 0 var(--vxe-ui-base-border-radius);
+}
+.vxe-number-input.ctl--right .vxe-number-input--side-control {
+  border-left: 1px solid var(--vxe-ui-input-border-color);
+}
+.vxe-number-input.ctl--right .vxe-number-input--side-control > .vxe-number-input--plus-btn {
+  border-radius: 0 var(--vxe-ui-base-border-radius) 0 0;
+}
+.vxe-number-input.ctl--right .vxe-number-input--side-control > .vxe-number-input--minus-btn {
+  border-radius: 0 0 var(--vxe-ui-base-border-radius) 0;
+}
+.vxe-number-input > .vxe-number-input--minus-btn, .vxe-number-input > .vxe-number-input--plus-btn {
+  height: 100%;
+}
+.vxe-number-input > .vxe-number-input--minus-btn i, .vxe-number-input > .vxe-number-input--plus-btn i {
+  font-size: 0.84em;
+}
+
+.vxe-number-input {
+  font-size: var(--vxe-ui-font-size-default);
+  height: var(--vxe-ui-input-height-default);
+  line-height: var(--vxe-ui-input-height-default);
+}
+.vxe-number-input .vxe-number-input--input[type=number]::-webkit-inner-spin-button {
+  height: 24px;
+}
+.vxe-number-input.size--medium {
+  font-size: var(--vxe-ui-font-size-medium);
+  height: var(--vxe-ui-input-height-medium);
+  line-height: var(--vxe-ui-input-height-medium);
+}
+.vxe-number-input.size--small {
+  font-size: var(--vxe-ui-font-size-small);
+  height: var(--vxe-ui-input-height-small);
+  line-height: var(--vxe-ui-input-height-small);
+}
+.vxe-number-input.size--mini {
+  font-size: var(--vxe-ui-font-size-mini);
+  height: var(--vxe-ui-input-height-mini);
+  line-height: var(--vxe-ui-input-height-mini);
+}

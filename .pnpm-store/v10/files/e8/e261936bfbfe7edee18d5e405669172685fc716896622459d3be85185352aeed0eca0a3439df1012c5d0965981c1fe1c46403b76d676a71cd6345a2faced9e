@@ -1,0 +1,15 @@
+import { BlockProps, TypographyBaseEmits, TypographySlots } from "./interface.js";
+import * as vue435 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/typography/Link.d.ts
+type TypographyBaseEmitsProps = { [K in keyof TypographyBaseEmits as `on${Capitalize<string & K>}`]?: TypographyBaseEmits[K] };
+interface LinkProps extends BlockProps, TypographyBaseEmitsProps {
+  ellipsis?: boolean;
+  href?: string;
+  target?: string;
+  rel?: string;
+}
+declare const Link: vue435.DefineSetupFnComponent<LinkProps, TypographyBaseEmits, SlotsType<TypographySlots>, LinkProps, vue435.PublicProps>;
+//#endregion
+export { LinkProps, TypographyBaseEmitsProps, Link as default };

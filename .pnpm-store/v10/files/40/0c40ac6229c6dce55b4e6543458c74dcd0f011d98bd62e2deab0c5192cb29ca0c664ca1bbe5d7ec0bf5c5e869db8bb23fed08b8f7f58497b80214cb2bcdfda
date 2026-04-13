@@ -1,0 +1,6 @@
+import * as vue296 from "vue";
+
+//#region src/badge/style/ribbon.d.ts
+declare const _default: (prefixCls: vue296.Ref<string>, rootCls?: vue296.Ref<string | undefined>) => readonly [vue296.Ref<string, string>, vue296.ComputedRef<string | undefined>];
+//#endregion
+export { _default as default };

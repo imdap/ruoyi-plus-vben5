@@ -1,0 +1,30 @@
+{
+  "name": "@v-c/mutate-observer",
+  "type": "module",
+  "version": "1.0.1",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "main": "dist/index.js",
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "dependencies": {
+    "@v-c/resize-observer": "^1.0.8",
+    "@v-c/util": "^1.0.9"
+  },
+  "scripts": {
+    "build": "vite build",
+    "prepublish": "pnpm build",
+    "bump": "bumpp"
+  }
+}

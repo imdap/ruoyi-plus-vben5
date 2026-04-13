@@ -1,0 +1,16 @@
+import * as vue312 from "vue";
+import { Ref } from "vue";
+
+//#region src/config-provider/SizeContext.d.ts
+/**
+ * Note: `middle` is deprecated and will be removed in v7, please use `medium` instead.
+ */
+type SizeType = 'small' | 'medium' | 'middle' | 'large' | undefined;
+interface SizeContextProps {
+  size?: SizeType;
+}
+declare const useSizeContext: () => Ref<SizeType, SizeType>;
+declare const SizeProvider: vue312.DefineSetupFnComponent<SizeContextProps, {}, {}, SizeContextProps & {}, vue312.PublicProps>;
+declare function useSizeProvider(value: Ref<SizeType>): void;
+//#endregion
+export { SizeContextProps, SizeProvider, SizeType, useSizeContext, useSizeProvider };

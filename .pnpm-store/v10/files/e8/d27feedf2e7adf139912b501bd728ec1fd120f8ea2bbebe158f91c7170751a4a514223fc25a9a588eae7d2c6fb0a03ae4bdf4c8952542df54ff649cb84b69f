@@ -1,0 +1,35 @@
+import { VueNode } from "../_util/type.js";
+import { ArgsClassNamesType, ArgsStylesType, MessageSemanticClassNames, MessageSemanticStyles, NoticeType } from "./interface.js";
+import * as vue1039 from "vue";
+
+//#region src/message/PurePanel.d.ts
+interface PureContentProps {
+  prefixCls: string;
+  type?: NoticeType;
+  icon?: VueNode;
+  classNames?: MessageSemanticClassNames;
+  styles?: MessageSemanticStyles;
+}
+declare const PureContent: vue1039.DefineSetupFnComponent<PureContentProps, {}, {}, PureContentProps & {}, vue1039.PublicProps>;
+interface PurePanelProps extends Omit<PureContentProps, 'prefixCls' | 'children' | 'classNames' | 'styles'> {
+  content?: VueNode;
+  duration?: number | false | null;
+  showProgress?: boolean;
+  pauseOnHover?: boolean;
+  closable?: boolean | ({
+    closeIcon?: VueNode;
+    onClose?: VoidFunction;
+  } & Record<string, any>);
+  closeIcon?: VueNode;
+  props?: Record<string, any>;
+  onClose?: VoidFunction;
+  onClick?: (event: Event) => void;
+  prefixCls?: string;
+  class?: string;
+  classes?: ArgsClassNamesType;
+  styles?: ArgsStylesType;
+}
+/** @private Internal Component. Do not use in your production. */
+declare const PurePanel: vue1039.DefineSetupFnComponent<PurePanelProps, {}, {}, PurePanelProps & {}, vue1039.PublicProps>;
+//#endregion
+export { PureContent, PureContentProps, PurePanelProps, PurePanel as default };

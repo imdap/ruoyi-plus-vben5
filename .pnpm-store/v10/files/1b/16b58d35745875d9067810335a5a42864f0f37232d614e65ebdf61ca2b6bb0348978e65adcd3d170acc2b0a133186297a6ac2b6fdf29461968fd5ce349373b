@@ -1,0 +1,1 @@
+{"version":3,"file":"prefix.async.v4.js","sourceRoot":"","sources":["../../src/tailwindcss/prefix.async.v4.ts"],"names":[],"mappings":"AAGA,MAAM,UAAU,SAAS,CAAC,eAAoB;IAC5C,OAAO,eAAe,CAAC,KAAK,CAAC,MAAM,IAAI,EAAE,CAAC;AAC5C,CAAC;AAED,MAAM,UAAU,SAAS,CAAC,eAAoB;IAC5C,OAAO,CAAC,CAAC,eAAe,CAAC,KAAK,CAAC,MAAM,CAAC,CAAC,CAAC,GAAG,CAAC,CAAC,CAAC,EAAE,CAAC;AACnD,CAAC"}

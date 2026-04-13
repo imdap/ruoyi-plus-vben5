@@ -1,0 +1,18 @@
+import { EmptyEmit } from "../../_util/type.js";
+import { AggregationColor } from "../color.js";
+import { ColorFormatType } from "../interface.js";
+import * as vue833 from "vue";
+
+//#region src/color-picker/components/ColorInput.d.ts
+interface ColorInputProps {
+  prefixCls: string;
+  format?: ColorFormatType;
+  onFormatChange?: (format: ColorFormatType) => void;
+  disabledAlpha?: boolean;
+  value?: AggregationColor;
+  onChange?: (value: AggregationColor) => void;
+  disabledFormat?: boolean;
+}
+declare const _default: vue833.DefineSetupFnComponent<ColorInputProps, EmptyEmit, {}, ColorInputProps, vue833.PublicProps>;
+//#endregion
+export { ColorInputProps, _default as default };

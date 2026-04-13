@@ -1,0 +1,19 @@
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue1056 from "vue";
+
+//#region src/layout/layout.d.ts
+interface GeneratorProps {
+  suffixCls?: string;
+  tagName: 'header' | 'footer' | 'main' | 'div';
+  displayName: string;
+}
+interface BasicProps extends ComponentBaseProps {
+  suffixCls?: string;
+  hasSider?: boolean;
+}
+declare const Layout: vue1056.DefineSetupFnComponent<BasicProps, {}, {}, BasicProps & {}, vue1056.PublicProps>;
+declare const Header: vue1056.DefineSetupFnComponent<BasicProps, {}, {}, BasicProps & {}, vue1056.PublicProps>;
+declare const Footer: vue1056.DefineSetupFnComponent<BasicProps, {}, {}, BasicProps & {}, vue1056.PublicProps>;
+declare const Content: vue1056.DefineSetupFnComponent<BasicProps, {}, {}, BasicProps & {}, vue1056.PublicProps>;
+//#endregion
+export { BasicProps, Content, Footer, GeneratorProps, Header, Layout as default };

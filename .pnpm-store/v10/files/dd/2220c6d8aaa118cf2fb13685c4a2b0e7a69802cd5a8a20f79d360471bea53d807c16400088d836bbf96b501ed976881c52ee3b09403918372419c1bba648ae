@@ -1,0 +1,9 @@
+export interface TextFileRef {
+    url: URL;
+}
+export interface TextFile {
+    url: URL;
+    content: string;
+}
+export declare function createTextFile(url: URL, content: string): TextFile;
+//# sourceMappingURL=TextFile.d.ts.map

@@ -1,0 +1,28 @@
+// cSpell Settings
+{
+    "id": "makefile",
+    "version": "0.2",
+    "name": "Makefile",
+    "description": "Makefile dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "makefile",
+            "path": "./dict/makefile.txt",
+            "description": "Makefile dictionary."
+        }
+    ],
+    "languageSettings": [
+        {
+            "languageId": "makefile",
+            "locale": "*",
+            "dictionaries": ["makefile"]
+        }
+    ],
+    "overrides": [
+        {
+            "filename": "**/makefile",
+            "languageId": "makefile"
+        }
+    ]
+}

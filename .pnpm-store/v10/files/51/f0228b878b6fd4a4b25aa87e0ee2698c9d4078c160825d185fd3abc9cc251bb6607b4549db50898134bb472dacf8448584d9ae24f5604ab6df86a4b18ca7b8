@@ -1,0 +1,60 @@
+{
+  "name": "cspell-config-lib",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "version": "9.8.0",
+  "description": "CSpell Config library",
+  "keywords": [
+    "cspell",
+    "config"
+  ],
+  "author": "Jason Dent <jason@streetsidesoftware.nl>",
+  "homepage": "https://github.com/streetsidesoftware/cspell/tree/main/packages/cspell-config-lib#readme",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "directories": {
+    "dist": "dist"
+  },
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "!**/*.tsbuildInfo",
+    "!**/__mocks__",
+    "!**/*.test.*",
+    "!**/*.spec.*",
+    "!**/*.map"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -p . -w",
+    "clean": "shx rm -rf dist temp coverage \"*.tsbuildInfo\"",
+    "clean-build": "pnpm run clean && pnpm run build",
+    "coverage": "vitest run --coverage --pool=forks",
+    "test-watch": "vitest",
+    "test": "vitest run --pool=forks"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell.git",
+    "directory": "packages/cspell-config-lib"
+  },
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell/labels/cspell-config"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@cspell/cspell-types": "9.8.0",
+    "comment-json": "^4.6.2",
+    "smol-toml": "^1.6.1",
+    "yaml": "^2.8.3"
+  },
+  "gitHead": "c822013ce676dffb5fa5544567c25a3ae666718f"
+}

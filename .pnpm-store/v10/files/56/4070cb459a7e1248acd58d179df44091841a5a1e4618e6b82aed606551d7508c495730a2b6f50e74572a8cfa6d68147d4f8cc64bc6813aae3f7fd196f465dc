@@ -1,0 +1,9 @@
+import { PanelProps, SplitterEmits, SplitterSlots } from "./interface.js";
+import Splitter, { InternalSplitterProps } from "./Splitter.js";
+import * as vue719 from "vue";
+
+//#region src/splitter/index.d.ts
+type SplitterProps = InternalSplitterProps;
+declare const SplitterPanel: vue719.DefineSetupFnComponent<PanelProps, {}, {}, PanelProps & {}, vue719.PublicProps>;
+//#endregion
+export { type SplitterEmits, SplitterPanel, SplitterProps, type SplitterSlots, Splitter as default };

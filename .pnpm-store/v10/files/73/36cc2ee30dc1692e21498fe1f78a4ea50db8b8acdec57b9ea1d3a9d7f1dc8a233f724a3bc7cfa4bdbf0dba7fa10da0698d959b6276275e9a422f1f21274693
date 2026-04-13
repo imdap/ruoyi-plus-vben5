@@ -1,0 +1,100 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { InputStatus } from "../_util/statusUtils.js";
+import { ComponentBaseProps, Variant } from "../config-provider/context.js";
+import * as vue1010 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { InputProps as InputProps$1, InputRef as InputRef$1 } from "@v-c/input";
+
+//#region src/input/Input.d.ts
+type InputSemanticName = keyof InputSemanticClassNames & keyof InputSemanticStyles;
+interface InputSemanticClassNames {
+  root?: string;
+  prefix?: string;
+  suffix?: string;
+  input?: string;
+  count?: string;
+}
+interface InputSemanticStyles {
+  root?: CSSProperties;
+  prefix?: CSSProperties;
+  suffix?: CSSProperties;
+  input?: CSSProperties;
+  count?: CSSProperties;
+}
+type InputClassNamesType = SemanticClassNamesType<InputProps, InputSemanticClassNames>;
+type InputStylesType = SemanticStylesType<InputProps, InputSemanticStyles>;
+type InputRef = InputRef$1;
+interface BaseVcInputProps {
+  value?: any;
+  defaultValue?: any;
+  type?: InputProps$1['type'];
+  showCount?: InputProps$1['showCount'];
+  autoComplete?: string;
+  htmlSize?: number;
+  placeholder?: string;
+  count?: InputProps$1['count'];
+  maxlength?: number;
+  readonly?: boolean;
+  hidden?: boolean;
+  dataAttrs?: InputProps$1['dataAttrs'];
+  components?: InputProps$1['components'];
+  prefix?: VueNode;
+  suffix?: VueNode;
+  allowClear?: InputProps$1['allowClear'];
+  changeOnComposing?: InputProps$1['changeOnComposing'];
+  autoFocus?: boolean;
+  inputMode?: string;
+}
+interface InputProps extends ComponentBaseProps, BaseVcInputProps, InputEmitsProps {
+  size?: SizeType;
+  disabled?: boolean;
+  status?: InputStatus;
+  /** @deprecated Use `Space.Compact` instead. */
+  addonBefore?: VueNode;
+  /** @deprecated Use `Space.Compact` instead. */
+  addonAfter?: VueNode;
+  /** @deprecated Use `variant="borderless"` instead. */
+  bordered?: boolean;
+  /** @since 5.13.0 */
+  variant?: Variant;
+  classes?: InputClassNamesType;
+  styles?: InputStylesType;
+}
+interface InputEmits {
+  'pressEnter': NonNullable<InputProps$1['onPressEnter']>;
+  'clear': () => void;
+  'change': NonNullable<InputProps$1['onChange']>;
+  'blur': NonNullable<InputProps$1['onBlur']>;
+  'focus': NonNullable<InputProps$1['onFocus']>;
+  'keydown': NonNullable<InputProps$1['onKeyDown']>;
+  'keyup': NonNullable<InputProps$1['onKeyUp']>;
+  'compositionstart': NonNullable<InputProps$1['onCompositionStart']>;
+  'compositionend': NonNullable<InputProps$1['onCompositionEnd']>;
+  'update:value': (value: InputProps$1['value']) => void;
+}
+interface InputEmitsProps {
+  onPressEnter?: InputEmits['pressEnter'];
+  onClear?: InputEmits['clear'];
+  onChange?: InputEmits['change'];
+  onBlur?: InputEmits['blur'];
+  onFocus?: InputEmits['focus'];
+  onKeydown?: InputEmits['keydown'];
+  onKeyup?: InputEmits['keyup'];
+  onCompositionstart?: InputEmits['compositionstart'];
+  onCompositionend?: InputEmits['compositionend'];
+  'onUpdate:value'?: InputEmits['update:value'];
+}
+interface InputSlots {
+  prefix: () => any;
+  suffix: () => any;
+  addonBefore: () => any;
+  addonAfter: () => any;
+  default: () => any;
+  clearIcon: () => any;
+}
+declare const InternalInput: vue1010.DefineSetupFnComponent<InputProps, InputEmits, SlotsType<InputSlots>, InputProps, vue1010.PublicProps>;
+//#endregion
+export { InputClassNamesType, InputEmits, InputEmitsProps, InputProps, InputRef, InputSemanticClassNames, InputSemanticName, InputSemanticStyles, InputSlots, InputStylesType, InternalInput as default };

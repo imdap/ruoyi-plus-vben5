@@ -1,0 +1,18 @@
+import * as vue461 from "vue";
+import { Ref } from "vue";
+import { Key } from "@v-c/util/dist/type";
+
+//#region src/masonry/hooks/usePositions.d.ts
+type ItemHeightData = [key: Key, height: number, column?: number];
+type ItemPositions = Map<Key, {
+  column: number;
+  top: number;
+}>;
+/**
+ * Auto arrange the items in the masonry layout.
+ * Always get stable positions by order
+ * instead of dynamic adjust for next item height.
+ */
+declare function usePositions(itemHeights: Ref<ItemHeightData[]>, columnCount: Ref<number>, verticalGutter: Ref<number>): readonly [vue461.ComputedRef<ItemPositions>, vue461.ComputedRef<number>];
+//#endregion
+export { ItemHeightData, ItemPositions, usePositions as default };

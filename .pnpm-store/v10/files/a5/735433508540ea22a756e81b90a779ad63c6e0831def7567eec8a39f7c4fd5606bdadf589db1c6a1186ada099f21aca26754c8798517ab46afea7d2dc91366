@@ -1,0 +1,24 @@
+import { VueNode } from "../_util/type.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue6 from "vue";
+
+//#region src/anchor/AnchorLink.d.ts
+interface AnchorLinkBaseProps extends ComponentBaseProps {
+  href: string;
+  target?: string;
+  title: VueNode;
+  replace?: boolean;
+}
+interface AnchorLinkEmits {
+  click: (e: MouseEvent, params: {
+    title: any;
+    href: any;
+  }) => any;
+}
+interface AnchorLinkEmitsProps {
+  onClick?: AnchorLinkEmits['click'];
+}
+interface AnchorLinkProps extends AnchorLinkBaseProps, AnchorLinkEmitsProps {}
+declare const AnchorLink: vue6.DefineSetupFnComponent<AnchorLinkProps, AnchorLinkEmits, {}, AnchorLinkProps, vue6.PublicProps>;
+//#endregion
+export { AnchorLinkBaseProps, AnchorLinkEmits, AnchorLinkEmitsProps, AnchorLinkProps, AnchorLink as default };

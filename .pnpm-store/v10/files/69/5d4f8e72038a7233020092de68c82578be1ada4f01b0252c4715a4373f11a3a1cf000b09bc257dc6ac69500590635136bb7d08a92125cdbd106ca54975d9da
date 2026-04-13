@@ -1,0 +1,148 @@
+import { getColumnKey, getColumnPos, renderColumnTitle } from "../../util.js";
+import FilterDropdown_default, { flattenKeys } from "./FilterDropdown.js";
+import { createVNode, isVNode } from "vue";
+
+//#region src/table/hooks/useFilter/index.tsx
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+function collectFilterStates(columns, init, pos) {
+	let filterStates = [];
+	(columns || []).forEach((column, index) => {
+		const columnPos = getColumnPos(index, pos);
+		const filterDropdownIsDefined = column.filterDropdown !== void 0;
+		if (column.filters || filterDropdownIsDefined || "onFilter" in column) if ("filteredValue" in column) {
+			let filteredValues = column.filteredValue;
+			if (!filterDropdownIsDefined) filteredValues = filteredValues?.map(String) ?? filteredValues;
+			filterStates.push({
+				column,
+				key: getColumnKey(column, columnPos),
+				filteredKeys: filteredValues,
+				forceFiltered: column.filtered
+			});
+		} else filterStates.push({
+			column,
+			key: getColumnKey(column, columnPos),
+			filteredKeys: init && column.defaultFilteredValue ? column.defaultFilteredValue : void 0,
+			forceFiltered: column.filtered
+		});
+		if ("children" in column) filterStates = [...filterStates, ...collectFilterStates(column.children, init, columnPos)];
+	});
+	return filterStates;
+}
+function injectFilter(prefixCls, dropdownPrefixCls, columns, filterStates, locale, triggerFilter, getPopupContainer, pos, rootClassName, filterDropdown, filterIcon) {
+	return columns.map((column, index) => {
+		const columnPos = getColumnPos(index, pos);
+		const { filterOnClose = true, filterMultiple = true, filterMode, filterSearch } = column;
+		let newColumn = column;
+		if (newColumn.filters || newColumn.filterDropdown) {
+			const columnKey = getColumnKey(newColumn, columnPos);
+			const filterState = filterStates.find(({ key }) => columnKey === key);
+			newColumn = {
+				...newColumn,
+				title: (renderProps) => {
+					let _slot;
+					return createVNode(FilterDropdown_default, {
+						"tablePrefixCls": prefixCls,
+						"prefixCls": `${prefixCls}-filter`,
+						"dropdownPrefixCls": dropdownPrefixCls,
+						"column": newColumn,
+						"filterDropdownRender": filterDropdown,
+						"filterIconRender": filterIcon,
+						"columnKey": columnKey,
+						"filterState": filterState,
+						"filterOnClose": filterOnClose,
+						"filterMultiple": filterMultiple,
+						"filterMode": filterMode,
+						"filterSearch": filterSearch,
+						"triggerFilter": triggerFilter,
+						"locale": locale,
+						"getPopupContainer": getPopupContainer,
+						"rootClassName": rootClassName
+					}, _isSlot(_slot = renderColumnTitle(column.title, renderProps)) ? _slot : { default: () => [_slot] });
+				}
+			};
+		}
+		if ("children" in newColumn) newColumn = {
+			...newColumn,
+			children: injectFilter(prefixCls, dropdownPrefixCls, newColumn.children, filterStates, locale, triggerFilter, getPopupContainer, columnPos, rootClassName, filterDropdown, filterIcon)
+		};
+		return newColumn;
+	});
+}
+function generateFilterInfo(filterStates) {
+	const currentFilters = {};
+	filterStates.forEach(({ key, filteredKeys, column }) => {
+		const keyAsString = key;
+		const { filters, filterDropdown } = column;
+		if (filterDropdown) currentFilters[keyAsString] = filteredKeys || null;
+		else if (Array.isArray(filteredKeys)) currentFilters[keyAsString] = flattenKeys(filters).filter((originKey) => filteredKeys.includes(String(originKey)));
+		else currentFilters[keyAsString] = null;
+	});
+	return currentFilters;
+}
+function getFilterData(data, filterStates, childrenColumnName) {
+	return filterStates.reduce((currentData, filterState) => {
+		const { column: { onFilter, filters }, filteredKeys } = filterState;
+		if (onFilter && filteredKeys && filteredKeys.length) return currentData.map((record) => ({ ...record })).filter((record) => filteredKeys.some((key) => {
+			const keys = flattenKeys(filters);
+			const keyIndex = keys.findIndex((k) => String(k) === String(key));
+			const realKey = keyIndex !== -1 ? keys[keyIndex] : key;
+			if (record[childrenColumnName]) record[childrenColumnName] = getFilterData(record[childrenColumnName], filterStates, childrenColumnName);
+			return onFilter(realKey, record);
+		}));
+		return currentData;
+	}, data);
+}
+function getMergedColumns(rawMergedColumns) {
+	return rawMergedColumns.flatMap((column) => {
+		if ("children" in column) return [column, ...getMergedColumns(column.children || [])];
+		return [column];
+	});
+}
+function getMergedFilterStates(rawMergedColumns, filterStates, warning) {
+	const mergedColumns = getMergedColumns(rawMergedColumns || []);
+	const collectedStates = collectFilterStates(mergedColumns, false);
+	if (collectedStates.length === 0) return collectedStates;
+	let filteredKeysIsAllNotControlled = true;
+	let filteredKeysIsAllControlled = true;
+	collectedStates.forEach(({ filteredKeys }) => {
+		if (filteredKeys !== void 0) filteredKeysIsAllNotControlled = false;
+		else filteredKeysIsAllControlled = false;
+	});
+	if (filteredKeysIsAllNotControlled) {
+		const keyList = (mergedColumns || []).map((column, index) => getColumnKey(column, getColumnPos(index)));
+		return filterStates.filter(({ key }) => keyList.includes(key)).map((item) => {
+			const col = mergedColumns[keyList.indexOf(item.key)];
+			return {
+				...item,
+				column: {
+					...item.column,
+					...col
+				},
+				forceFiltered: col?.filtered
+			};
+		});
+	}
+	warning?.(filteredKeysIsAllControlled, "usage", "Columns should all contain `filteredValue` or not contain `filteredValue`.");
+	return collectedStates;
+}
+function useFilter(props) {
+	const { prefixCls, dropdownPrefixCls, mergedFilterStates, filterStates, onFilterChange, getPopupContainer, locale, rootClassName, filterDropdown, filterIcon } = props;
+	const filters = generateFilterInfo(mergedFilterStates);
+	const triggerFilter = (filterState) => {
+		const newFilterStates = mergedFilterStates.filter(({ key }) => key !== filterState.key);
+		newFilterStates.push(filterState);
+		filterStates.value = newFilterStates;
+		onFilterChange(generateFilterInfo(newFilterStates), newFilterStates);
+	};
+	const transformColumns = (innerColumns) => injectFilter(prefixCls, dropdownPrefixCls, innerColumns, mergedFilterStates, locale, triggerFilter, getPopupContainer, void 0, rootClassName, filterDropdown, filterIcon);
+	return [
+		transformColumns,
+		mergedFilterStates,
+		filters
+	];
+}
+
+//#endregion
+export { collectFilterStates, useFilter as default, flattenKeys, generateFilterInfo, getFilterData, getMergedFilterStates };

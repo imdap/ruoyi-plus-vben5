@@ -1,0 +1,38 @@
+import AntdIcon from "../components/AntdIcon.js";
+import { createVNode, defineComponent, mergeProps } from "vue";
+import InsertRowAboveOutlinedSvg from "@ant-design/icons-svg/es/asn/InsertRowAboveOutlined.js";
+
+//#region src/icons/InsertRowAboveOutlined.tsx
+/**![insert-row-above](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiNjYWNhY2EiIHZpZXdCb3g9IjY0IDY0IDg5NiA4OTYiIGZvY3VzYWJsZT0iZmFsc2UiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHN0eWxlIC8+PC9kZWZzPjxwYXRoIGQ9Ik04NzguNyAzMzZIMTQ1LjNjLTE4LjQgMC0zMy4zIDE0LjMtMzMuMyAzMnY0NjRjMCAxNy43IDE0LjkgMzIgMzMuMyAzMmg3MzMuM2MxOC40IDAgMzMuMy0xNC4zIDMzLjMtMzJWMzY4Yy4xLTE3LjctMTQuOC0zMi0zMy4yLTMyek0zNjAgNzkySDE4NFY2MzJoMTc2djE2MHptMC0yMjRIMTg0VjQwOGgxNzZ2MTYwem0yNDAgMjI0SDQyNFY2MzJoMTc2djE2MHptMC0yMjRINDI0VjQwOGgxNzZ2MTYwem0yNDAgMjI0SDY2NFY2MzJoMTc2djE2MHptMC0yMjRINjY0VjQwOGgxNzZ2MTYwem02NC00MDhIMTIwYy00LjQgMC04IDMuNi04IDh2ODBjMCA0LjQgMy42IDggOCA4aDc4NGM0LjQgMCA4LTMuNiA4LTh2LTgwYzAtNC40LTMuNi04LTgtOHoiIC8+PC9zdmc+) */
+const InsertRowAboveOutlined = /* @__PURE__ */ defineComponent((props) => {
+	return () => {
+		return createVNode(AntdIcon, mergeProps(props, { "icon": InsertRowAboveOutlinedSvg }), null);
+	};
+}, {
+	props: {
+		twoToneColor: {
+			type: [String, Array],
+			required: false
+		},
+		onClick: {
+			type: Function,
+			required: false
+		},
+		tabIndex: {
+			type: Number,
+			required: false
+		},
+		spin: {
+			type: Boolean,
+			required: false
+		},
+		rotate: {
+			type: Number,
+			required: false
+		}
+	},
+	name: "InsertRowAboveOutlined"
+});
+
+//#endregion
+export { InsertRowAboveOutlined as default };

@@ -1,0 +1,28 @@
+{
+    "id": "en-gb-mit",
+    "name": "English - British (Limited)",
+    "description": "British English Dictionary with MIT License",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "en-gb",
+            "path": "./en_GB.trie.gz",
+            "repMap": [["'|`|’", "'"]],
+            "description": "British English Dictionary",
+            "ignoreForbiddenWords": true
+        }
+    ],
+    "languageSettings": [
+        {
+            "languageId": "*",
+            "locale": "en-GB",
+            "patterns": [
+                {
+                    "name": "possessive_s",
+                    "pattern": "/'s\\b/gi"
+                }
+            ],
+            "dictionaries": ["en-gb"]
+        }
+    ]
+}

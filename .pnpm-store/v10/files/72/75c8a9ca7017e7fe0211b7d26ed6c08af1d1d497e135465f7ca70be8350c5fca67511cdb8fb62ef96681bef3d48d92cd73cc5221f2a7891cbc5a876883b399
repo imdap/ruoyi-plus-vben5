@@ -1,0 +1,131 @@
+@use "sass:map";
+@use "sass:list";
+
+$btnThemeList: (
+  (
+    name: "primary",
+    textColor: var(--vxe-ui-font-primary-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-font-primary-lighten-color),
+    btnDarkenColor: var(--vxe-ui-font-primary-darken-color),
+    btnDisabledColor: var(--vxe-ui-font-primary-disabled-color)
+  ),
+  (
+    name: "success",
+    textColor: var(--vxe-ui-status-success-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-status-success-lighten-color),
+    btnDarkenColor: var(--vxe-ui-status-success-darken-color),
+    btnDisabledColor: var(--vxe-ui-status-success-disabled-color)
+  ),
+  (
+    name: "info",
+    textColor: var(--vxe-ui-status-info-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-status-info-lighten-color),
+    btnDarkenColor: var(--vxe-ui-status-info-darken-color),
+    btnDisabledColor: var(--vxe-ui-status-info-disabled-color)
+  ),
+  (
+    name: "warning",
+    textColor: var(--vxe-ui-status-warning-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-status-warning-lighten-color),
+    btnDarkenColor: var(--vxe-ui-status-warning-darken-color),
+    btnDisabledColor: var(--vxe-ui-status-warning-disabled-color)
+  ),
+  (
+    name: "danger",
+    textColor: var(--vxe-ui-status-danger-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-status-danger-lighten-color),
+    btnDarkenColor: var(--vxe-ui-status-danger-darken-color),
+    btnDisabledColor: var(--vxe-ui-status-danger-disabled-color)
+  ),
+  (
+    name: "error",
+    textColor: var(--vxe-ui-status-error-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-status-error-lighten-color),
+    btnDarkenColor: var(--vxe-ui-status-error-darken-color),
+    btnDisabledColor: var(--vxe-ui-status-error-disabled-color)
+  )
+);
+
+.vxe-text-ellipsis {
+  display: block;
+  overflow: hidden;
+  white-space: normal;
+  @for $index from 0 to list.length($btnThemeList) {
+    $item: list.nth($btnThemeList, $index + 1);
+    &.theme--#{map.get($item, name)} {
+      color: map.get($item, textColor);
+      & > .vxe-text-ellipsis--link {
+        &:focus {
+          color: map.get($item, btnDarkenColor);
+        }
+        &:hover {
+          color: map.get($item, btnLightenColor);
+        }
+      }
+    }
+  }
+  &.is--underline {
+    &:hover {
+      .vxe-text-ellipsis--link {
+        text-decoration: underline;
+      }
+    }
+  }
+  &.is--single {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  &.is--multi {
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+  &.is--copy {
+    & > .vxe-text-ellipsis--icon {
+      cursor: pointer;
+      &:focus {
+        color: var(--vxe-ui-font-darken-color);
+      }
+      &:hover {
+        color: var(--vxe-ui-font-primary-lighten-color);
+      }
+      &:active {
+        color: var(--vxe-ui-font-primary-darken-color);
+      }
+    }
+  }
+  .vxe-text-ellipsis--reality {
+    display: none;
+    z-index: -1;
+    pointer-events: none;
+  }
+}
+.vxe-text-ellipsis--icon {
+  padding: 0 0.1em;
+  user-select: none;
+}
+.vxe-text-ellipsis--content,
+.vxe-text-ellipsis--link {
+  padding: 0 0.1em;
+}
+.vxe-text-ellipsis--link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.vxe-text-ellipsis {
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}

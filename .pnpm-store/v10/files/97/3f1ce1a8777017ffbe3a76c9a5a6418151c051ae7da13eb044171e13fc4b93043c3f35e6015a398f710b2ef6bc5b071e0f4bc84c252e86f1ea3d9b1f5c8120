@@ -1,0 +1,416 @@
+@use "sass:map";
+@use "sass:list";
+@use '../helpers/baseMixin.scss';
+@use '../helpers/placement.scss';
+
+$btnThemeList: (
+  (
+    name: "primary",
+    textColor: var(--vxe-ui-font-primary-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-font-primary-lighten-color),
+    btnDarkenColor: var(--vxe-ui-font-primary-darken-color),
+    btnDisabledColor: var(--vxe-ui-font-primary-disabled-color)
+  ),
+  (
+    name: "success",
+    textColor: var(--vxe-ui-status-success-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-status-success-lighten-color),
+    btnDarkenColor: var(--vxe-ui-status-success-darken-color),
+    btnDisabledColor: var(--vxe-ui-status-success-disabled-color)
+  ),
+  (
+    name: "info",
+    textColor: var(--vxe-ui-status-info-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-status-info-lighten-color),
+    btnDarkenColor: var(--vxe-ui-status-info-darken-color),
+    btnDisabledColor: var(--vxe-ui-status-info-disabled-color)
+  ),
+  (
+    name: "warning",
+    textColor: var(--vxe-ui-status-warning-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-status-warning-lighten-color),
+    btnDarkenColor: var(--vxe-ui-status-warning-darken-color),
+    btnDisabledColor: var(--vxe-ui-status-warning-disabled-color)
+  ),
+  (
+    name: "danger",
+    textColor: var(--vxe-ui-status-danger-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-status-danger-lighten-color),
+    btnDarkenColor: var(--vxe-ui-status-danger-darken-color),
+    btnDisabledColor: var(--vxe-ui-status-danger-disabled-color)
+  ),
+  (
+    name: "error",
+    textColor: var(--vxe-ui-status-error-color),
+    btnColor: #fff,
+    btnLightenColor: var(--vxe-ui-status-error-lighten-color),
+    btnDarkenColor: var(--vxe-ui-status-error-darken-color),
+    btnDisabledColor: var(--vxe-ui-status-error-disabled-color)
+  ),
+  (
+    name: "perfect",
+    textColor: var(--vxe-ui-table-header-background-color),
+    btnColor: var(--vxe-ui-font-color),
+    btnLightenColor: var(--vxe-ui-table-header-background-color),
+    btnDarkenColor: var(--vxe-ui-table-header-background-color),
+    btnDisabledColor: var(--vxe-ui-table-header-background-color)
+  )
+);
+
+.vxe-button {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  position: relative;
+  background-color: var(--vxe-ui-layout-background-color);
+  outline: 0;
+  font-size: var(--vxe-ui-font-size-default);
+  max-width: var(--vxe-ui-button-max-width);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  white-space: nowrap;
+  user-select: none;
+  appearance: none;
+  @include baseMixin.createAnimationTransition(border, .2s);
+  &.align--left {
+    justify-content: left;
+  }
+  &.align--center {
+    justify-content: center;
+  }
+  &.align--right {
+    justify-content: right;
+  }
+  &:not(.is--disabled) {
+    color: var(--vxe-ui-font-color);
+    cursor: pointer;
+  }
+  &.is--loading {
+    cursor: progress;
+    &:before {
+      content: "";
+      position: absolute;
+      left: -1px;
+      top: -1px;
+      right: -1px;
+      bottom: -1px;
+      border-radius: inherit;
+      background-color: hsla(0,0%,100%,.35);
+      pointer-events: none;
+    }
+  }
+  &.is--disabled {
+    color: var(--vxe-ui-font-disabled-color);
+    &:not(.is--loading) {
+      cursor: no-drop;
+    }
+  }
+  &.type--text {
+    text-decoration: none;
+    border: 0;
+    padding: 0.1em 0.5em;
+    background-color: transparent;
+    text-decoration: none;
+    &:not(.is--disabled) {
+      &:focus {
+        color: var(--vxe-ui-font-darken-color);
+      }
+      &:hover {
+        color: var(--vxe-ui-font-primary-lighten-color);
+      }
+      &:active {
+        color: var(--vxe-ui-font-primary-darken-color);
+      }
+    }
+    @for $index from 0 to list.length($btnThemeList) {
+      $item: list.nth($btnThemeList, $index + 1);
+      &.theme--#{map.get($item, name)} {
+        color: map.get($item, textColor);
+        &:not(.is--disabled) {
+          &:focus {
+            color: map.get($item, btnDarkenColor);
+          }
+          &:hover {
+            color: map.get($item, btnLightenColor);
+          }
+          &:active {
+            color: map.get($item, btnDarkenColor);
+          }
+        }
+        &.is--disabled {
+          color: map.get($item, btnDisabledColor);
+        }
+      }
+    }
+  }
+  &.type--button {
+    font-family: inherit;
+    line-height: 1;
+    border: 1px solid var(--vxe-ui-input-border-color);
+    text-decoration: none;
+    &.is--round {
+      border-radius: var(--vxe-ui-button-round-border-radius-default);
+    }
+    &:not(.is--round) {
+      border-radius: var(--vxe-ui-base-border-radius);
+    }
+    &.is--circle {
+      padding: 0 0.5em;
+      text-align: center;
+      justify-content: center;
+      min-width: var(--vxe-ui-button-height-default);
+      border-radius: 50%;
+    }
+    &.is--shadow {
+      box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
+    }
+    &:not(.is--circle) {
+      padding: 0 1em;
+    }
+    &:not(.is--disabled) {
+      &:hover {
+        color: var(--vxe-ui-font-primary-lighten-color);
+      }
+      &:focus {
+        border-color: var(--vxe-ui-font-primary-color);
+      }
+      &:active {
+        color: var(--vxe-ui-font-primary-darken-color);
+        border-color: var(--vxe-ui-font-primary-darken-color);
+        background-color: var(--vxe-ui-layout-background-color);
+      }
+    }
+    @for $index from 0 to list.length($btnThemeList) {
+      $item: list.nth($btnThemeList, $index + 1);
+      $textColor: map.get($item, textColor);
+      $btnColor: map.get($item, btnColor);
+      &.theme--#{map.get($item, name)} {
+        color: $btnColor;
+        &:not(.is--disabled) {
+          border-color: $textColor;
+          background-color: $textColor;
+          &:hover {
+            color: $btnColor;
+            background-color: map.get($item, btnLightenColor);
+            border-color: map.get($item, btnLightenColor);
+          }
+          &:active {
+            color: $btnColor;
+            background-color: map.get($item, btnDarkenColor);
+            border-color: map.get($item, btnDarkenColor);
+          }
+        }
+        &.is--disabled {
+          border-color: map.get($item, btnDisabledColor);
+          background-color: map.get($item, btnDisabledColor);
+        }
+        &.is--loading {
+          border-color: $textColor;
+          background-color: $textColor;
+        }
+      }
+    }
+  }
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+    &.type--button {
+      &.is--circle {
+        min-width: var(--vxe-ui-button-height-medium);
+      }
+      &.is--round {
+        border-radius: var(--vxe-ui-button-round-border-radius-medium);
+      }
+    }
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+    &.type--button {
+      height: var(--vxe-ui-button-height-small);
+      &.is--circle {
+        min-width: var(--vxe-ui-button-height-small);
+      }
+      &.is--round {
+        border-radius: var(--vxe-ui-button-round-border-radius-small);
+      }
+    }
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+    &.type--button {
+      height: var(--vxe-ui-button-height-mini);
+      &.is--circle {
+        min-width: var(--vxe-ui-button-height-mini);
+      }
+      &.is--round {
+        border-radius: var(--vxe-ui-button-round-border-radius-mini);
+      }
+    }
+  }
+}
+
+
+.vxe-button {
+  &.type--button {
+    height: var(--vxe-ui-button-height-default);
+    &.size--medium {
+      height: var(--vxe-ui-button-height-medium);
+    }
+    &.size--small {
+      height: var(--vxe-ui-button-height-small);
+    }
+    &.size--mini {
+      height: var(--vxe-ui-button-height-mini);
+    }
+  }
+}
+
+.vxe-button--custom-prefix-icon,
+.vxe-button--custom-suffix-icon {
+  & > svg {
+    max-width: 1em;
+    max-height: 1em;
+    vertical-align: middle;
+  }
+}
+
+.vxe-input--prefix-icon,
+.vxe-input--suffix-icon {
+  & > .vxe-button {
+    &.type--button {
+      height: 100%;
+    }
+  }
+}
+
+.vxe-button--item {
+  padding: 0 0.1em;
+  &:first-child {
+    padding-left: 0;
+  }
+  &:last-child {
+    padding-right: 0;
+  }
+}
+.vxe-button--wrapper,
+.vxe-button--dropdown {
+  display: inline-block;
+}
+.vxe-button--dropdown {
+  position: relative;
+  outline: 0;
+  & > .vxe-button {
+    &.type--button {
+      @for $index from 0 to list.length($btnThemeList) {
+        $item: list.nth($btnThemeList, $index + 1);
+        $btnColor: map.get($item, btnColor);
+        &.theme--#{map.get($item, name)} {
+          color: $btnColor;
+        }
+      }
+    }
+  }
+  &.is--active {
+    & > .vxe-button {
+      &:not(.is--disabled) {
+        color: var(--vxe-ui-font-primary-lighten-color);
+      }
+      &.type--text {
+        @for $index from 0 to list.length($btnThemeList) {
+          $item: list.nth($btnThemeList, $index + 1);
+          &.theme--#{map.get($item, name)} {
+            color: map.get($item, btnLightenColor);
+          }
+        }
+      }
+      &.type--button {
+        @for $index from 0 to list.length($btnThemeList) {
+          $item: list.nth($btnThemeList, $index + 1);
+          &.theme--#{map.get($item, name)} {
+            color: map.get($item, btnColor);
+            background-color: map.get($item, btnLightenColor);
+            border-color: map.get($item, btnLightenColor);
+          }
+        }
+      }
+    }
+    .vxe-button--dropdown-arrow {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.vxe-button--dropdown-arrow {
+  display: inline-block;
+  font-size: 12px;
+  margin-left: 4px;
+  @include baseMixin.createAnimationTransition(transform, .2s);
+}
+
+.vxe-button--dropdown-panel {
+  @include placement.createPlacementPanel();
+}
+
+.vxe-button--dropdown-wrapper {
+  padding: 5px;
+  background-color: var(--vxe-ui-layout-background-color);
+  border-radius: var(--vxe-ui-base-border-radius);
+  border: 1px solid var(--vxe-ui-input-border-color);
+  box-shadow: 0 1px 6px rgba(0,0,0,.2);
+  & > .vxe-button.type--text,
+  & > .vxe-button.type--button {
+    display: block;
+    width: 100%;
+    border: 0;
+    margin: 0.4em 0 0 0;
+  }
+  & > .vxe-button {
+    &.type--text {
+      padding: 2px 8px;
+    }
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.vxe-button.type--button,
+.vxe-button--dropdown {
+  margin-right: var(--vxe-ui-base-margin-gap-default);
+  &.size--medium {
+    margin-right: var(--vxe-ui-base-margin-gap-medium);
+  }
+  &.size--small {
+    margin-right: var(--vxe-ui-base-margin-gap-small);
+  }
+  &.size--mini {
+    margin-right: var(--vxe-ui-base-margin-gap-mini);
+  }
+  &:last-of-type {
+    margin-right: 0;
+  }
+}
+
+.vxe-button+.vxe-button--dropdown,
+.vxe-button--dropdown+.vxe-button {
+  margin-left: var(--vxe-ui-base-margin-gap-default);
+  &.size--medium {
+    margin-left: var(--vxe-ui-base-margin-gap-medium);
+  }
+  &.size--small {
+    margin-left: var(--vxe-ui-base-margin-gap-small);
+  }
+  &.size--mini {
+    margin-left: var(--vxe-ui-base-margin-gap-mini);
+  }
+}

@@ -1,0 +1,8 @@
+export const coreVersion = "4.4.4";
+export const VxeCore = {
+    coreVersion,
+    uiVersion: '',
+    tableVersion: '',
+    designVersion: '',
+    ganttVersion: ''
+};

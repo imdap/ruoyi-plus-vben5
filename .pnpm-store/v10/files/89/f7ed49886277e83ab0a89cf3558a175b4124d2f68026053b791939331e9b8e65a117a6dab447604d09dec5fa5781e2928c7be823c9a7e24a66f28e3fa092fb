@@ -1,0 +1,889 @@
+import { importWithError, resolveComma, toArray } from "tsdown/internal";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { readFileSync } from "node:fs";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { ResolverFactory } from "rolldown/experimental";
+//#region src/options.ts
+const defaultCssBundleName = "style.css";
+function resolveCssOptions(options = {}, topLevelTarget, unbundle) {
+	let cssTarget;
+	if (options.target === false) cssTarget = void 0;
+	else if (options.target == null) cssTarget = topLevelTarget;
+	else cssTarget = resolveComma(toArray(options.target));
+	return {
+		transformer: options.transformer ?? "lightningcss",
+		splitting: options.splitting ?? !!unbundle,
+		fileName: options.fileName ?? "style.css",
+		minify: options.minify ?? false,
+		inject: options.inject ?? false,
+		modules: options.modules === false ? false : options.modules ?? {},
+		target: cssTarget,
+		preprocessorOptions: options.preprocessorOptions,
+		lightningcss: options.lightningcss,
+		postcss: options.postcss
+	};
+}
+//#endregion
+//#region src/modules.ts
+function modulesToEsm(modules) {
+	const lines = [];
+	let index = 0;
+	for (const [key, value] of Object.entries(modules)) {
+		if (key === "default") continue;
+		const binding = `_key${index++}`;
+		lines.push(`const ${binding} = ${JSON.stringify(value)};`, `export { ${binding} as ${JSON.stringify(key)} };`);
+	}
+	lines.push(`export default ${JSON.stringify(modules)};`);
+	return lines.join("\n");
+}
+function dashToCamel(str) {
+	return str.replaceAll(/-([a-z])/g, (_, c) => c.toUpperCase());
+}
+function applyLocalsConvention(modules, convention) {
+	const result = {};
+	for (const [key, value] of Object.entries(modules)) {
+		const camelized = dashToCamel(key);
+		switch (convention) {
+			case "camelCase":
+				result[key] = value;
+				if (camelized !== key) result[camelized] = value;
+				break;
+			case "camelCaseOnly":
+				result[camelized] = value;
+				break;
+			case "dashes":
+				result[key] = value;
+				if (key.includes("-")) result[camelized] = value;
+				break;
+			case "dashesOnly":
+				if (key.includes("-")) result[camelized] = value;
+				else result[key] = value;
+				break;
+		}
+	}
+	return result;
+}
+function extractLightningCssModuleExports(exports) {
+	const modules = {};
+	const sortedEntries = Object.entries(exports).toSorted(([a], [b]) => a.localeCompare(b));
+	for (const [key, value] of sortedEntries) {
+		let name = value.name;
+		for (const c of value.composes) name += ` ${c.name}`;
+		modules[key] = name;
+	}
+	return modules;
+}
+//#endregion
+//#region src/resolve.ts
+let cssResolver;
+let sassResolver;
+function getCssResolver() {
+	return cssResolver ??= new ResolverFactory({ conditionNames: ["style", "default"] });
+}
+function getSassResolver() {
+	return sassResolver ??= new ResolverFactory({
+		conditionNames: [
+			"sass",
+			"style",
+			"default"
+		],
+		mainFields: [
+			"sass",
+			"style",
+			"main"
+		],
+		extensions: [
+			".scss",
+			".sass",
+			".css"
+		]
+	});
+}
+function resolveWithResolver(resolver, specifier, from) {
+	const dir = path.dirname(from);
+	const result = resolver.sync(dir, specifier);
+	if (result.error || !result.path) return;
+	return result.path;
+}
+//#endregion
+//#region src/utils.ts
+const RE_CSS = /\.css$/;
+const RE_INLINE = /[?&]inline\b/;
+const CSS_LANGS_RE = /\.(css|less|sass|scss|styl|stylus)(?:$|\?)/;
+const RE_CSS_INLINE = /\.(?:css|less|sass|scss|styl|stylus)\?(?:.*&)?inline\b/;
+const CSS_MODULE_RE = /\.module\.(?:css|less|sass|scss|styl|stylus)(?:$|\?)/;
+function toCssFileName(jsFileName) {
+	return jsFileName.replace(/(?:\.module)?(\.[cm]?js)$/, ".css");
+}
+function getCleanId(id) {
+	const queryIndex = id.indexOf("?");
+	return queryIndex === -1 ? id : id.slice(0, queryIndex);
+}
+//#endregion
+//#region src/preprocessors.ts
+const PREPROCESSOR_LANGS = {
+	sass: "sass",
+	less: "less",
+	scss: "scss",
+	styl: "styl",
+	stylus: "stylus"
+};
+function getPreprocessorLang(filename) {
+	return PREPROCESSOR_LANGS[path.extname(filename).slice(1)];
+}
+function getPreprocessorLangFromId(id) {
+	const match = CSS_LANGS_RE.exec(id);
+	if (!match) return;
+	return PREPROCESSOR_LANGS[match[1]];
+}
+function compilePreprocessor(lang, code, filename, options) {
+	switch (lang) {
+		case "scss":
+		case "sass": return compileSass(lang, code, filename, options);
+		case "less": return compileLess(code, filename, options);
+		case "styl":
+		case "stylus": return compileStylus(code, filename, options);
+	}
+}
+const cssUrlRE = /(?<!@import\s+)(?<=^|[^\w\-\u0080-\uFFFF])url\((\s*('[^']+'|"[^"]+")\s*|(?:\\.|[^'")\\])+)\)/;
+const cssDataUriRE = /(?<=^|[^\w\-\u0080-\uFFFF])data-uri\((\s*('[^']+'|"[^"]+")\s*|[^'")]+)\)/;
+const importCssRE = /@import\s+(?:url\()?('[^']+\.css'|"[^"]+\.css"|[^'"\s)]+\.css)/;
+async function rebaseUrls(file, rootFile, ignoreUrl) {
+	file = path.resolve(file);
+	const fileDir = path.dirname(file);
+	const rootDir = path.dirname(rootFile);
+	if (fileDir === rootDir) return { file };
+	const content = await readFile(file, "utf8");
+	const hasUrls = cssUrlRE.test(content);
+	const hasDataUris = cssDataUriRE.test(content);
+	const hasImportCss = importCssRE.test(content);
+	if (!hasUrls && !hasDataUris && !hasImportCss) return { file };
+	let rebased;
+	const rebaseFn = (unquotedUrl, rawUrl) => {
+		if (ignoreUrl?.(unquotedUrl, rawUrl)) return false;
+		if (unquotedUrl[0] === "/") return unquotedUrl;
+		const absolute = path.resolve(fileDir, unquotedUrl);
+		return normalizePath(path.relative(rootDir, absolute));
+	};
+	if (hasImportCss) rebased = await rewriteImportCss(content, rebaseFn);
+	if (hasUrls) rebased = await rewriteCssUrls(rebased || content, rebaseFn);
+	if (hasDataUris) rebased = await rewriteCssDataUris(rebased || content, rebaseFn);
+	return {
+		file,
+		contents: rebased
+	};
+}
+async function asyncReplace(input, re, replacer) {
+	let match;
+	let remaining = input;
+	let rewritten = "";
+	while (match = re.exec(remaining)) {
+		rewritten += remaining.slice(0, match.index);
+		rewritten += await replacer(match);
+		remaining = remaining.slice(match.index + match[0].length);
+	}
+	rewritten += remaining;
+	return rewritten;
+}
+function rewriteCssUrls(css, replacer) {
+	return asyncReplace(css, cssUrlRE, async (match) => {
+		const [matched, rawUrl] = match;
+		return await doUrlReplace(rawUrl.trim(), matched, replacer);
+	});
+}
+function rewriteCssDataUris(css, replacer) {
+	return asyncReplace(css, cssDataUriRE, async (match) => {
+		const [matched, rawUrl] = match;
+		return await doUrlReplace(rawUrl.trim(), matched, replacer, "data-uri");
+	});
+}
+function rewriteImportCss(css, replacer) {
+	return asyncReplace(css, importCssRE, async (match) => {
+		const [matched, rawUrl] = match;
+		return await doImportCSSReplace(rawUrl, matched, replacer);
+	});
+}
+const externalRE = /^(?:[a-z]+:)?\/\//;
+const dataUrlRE = /^\s*data:/i;
+function skipUrlReplacer(unquotedUrl) {
+	return externalRE.test(unquotedUrl) || dataUrlRE.test(unquotedUrl) || unquotedUrl[0] === "#";
+}
+async function doUrlReplace(rawUrl, matched, replacer, funcName = "url") {
+	let wrap = "";
+	const first = rawUrl[0];
+	if (first === `"` || first === `'`) {
+		wrap = first;
+		rawUrl = rawUrl.slice(1, -1);
+	}
+	if (skipUrlReplacer(rawUrl)) return matched;
+	const newUrl = await replacer(rawUrl, matched);
+	if (typeof newUrl === "string") {
+		if (wrap === "" && newUrl !== encodeURI(newUrl)) wrap = "\"";
+		return `${funcName}(${wrap}${newUrl}${wrap})`;
+	}
+	return matched;
+}
+async function doImportCSSReplace(rawUrl, matched, replacer) {
+	let wrap = "";
+	const first = rawUrl[0];
+	if (first === `"` || first === `'`) {
+		wrap = first;
+		rawUrl = rawUrl.slice(1, -1);
+	}
+	const newUrl = await replacer(rawUrl, matched);
+	if (typeof newUrl === "string") return matched.replace(`${wrap}${rawUrl}${wrap}`, `${wrap}${newUrl}${wrap}`);
+	return matched;
+}
+function normalizePath(id) {
+	return id.replaceAll("\\", "/");
+}
+async function getSource(source, filename, additionalData, sep = "") {
+	if (!additionalData) return source;
+	if (typeof additionalData === "function") {
+		const newContent = await additionalData(source, filename);
+		if (typeof newContent === "string") return newContent;
+		return newContent.content;
+	}
+	return additionalData + sep + source;
+}
+async function compileSass(lang, code, filename, options) {
+	const sass = await loadSass();
+	const preprocessorOpts = options?.scss ?? options?.sass ?? {};
+	const data = await getSource(code, filename, preprocessorOpts.additionalData);
+	const { additionalData: _, ...sassOptions } = preprocessorOpts;
+	const skipRebaseUrls = (unquotedUrl, rawUrl) => {
+		if (!(rawUrl[0] === "\"" || rawUrl[0] === "'") && unquotedUrl[0] === "$") return true;
+		return unquotedUrl.startsWith("#{");
+	};
+	const internalImporter = {
+		async canonicalize(url, context) {
+			const resolved = await tryResolveScss(url, context.containingUrl ? fileURLToPath(context.containingUrl) : filename);
+			if (resolved) return pathToFileURL(resolved);
+			return null;
+		},
+		async load(canonicalUrl) {
+			const ext = path.extname(canonicalUrl.pathname);
+			let syntax = "scss";
+			if (ext === ".sass") syntax = "indented";
+			else if (ext === ".css") syntax = "css";
+			const result = await rebaseUrls(fileURLToPath(canonicalUrl), filename, skipRebaseUrls);
+			return {
+				contents: result.contents ?? await readFile(result.file, "utf8"),
+				syntax,
+				sourceMapUrl: canonicalUrl
+			};
+		}
+	};
+	const result = await sass.compileStringAsync(data, {
+		url: pathToFileURL(filename),
+		sourceMap: false,
+		syntax: lang === "sass" ? "indented" : "scss",
+		...sassOptions,
+		importers: [internalImporter, ...sassOptions.importers ?? []]
+	});
+	return {
+		code: result.css,
+		deps: result.loadedUrls.filter((url) => url.protocol === "file:").map((url) => fileURLToPath(url))
+	};
+}
+async function tryResolveScss(url, importer) {
+	const dir = path.dirname(importer);
+	const { existsSync } = await import("node:fs");
+	const extensions = [
+		".scss",
+		".sass",
+		".css"
+	];
+	const prefixes = ["", "_"];
+	if (extensions.some((ext) => url.endsWith(ext))) for (const prefix of prefixes) {
+		const file = path.resolve(dir, path.dirname(url), prefix + path.basename(url));
+		if (existsSync(file)) return file;
+	}
+	else {
+		for (const ext of extensions) for (const prefix of prefixes) {
+			const file = path.resolve(dir, path.dirname(url), prefix + path.basename(url) + ext);
+			if (existsSync(file)) return file;
+		}
+		for (const ext of extensions) for (const prefix of prefixes) {
+			const file = path.resolve(dir, url, `${prefix}index${ext}`);
+			if (existsSync(file)) return file;
+		}
+	}
+	return resolveWithResolver(getSassResolver(), url, importer);
+}
+let _sass;
+async function loadSass() {
+	if (_sass) return _sass;
+	try {
+		_sass = await import("sass-embedded");
+		return _sass;
+	} catch {
+		try {
+			_sass = await import("sass");
+			return _sass;
+		} catch {
+			throw new Error("Preprocessor dependency \"sass\" not found. Did you install it? Try `npm install -D sass`.");
+		}
+	}
+}
+async function compileLess(code, filename, options) {
+	const less = await loadLess();
+	const preprocessorOpts = options?.less ?? {};
+	const data = await getSource(code, filename, preprocessorOpts.additionalData);
+	const { additionalData: _, plugins = [], ...lessOptions } = preprocessorOpts;
+	const result = await less.render(data, {
+		paths: ["node_modules"],
+		...lessOptions,
+		filename,
+		plugins
+	});
+	return {
+		code: result.css,
+		deps: result.imports || []
+	};
+}
+let _less;
+async function loadLess() {
+	if (_less) return _less;
+	try {
+		_less = (await import("less")).default;
+		return _less;
+	} catch {
+		throw new Error("Preprocessor dependency \"less\" not found. Did you install it? Try `npm install -D less`.");
+	}
+}
+async function compileStylus(code, filename, options) {
+	const stylus = await loadStylus();
+	const preprocessorOpts = options?.styl ?? options?.stylus ?? {};
+	const data = await getSource(code, filename, preprocessorOpts.additionalData, "\n");
+	const { additionalData: _, define, ...stylusOptions } = preprocessorOpts;
+	const ref = stylus(data, {
+		paths: ["node_modules"],
+		...stylusOptions,
+		filename
+	});
+	if (define) for (const key of Object.keys(define)) ref.define(key, define[key]);
+	return new Promise((resolve, reject) => {
+		ref.render((err, css) => {
+			if (err) reject(/* @__PURE__ */ new Error(`[stylus] ${err.message}`));
+			else resolve({
+				code: css,
+				deps: ref.deps()
+			});
+		});
+	});
+}
+let _stylus;
+async function loadStylus() {
+	if (_stylus) return _stylus;
+	try {
+		_stylus = (await import("stylus")).default;
+		return _stylus;
+	} catch {
+		throw new Error("Preprocessor dependency \"stylus\" not found. Did you install it? Try `npm install -D stylus`.");
+	}
+}
+//#endregion
+//#region src/lightningcss.ts
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+async function transformWithLightningCSS(code, filename, options) {
+	const targets = options.lightningcss?.targets ?? (options.target ? esbuildTargetToLightningCSS(options.target) : void 0);
+	if (!targets && !options.lightningcss && !options.minify && !options.cssModules) return { code };
+	const { transform } = await import("lightningcss");
+	const result = transform({
+		filename,
+		code: encoder.encode(code),
+		...options.lightningcss,
+		targets,
+		minify: options.minify,
+		cssModules: options.cssModules
+	});
+	return {
+		code: decoder.decode(result.code),
+		modules: result.exports ? extractLightningCssModuleExports(result.exports) : void 0
+	};
+}
+async function bundleWithLightningCSS(filename, options, code) {
+	const targets = options.lightningcss?.targets ?? (options.target ? esbuildTargetToLightningCSS(options.target) : void 0);
+	const deps = [];
+	const { bundleAsync } = await import("lightningcss");
+	const result = await bundleAsync({
+		filename,
+		...options.lightningcss,
+		targets,
+		minify: options.minify,
+		cssModules: options.cssModules,
+		resolver: {
+			async read(filePath) {
+				let fileCode;
+				if (code != null && filePath === filename) fileCode = code;
+				else fileCode = readFileSync(filePath, "utf8");
+				const lang = getPreprocessorLang(filePath);
+				if (lang) {
+					const preprocessed = await compilePreprocessor(lang, fileCode, filePath, options.preprocessorOptions);
+					deps.push(...preprocessed.deps);
+					return preprocessed.code;
+				}
+				return fileCode;
+			},
+			resolve(specifier, from) {
+				const resolved = resolveWithResolver(getCssResolver(), specifier, from);
+				if (!resolved) {
+					options.logger.warn(`[@tsdown/css] Failed to resolve import '${specifier}' from '${from}'`);
+					return path.resolve(path.dirname(from), specifier);
+				}
+				return resolved;
+			}
+		}
+	});
+	return {
+		code: new TextDecoder().decode(result.code),
+		deps,
+		modules: result.exports ? extractLightningCssModuleExports(result.exports) : void 0
+	};
+}
+const TARGET_REGEX = /([a-z]+)(\d+(?:\.\d+)*)/g;
+const ESBUILD_LIGHTNINGCSS_MAPPING = {
+	chrome: "chrome",
+	edge: "edge",
+	firefox: "firefox",
+	ie: "ie",
+	ios: "ios_saf",
+	opera: "opera",
+	safari: "safari"
+};
+function parseVersion(version) {
+	const [major, minor = 0, patch = 0] = version.split("-")[0].split(".").map((v) => Number.parseInt(v, 10));
+	if (Number.isNaN(major) || Number.isNaN(minor) || Number.isNaN(patch)) return null;
+	return major << 16 | minor << 8 | patch;
+}
+function esbuildTargetToLightningCSS(target) {
+	let targets;
+	const matches = [...target.join(" ").toLowerCase().matchAll(TARGET_REGEX)];
+	for (const match of matches) {
+		const browser = ESBUILD_LIGHTNINGCSS_MAPPING[match[1]];
+		if (!browser) continue;
+		const version = match[2];
+		const versionInt = parseVersion(version);
+		if (versionInt == null) continue;
+		targets = targets || {};
+		targets[browser] = versionInt;
+	}
+	return targets;
+}
+//#endregion
+//#region src/pure-chunk.ts
+/**
+* Detect and remove "pure CSS chunks" — JS chunks that exist only because
+* they imported CSS files. These chunks have no JS exports and all their
+* modules are CSS. Following Vite's implementation.
+*/
+function removePureCssChunks(bundle, styles) {
+	const pureCssChunkNames = [];
+	for (const chunk of Object.values(bundle)) {
+		if (chunk.type !== "chunk" || chunk.exports.length || !chunk.moduleIds.length) continue;
+		if (chunk.moduleIds.every((id) => styles.has(id))) pureCssChunkNames.push(chunk.fileName);
+	}
+	const strictSet = new Set(pureCssChunkNames);
+	for (const chunk of Object.values(bundle)) {
+		if (chunk.type !== "chunk" || chunk.exports.length || chunk.isEntry || chunk.isDynamicEntry) continue;
+		if (strictSet.has(chunk.fileName)) continue;
+		if (chunk.moduleIds.some((id) => styles.has(id)) && isEmptyChunkCode$1(chunk.code)) pureCssChunkNames.push(chunk.fileName);
+	}
+	if (!pureCssChunkNames.length) return;
+	const replaceEmptyChunk = getEmptyChunkReplacer(pureCssChunkNames);
+	for (const chunk of Object.values(bundle)) {
+		if (chunk.type !== "chunk") continue;
+		let chunkImportsPureCssChunk = false;
+		chunk.imports = chunk.imports.filter((importFile) => {
+			if (pureCssChunkNames.includes(importFile)) {
+				chunkImportsPureCssChunk = true;
+				return false;
+			}
+			return true;
+		});
+		if (chunkImportsPureCssChunk) chunk.code = replaceEmptyChunk(chunk.code);
+	}
+	for (const fileName of pureCssChunkNames) {
+		delete bundle[fileName];
+		delete bundle[`${fileName}.map`];
+	}
+}
+/**
+* Create a replacer function that replaces import statements for pure CSS
+* chunks with block comments of the same length, preserving source map offsets.
+*/
+function getEmptyChunkReplacer(pureCssChunkNames) {
+	const emptyChunkFiles = pureCssChunkNames.map((file) => escapeRegex(path.basename(file))).join("|");
+	const emptyChunkRE = new RegExp(String.raw`\bimport\s*["'][^"']*(?:${emptyChunkFiles})["'];`, "g");
+	return (code) => code.replace(emptyChunkRE, (m) => {
+		return `/* empty css ${"".padEnd(m.length - 15)}*/`;
+	});
+}
+function escapeRegex(str) {
+	return str.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+}
+function isEmptyChunkCode$1(code) {
+	return !code.replaceAll(/\/\*[\s\S]*?\*\//g, "").replaceAll(/\/\/[^\n]*/g, "").replaceAll(/\bexport\s*\{\s*\};?/g, "").replaceAll(/\bimport\s*["'][^"']*["'];?/g, "").trim();
+}
+//#endregion
+//#region src/post.ts
+function CssPostPlugin(config, styles) {
+	const collectedCSS = [];
+	async function finalizeCss(css) {
+		if (!config.minify) return css;
+		let code = (await transformWithLightningCSS(css, defaultCssBundleName, {
+			target: config.target,
+			lightningcss: config.lightningcss,
+			minify: true
+		})).code;
+		if (code.length && !code.endsWith("\n")) code += "\n";
+		return code;
+	}
+	return {
+		name: "tsdown:css-post",
+		renderChunk(_code, chunk) {
+			if (config.splitting) return;
+			let chunkCSS = "";
+			for (const id of Object.keys(chunk.modules)) {
+				const code = styles.get(id);
+				if (code) chunkCSS += code;
+			}
+			if (!chunkCSS) return;
+			if (chunkCSS.length > 0 && !chunkCSS.endsWith("\n")) chunkCSS += "\n";
+			collectedCSS.push(chunkCSS);
+		},
+		async generateBundle(_outputOptions, bundle) {
+			if (config.splitting) for (const chunk of Object.values(bundle)) {
+				if (chunk.type !== "chunk") continue;
+				let chunkCSS = "";
+				for (const id of chunk.moduleIds) {
+					const code = styles.get(id);
+					if (code) chunkCSS += code;
+				}
+				if (!chunkCSS) continue;
+				if (!chunkCSS.endsWith("\n")) chunkCSS += "\n";
+				chunkCSS = await finalizeCss(chunkCSS);
+				const cssAssetFileName = toCssFileName(chunk.fileName);
+				this.emitFile({
+					type: "asset",
+					fileName: cssAssetFileName,
+					source: chunkCSS
+				});
+			}
+			else if (collectedCSS.length > 0) {
+				let allCSS = collectedCSS.join("");
+				if (allCSS) {
+					allCSS = await finalizeCss(allCSS);
+					this.emitFile({
+						type: "asset",
+						fileName: config.fileName,
+						source: allCSS,
+						originalFileName: defaultCssBundleName
+					});
+				}
+				collectedCSS.length = 0;
+			}
+			removePureCssChunks(bundle, styles);
+		}
+	};
+}
+//#endregion
+//#region src/postcss.ts
+const fileConfigCache = /* @__PURE__ */ new Map();
+async function loadFileConfig(searchPath) {
+	const cached = fileConfigCache.get(searchPath);
+	if (cached !== void 0) return cached;
+	const promise = (async () => {
+		try {
+			const postcssrc = (await import("postcss-load-config")).default;
+			const result = await postcssrc({}, searchPath);
+			return {
+				options: result.options,
+				plugins: result.plugins
+			};
+		} catch (error) {
+			if (error.message?.includes("No PostCSS Config found")) return null;
+			throw error;
+		}
+	})();
+	fileConfigCache.set(searchPath, promise);
+	const result = await promise;
+	fileConfigCache.set(searchPath, result);
+	return result;
+}
+function resolvePostCSSConfig(postcssOption, cwd) {
+	if (typeof postcssOption === "object") {
+		const { plugins, ...options } = postcssOption;
+		return {
+			options,
+			plugins: plugins || []
+		};
+	}
+	return loadFileConfig(typeof postcssOption === "string" ? postcssOption : cwd);
+}
+async function processWithPostCSS$1(code, filename, postcssOption, cwd, injectImport, modulesOptions) {
+	const config = await resolvePostCSSConfig(postcssOption, cwd);
+	const plugins = [];
+	let modules;
+	if (modulesOptions?.isModule) {
+		const postcssModules = await importWithError("postcss-modules");
+		const { localsConvention: _, getJSON: userGetJSON, ...rest } = modulesOptions.config ?? {};
+		plugins.push((postcssModules.default ?? postcssModules)({
+			...rest,
+			getJSON(cssFileName, json, outputFileName) {
+				modules = json;
+				userGetJSON?.(cssFileName, json, outputFileName);
+			}
+		}));
+	}
+	if (injectImport) {
+		const postcssImport = await importWithError("postcss-import");
+		plugins.push((postcssImport.default ?? postcssImport)());
+	}
+	if (config) plugins.push(...config.plugins);
+	if (!plugins.length && !config?.options.parser) return {
+		code,
+		deps: []
+	};
+	const result = await (await importWithError("postcss")).default(plugins).process(code, {
+		...config?.options,
+		from: filename,
+		to: filename
+	});
+	const deps = [];
+	for (const message of result.messages) if (message.type === "dependency") deps.push(message.file);
+	else if (message.type === "dir-dependency") {
+		const { dir } = message;
+		if (typeof dir === "string") deps.push(dir);
+	}
+	return {
+		code: result.css,
+		deps,
+		modules
+	};
+}
+//#endregion
+//#region src/plugin.ts
+function shouldSkipTransform(id, cleanId) {
+	const isInline = RE_INLINE.test(id);
+	return id !== cleanId && !isInline && CSS_LANGS_RE.test(cleanId);
+}
+function CssPlugin(config, { logger }) {
+	const cssConfig = {
+		css: resolveCssOptions(config.css, config.target, config.unbundle),
+		cwd: config.cwd,
+		target: config.target
+	};
+	const styles = /* @__PURE__ */ new Map();
+	const modulesMap = /* @__PURE__ */ new Map();
+	const cssCompilePlugin = {
+		name: "@tsdown/css",
+		buildStart() {
+			styles.clear();
+			modulesMap.clear();
+		},
+		resolveId: {
+			filter: { id: RE_CSS_INLINE },
+			async handler(source, ...args) {
+				const cleanSource = getCleanId(source);
+				const resolved = await this.resolve(cleanSource, ...args);
+				if (resolved) return {
+					...resolved,
+					id: `${resolved.id}?inline`
+				};
+			}
+		},
+		load: {
+			filter: { id: RE_CSS_INLINE },
+			async handler(id) {
+				const cleanId = getCleanId(id);
+				if (styles.has(id)) return;
+				const code = await readFile(cleanId, "utf8").catch(() => null);
+				if (code == null) return;
+				this.addWatchFile(cleanId);
+				return {
+					code,
+					moduleType: "js"
+				};
+			}
+		},
+		transform: {
+			filter: { id: CSS_LANGS_RE },
+			async handler(code, id) {
+				const cleanId = getCleanId(id);
+				if (shouldSkipTransform(id, cleanId)) return;
+				const isModule = !RE_INLINE.test(id) && cssConfig.css.modules !== false && CSS_MODULE_RE.test(cleanId);
+				const deps = [];
+				let modules;
+				if (cssConfig.css.transformer === "lightningcss") {
+					const result = await processWithLightningCSS(code, id, cleanId, deps, cssConfig, logger, isModule);
+					code = result.code;
+					modules = result.modules;
+				} else {
+					const result = await processWithPostCSS(code, id, cleanId, deps, cssConfig, isModule);
+					code = result.code;
+					modules = result.modules;
+				}
+				for (const dep of deps) this.addWatchFile(dep);
+				if (code.length && !code.endsWith("\n")) code += "\n";
+				if (modules) {
+					const modulesConfig = typeof cssConfig.css.modules === "object" ? cssConfig.css.modules : void 0;
+					if (modulesConfig?.localsConvention) modules = applyLocalsConvention(modules, modulesConfig.localsConvention);
+					modulesConfig?.getJSON?.(cleanId, modules, cleanId);
+					modulesMap.set(id, modules);
+				}
+				return { code };
+			}
+		}
+	};
+	const postPlugins = [{
+		name: "@tsdown/css:collect",
+		transform: {
+			filter: { id: CSS_LANGS_RE },
+			handler(code, id) {
+				if (shouldSkipTransform(id, getCleanId(id))) return;
+				const isInline = RE_INLINE.test(id);
+				const modules = modulesMap.get(id);
+				if (isInline) return {
+					code: `export default ${JSON.stringify(code)};`,
+					moduleSideEffects: false,
+					moduleType: "js"
+				};
+				if (code.length) styles.set(id, code);
+				if (modules) return {
+					code: modulesToEsm(modules),
+					moduleSideEffects: false,
+					moduleType: "js"
+				};
+				return {
+					code: "",
+					moduleSideEffects: "no-treeshake",
+					moduleType: "js"
+				};
+			}
+		}
+	}];
+	if (cssConfig.css.inject) postPlugins.push({
+		name: "@tsdown/css:inject",
+		generateBundle(_outputOptions, bundle) {
+			const chunks = Object.values(bundle);
+			const pureCssChunks = /* @__PURE__ */ new Set();
+			for (const chunk of chunks) {
+				if (chunk.type !== "chunk" || chunk.exports.length || !chunk.moduleIds.length) continue;
+				if (chunk.moduleIds.every((id) => styles.has(id))) {
+					pureCssChunks.add(chunk.fileName);
+					continue;
+				}
+				if (!chunk.isEntry && !chunk.isDynamicEntry && chunk.moduleIds.some((id) => styles.has(id)) && isEmptyChunkCode(chunk.code)) pureCssChunks.add(chunk.fileName);
+			}
+			for (const chunk of chunks) {
+				if (chunk.type !== "chunk") continue;
+				if (pureCssChunks.has(chunk.fileName)) continue;
+				if (cssConfig.css.splitting) {
+					for (const imp of chunk.imports) {
+						if (!pureCssChunks.has(imp)) continue;
+						const basename = path.basename(imp);
+						const escaped = basename.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+						const cssBasename = toCssFileName(basename);
+						const importRE = new RegExp(String.raw`(\bimport\s*["'][^"']*)${escaped}(["'];)`);
+						chunk.code = chunk.code.replace(importRE, `$1${cssBasename}$2`);
+					}
+					if (chunk.moduleIds.some((id) => styles.has(id))) {
+						const cssFile = toCssFileName(chunk.fileName);
+						const relativePath = path.posix.relative(path.posix.dirname(chunk.fileName), cssFile);
+						chunk.code = `import '${relativePath[0] === "." ? relativePath : `./${relativePath}`}';\n${chunk.code}`;
+						if (chunk.map) chunk.map.mappings = `;${chunk.map.mappings}`;
+					}
+				} else if (chunk.moduleIds.some((id) => styles.has(id)) || chunk.imports.some((imp) => pureCssChunks.has(imp))) {
+					const cssFile = cssConfig.css.fileName;
+					const relativePath = path.posix.relative(path.posix.dirname(chunk.fileName), cssFile);
+					chunk.code = `import '${relativePath[0] === "." ? relativePath : `./${relativePath}`}';\n${chunk.code}`;
+					if (chunk.map) chunk.map.mappings = `;${chunk.map.mappings}`;
+				}
+			}
+		}
+	});
+	postPlugins.push(CssPostPlugin(cssConfig.css, styles));
+	return {
+		pre: [cssCompilePlugin],
+		post: postPlugins
+	};
+}
+function resolveCssModulesConfig(modulesOptions, isModule, logger) {
+	if (!isModule) return void 0;
+	const config = typeof modulesOptions === "object" ? modulesOptions : void 0;
+	if (!config) return true;
+	const cssModulesConfig = {};
+	if (typeof config.generateScopedName === "string") cssModulesConfig.pattern = config.generateScopedName;
+	else if (typeof config.generateScopedName === "function") logger.warn("[@tsdown/css] `generateScopedName` as a function is not supported with `transformer: \"lightningcss\"`. Use a string pattern or switch to `transformer: \"postcss\"`.");
+	if (config.scopeBehaviour === "global") cssModulesConfig.pattern = "[local]";
+	return Object.keys(cssModulesConfig).length > 0 ? cssModulesConfig : true;
+}
+async function processWithLightningCSS(code, id, cleanId, deps, config, logger, isModule) {
+	const lang = getPreprocessorLangFromId(id);
+	const cssModules = resolveCssModulesConfig(config.css.modules, isModule, logger);
+	if (lang) {
+		const preResult = await compilePreprocessor(lang, code, cleanId, config.css.preprocessorOptions);
+		deps.push(...preResult.deps);
+		return transformWithLightningCSS(preResult.code, cleanId, {
+			target: config.css.target,
+			lightningcss: config.css.lightningcss,
+			minify: config.css.minify,
+			cssModules
+		});
+	}
+	if (id !== cleanId && !RE_INLINE.test(id)) return transformWithLightningCSS(code, cleanId, {
+		target: config.css.target,
+		lightningcss: config.css.lightningcss,
+		minify: config.css.minify,
+		cssModules
+	});
+	if (RE_CSS.test(cleanId)) {
+		const bundleResult = await bundleWithLightningCSS(cleanId, {
+			target: config.css.target,
+			lightningcss: config.css.lightningcss,
+			minify: config.css.minify,
+			cssModules,
+			preprocessorOptions: config.css.preprocessorOptions,
+			logger
+		}, code);
+		deps.push(...bundleResult.deps);
+		return {
+			code: bundleResult.code,
+			modules: bundleResult.modules
+		};
+	}
+	return { code: "" };
+}
+async function processWithPostCSS(code, id, cleanId, deps, config, isModule) {
+	const lang = getPreprocessorLangFromId(id);
+	if (lang) {
+		const preResult = await compilePreprocessor(lang, code, cleanId, config.css.preprocessorOptions);
+		code = preResult.code;
+		deps.push(...preResult.deps);
+	}
+	const modulesConfig = typeof config.css.modules === "object" ? config.css.modules : void 0;
+	const needInlineImport = code.includes("@import");
+	const postcssResult = await processWithPostCSS$1(code, cleanId, config.css.postcss, config.cwd, needInlineImport, isModule ? {
+		isModule: true,
+		config: modulesConfig
+	} : void 0);
+	code = postcssResult.code;
+	deps.push(...postcssResult.deps);
+	return {
+		code: (await transformWithLightningCSS(code, cleanId, {
+			target: config.css.target,
+			lightningcss: config.css.lightningcss,
+			minify: config.css.minify
+		})).code,
+		modules: postcssResult.modules
+	};
+}
+function isEmptyChunkCode(code) {
+	return !code.replaceAll(/\/\*[\s\S]*?\*\//g, "").replaceAll(/\/\/[^\n]*/g, "").replaceAll(/\bexport\s*\{\s*\};?/g, "").replaceAll(/\bimport\s*["'][^"']*["'];?/g, "").trim();
+}
+//#endregion
+export { CssPlugin, resolveCssOptions };

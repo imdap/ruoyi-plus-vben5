@@ -1,0 +1,16 @@
+import { TagProps } from "../index.js";
+import * as vue551 from "vue";
+import { CSSProperties, Ref } from "vue";
+
+//#region src/tag/hooks/useColor.d.ts
+/**
+ * Convert color related props to a unified object,
+ * which is used to flatten the compatibility requirements.
+ */
+declare function useColor(props: {
+  color: Ref<TagProps['color']>;
+  variant: Ref<TagProps['variant']>;
+  bordered: Ref<TagProps['bordered']>;
+}, contextVariant?: Ref<TagProps['variant']>): readonly [vue551.ComputedRef<"outlined" | "filled" | "solid">, vue551.ComputedRef<string | undefined>, vue551.ComputedRef<boolean>, vue551.ComputedRef<boolean>, vue551.ComputedRef<CSSProperties>];
+//#endregion
+export { useColor as default };

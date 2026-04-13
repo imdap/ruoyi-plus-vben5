@@ -1,0 +1,29 @@
+import { FullToken } from "../../theme/interface/cssinjs-utils.js";
+import { GenerateStyle } from "../../theme/interface/index.js";
+import "../../theme/internal.js";
+import * as vue385 from "vue";
+import * as _antdv_next_cssinjs3 from "@antdv-next/cssinjs";
+
+//#region src/checkbox/style/index.d.ts
+interface ComponentToken {}
+/**
+ * @desc Checkbox 组件的 Token
+ * @descEN Token for Checkbox component
+ */
+interface CheckboxToken extends FullToken<'Checkbox'> {
+  /**
+   * @desc Checkbox 类名
+   * @descEN Checkbox class name
+   */
+  checkboxCls: string;
+  /**
+   * @desc Checkbox 尺寸
+   * @descEN Size of Checkbox
+   */
+  checkboxSize: number;
+}
+declare const genCheckboxStyle: GenerateStyle<CheckboxToken>;
+declare function getStyle(prefixCls: string, token: FullToken<'Checkbox'>): _antdv_next_cssinjs3.CSSInterpolation;
+declare const _default: (prefixCls: vue385.Ref<string>, rootCls?: vue385.Ref<string | undefined>) => readonly [vue385.Ref<string, string>, vue385.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, genCheckboxStyle, getStyle };

@@ -1,0 +1,12 @@
+import { VueNode } from "../../_util/type.js";
+import { ModalEmits, ModalProps } from "../interface.js";
+import * as vue475 from "vue";
+
+//#region src/modal/components/NormalCancelBtn.d.ts
+interface NormalCancelBtnProps extends Pick<ModalProps, 'cancelButtonProps'> {
+  cancelTextLocale?: VueNode;
+  onCancel?: ModalEmits['cancel'];
+}
+declare const NormalCancelBtn: vue475.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue475.PublicProps>;
+//#endregion
+export { NormalCancelBtnProps, NormalCancelBtn as default };

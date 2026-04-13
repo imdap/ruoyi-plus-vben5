@@ -1,0 +1,19 @@
+{
+    "id": "cryptocurrencies",
+    "name": "Cryptocurrencies",
+    "description": "Cryptocurrencies dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "cryptocurrencies",
+            "path": "./dict/cryptocurrencies.txt",
+            "description": "Cryptocurrencies dictionary."
+        },
+        {
+            "name": "cryptocurrencies-legacy",
+            "path": "./dict/cryptocurrencies-legacy.txt",
+            "description": "Legacy Cryptocurrency dictionary."
+        }
+    ],
+    "dictionaries": ["cryptocurrencies"]
+}

@@ -1,0 +1,119 @@
+@use './base.scss';
+
+[data-vxe-ui-theme="dark"] {
+  color-scheme: dark;
+
+  /*font color*/
+  --vxe-ui-font-color: #a0a3a7;
+  --vxe-ui-font-tinge-color: #33353b;
+  --vxe-ui-font-lighten-color: #797b80;
+  --vxe-ui-font-darken-color: #47494c;
+  --vxe-ui-font-disabled-color: #464646;
+  
+  /*font status color*/
+  --vxe-ui-font-primary-color: #409eff;
+  --vxe-ui-font-primary-hover-color: #202326;
+  --vxe-ui-font-primary-tinge-color: #3a4653;
+  --vxe-ui-font-primary-lighten-color: #73b8ff;
+  --vxe-ui-font-primary-darken-color: #0d84ff;
+  --vxe-ui-font-primary-disabled-color: #a6d2ff;
+
+  --vxe-ui-status-success-color: #67c23a;
+  --vxe-ui-status-info-color: #909399;
+  --vxe-ui-status-warning-color: #e6a23c;
+  --vxe-ui-status-danger-color: #f56c6c;
+  --vxe-ui-status-error-color: #f56c6c;
+
+  --vxe-ui-status-success-tinge-color: #33412f;
+  --vxe-ui-status-info-tinge-color: #38383b;
+  --vxe-ui-status-warning-tinge-color: #332c22;
+  --vxe-ui-status-danger-tinge-color: var(--vxe-ui-status-error-tinge-color);
+  --vxe-ui-status-error-tinge-color: #372525;
+
+  --vxe-ui-status-success-lighten-color: #85cf60;
+  --vxe-ui-status-info-lighten-color: #abadb1;
+  --vxe-ui-status-warning-lighten-color: #ecb869;
+  --vxe-ui-status-danger-lighten-color: var(--vxe-ui-status-error-lighten-color);
+  --vxe-ui-status-error-lighten-color: #f89c9c;
+  
+  --vxe-ui-status-success-darken-color: #529b2e;
+  --vxe-ui-status-info-darken-color: #767980;
+  --vxe-ui-status-warning-darken-color: #d48a1b;
+  --vxe-ui-status-danger-darken-color: var(--vxe-ui-status-error-darken-color);
+  --vxe-ui-status-error-darken-color: #f56c6c;
+  
+  --vxe-ui-status-success-disabled-color: #a3db87;
+  --vxe-ui-status-info-disabled-color: #c5c7ca;
+  --vxe-ui-status-warning-disabled-color: #f2cd96;
+  --vxe-ui-status-danger-disabled-color: var(--vxe-ui-status-error-disabled-color);
+  --vxe-ui-status-error-disabled-color: #f5a8a8;
+  
+  /*base*/
+  --vxe-ui-base-popup-border-color: #424242;
+  --vxe-ui-base-popup-box-shadow: 0px 12px 30px 8px rgba(0, 0, 0, 0.5);
+  --vxe-ui-base-drag-background-color: #2e3741;
+  --vxe-ui-base-active-background-color: #303030;
+  --vxe-ui-base-hover-background-color: #222222;
+
+  /*layout*/
+  --vxe-ui-layout-background-color: #121212;
+
+  /*input*/
+  --vxe-ui-input-border-color: #424242;
+  --vxe-ui-input-placeholder-color: #3c3d3e;
+  --vxe-ui-input-disabled-background-color: #262727;
+
+  /*number-input*/
+  --vxe-ui-number-input-control-button-color: #262727;
+
+  /*modal*/
+  --vxe-ui-modal-header-background-color: var(--vxe-ui-layout-background-color);
+
+  /*tabs*/
+  --vxe-ui-tabs-card-header-background-color: #1d1e1f;
+  --vxe-ui-tabs-close-hover-background-color: rgba(48, 48, 0, 0.8);
+  --vxe-ui-tabs-bar-scrolling-box-shadow-color: rgba(0, 0, 0, 0.8);
+
+  /*menu*/
+  --vxe-ui-menu-item-hover-color: var(--vxe-ui-font-primary-color);
+  --vxe-ui-menu-collapse-wrapper-box-shadow: var(--vxe-ui-base-popup-box-shadow);
+  
+  /*loading*/
+  --vxe-ui-loading-background-color: rgba(255, 255, 255, 0.1);
+
+  /*form*/
+  --vxe-ui-form-title-background-color: #28282a;
+  --vxe-ui-form-border-color: #37373a;
+
+  /*form-design*/
+  --vxe-ui-form-design-widget-hover-background-color: var(--vxe-ui-base-hover-background-color);
+  --vxe-ui-form-design-sub-widget-hover-background-color: #27292b;
+  
+  /*list-design*/
+  --vxe-ui-list-design-table-border-color: #37373a;
+  --vxe-ui-list-design-table-header-background-color: #28282a;
+
+  /*switch*/
+  --vxe-ui-switch-close-background-color: #4C4D4F;
+  
+  /*upload*/
+  --vxe-ui-upload-drag-over-background-color:rgba(48, 48, 0, 0.8);
+
+  /*tree*/
+  --vxe-ui-tree-node-hover-background-color: #262727;
+  --vxe-ui-tree-node-radio-checked-background-color: #604820;
+  --vxe-ui-tree-node-hover-radio-checked-background-color: #6e5326;
+  --vxe-ui-tree-node-checkbox-checked-background-color: #604820;
+  --vxe-ui-tree-node-hover-checkbox-checked-background-color: #6e5326;
+  --vxe-ui-tree-node-current-background-color: #18222c;
+  --vxe-ui-tree-node-hover-current-background-color: #262727;
+  --vxe-ui-tree-drag-over-background-color:rgba(48, 48, 0, 0.3);
+
+  /*rate*/
+  --vxe-ui-rate-item-color: #bd9537;
+
+  /*split*/
+  --vxe-ui-splitter-handle-button-background-color: #9f9f9f;
+  --vxe-ui-splitter-handle-bar-background-color: #444444;
+  --vxe-ui-splitter-handle-bar-hover-background-color: #606060;
+}

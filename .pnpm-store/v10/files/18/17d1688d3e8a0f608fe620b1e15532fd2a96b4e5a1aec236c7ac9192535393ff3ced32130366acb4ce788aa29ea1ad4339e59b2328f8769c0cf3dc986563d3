@@ -1,0 +1,102 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { InputStatus } from "../_util/statusUtils.js";
+import { ComponentBaseProps, Variant } from "../config-provider/context.js";
+import * as vue1031 from "vue";
+import { App, CSSProperties, SlotsType } from "vue";
+import { DataDrivenOptionProps, MentionsProps as MentionsProps$1, MentionsRef as MentionsRef$1, Option } from "@v-c/mentions";
+
+//#region src/mentions/index.d.ts
+type MentionPlacement = 'top' | 'bottom';
+interface OptionProps {
+  value: string;
+  content?: VueNode;
+  [key: string]: any;
+}
+type MentionSemanticName = keyof MentionSemanticClassNames & keyof MentionSemanticStyles;
+interface MentionSemanticClassNames {
+  root?: string;
+  textarea?: string;
+  popup?: string;
+  suffix?: string;
+}
+interface MentionSemanticStyles {
+  root?: CSSProperties;
+  textarea?: CSSProperties;
+  popup?: CSSProperties;
+  suffix?: CSSProperties;
+}
+type MentionsClassNamesType = SemanticClassNamesType<MentionProps, MentionSemanticClassNames>;
+type MentionsStylesType = SemanticStylesType<MentionProps, MentionSemanticStyles>;
+interface MentionsOptionProps extends DataDrivenOptionProps {
+  content?: VueNode;
+}
+interface MentionProps extends Omit<MentionsProps$1, 'suffix' | 'classNames' | 'className' | 'styles' | 'onFocus' | 'onChange' | 'onBlur' | 'onSelect' | 'onPopupScroll' | 'onSearch'>, ComponentBaseProps, MentionsEmitsProps {
+  loading?: boolean;
+  status?: InputStatus;
+  options?: MentionsOptionProps[];
+  popupClassName?: string;
+  /**
+   * @since 5.13.0
+   * @default "outlined"
+   */
+  variant?: Variant;
+  classes?: MentionsClassNamesType;
+  styles?: MentionsStylesType;
+  size?: SizeType;
+  labelRender?: (ctx: {
+    option: MentionsOptionProps;
+    index: number;
+  }) => any;
+  allowClear?: boolean | {
+    clearIcon?: VueNode;
+  };
+  disabled?: boolean;
+}
+interface MentionsEmits {
+  'focus': (event: FocusEvent) => void;
+  'blur': (event: FocusEvent) => void;
+  'change': (value: string) => void;
+  'select': (option: MentionsOptionProps, prefix: string) => void;
+  'popupScroll': (event: Event) => void;
+  'search': (text: string, prefix: string) => void;
+  'update:value': (value: string) => void;
+}
+interface MentionsEmitsProps {
+  onFocus?: MentionsEmits['focus'];
+  onBlur?: MentionsEmits['blur'];
+  onChange?: MentionsEmits['change'];
+  onSelect?: MentionsEmits['select'];
+  onPopupScroll?: MentionsEmits['popupScroll'];
+  onSearch?: MentionsEmits['search'];
+  'onUpdate:value'?: MentionsEmits['update:value'];
+}
+interface MentionsSlots {
+  suffix?: () => any;
+  default?: () => any;
+  labelRender?: (ctx: {
+    option: MentionsOptionProps;
+    index: number;
+  }) => any;
+}
+interface MentionsProps extends MentionProps {}
+interface MentionsRef extends MentionsRef$1 {}
+interface MentionsConfig {
+  prefix?: string | string[];
+  split?: string;
+}
+interface MentionsEntity {
+  prefix: string;
+  value: string;
+}
+declare const InternalMentions: vue1031.DefineSetupFnComponent<MentionProps, MentionsEmits, SlotsType<MentionsSlots>, MentionProps, vue1031.PublicProps>;
+declare const Mentions: typeof InternalMentions & {
+  Option: typeof Option;
+  getMentions: (value: string, config?: MentionsConfig) => MentionsEntity[];
+  install: (app: App) => void;
+  _InternalPanelDoNotUseOrYouWillBeFired: any;
+};
+//#endregion
+export { MentionPlacement, MentionProps, MentionSemanticClassNames, MentionSemanticName, MentionSemanticStyles, MentionsClassNamesType, MentionsEmits, MentionsEmitsProps, MentionsOptionProps, MentionsProps, MentionsRef, MentionsSlots, MentionsStylesType, Option, OptionProps, Mentions as default };

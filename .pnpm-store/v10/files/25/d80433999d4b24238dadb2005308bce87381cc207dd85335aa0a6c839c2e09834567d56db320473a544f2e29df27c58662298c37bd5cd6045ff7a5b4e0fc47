@@ -1,0 +1,29 @@
+import { SizeType } from "../config-provider/SizeContext.js";
+import { ComponentBaseProps, DirectionType } from "../config-provider/context.js";
+import * as vue698 from "vue";
+import { Ref } from "vue";
+
+//#region src/space/Compact.d.ts
+interface SpaceCompactProps extends ComponentBaseProps {
+  size?: SizeType;
+  direction?: 'horizontal' | 'vertical';
+  block?: boolean;
+  orientation?: 'horizontal' | 'vertical';
+  vertical?: boolean;
+}
+interface SpaceCompactItemContextType {
+  compactSize?: SizeType;
+  compactDirection?: 'horizontal' | 'vertical';
+  isFirstItem?: boolean;
+  isLastItem?: boolean;
+}
+declare function useSpaceCompactItemContext(): Ref<SpaceCompactItemContextType | null, SpaceCompactItemContextType | null>;
+declare function useCompactItemContext(prefixCls: Ref<string>, direction: Ref<DirectionType>): {
+  compactSize: vue698.ComputedRef<SizeType>;
+  compactDirection: vue698.ComputedRef<"vertical" | "horizontal" | undefined>;
+  compactItemClassnames: vue698.ComputedRef<string>;
+};
+declare const NoCompactStyle: vue698.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue698.PublicProps>;
+declare const Compact: vue698.DefineSetupFnComponent<SpaceCompactProps, {}, {}, SpaceCompactProps & {}, vue698.PublicProps>;
+//#endregion
+export { NoCompactStyle, SpaceCompactItemContextType, SpaceCompactProps, Compact as default, useCompactItemContext, useSpaceCompactItemContext };

@@ -1,0 +1,9 @@
+import { TourStepProps } from "./interface.js";
+import * as vue137 from "vue";
+
+//#region src/tour/PurePanel.d.ts
+interface PurePanelProps extends TourStepProps {}
+/** @private Internal Component. Do not use in your production. */
+declare const PurePanel: vue137.DefineSetupFnComponent<PurePanelProps, {}, {}, PurePanelProps & {}, vue137.PublicProps>;
+//#endregion
+export { PurePanelProps, PurePanel as default };

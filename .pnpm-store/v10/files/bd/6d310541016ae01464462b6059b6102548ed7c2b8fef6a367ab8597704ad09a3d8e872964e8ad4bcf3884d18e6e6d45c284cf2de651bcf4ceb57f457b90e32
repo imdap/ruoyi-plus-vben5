@@ -1,0 +1,14 @@
+import { RenderEmptyHandler } from "../../config-provider/defaultRenderEmpty.js";
+import { DirectionType } from "../../config-provider/context.js";
+import * as vue282 from "vue";
+import { Ref } from "vue";
+
+//#region src/cascader/hooks/useBase.d.ts
+declare function useBase(customizePrefixCls: Ref<string | undefined>, direction?: Ref<DirectionType | undefined>): {
+  prefixCls: vue282.ComputedRef<string>;
+  cascaderPrefixCls: vue282.ComputedRef<string>;
+  direction: vue282.ComputedRef<DirectionType>;
+  renderEmpty: vue282.ComputedRef<RenderEmptyHandler | undefined>;
+};
+//#endregion
+export { useBase as default };

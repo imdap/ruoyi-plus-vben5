@@ -1,0 +1,37 @@
+{
+  "name": "locko",
+  "version": "1.1.0",
+  "description": "A simple in-process locking mechanism for critical sections of code.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./tests.js",
+    "lint": "./node_modules/.bin/eslint .",
+    "lintfix": "./node_modules/.bin/eslint --fix ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mistval/locko.git"
+  },
+  "keywords": [
+    "lock",
+    "locking",
+    "mutex",
+    "transaction",
+    "atomic",
+    "critical",
+    "code"
+  ],
+  "author": "mistval",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mistval/locko/issues"
+  },
+  "homepage": "https://github.com/mistval/locko#readme",
+  "devDependencies": {
+    "eslint": "^8.37.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "mocha": "^10.2.0"
+  }
+}

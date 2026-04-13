@@ -1,0 +1,220 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import * as vue254 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { BasicDataNode, DataNode, TreeProps as TreeProps$1, TreeRef } from "@v-c/tree";
+import { Key as Key$1 } from "@v-c/util/dist/type";
+
+//#region src/tree/Tree.d.ts
+type SwitcherIcon = any | ((props: AntTreeNodeProps) => any);
+type TreeLeafIcon = any | ((props: AntTreeNodeProps) => any);
+type TreeIcon = any | ((props: AntdTreeNodeAttribute) => any);
+interface AntdTreeNodeAttribute {
+  eventKey: string;
+  prefixCls: string;
+  className: string;
+  expanded: boolean;
+  selected: boolean;
+  checked: boolean;
+  halfChecked: boolean;
+  title: VueNode;
+  children: VueNode;
+  pos: string;
+  dragOver: boolean;
+  dragOverGapTop: boolean;
+  dragOverGapBottom: boolean;
+  isLeaf: boolean;
+  selectable: boolean;
+  disabled: boolean;
+  disableCheckbox: boolean;
+}
+interface AntTreeNodeProps {
+  className?: string;
+  checkable?: boolean;
+  disabled?: boolean;
+  disableCheckbox?: boolean;
+  title?: any | ((data: DataNode) => any);
+  key?: Key$1;
+  eventKey?: Key$1;
+  isLeaf?: boolean;
+  checked?: boolean;
+  expanded?: boolean;
+  loading?: boolean;
+  selected?: boolean;
+  selectable?: boolean;
+  icon?: TreeIcon;
+  children?: VueNode;
+  [customProp: string]: any;
+}
+type AntTreeNode = AntTreeNodeProps;
+interface AntTreeNodeBaseEvent {
+  node: any;
+  nativeEvent: MouseEvent;
+}
+interface AntTreeNodeCheckedEvent extends AntTreeNodeBaseEvent {
+  event: 'check';
+  checked?: boolean;
+  checkedNodes?: AntTreeNode[];
+}
+interface AntTreeNodeSelectedEvent extends AntTreeNodeBaseEvent {
+  event: 'select';
+  selected?: boolean;
+  selectedNodes?: DataNode[];
+}
+interface AntTreeNodeExpandedEvent extends AntTreeNodeBaseEvent {
+  expanded?: boolean;
+}
+interface AntTreeNodeMouseEvent {
+  node: AntTreeNode;
+  event: (e: DragEvent) => void;
+}
+interface AntTreeNodeDragEnterEvent extends AntTreeNodeMouseEvent {
+  expandedKeys: Key$1[];
+}
+interface AntTreeNodeDropEvent {
+  node: AntTreeNode;
+  dragNode: AntTreeNode;
+  dragNodesKeys: Key$1[];
+  dropPosition: number;
+  dropToGap?: boolean;
+  event: (e: MouseEvent) => void;
+}
+type TreeNodeNormal = DataNode;
+type DraggableFn = (node: DataNode) => boolean;
+interface DraggableConfig {
+  icon?: VueNode;
+  nodeDraggable?: DraggableFn;
+}
+type TreeSemanticName = keyof TreeSemanticClassNames & keyof TreeSemanticStyles;
+interface TreeSemanticClassNames {
+  root?: string;
+  item?: string;
+  itemIcon?: string;
+  itemTitle?: string;
+}
+interface TreeSemanticStyles {
+  root?: CSSProperties;
+  item?: CSSProperties;
+  itemIcon?: CSSProperties;
+  itemTitle?: CSSProperties;
+}
+type TreeClassNamesType = SemanticClassNamesType<TreeProps, TreeSemanticClassNames>;
+type TreeStylesType = SemanticStylesType<TreeProps, TreeSemanticStyles>;
+interface TreeProps<T extends BasicDataNode = DataNode> extends Omit<TreeProps$1<T>, 'prefixCls' | 'showLine' | 'direction' | 'draggable' | 'className' | 'icon' | 'switcherIcon' | 'classNames' | 'rootClassName' | 'styles' | 'onCheck' | 'onClick' | 'onBlur' | 'onDrop' | 'onLoad' | 'onActiveChange' | 'onContextMenu' | 'onDoubleClick' | 'onExpand' | 'onKeyDown' | 'onDragEnd' | 'onDragOver' | 'onDragStart' | 'onDragLeave' | 'onDragEnter' | 'tabIndex' | 'onSelect' | 'onFocus' | 'onMouseEnter' | 'onMouseLeave' | 'onRightClick' | 'onScroll' | 'style'>, TreeEmitsProps {
+  rootClass?: string;
+  showLine?: boolean | {
+    showLeafIcon: boolean | TreeLeafIcon;
+  };
+  classes?: TreeClassNamesType;
+  styles?: TreeStylesType;
+  /** Whether to support multiple selection */
+  multiple?: boolean;
+  /** Whether to automatically expand the parent node */
+  autoExpandParent?: boolean;
+  /** Node selection in Checkable state is fully controlled (the selected state of parent and child nodes is no longer associated) */
+  checkStrictly?: boolean;
+  /** Whether to support selection */
+  checkable?: boolean;
+  /** whether to disable the tree */
+  disabled?: boolean;
+  /** Expand all tree nodes by default */
+  defaultExpandAll?: boolean;
+  /** Expand the corresponding tree node by default */
+  defaultExpandParent?: boolean;
+  /** Expand the specified tree node by default */
+  defaultExpandedKeys?: Key$1[];
+  /** (Controlled) Expand the specified tree node */
+  expandedKeys?: Key$1[];
+  /** (Controlled) Tree node with checked checkbox */
+  checkedKeys?: Key$1[] | {
+    checked: Key$1[];
+    halfChecked: Key$1[];
+  };
+  /** Tree node with checkbox checked by default */
+  defaultCheckedKeys?: Key$1[];
+  /** (Controlled) Set the selected tree node */
+  selectedKeys?: Key$1[];
+  /** Tree node selected by default */
+  defaultSelectedKeys?: Key$1[];
+  selectable?: boolean;
+  /** Click on the tree node to trigger */
+  filterAntTreeNode?: (node: AntTreeNode) => boolean;
+  loadedKeys?: Key$1[];
+  /** Set the node to be draggable (IE>8) */
+  draggable?: DraggableFn | boolean | DraggableConfig;
+  showIcon?: boolean;
+  icon?: TreeIcon;
+  switcherIcon?: SwitcherIcon;
+  switcherLoadingIcon?: VueNode;
+  prefixCls?: string;
+  blockNode?: boolean;
+  tabindex?: number;
+}
+interface TreeEmits {
+  'click': NonNullable<TreeProps$1['onClick']>;
+  'check': NonNullable<TreeProps$1['onCheck']>;
+  'expand': NonNullable<TreeProps$1['onExpand']>;
+  'select': NonNullable<TreeProps$1['onSelect']>;
+  'blur': NonNullable<TreeProps$1['onBlur']>;
+  'focus': NonNullable<TreeProps$1['onFocus']>;
+  'rightClick': NonNullable<TreeProps$1['onRightClick']>;
+  'dblclick': NonNullable<TreeProps$1['onDoubleClick']>;
+  'doubleClick': NonNullable<TreeProps$1['onDoubleClick']>;
+  'contextmenu': NonNullable<TreeProps$1['onContextMenu']>;
+  'dragstart': NonNullable<TreeProps$1['onDragStart']>;
+  'dragenter': NonNullable<TreeProps$1['onDragEnter']>;
+  'dragover': NonNullable<TreeProps$1['onDragOver']>;
+  'dragleave': NonNullable<TreeProps$1['onDragLeave']>;
+  'drop': NonNullable<TreeProps$1['onDrop']>;
+  'dragend': NonNullable<TreeProps$1['onDragEnd']>;
+  'load': NonNullable<TreeProps$1['onLoad']>;
+  'mouseleave': NonNullable<TreeProps$1['onMouseLeave']>;
+  'mouseenter': NonNullable<TreeProps$1['onMouseEnter']>;
+  'scroll': NonNullable<TreeProps$1['onScroll']>;
+  'activeChange': NonNullable<TreeProps$1['onActiveChange']>;
+  'keydown': NonNullable<TreeProps$1['onKeyDown']>;
+  'update:expandedKeys': (keys: Key$1[]) => void;
+  'update:checkedKeys': (keys: Key$1[]) => void;
+  'update:selectedKeys': (keys: Key$1[]) => void;
+  'update:activeKey': (key: Key$1) => void;
+}
+interface TreeEmitsProps {
+  onClick?: TreeEmits['click'];
+  onCheck?: TreeEmits['check'];
+  onExpand?: TreeEmits['expand'];
+  onSelect?: TreeEmits['select'];
+  onBlur?: TreeEmits['blur'];
+  onFocus?: TreeEmits['focus'];
+  onRightClick?: TreeEmits['rightClick'];
+  onDblclick?: TreeEmits['dblclick'];
+  onDoubleClick?: TreeEmits['doubleClick'];
+  onContextmenu?: TreeEmits['contextmenu'];
+  onDragstart?: TreeEmits['dragstart'];
+  onDragenter?: TreeEmits['dragenter'];
+  onDragover?: TreeEmits['dragover'];
+  onDragleave?: TreeEmits['dragleave'];
+  onDrop?: TreeEmits['drop'];
+  onDragend?: TreeEmits['dragend'];
+  onLoad?: TreeEmits['load'];
+  onMouseleave?: TreeEmits['mouseleave'];
+  onMouseenter?: TreeEmits['mouseenter'];
+  onScroll?: TreeEmits['scroll'];
+  onActiveChange?: TreeEmits['activeChange'];
+  onKeydown?: TreeEmits['keydown'];
+  'onUpdate:expandedKeys'?: TreeEmits['update:expandedKeys'];
+  'onUpdate:checkedKeys'?: TreeEmits['update:checkedKeys'];
+  'onUpdate:selectedKeys'?: TreeEmits['update:selectedKeys'];
+  'onUpdate:activeKey'?: TreeEmits['update:activeKey'];
+}
+interface TreeSlots {
+  switcherLoadingIcon: () => any;
+  switcherIcon: (props: AntTreeNodeProps) => any;
+  default: () => any;
+  draggableIcon: () => any;
+  icon: (props: AntdTreeNodeAttribute) => any;
+  titleRender: TreeProps$1['titleRender'];
+}
+declare const Tree: vue254.DefineSetupFnComponent<TreeProps<BasicDataNode>, TreeEmits, SlotsType<TreeSlots>, TreeProps<BasicDataNode>, vue254.PublicProps>;
+//#endregion
+export { AntTreeNode, AntTreeNodeBaseEvent, AntTreeNodeCheckedEvent, AntTreeNodeDragEnterEvent, AntTreeNodeDropEvent, AntTreeNodeExpandedEvent, AntTreeNodeMouseEvent, AntTreeNodeProps, AntTreeNodeSelectedEvent, AntdTreeNodeAttribute, SwitcherIcon, TreeClassNamesType, TreeEmits, TreeEmitsProps, TreeLeafIcon, TreeNodeNormal, TreeProps, type TreeRef, TreeSemanticClassNames, TreeSemanticName, TreeSemanticStyles, TreeSlots, TreeStylesType, Tree as default };

@@ -1,0 +1,33 @@
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import { GenerateStyle } from "../../theme/interface/index.js";
+import "../../theme/internal.js";
+import * as vue276 from "vue";
+import { CSSProperties } from "vue";
+import { CSSObject } from "@antdv-next/cssinjs";
+
+//#region src/alert/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 默认内间距
+   * @descEN Default padding
+   */
+  defaultPadding: CSSProperties['padding'];
+  /**
+   * @desc 带有描述的内间距
+   * @descEN Padding with description
+   */
+  withDescriptionPadding: CSSProperties['padding'];
+  /**
+   * @desc 带有描述时的图标尺寸
+   * @descEN Icon size with description
+   */
+  withDescriptionIconSize: number;
+}
+type AlertToken = FullToken<'Alert'> & {};
+declare const genBaseStyle: GenerateStyle<AlertToken, CSSObject>;
+declare const genTypeStyle: GenerateStyle<AlertToken, CSSObject>;
+declare const genActionStyle: GenerateStyle<AlertToken, CSSObject>;
+declare const prepareComponentToken: GetDefaultToken<'Alert'>;
+declare const _default: (prefixCls: vue276.Ref<string>, rootCls?: vue276.Ref<string | undefined>) => readonly [vue276.Ref<string, string>, vue276.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, genActionStyle, genBaseStyle, genTypeStyle, prepareComponentToken };

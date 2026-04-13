@@ -1,0 +1,80 @@
+@use "sass:map";
+@use "sass:list";
+
+$btnThemeList: (
+  (
+    name: "primary",
+    textColor: var(--vxe-ui-font-primary-color),
+    btnColor: #fff,
+  ),
+  (
+    name: "success",
+    textColor: var(--vxe-ui-status-success-color),
+    btnColor: #fff,
+  ),
+  (
+    name: "info",
+    textColor: var(--vxe-ui-status-info-color),
+    btnColor: #fff,
+  ),
+  (
+    name: "warning",
+    textColor: var(--vxe-ui-status-warning-color),
+    btnColor: #fff,
+  ),
+  (
+    name: "danger",
+    textColor: var(--vxe-ui-status-danger-color),
+    btnColor: #fff,
+  ),
+  (
+    name: "error",
+    textColor: var(--vxe-ui-status-error-color),
+    btnColor: #fff,
+  )
+);
+
+.vxe-empty {
+  position: relative;
+  color: var(--vxe-ui-font-color);
+  font-family: var(--vxe-ui-font-family);
+  text-align: center;
+  font-size: var(--vxe-ui-font-size-default);
+  @for $index from 0 to list.length($btnThemeList) {
+    $item: list.nth($btnThemeList, $index + 1);
+    &.theme--#{map.get($item, name)} {
+      .vxe-empty--icon-wrapper {
+        color: map.get($item, textColor);
+      }
+    }
+  }
+}
+.vxe-empty--inner {
+  display: inline-block;
+}
+.vxe-empty--icon-wrapper {
+  font-size: 4.8em;
+  & > i {
+    display: block;
+  }
+}
+.vxe-empty--img-wrapper {
+  & > img {
+    height: 5.2em;
+  }
+}
+.vxe-empty--content-wrapper {
+  padding-top: 0.5em 0;
+}
+
+.vxe-empty {
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "name": "@vueuse/motion",
+  "type": "module",
+  "version": "3.0.3",
+  "packageManager": "pnpm@10.6.2",
+  "description": "🤹 Vue Composables putting your components in motion",
+  "author": "Yaël GUILLOUX <yael.guilloux@gmail.com>",
+  "contributors": [
+    {
+      "name": "Yaël Guilloux (@Tahul)"
+    },
+    {
+      "name": "Bobbie Goede (@BobbieGoede)"
+    }
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/vueuse/motion#readme",
+  "repository": "https://github.com/vueuse/motion",
+  "bugs": {
+    "url": "https://github.com/vueuse/motion/issues"
+  },
+  "keywords": [
+    "vue",
+    "hook",
+    "motion",
+    "animation",
+    "v-motion",
+    "popmotion-vue"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./nuxt": "./dist/nuxt/module.mjs"
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "typesVersions": {
+    "*": {
+      "nuxt": [
+        "./dist/nuxt/module.d.mts"
+      ]
+    }
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild && pnpm build:nuxt-module",
+    "build:nuxt-module": "nuxt-module-build build ./src/nuxt --outDir ../../dist/nuxt",
+    "dev": "pnpm dev:vite",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test:unit": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test": "pnpm test:unit && pnpm test:coverage",
+    "prepare": "pnpm prepare:nuxt && pnpm prepare:docs",
+    "prepack": "pnpm build",
+    "release": "bumpp --commit \"release: v%s\" --push --tag",
+    "changelog": "gh-changelogen --repo=vueuse/motion",
+    "__": "__",
+    "dev:nuxt": "(cd playgrounds/nuxt && pnpm dev:nuxt)",
+    "build:nuxt": "(cd playgrounds/nuxt && pnpm build:nuxt)",
+    "generate:nuxt": "(cd playgrounds/nuxt && pnpm preview:nuxt)",
+    "dev:ssg": "(cd playgrounds/vite-ssg && pnpm dev:ssg)",
+    "build:ssg": "(cd playgrounds/vite-ssg && pnpm build:ssg)",
+    "preview:ssg": "(cd playgrounds/vite-ssg && pnpm preview:ssg)",
+    "dev:vite": "(cd playgrounds/vite && pnpm dev:vite)",
+    "build:vite": "(cd playgrounds/vite && pnpm build:vite)",
+    "preview:vite": "(cd playgrounds/vite && pnpm preview:vite)",
+    "dev:docs": "(cd docs && pnpm dev:docs)",
+    "build:docs": "(cd docs && pnpm build:docs)",
+    "preview:docs": "(cd docs && pnpm preview:docs)",
+    "prepare:nuxt": "(cd playgrounds/nuxt && pnpm prepare:nuxt)",
+    "prepare:docs": "(cd docs && pnpm prepare:docs)"
+  },
+  "peerDependencies": {
+    "vue": ">=3.0.0"
+  },
+  "dependencies": {
+    "@vueuse/core": "^13.0.0",
+    "@vueuse/shared": "^13.0.0",
+    "defu": "^6.1.4",
+    "framesync": "^6.1.2",
+    "popmotion": "^11.0.5",
+    "style-value-types": "^5.1.2"
+  },
+  "optionalDependencies": {
+    "@nuxt/kit": "^3.13.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.19.1",
+    "@nuxt/kit": "^3.13.0",
+    "@nuxt/module-builder": "^0.8.3",
+    "@nuxt/schema": "^3.13.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "@vue/test-utils": "^2.4.6",
+    "bumpp": "^9.5.2",
+    "changelogithub": "^0.13.10",
+    "chokidar": "^3.6.0",
+    "eslint": "^9.3.0",
+    "gh-changelogen": "^0.2.8",
+    "happy-dom": "^14.12.0",
+    "jiti": "^1.21.6",
+    "lint-staged": "^15.2.5",
+    "nuxt": "^3.13.0",
+    "pkg-pr-new": "^0.0.20",
+    "typescript": "^5.8.2",
+    "unbuild": "^3.5.0",
+    "vite": "5.2.12",
+    "vitest": "^1.6.0",
+    "vue": "^3.5.13",
+    "yorkie": "^2.0.0"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@algolia/client-search",
+        "@types/react",
+        "react",
+        "react-dom",
+        "webpack",
+        "postcss",
+        "tailwindcss",
+        "vue",
+        "axios"
+      ],
+      "allowedVersions": {
+        "axios": "^0.25.0",
+        "vite": "^4.0.0"
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"IPopStateEventInit.d.ts","sourceRoot":"","sources":["../../../src/event/events/IPopStateEventInit.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,UAAU,MAAM,kBAAkB,CAAC;AAE/C,MAAM,CAAC,OAAO,WAAW,kBAAmB,SAAQ,UAAU;IAC7D,KAAK,CAAC,EAAE,MAAM,GAAG,IAAI,CAAC;IACtB,qBAAqB,CAAC,EAAE,OAAO,CAAC;CAChC"}

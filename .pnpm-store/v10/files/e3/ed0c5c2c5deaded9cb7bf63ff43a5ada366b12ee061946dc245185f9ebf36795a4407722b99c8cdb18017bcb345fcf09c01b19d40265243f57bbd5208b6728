@@ -1,0 +1,12 @@
+import { NotificationConfig, NotificationInstance } from "./interface.js";
+import { MaybeRef } from "@v-c/util/dist/type";
+import * as vue_jsx_runtime1 from "vue/jsx-runtime";
+
+//#region src/notification/useNotification.d.ts
+type HolderProps = NotificationConfig & {
+  onAllRemoved?: VoidFunction;
+};
+declare function useInternalNotification(notificationConfig?: MaybeRef<HolderProps>): readonly [NotificationInstance, () => vue_jsx_runtime1.JSX.Element];
+declare function useNotification(notificationConfig?: MaybeRef<NotificationConfig>): readonly [NotificationInstance, () => vue_jsx_runtime1.JSX.Element];
+//#endregion
+export { useNotification as default, useInternalNotification };

@@ -1,0 +1,45 @@
+{
+  "name": "@cspell/dict-java",
+  "version": "5.0.12",
+  "description": "Java dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "cspell-tools-cli build",
+    "test": "pnpm run test-dict && pnpm run test-check",
+    "test-dict": "shx head -n 100 \"src/java.txt\" | cspell -c ./cspell-ext.json --locale=* --languageId=java stdin",
+    "test-check": "ava",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/java"
+  },
+  "keywords": [
+    "cspell",
+    "java",
+    "Java",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/java#readme",
+  "files": [
+    "dict/java.trie",
+    "cspell-ext.json"
+  ],
+  "gitHead": "30c5c53b8e28152fc1d8a6cf0c872b068a64221a"
+}

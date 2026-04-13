@@ -1,0 +1,26 @@
+import { FormatConfig, valueType } from "./utils.js";
+import { StatisticProps, StatisticSlots } from "./Statistic.js";
+import * as vue725 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/statistic/Timer.d.ts
+type TimerType = 'countdown' | 'countup';
+type StatisticTimerProps = FormatConfig & StatisticProps & {
+  type: TimerType;
+  format?: string;
+};
+interface StatisticTimeEmits {
+  /**
+   * Only to be called when the type is `countdown`.
+   */
+  finish: () => void;
+  change: (value?: valueType) => void;
+}
+interface InternalStatisticTimerProps extends StatisticTimerProps, StatisticTimeEmitsProps {}
+interface StatisticTimeEmitsProps {
+  onFinish?: StatisticTimeEmits['finish'];
+  onChange?: StatisticTimeEmits['change'];
+}
+declare const StatisticTimer: vue725.DefineSetupFnComponent<InternalStatisticTimerProps, StatisticTimeEmits, SlotsType<StatisticSlots>, InternalStatisticTimerProps, vue725.PublicProps>;
+//#endregion
+export { InternalStatisticTimerProps, StatisticTimeEmits, StatisticTimeEmitsProps, StatisticTimerProps, TimerType, StatisticTimer as default };

@@ -1,0 +1,33 @@
+import * as vue841 from "vue";
+import { BaseSliderProps } from "@v-c/color-picker";
+
+//#region src/color-picker/components/ColorSlider.d.ts
+interface DragStartInfo {
+  rawValues: number[];
+  draggingIndex: number;
+  draggingValue: number;
+}
+interface DragChangeInfo {
+  rawValues: number[];
+  deleteIndex: number;
+  draggingIndex: number;
+  draggingValue: number;
+}
+interface GradientColorSliderProps extends Omit<BaseSliderProps, 'value' | 'onChange' | 'onChangeComplete' | 'type' | 'color'> {
+  value: number[];
+  onChange?: (value: number[]) => void;
+  onChangeComplete: (value: number[]) => void;
+  range?: boolean;
+  className?: string;
+  activeIndex?: number;
+  onActive?: (index: number) => void;
+  type: BaseSliderProps['type'] | 'gradient';
+  onDragStart?: (info: DragStartInfo) => void;
+  onDragChange?: (info: DragChangeInfo) => void;
+  onKeyDelete?: (index: number) => void;
+  color: BaseSliderProps['color'] | null;
+}
+declare const GradientColorSlider: vue841.DefineSetupFnComponent<GradientColorSliderProps, {}, {}, GradientColorSliderProps & {}, vue841.PublicProps>;
+declare const SingleColorSlider: vue841.DefineSetupFnComponent<BaseSliderProps, {}, {}, BaseSliderProps & {}, vue841.PublicProps>;
+//#endregion
+export { GradientColorSlider, GradientColorSliderProps, SingleColorSlider as default };

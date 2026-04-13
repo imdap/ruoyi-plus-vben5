@@ -1,0 +1,47 @@
+{
+  "name": "@v-c/tabs",
+  "type": "module",
+  "version": "1.0.2",
+  "description": "tabs ui component for react",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "",
+  "license": "MIT",
+  "keywords": [
+    "tabs",
+    "vue-components",
+    "vc-components",
+    "vue3"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "main": "index.js",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "dependencies": {
+    "@v-c/dropdown": "^1.0.2",
+    "@v-c/menu": "^1.0.12",
+    "@v-c/overflow": "^1.0.4",
+    "@v-c/util": "^1.0.19",
+    "@v-c/resize-observer": "^1.0.8"
+  },
+  "scripts": {
+    "build": "vite build",
+    "prepublish": "pnpm build",
+    "test": "vitest run",
+    "bump": "bumpp --release patch"
+  }
+}

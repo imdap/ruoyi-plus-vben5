@@ -1,0 +1,111 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import * as vue740 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { StepsProps as StepsProps$1 } from "@v-c/steps";
+
+//#region src/steps/index.d.ts
+type RcIconRenderTypeInfo = Parameters<NonNullable<StepsProps$1['iconRender']>>[1];
+type IconRenderType = (params: {
+  oriNode: any;
+  info: Pick<RcIconRenderTypeInfo, 'index' | 'active' | 'item' | 'components'>;
+}) => any;
+type StepsSemanticName = keyof StepsSemanticClassNames & keyof StepsSemanticStyles;
+interface StepsSemanticClassNames {
+  root?: string;
+  item?: string;
+  itemWrapper?: string;
+  itemIcon?: string;
+  itemSection?: string;
+  itemHeader?: string;
+  itemTitle?: string;
+  itemSubtitle?: string;
+  itemContent?: string;
+  itemRail?: string;
+}
+interface StepsSemanticStyles {
+  root?: CSSProperties;
+  item?: CSSProperties;
+  itemWrapper?: CSSProperties;
+  itemIcon?: CSSProperties;
+  itemSection?: CSSProperties;
+  itemHeader?: CSSProperties;
+  itemTitle?: CSSProperties;
+  itemSubtitle?: CSSProperties;
+  itemContent?: CSSProperties;
+  itemRail?: CSSProperties;
+}
+type StepsClassNamesType = SemanticClassNamesType<StepsProps, StepsSemanticClassNames>;
+type StepsStylesType = SemanticStylesType<StepsProps, StepsSemanticStyles>;
+interface StepItem {
+  class?: string;
+  style?: CSSProperties;
+  classes?: NonNullable<StepsProps$1['items']>[number]['classNames'];
+  styles?: NonNullable<StepsProps$1['items']>[number]['styles'];
+  /** @deprecated Please use `content` instead */
+  description?: VueNode;
+  content?: VueNode;
+  icon?: VueNode;
+  onClick?: (e: MouseEvent) => void;
+  status?: 'wait' | 'process' | 'finish' | 'error';
+  disabled?: boolean;
+  title?: VueNode;
+  subTitle?: VueNode;
+}
+type ProgressDotRender = (params: {
+  iconDot: any;
+  info: {
+    index: number;
+    status: NonNullable<StepsProps$1['status']>;
+    title: any; /** @deprecated Please use `content` instead. */
+    description: any;
+    content: any;
+  };
+}) => any;
+interface BaseStepsProps {
+  rootClass?: string;
+  classes?: StepsClassNamesType;
+  styles?: StepsStylesType;
+  variant?: 'filled' | 'outlined';
+  size?: Exclude<SizeType, 'large'> | 'default';
+  type?: 'default' | 'navigation' | 'inline' | 'panel' | 'dot';
+  /** @deprecated Please use `orientation` instead. */
+  direction?: 'horizontal' | 'vertical';
+  orientation?: 'horizontal' | 'vertical';
+  /** @deprecated Please use `titlePlacement` instead. */
+  labelPlacement?: 'horizontal' | 'vertical';
+  titlePlacement?: 'horizontal' | 'vertical';
+  /** @deprecated Please use `type` and `iconRender` instead. */
+  progressDot?: boolean | ProgressDotRender;
+  responsive?: boolean;
+  ellipsis?: boolean;
+  /**
+   * Set offset cell, only work when `type` is `inline`.
+   */
+  offset?: number;
+  current?: number;
+  initial?: number;
+  items?: StepItem[];
+  percent?: number;
+  status?: 'wait' | 'process' | 'finish' | 'error';
+  iconRender?: IconRenderType;
+  onChange?: (current: number) => void;
+}
+interface StepsProps extends BaseStepsProps, StepsEmitsProps {
+  prefixCls?: string;
+}
+interface StepsEmits {
+  'update:current': (current: number) => void;
+}
+interface StepsEmitsProps {
+  'onUpdate:current'?: StepsEmits['update:current'];
+}
+interface StepsSlots {
+  default: () => any;
+  iconRender?: IconRenderType;
+}
+declare const Steps: vue740.DefineSetupFnComponent<StepsProps, StepsEmits, SlotsType<StepsSlots>, StepsProps, vue740.PublicProps>;
+//#endregion
+export { BaseStepsProps, IconRenderType, ProgressDotRender, StepItem, StepsClassNamesType, StepsEmits, StepsEmitsProps, StepsProps, StepsSemanticClassNames, StepsSemanticName, StepsSemanticStyles, StepsSlots, StepsStylesType, Steps as default };

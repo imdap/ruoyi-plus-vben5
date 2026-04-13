@@ -1,0 +1,590 @@
+import { devUseWarning, isDev } from "../_util/warning.js";
+import { useComponentBaseConfig } from "../config-provider/context.js";
+import { getAttrStyleAndClass as getAttrStyleAndClass$1, useMergeSemantic, useToArr, useToProps } from "../_util/hooks/useMergeSemantic.js";
+import { toPropsRefs as toPropsRefs$1 } from "../_util/tools.js";
+import PurePanel_default from "../_util/PurePanel.js";
+import select_default from "../select/index.js";
+import { Text, computed, createVNode, defineComponent, isVNode, mergeProps } from "vue";
+import { clsx } from "@v-c/util";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+import { omit } from "es-toolkit";
+import { toArray } from "es-toolkit/compat";
+import { Option } from "@v-c/select";
+
+//#region src/auto-complete/index.tsx
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+function isSelectOptionOrSelectOptGroup(child) {
+	return child?.type && (child.type.isSelectOption || child.type.isSelectOptGroup);
+}
+const omitKeys = [
+	"dataSource",
+	"dropdownClassName",
+	"popupClassName",
+	"dropdownMatchSelectWidth",
+	"dropdownRender",
+	"dropdownStyle",
+	"classes",
+	"styles",
+	"popupRender"
+];
+const InternalAutoComplete = /* @__PURE__ */ defineComponent((props, { slots, emit, attrs }) => {
+	const { prefixCls } = useComponentBaseConfig("select", props);
+	const { classes, styles } = toPropsRefs$1(props, "classes", "styles");
+	const mergedProps = computed(() => {
+		return {
+			...props,
+			popupMatchSelectWidth: props.popupMatchSelectWidth ?? props.dropdownMatchSelectWidth,
+			popupRender: props.popupRender ?? props.dropdownRender
+		};
+	});
+	const [mergedClassNames, mergedStyles] = useMergeSemantic(useToArr(classes), useToArr(styles), useToProps(mergedProps), computed(() => ({ popup: { _default: "root" } })));
+	return () => {
+		const { className, style, restAttrs } = getAttrStyleAndClass$1(attrs);
+		const childNodes = toArray(filterEmpty(slots.default?.() ?? []));
+		const hasSelectOptions = !!childNodes.length && isSelectOptionOrSelectOptGroup(childNodes[0]);
+		let customizeInput;
+		if (childNodes.length === 1 && isVNode(childNodes[0]) && childNodes[0].type !== Text && !isSelectOptionOrSelectOptGroup(childNodes[0])) [customizeInput] = childNodes;
+		const getInputElement = customizeInput ? () => customizeInput : void 0;
+		const customizeInputPlaceholder = customizeInput?.props?.placeholder;
+		let optionChildren = [];
+		if (hasSelectOptions) optionChildren = childNodes;
+		else if (props.dataSource) optionChildren = props.dataSource.map((item) => {
+			if (isVNode(item)) return item;
+			switch (typeof item) {
+				case "string": return createVNode(Option, {
+					"key": item,
+					"value": item
+				}, _isSlot(item) ? item : { default: () => [item] });
+				case "object": {
+					const { value: optionValue, text } = item;
+					return createVNode(Option, {
+						"key": optionValue,
+						"value": optionValue
+					}, _isSlot(text) ? text : { default: () => [text] });
+				}
+				default: return null;
+			}
+		});
+		optionChildren = filterEmpty(optionChildren);
+		if (isDev) {
+			const warning = devUseWarning("AutoComplete");
+			warning(!(customizeInput && props.size !== void 0), "usage", "You need to control style self instead of setting `size` when using customize input.");
+			Object.entries({
+				dropdownMatchSelectWidth: "popupMatchSelectWidth",
+				dropdownStyle: "styles.popup.root",
+				dropdownClassName: "classes.popup.root",
+				popupClassName: "classes.popup.root",
+				dropdownRender: "popupRender",
+				dataSource: "options"
+			}).forEach(([oldProp, newProp]) => {
+				warning.deprecated(!props[oldProp], oldProp, newProp);
+			});
+		}
+		const mergedPopupRender = props.popupRender ?? props.dropdownRender;
+		const mergedPopupMatchSelectWidth = props.popupMatchSelectWidth ?? props.dropdownMatchSelectWidth;
+		const finalClassNames = {
+			root: clsx(`${prefixCls.value}-auto-complete`, mergedClassNames.value.root, { [`${prefixCls.value}-customize`]: customizeInput }, className),
+			prefix: mergedClassNames.value.prefix,
+			input: mergedClassNames.value.input,
+			placeholder: mergedClassNames.value.placeholder,
+			content: mergedClassNames.value.content,
+			clear: mergedClassNames.value.clear,
+			popup: {
+				root: clsx(props.popupClassName, props.dropdownClassName, mergedClassNames.value.popup?.root),
+				list: mergedClassNames.value.popup?.list,
+				listItem: mergedClassNames.value.popup?.listItem
+			}
+		};
+		const finalStyles = {
+			root: mergedStyles.value.root,
+			prefix: mergedStyles.value.prefix,
+			input: mergedStyles.value.input,
+			placeholder: mergedStyles.value.placeholder,
+			content: mergedStyles.value.content,
+			clear: mergedStyles.value.clear,
+			popup: {
+				root: {
+					...props.dropdownStyle,
+					...mergedStyles?.value?.popup?.root
+				},
+				list: mergedStyles.value.popup?.list,
+				listItem: mergedStyles.value.popup?.listItem
+			}
+		};
+		const selectProps = omit(props, omitKeys);
+		if (selectProps.placeholder === void 0 && customizeInputPlaceholder !== void 0) selectProps.placeholder = customizeInputPlaceholder;
+		return createVNode(select_default, mergeProps(restAttrs, selectProps, {
+			onSelect: (value, option) => {
+				emit("select", value, option);
+			},
+			onClear: () => {
+				emit("clear");
+			},
+			onKeydown: (e) => {
+				emit("keydown", e);
+			},
+			onKeyup: (e) => {
+				emit("keyup", e);
+			},
+			onBlur: (e) => {
+				emit("blur", e);
+			},
+			onFocus: (e) => {
+				emit("focus", e);
+			},
+			onClick: (e) => {
+				emit("click", e);
+			},
+			onActive: (value) => {
+				emit("active", value);
+			},
+			onChange: (value, option) => {
+				emit("change", value, option);
+			},
+			onDeselect: (value, option) => {
+				emit("deselect", value, option);
+			},
+			onInputKeydown: (e) => {
+				emit("inputKeydown", e);
+			},
+			onMousedown: (e) => {
+				emit("mousedown", e);
+			},
+			onMouseleave: (e) => {
+				emit("mouseleave", e);
+			},
+			onMouseenter: (e) => {
+				emit("mouseenter", e);
+			},
+			onPopupScroll: (e) => {
+				emit("popupScroll", e);
+			},
+			onSearch: (value) => {
+				emit("search", value);
+			},
+			onOpenChange: (open) => {
+				emit("openChange", open);
+			},
+			onDropdownVisibleChange: (open) => {
+				emit("dropdownVisibleChange", open);
+			}
+		}, getInputElement ? { getInputElement } : {}, {
+			"prefixCls": prefixCls.value,
+			"classes": finalClassNames,
+			"styles": finalStyles,
+			"style": style,
+			"popupRender": mergedPopupRender,
+			"popupMatchSelectWidth": mergedPopupMatchSelectWidth,
+			"mode": select_default.SECRET_COMBOBOX_MODE_DO_NOT_USE,
+			"suffixIcon": null
+		}, { "onUpdate:value": (value) => emit("update:value", value) }), _isSlot(optionChildren) ? optionChildren : { default: () => [optionChildren] });
+	};
+}, {
+	props: {
+		dataSource: {
+			type: Array,
+			required: false
+		},
+		status: {
+			type: String,
+			required: false
+		},
+		popupClassName: {
+			type: String,
+			required: false
+		},
+		dropdownClassName: {
+			type: String,
+			required: false
+		},
+		dropdownMatchSelectWidth: {
+			type: [Boolean, Number],
+			required: false,
+			default: void 0
+		},
+		popupMatchSelectWidth: {
+			type: [Boolean, Number],
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		},
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		dropdownRender: {
+			type: Function,
+			required: false
+		},
+		popupRender: {
+			type: Function,
+			required: false
+		},
+		dropdownStyle: {
+			type: Object,
+			required: false
+		},
+		prefix: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		suffixIcon: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		size: {
+			type: [String, null],
+			required: false
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		bordered: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		showArrow: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		variant: {
+			type: String,
+			required: false
+		},
+		rootClass: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		},
+		id: {
+			type: String,
+			required: false
+		},
+		backfill: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		fieldNames: {
+			type: Object,
+			required: false
+		},
+		showSearch: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		searchValue: {
+			type: String,
+			required: false
+		},
+		autoClearSearchValue: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		filterOption: {
+			type: [Boolean, Function],
+			required: false,
+			default: void 0
+		},
+		filterSort: {
+			type: Function,
+			required: false
+		},
+		optionFilterProp: {
+			type: String,
+			required: false
+		},
+		options: {
+			type: Array,
+			required: false
+		},
+		optionRender: {
+			type: Function,
+			required: false
+		},
+		defaultActiveFirstOption: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		virtual: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		direction: {
+			type: String,
+			required: false
+		},
+		listHeight: {
+			type: Number,
+			required: false
+		},
+		listItemHeight: {
+			type: Number,
+			required: false
+		},
+		labelRender: {
+			type: Function,
+			required: false
+		},
+		menuItemSelectedIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		value: { required: false },
+		defaultValue: { required: false },
+		maxCount: {
+			type: Number,
+			required: false
+		},
+		tagRender: {
+			type: Function,
+			required: false
+		},
+		autoFocus: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		placeholder: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		title: {
+			type: String,
+			required: false
+		},
+		tabIndex: {
+			type: Number,
+			required: false
+		},
+		notFoundContent: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		maxLength: {
+			type: Number,
+			required: false
+		},
+		showScrollBar: {
+			type: [Boolean, String],
+			required: false,
+			default: void 0
+		},
+		choiceTransitionName: {
+			type: String,
+			required: false
+		},
+		open: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		defaultOpen: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		maxTagTextLength: {
+			type: Number,
+			required: false
+		},
+		maxTagCount: {
+			type: [Number, String],
+			required: false
+		},
+		maxTagPlaceholder: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		tokenSeparators: {
+			type: Array,
+			required: false
+		},
+		allowClear: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		suffix: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		clearIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		removeIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		animation: {
+			type: String,
+			required: false
+		},
+		transitionName: {
+			type: String,
+			required: false
+		},
+		popupStyle: {
+			type: Object,
+			required: false
+		},
+		popupAlign: {
+			type: Object,
+			required: false
+		},
+		placement: {
+			type: String,
+			required: false
+		},
+		builtinPlacements: {
+			type: Object,
+			required: false
+		},
+		getPopupContainer: {
+			type: Function,
+			required: false
+		},
+		showAction: {
+			type: Array,
+			required: false
+		},
+		components: {
+			type: Object,
+			required: false
+		}
+	},
+	emits: [
+		"openChange",
+		"dropdownVisibleChange",
+		"clear",
+		"keydown",
+		"keyup",
+		"blur",
+		"update:value",
+		"click",
+		"active",
+		"change",
+		"deselect",
+		"inputKeydown",
+		"mousedown",
+		"mouseleave",
+		"mouseenter",
+		"focus",
+		"popupScroll",
+		"select",
+		"search"
+	],
+	name: "AAutoComplete",
+	inheritAttrs: false
+});
+const AutoComplete = InternalAutoComplete;
+/* istanbul ignore next */
+const PurePanel = PurePanel_default(InternalAutoComplete, "popupAlign", (props) => {
+	return omit(props, ["visible"]);
+});
+AutoComplete.Option = Option;
+AutoComplete._InternalPanelDoNotUseOrYouWillBeFired = PurePanel;
+AutoComplete.install = (app) => {
+	app.component(AutoComplete.name, AutoComplete);
+	app.component("AAutoCompleteOption", Option);
+};
+var auto_complete_default = AutoComplete;
+
+//#endregion
+export { Option, auto_complete_default as default };

@@ -1,0 +1,19 @@
+Object.defineProperties(exports, {
+	__esModule: { value: true },
+	[Symbol.toStringTag]: { value: "Module" }
+});
+var locale = {
+	items_per_page: "/ səhifə",
+	jump_to: "Get",
+	jump_to_confirm: "təsdiqlə",
+	page: "",
+	prev_page: "Əvvəlki Səhifə",
+	next_page: "Növbəti Səhifə",
+	prev_5: "Əvvəlki 5 Səhifə",
+	next_5: "Növbəti 5 Səhifə",
+	prev_3: "Əvvəlki 3 Səhifə",
+	next_3: "Növbəti 3 Səhifə",
+	page_size: "Page Size"
+};
+var az_AZ_default = locale;
+exports.default = az_AZ_default;

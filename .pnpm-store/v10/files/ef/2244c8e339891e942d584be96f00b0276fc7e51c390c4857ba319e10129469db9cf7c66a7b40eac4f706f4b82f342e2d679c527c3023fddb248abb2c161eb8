@@ -1,0 +1,2 @@
+var Key = class {};
+export { Key };

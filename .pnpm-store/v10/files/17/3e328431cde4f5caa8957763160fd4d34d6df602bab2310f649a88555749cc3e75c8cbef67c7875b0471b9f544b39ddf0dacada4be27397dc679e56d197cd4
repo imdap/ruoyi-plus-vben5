@@ -1,0 +1,106 @@
+import getEntity from "./keyUtil.js";
+import warning from "@v-c/util/dist/warning";
+function removeFromCheckedKeys(halfCheckedKeys, checkedKeys) {
+	const filteredKeys = /* @__PURE__ */ new Set();
+	halfCheckedKeys.forEach((key) => {
+		if (!checkedKeys.has(key)) filteredKeys.add(key);
+	});
+	return filteredKeys;
+}
+function isCheckDisabled(node) {
+	const { disabled, disableCheckbox, checkable } = node || {};
+	return !!(disabled || disableCheckbox) || checkable === false;
+}
+function fillConductCheck(keys, levelEntities, maxLevel, syntheticGetCheckDisabled) {
+	const checkedKeys = new Set(keys);
+	const halfCheckedKeys = /* @__PURE__ */ new Set();
+	for (let level = 0; level <= maxLevel; level += 1) (levelEntities.get(level) || /* @__PURE__ */ new Set()).forEach((entity) => {
+		const { key, node, children = [] } = entity;
+		if (checkedKeys.has(key) && !syntheticGetCheckDisabled(node)) children.filter((childEntity) => !syntheticGetCheckDisabled(childEntity.node)).forEach((childEntity) => {
+			checkedKeys.add(childEntity.key);
+		});
+	});
+	const visitedKeys = /* @__PURE__ */ new Set();
+	for (let level = maxLevel; level >= 0; level -= 1) (levelEntities.get(level) || /* @__PURE__ */ new Set()).forEach((entity) => {
+		const { parent, node } = entity;
+		if (syntheticGetCheckDisabled(node) || !entity.parent || visitedKeys.has(entity.parent.key)) return;
+		if (syntheticGetCheckDisabled(entity.parent.node)) {
+			visitedKeys.add(parent.key);
+			return;
+		}
+		let allChecked = true;
+		let partialChecked = false;
+		(parent.children || []).filter((childEntity) => !syntheticGetCheckDisabled(childEntity.node)).forEach(({ key }) => {
+			const checked = checkedKeys.has(key);
+			if (allChecked && !checked) allChecked = false;
+			if (!partialChecked && (checked || halfCheckedKeys.has(key))) partialChecked = true;
+		});
+		if (allChecked) checkedKeys.add(parent.key);
+		if (partialChecked) halfCheckedKeys.add(parent.key);
+		visitedKeys.add(parent.key);
+	});
+	return {
+		checkedKeys: Array.from(checkedKeys),
+		halfCheckedKeys: Array.from(removeFromCheckedKeys(halfCheckedKeys, checkedKeys))
+	};
+}
+function cleanConductCheck(keys, halfKeys, levelEntities, maxLevel, syntheticGetCheckDisabled) {
+	const checkedKeys = new Set(keys);
+	let halfCheckedKeys = new Set(halfKeys);
+	for (let level = 0; level <= maxLevel; level += 1) (levelEntities.get(level) || /* @__PURE__ */ new Set()).forEach((entity) => {
+		const { key, node, children = [] } = entity;
+		if (!checkedKeys.has(key) && !halfCheckedKeys.has(key) && !syntheticGetCheckDisabled(node)) children.filter((childEntity) => !syntheticGetCheckDisabled(childEntity.node)).forEach((childEntity) => {
+			checkedKeys.delete(childEntity.key);
+		});
+	});
+	halfCheckedKeys = /* @__PURE__ */ new Set();
+	const visitedKeys = /* @__PURE__ */ new Set();
+	for (let level = maxLevel; level >= 0; level -= 1) (levelEntities.get(level) || /* @__PURE__ */ new Set()).forEach((entity) => {
+		const { parent, node } = entity;
+		if (syntheticGetCheckDisabled(node) || !entity.parent || visitedKeys.has(entity.parent.key)) return;
+		if (syntheticGetCheckDisabled(entity.parent.node)) {
+			visitedKeys.add(parent.key);
+			return;
+		}
+		let allChecked = true;
+		let partialChecked = false;
+		(parent.children || []).filter((childEntity) => !syntheticGetCheckDisabled(childEntity.node)).forEach(({ key }) => {
+			const checked = checkedKeys.has(key);
+			if (allChecked && !checked) allChecked = false;
+			if (!partialChecked && (checked || halfCheckedKeys.has(key))) partialChecked = true;
+		});
+		if (!allChecked) checkedKeys.delete(parent.key);
+		if (partialChecked) halfCheckedKeys.add(parent.key);
+		visitedKeys.add(parent.key);
+	});
+	return {
+		checkedKeys: Array.from(checkedKeys),
+		halfCheckedKeys: Array.from(removeFromCheckedKeys(halfCheckedKeys, checkedKeys))
+	};
+}
+function conductCheck(keyList, checked, keyEntities, getCheckDisabled) {
+	const warningMissKeys = [];
+	const syntheticGetCheckDisabled = getCheckDisabled || isCheckDisabled;
+	const keys = new Set((keyList || []).filter((key) => {
+		const hasEntity = !!getEntity(keyEntities, key);
+		if (!hasEntity) warningMissKeys.push(key);
+		return hasEntity;
+	}));
+	const levelEntities = /* @__PURE__ */ new Map();
+	let maxLevel = 0;
+	Object.keys(keyEntities).forEach((entityKey) => {
+		const entity = keyEntities[entityKey];
+		const { level } = entity;
+		let levelSet = levelEntities.get(level);
+		if (!levelSet) {
+			levelSet = /* @__PURE__ */ new Set();
+			levelEntities.set(level, levelSet);
+		}
+		levelSet.add(entity);
+		maxLevel = Math.max(maxLevel, level);
+	});
+	warning(!warningMissKeys.length, `Tree missing follow keys: ${warningMissKeys.slice(0, 100).map((key) => `'${key}'`).join(", ")}`);
+	if (checked === true) return fillConductCheck(keys, levelEntities, maxLevel, syntheticGetCheckDisabled);
+	return cleanConductCheck(keys, checked.halfCheckedKeys, levelEntities, maxLevel, syntheticGetCheckDisabled);
+}
+export { conductCheck, isCheckDisabled };

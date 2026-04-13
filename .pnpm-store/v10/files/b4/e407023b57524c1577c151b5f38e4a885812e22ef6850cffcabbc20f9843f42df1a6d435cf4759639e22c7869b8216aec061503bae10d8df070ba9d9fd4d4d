@@ -1,0 +1,1 @@
+.vxe-layout-header{flex-shrink:0;background-color:var(--vxe-ui-layout-background-color);outline:0}.vxe-layout-header.is--fixed{position:sticky;top:0;left:0;z-index:9}

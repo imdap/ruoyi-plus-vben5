@@ -1,0 +1,41 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue895 from "vue";
+
+//#region src/transfer/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 列表宽度
+   * @descEN Width of list
+   */
+  listWidth: number | string;
+  /**
+   * @desc 大号列表宽度
+   * @descEN Width of large list
+   */
+  listWidthLG: number | string;
+  /**
+   * @desc 列表高度
+   * @descEN Height of list
+   */
+  listHeight: number | string;
+  /**
+   * @desc 列表项高度
+   * @descEN Height of list item
+   */
+  itemHeight: number | string;
+  /**
+   * @desc 列表项纵向内边距
+   * @descEN Vertical padding of list item
+   */
+  itemPaddingBlock: number | string;
+  /**
+   * @desc 顶部高度
+   * @descEN Height of header
+   */
+  headerHeight: number | string;
+}
+declare const prepareComponentToken: GetDefaultToken<'Transfer'>;
+declare const _default: (prefixCls: vue895.Ref<string>, rootCls?: vue895.Ref<string | undefined>) => readonly [vue895.Ref<string, string>, vue895.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:!0}),exports.crossTableDragRowInfo=void 0,exports.getCrossTableDragRowInfo=getCrossTableDragRowInfo;var _vue=require("vue");let crossTableDragRowInfo=exports.crossTableDragRowInfo=(0,_vue.reactive)({row:null});function getCrossTableDragRowInfo(){return crossTableDragRowInfo}

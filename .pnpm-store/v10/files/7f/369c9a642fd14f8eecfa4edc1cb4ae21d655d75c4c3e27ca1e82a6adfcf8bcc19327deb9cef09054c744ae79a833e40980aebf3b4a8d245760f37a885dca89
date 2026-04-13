@@ -1,0 +1,84 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { StepItem, StepsProps, StepsSemanticClassNames, StepsSemanticName, StepsSemanticStyles } from "../steps/index.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue44 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { LiteralUnion } from "@v-c/util/dist/type";
+
+//#region src/timeline/Timeline.d.ts
+type Color = 'blue' | 'red' | 'green' | 'gray';
+type ItemPlacement = 'start' | 'end';
+type ItemPosition = 'left' | 'right' | 'start' | 'end';
+interface TimelineItemType {
+  color?: LiteralUnion<Color>;
+  className?: string;
+  class?: string;
+  style?: CSSProperties;
+  classes?: NonNullable<StepItem['classes']>;
+  styles?: NonNullable<StepItem['styles']>;
+  placement?: ItemPlacement;
+  /** @deprecated please use `placement` instead */
+  position?: ItemPosition;
+  loading?: boolean;
+  key?: string | number;
+  title?: VueNode;
+  content?: VueNode;
+  /** @deprecated Please use `title` instead */
+  label?: VueNode;
+  /** @deprecated Please use `content` instead */
+  children?: VueNode;
+  icon?: VueNode;
+  /** @deprecated Please use `icon` instead */
+  dot?: VueNode;
+}
+type TimelineSemanticName = StepsSemanticName;
+type TimelineSemanticClassNames = StepsSemanticClassNames;
+type TimelineSemanticStyles = StepsSemanticStyles;
+type TimelineClassNamesType = SemanticClassNamesType<TimelineProps, TimelineSemanticClassNames>;
+type TimelineMode = ItemPosition | 'alternate';
+interface TimelineProps extends ComponentBaseProps {
+  pending?: VueNode;
+  pendingDot?: VueNode;
+  reverse?: boolean;
+  mode?: 'left' | 'alternate' | 'right' | 'start' | 'end';
+  items?: TimelineItemType[];
+  dotRender?: (params: {
+    item: TimelineItemType;
+    index: number;
+  }) => void;
+  labelRender?: (params: {
+    item: TimelineItemType;
+    index: number;
+  }) => void;
+  contentRender?: (params: {
+    item: TimelineItemType;
+    index: number;
+  }) => void;
+  orientation?: 'horizontal' | 'vertical';
+  variant?: StepsProps['variant'];
+  classes?: TimelineClassNamesType;
+  styles?: TimelineStylesType;
+  titleSpan?: string | number;
+}
+type TimelineStylesType = SemanticStylesType<TimelineProps, TimelineSemanticStyles>;
+interface TimelineSlots {
+  pending?: () => void;
+  pendingDot?: () => void;
+  dotRender?: (params: {
+    item: TimelineItemType;
+    index: number;
+  }) => void;
+  labelRender?: (params: {
+    item: TimelineItemType;
+    index: number;
+  }) => void;
+  contentRender?: (params: {
+    item: TimelineItemType;
+    index: number;
+  }) => void;
+}
+declare const Timeline: vue44.DefineSetupFnComponent<TimelineProps, EmptyEmit, SlotsType<TimelineSlots>, TimelineProps, vue44.PublicProps>;
+//#endregion
+export { ItemPlacement, ItemPosition, TimelineClassNamesType, TimelineItemType, TimelineMode, TimelineProps, TimelineSemanticClassNames, TimelineSemanticName, TimelineSemanticStyles, TimelineSlots, TimelineStylesType, Timeline as default };

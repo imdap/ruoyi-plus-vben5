@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:!0}),exports.hooks=void 0;var _store=_interopRequireDefault(require("./store"));function _interopRequireDefault(e){return e&&e.__esModule?e:{default:e}}let hooks=exports.hooks=new _store.default;

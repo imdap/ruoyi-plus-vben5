@@ -1,0 +1,25 @@
+{
+    "id": "flutter",
+    "version": "0.2",
+    "name": "Flutter",
+    "description": "Flutter dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "flutter",
+            "path": "./flutter.txt.gz",
+            "description": "Flutter dictionary."
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "languageId": "dart",
+            "locale": "*",
+            "includeRegExpList": [],
+            "ignoreRegExpList": [],
+            "patterns": [],
+            "dictionaries": ["flutter"]
+        }
+    ]
+}

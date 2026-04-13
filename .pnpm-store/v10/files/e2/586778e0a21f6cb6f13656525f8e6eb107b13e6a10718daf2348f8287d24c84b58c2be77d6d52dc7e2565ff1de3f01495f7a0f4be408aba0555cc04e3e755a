@@ -1,0 +1,10 @@
+import * as vue1076 from "vue";
+
+//#region src/menu/MenuDivider.d.ts
+interface MenuDividerProps {
+  prefixCls?: string;
+  dashed?: boolean;
+}
+declare const MenuDivider: vue1076.DefineSetupFnComponent<MenuDividerProps, {}, {}, MenuDividerProps & {}, vue1076.PublicProps>;
+//#endregion
+export { MenuDividerProps, MenuDivider as default };

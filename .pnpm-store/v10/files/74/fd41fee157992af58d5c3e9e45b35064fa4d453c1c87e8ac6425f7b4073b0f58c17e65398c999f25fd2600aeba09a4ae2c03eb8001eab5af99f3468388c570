@@ -1,0 +1,17 @@
+import { useMenuContext } from "../context/MenuContext.js";
+import { createVNode, defineComponent, mergeProps } from "vue";
+import { clsx } from "@v-c/util";
+var SubMenuList_default = /* @__PURE__ */ defineComponent((_, { attrs, slots }) => {
+	const menuContext = useMenuContext();
+	return () => {
+		const { prefixCls, mode, rtl } = menuContext?.value ?? {};
+		return createVNode("ul", mergeProps({
+			"class": clsx(prefixCls, !!rtl && `${prefixCls}-rtl`, `${prefixCls}-sub`, `${prefixCls}-${mode === "inline" ? "inline" : "vertical"}`),
+			"role": "menu"
+		}, attrs, { "data-menu-list": true }), [slots?.default?.()]);
+	};
+}, {
+	name: "InlineSubMenuList",
+	inheritAttrs: false
+});
+export { SubMenuList_default as default };

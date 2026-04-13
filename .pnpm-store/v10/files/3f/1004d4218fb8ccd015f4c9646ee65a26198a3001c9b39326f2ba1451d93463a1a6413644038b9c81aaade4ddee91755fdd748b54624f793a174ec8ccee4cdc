@@ -1,0 +1,45 @@
+{
+  "name": "@cspell/dict-node",
+  "version": "5.0.9",
+  "description": "Node.js dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build-node": "node src/extract-api.mjs src/api/*.md",
+    "build": "cspell-tools-cli build",
+    "test": "pnpm test-dict",
+    "test-dict": "shx cat \"src/node.txt\" | cspell -c ./cspell-ext.json \"--locale=*\" \"--languageId=javascript\" stdin",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/node"
+  },
+  "keywords": [
+    "cspell",
+    "node",
+    "Node.js",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/node#readme",
+  "files": [
+    "dict/*.txt",
+    "cspell-ext.json"
+  ],
+  "gitHead": "617f1dee7079860f829a0f699202ad0682031e93"
+}

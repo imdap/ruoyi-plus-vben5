@@ -1,0 +1,51 @@
+import type IBrowserContext from './IBrowserContext.js';
+import type IBrowserPage from './IBrowserPage.js';
+import type IBrowserSettings from './IBrowserSettings.js';
+import type IConsole from '../../console/IConsole.js';
+import type * as PropertySymbol from '../../PropertySymbol.js';
+import type BrowserExceptionObserver from '../utilities/BrowserExceptionObserver.js';
+
+/**
+ * Browser.
+ *
+ * Much of the interface for the browser has been taken from Puppeteer and Playwright, so that the API is familiar.
+ */
+export default interface IBrowser {
+	readonly defaultContext: IBrowserContext;
+	readonly contexts: IBrowserContext[];
+	readonly settings: IBrowserSettings;
+	readonly console: IConsole | null;
+	readonly closed: boolean;
+	readonly [PropertySymbol.exceptionObserver]: BrowserExceptionObserver | null;
+
+	/**
+	 * Aborts all ongoing operations and destroys the browser.
+	 */
+	close(): void;
+
+	/**
+	 * Returns a promise that is resolved when all resources has been loaded, fetch has completed, and all async tasks such as timers are complete.
+	 *
+	 * @returns Promise.
+	 */
+	waitUntilComplete(): Promise<void>;
+
+	/**
+	 * Aborts all ongoing operations.
+	 */
+	abort(): void;
+
+	/**
+	 * Creates a new incognito context.
+	 *
+	 * @returns Context.
+	 */
+	newIncognitoContext(): IBrowserContext;
+
+	/**
+	 * Creates a new page.
+	 *
+	 * @returns Page.
+	 */
+	newPage(): IBrowserPage;
+}

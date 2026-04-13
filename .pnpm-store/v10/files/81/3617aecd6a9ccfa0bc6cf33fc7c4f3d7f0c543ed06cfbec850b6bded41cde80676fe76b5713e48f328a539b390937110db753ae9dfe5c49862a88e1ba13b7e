@@ -1,0 +1,72 @@
+import { genSubStyleComponent } from "../../theme/util/genStyleUtils.js";
+import { prepareComponentToken, prepareToken } from "./index.js";
+import { unit } from "@antdv-next/cssinjs";
+
+//#region src/pagination/style/bordered.ts
+const genBorderedStyle = (token) => {
+	const { componentCls } = token;
+	return {
+		[`${componentCls}${componentCls}-bordered${componentCls}-disabled`]: {
+			"&, &:hover": { [`${componentCls}-item-link`]: { borderColor: token.colorBorder } },
+			"&:focus-visible": { [`${componentCls}-item-link`]: { borderColor: token.colorBorder } },
+			[`${componentCls}-item, ${componentCls}-item-link`]: {
+				backgroundColor: token.colorBgContainerDisabled,
+				borderColor: token.colorBorder,
+				[`&:hover:not(${componentCls}-item-active)`]: {
+					backgroundColor: token.colorBgContainerDisabled,
+					borderColor: token.colorBorder,
+					a: { color: token.colorTextDisabled }
+				},
+				[`&${componentCls}-item-active`]: { backgroundColor: token.itemActiveBgDisabled }
+			},
+			[`${componentCls}-prev, ${componentCls}-next`]: {
+				"&:hover button": {
+					backgroundColor: token.colorBgContainerDisabled,
+					borderColor: token.colorBorder,
+					color: token.colorTextDisabled
+				},
+				[`${componentCls}-item-link`]: {
+					backgroundColor: token.colorBgContainerDisabled,
+					borderColor: token.colorBorder
+				}
+			}
+		},
+		[`${componentCls}${componentCls}-bordered`]: {
+			[`${componentCls}-prev, ${componentCls}-next`]: {
+				"&:hover button": {
+					borderColor: token.colorPrimaryHover,
+					backgroundColor: token.itemBg
+				},
+				[`${componentCls}-item-link`]: {
+					backgroundColor: token.itemLinkBg,
+					borderColor: token.colorBorder
+				},
+				[`&:hover ${componentCls}-item-link`]: {
+					borderColor: token.colorPrimary,
+					backgroundColor: token.itemBg,
+					color: token.colorPrimary
+				},
+				[`&${componentCls}-disabled`]: { [`${componentCls}-item-link`]: {
+					borderColor: token.colorBorder,
+					color: token.colorTextDisabled
+				} }
+			},
+			[`${componentCls}-item`]: {
+				backgroundColor: token.itemBg,
+				border: `${unit(token.lineWidth)} ${token.lineType} ${token.colorBorder}`,
+				[`&:hover:not(${componentCls}-item-active)`]: {
+					borderColor: token.colorPrimary,
+					backgroundColor: token.itemBg,
+					a: { color: token.colorPrimary }
+				},
+				"&-active": { borderColor: token.colorPrimary }
+			}
+		}
+	};
+};
+var bordered_default = genSubStyleComponent(["Pagination", "bordered"], (token) => {
+	return genBorderedStyle(prepareToken(token));
+}, prepareComponentToken);
+
+//#endregion
+export { bordered_default as default };

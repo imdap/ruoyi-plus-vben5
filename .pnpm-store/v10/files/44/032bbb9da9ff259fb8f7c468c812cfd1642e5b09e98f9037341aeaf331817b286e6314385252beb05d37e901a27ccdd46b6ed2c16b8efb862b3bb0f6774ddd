@@ -1,0 +1,14 @@
+import { DirectionType } from "../../config-provider/context.js";
+import * as vue_jsx_runtime16 from "vue/jsx-runtime";
+
+//#region src/tree/utils/dropIndicator.d.ts
+declare const offset = 4;
+declare function dropIndicatorRender(props: {
+  dropPosition: -1 | 0 | 1;
+  dropLevelOffset: number;
+  indent: number;
+  prefixCls: string;
+  direction: DirectionType;
+}): vue_jsx_runtime16.JSX.Element;
+//#endregion
+export { dropIndicatorRender as default, offset };

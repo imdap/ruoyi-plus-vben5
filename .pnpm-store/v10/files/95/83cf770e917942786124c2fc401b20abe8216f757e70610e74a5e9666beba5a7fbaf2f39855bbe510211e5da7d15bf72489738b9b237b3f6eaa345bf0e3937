@@ -1,0 +1,962 @@
+import { useWarningProvider } from "../_util/warning.js";
+import { ANT_MARK, LocaleProvider, useLocaleContext } from "../locale/index.js";
+import seed_default from "../theme/themes/seed.js";
+import theme_default from "../theme/themes/default/theme.js";
+import { DesignTokenProvider } from "../theme/context.js";
+import { defaultIconPrefixCls, defaultPrefixCls, useConfig, useConfigProvider } from "./context.js";
+import { SizeProvider } from "./SizeContext.js";
+import useResetIconStyle_default from "../theme/util/useResetIconStyle.js";
+import UniqueProvider_default from "../tooltip/UniqueProvider/index.js";
+import { DisabledContextProvider } from "./DisabledContext.js";
+import { useExportConfig } from "./hooks/useConfig.js";
+import { useTheme } from "./hooks/useTheme.js";
+import { computed, createVNode, defineComponent, isVNode, mergeDefaults, mergeProps, shallowReactive } from "vue";
+import { createTheme, useStyleContext } from "@antdv-next/cssinjs";
+import { IconContextProvider } from "@antdv-next/icons";
+
+//#region src/config-provider/index.tsx
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+const PASSED_PROPS = [
+	"getTargetContainer",
+	"getPopupContainer",
+	"renderEmpty",
+	"wave",
+	"input",
+	"pagination",
+	"transfer",
+	"mentions",
+	"form",
+	"select",
+	"treeSelect",
+	"button",
+	"alert",
+	"transformCellText",
+	"progress",
+	"modal",
+	"switch",
+	"dropdown",
+	"colorPicker",
+	"checkbox",
+	"radio",
+	"tag",
+	"avatar",
+	"badge",
+	"card",
+	"drawer",
+	"empty",
+	"floatButton",
+	"floatButtonGroup",
+	"image",
+	"inputNumber",
+	"layout",
+	"menu",
+	"message",
+	"notification",
+	"popconfirm",
+	"popover",
+	"qrcode",
+	"rangePicker",
+	"rate",
+	"result",
+	"segmented",
+	"skeleton",
+	"slider",
+	"spin",
+	"statistic",
+	"steps",
+	"table",
+	"tabs",
+	"textArea",
+	"timeline",
+	"timePicker",
+	"tooltip",
+	"tour",
+	"tree",
+	"upload",
+	"datePicker",
+	"breadcrumb",
+	"masonry",
+	"descriptions",
+	"divider",
+	"flex",
+	"typography"
+];
+const providerDefaultProps = { componentDisabled: void 0 };
+let globalPrefixCls;
+let globalIconPrefixCls;
+let globalTheme;
+let globalHolderRender;
+const globalConfigData = shallowReactive({});
+function getGlobalPrefixCls() {
+	return globalConfigData.prefixCls || globalPrefixCls || defaultPrefixCls;
+}
+function getGlobalIconPrefixCls() {
+	return globalConfigData.iconPrefixCls || globalIconPrefixCls || defaultIconPrefixCls;
+}
+function setGlobalConfig(props) {
+	const { prefixCls, iconPrefixCls, theme, holderRender, appContext } = props;
+	if (prefixCls !== void 0) {
+		globalPrefixCls = prefixCls;
+		globalConfigData.prefixCls = prefixCls;
+	}
+	if (iconPrefixCls !== void 0) {
+		globalIconPrefixCls = iconPrefixCls;
+		globalConfigData.iconPrefixCls = iconPrefixCls;
+	}
+	if (appContext) globalConfigData.appContext = appContext;
+	if ("holderRender" in props) {
+		globalHolderRender = holderRender;
+		globalConfigData.holderRender = holderRender;
+	}
+	if (theme) {
+		globalTheme = theme;
+		globalConfigData.theme = theme;
+	}
+}
+const ProviderChildren = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	const theme = computed(() => props.theme);
+	const parentTheme = computed(() => props.parentContext?.theme);
+	const getPrefixCls = (suffixCls, customizePrefixCls) => {
+		const { prefixCls, parentContext } = props;
+		if (customizePrefixCls) return customizePrefixCls;
+		const mergedPrefixCls = prefixCls || parentContext.getPrefixCls("");
+		return suffixCls ? `${mergedPrefixCls}-${suffixCls}` : mergedPrefixCls;
+	};
+	const iconPrefixCls = computed(() => props.iconPrefixCls ?? props?.parentContext?.iconPrefixCls ?? defaultIconPrefixCls);
+	const csp = computed(() => props.csp ?? props?.parentContext?.csp);
+	useResetIconStyle_default(iconPrefixCls, csp);
+	const mergedTheme = useTheme(theme, parentTheme, computed(() => {
+		return { prefixCls: getPrefixCls("") };
+	}));
+	const memoedConfig = computed(() => {
+		const parentConfig = { ...props.parentContext };
+		const baseConfig = {
+			csp: csp.value,
+			getPrefixCls,
+			theme: mergedTheme.value,
+			direction: props.direction,
+			locale: props.locale || props.legacyLocale,
+			space: props.space
+		};
+		const config = { ...parentConfig };
+		Object.keys(baseConfig).forEach((key) => {
+			if (baseConfig[key] !== void 0) config[key] = baseConfig[key];
+		});
+		PASSED_PROPS.forEach((propName) => {
+			const propValue = props[propName];
+			if (propValue) config[propName] = propValue;
+		});
+		return config;
+	});
+	const styleContext = useStyleContext();
+	const layer = computed(() => styleContext.value.layer);
+	const memoIconContextValue = computed(() => ({
+		prefixCls: iconPrefixCls.value,
+		csp: csp.value,
+		layer: layer.value ? "antd" : void 0
+	}));
+	const memoTheme = computed(() => {
+		const { algorithm, token, components, cssVar, ...rest } = mergedTheme.value ?? {};
+		const themeObj = algorithm && (!Array.isArray(algorithm) || algorithm.length > 0) ? createTheme(algorithm) : theme_default;
+		const parsedComponents = {};
+		Object.entries(components || {}).forEach(([componentName, componentToken]) => {
+			const parsedToken = { ...componentToken };
+			if ("algorithm" in parsedToken) {
+				if (parsedToken.algorithm === true) parsedToken.theme = themeObj;
+				else if (Array.isArray(parsedToken.algorithm) || typeof parsedToken.algorithm === "function") parsedToken.theme = createTheme(parsedToken.algorithm);
+				delete parsedToken.algorithm;
+			}
+			parsedComponents[componentName] = parsedToken;
+		});
+		const mergedToken = {
+			...seed_default,
+			...token
+		};
+		return {
+			...rest,
+			theme: themeObj,
+			token: mergedToken,
+			components: parsedComponents,
+			override: {
+				override: mergedToken,
+				...parsedComponents
+			},
+			cssVar
+		};
+	});
+	useConfigProvider(memoedConfig);
+	useWarningProvider({ strict: computed(() => memoedConfig.value?.warning?.strict) });
+	return () => {
+		let childNode = slots?.default?.();
+		if (props.locale) {
+			const _childNode = function() {
+				return childNode;
+			}();
+			childNode = createVNode(LocaleProvider, {
+				"locale": props.locale,
+				"_ANT_MARK__": ANT_MARK
+			}, _isSlot(childNode) ? childNode : { default: () => [_childNode] });
+		}
+		if (iconPrefixCls.value || csp.value) {
+			const _childNode2 = function() {
+				return childNode;
+			}();
+			childNode = createVNode(IconContextProvider, memoIconContextValue.value, _isSlot(childNode) ? childNode : { default: () => [_childNode2] });
+		}
+		if (props.componentSize) {
+			const _childNode3 = function() {
+				return childNode;
+			}();
+			childNode = createVNode(SizeProvider, { "size": props.componentSize }, _isSlot(childNode) ? childNode : { default: () => [_childNode3] });
+		}
+		if (props?.tooltip?.unique) {
+			const _childNode4 = function() {
+				return childNode;
+			}();
+			childNode = createVNode(UniqueProvider_default, null, _isSlot(childNode) ? childNode : { default: () => [_childNode4] });
+		}
+		if (props.theme) {
+			const _childNode5 = function() {
+				return childNode;
+			}();
+			childNode = createVNode(DesignTokenProvider, { "value": memoTheme.value }, _isSlot(childNode) ? childNode : { default: () => [_childNode5] });
+		}
+		if (props?.componentDisabled !== void 0) {
+			const _childNode6 = function() {
+				return childNode;
+			}();
+			childNode = createVNode(DisabledContextProvider, { "disabled": props.componentDisabled }, _isSlot(childNode) ? childNode : { default: () => [_childNode6] });
+		}
+		return childNode;
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		parentContext: {
+			type: Object,
+			required: true
+		},
+		legacyLocale: {
+			type: Object,
+			required: false
+		},
+		getTargetContainer: {
+			type: Function,
+			required: false
+		},
+		getPopupContainer: {
+			type: Function,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		},
+		iconPrefixCls: {
+			type: String,
+			required: false
+		},
+		renderEmpty: {
+			type: Function,
+			required: false
+		},
+		transformCellText: {
+			type: Function,
+			required: false
+		},
+		csp: {
+			type: Object,
+			required: false
+		},
+		variant: {
+			type: String,
+			required: false
+		},
+		input: {
+			type: Object,
+			required: false
+		},
+		inputNumber: {
+			type: Object,
+			required: false
+		},
+		textArea: {
+			type: Object,
+			required: false
+		},
+		mentions: {
+			type: Object,
+			required: false
+		},
+		inputSearch: {
+			type: Object,
+			required: false
+		},
+		otp: {
+			type: Object,
+			required: false
+		},
+		select: {
+			type: Object,
+			required: false
+		},
+		pagination: {
+			type: Object,
+			required: false
+		},
+		locale: {
+			type: Object,
+			required: false
+		},
+		componentSize: {
+			type: [String, null],
+			required: false
+		},
+		componentDisabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		direction: {
+			type: [String, null],
+			required: false
+		},
+		space: {
+			type: Object,
+			required: false
+		},
+		splitter: {
+			type: Object,
+			required: false
+		},
+		virtual: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		popupMatchSelectWidth: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		popupOverflow: {
+			type: String,
+			required: false
+		},
+		theme: {
+			type: Object,
+			required: false
+		},
+		warning: {
+			type: Object,
+			required: false
+		},
+		alert: {
+			type: Object,
+			required: false
+		},
+		anchor: {
+			type: Object,
+			required: false
+		},
+		button: {
+			type: Object,
+			required: false
+		},
+		calendar: {
+			type: Object,
+			required: false
+		},
+		carousel: {
+			type: Object,
+			required: false
+		},
+		cascader: {
+			type: Object,
+			required: false
+		},
+		treeSelect: {
+			type: Object,
+			required: false
+		},
+		collapse: {
+			type: Object,
+			required: false
+		},
+		divider: {
+			type: Object,
+			required: false
+		},
+		drawer: {
+			type: Object,
+			required: false
+		},
+		typography: {
+			type: Object,
+			required: false
+		},
+		skeleton: {
+			type: Object,
+			required: false
+		},
+		spin: {
+			type: Object,
+			required: false
+		},
+		segmented: {
+			type: Object,
+			required: false
+		},
+		statistic: {
+			type: Object,
+			required: false
+		},
+		steps: {
+			type: Object,
+			required: false
+		},
+		image: {
+			type: Object,
+			required: false
+		},
+		layout: {
+			type: Object,
+			required: false
+		},
+		modal: {
+			type: Object,
+			required: false
+		},
+		progress: {
+			type: Object,
+			required: false
+		},
+		result: {
+			type: Object,
+			required: false
+		},
+		slider: {
+			type: Object,
+			required: false
+		},
+		breadcrumb: {
+			type: Object,
+			required: false
+		},
+		menu: {
+			type: Object,
+			required: false
+		},
+		floatButton: {
+			type: Object,
+			required: false
+		},
+		floatButtonGroup: {
+			type: Object,
+			required: false
+		},
+		checkbox: {
+			type: Object,
+			required: false
+		},
+		descriptions: {
+			type: Object,
+			required: false
+		},
+		empty: {
+			type: Object,
+			required: false
+		},
+		badge: {
+			type: Object,
+			required: false
+		},
+		radio: {
+			type: Object,
+			required: false
+		},
+		rate: {
+			type: Object,
+			required: false
+		},
+		switch: {
+			type: Object,
+			required: false
+		},
+		transfer: {
+			type: Object,
+			required: false
+		},
+		avatar: {
+			type: Object,
+			required: false
+		},
+		message: {
+			type: Object,
+			required: false
+		},
+		tag: {
+			type: Object,
+			required: false
+		},
+		table: {
+			type: Object,
+			required: false
+		},
+		card: {
+			type: Object,
+			required: false
+		},
+		tabs: {
+			type: Object,
+			required: false
+		},
+		timeline: {
+			type: Object,
+			required: false
+		},
+		timePicker: {
+			type: Object,
+			required: false
+		},
+		upload: {
+			type: Object,
+			required: false
+		},
+		notification: {
+			type: Object,
+			required: false
+		},
+		tree: {
+			type: Object,
+			required: false
+		},
+		colorPicker: {
+			type: Object,
+			required: false
+		},
+		datePicker: {
+			type: Object,
+			required: false
+		},
+		rangePicker: {
+			type: Object,
+			required: false
+		},
+		dropdown: {
+			type: Object,
+			required: false
+		},
+		flex: {
+			type: Object,
+			required: false
+		},
+		masonry: {
+			type: Object,
+			required: false
+		},
+		wave: {
+			type: Object,
+			required: false
+		},
+		tour: {
+			type: Object,
+			required: false
+		},
+		tooltip: {
+			type: Object,
+			required: false
+		},
+		popover: {
+			type: Object,
+			required: false
+		},
+		popconfirm: {
+			type: Object,
+			required: false
+		}
+	}, providerDefaultProps),
+	inheritAttrs: false
+});
+const ConfigProvider = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	const context = useConfig();
+	const { locale } = useLocaleContext() ?? {};
+	return () => {
+		const renderEmpty = slots?.renderEmpty ?? props?.renderEmpty;
+		const transformCellText = slots?.transformCellText ?? props?.transformCellText;
+		return createVNode(ProviderChildren, mergeProps({ "parentContext": context.value }, props, {
+			"renderEmpty": renderEmpty,
+			"transformCellText": transformCellText,
+			"legacyLocale": locale?.value
+		}), slots);
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		getTargetContainer: {
+			type: Function,
+			required: false
+		},
+		getPopupContainer: {
+			type: Function,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		},
+		iconPrefixCls: {
+			type: String,
+			required: false
+		},
+		renderEmpty: {
+			type: Function,
+			required: false
+		},
+		transformCellText: {
+			type: Function,
+			required: false
+		},
+		csp: {
+			type: Object,
+			required: false
+		},
+		variant: {
+			type: String,
+			required: false
+		},
+		input: {
+			type: Object,
+			required: false
+		},
+		inputNumber: {
+			type: Object,
+			required: false
+		},
+		textArea: {
+			type: Object,
+			required: false
+		},
+		mentions: {
+			type: Object,
+			required: false
+		},
+		inputSearch: {
+			type: Object,
+			required: false
+		},
+		otp: {
+			type: Object,
+			required: false
+		},
+		select: {
+			type: Object,
+			required: false
+		},
+		pagination: {
+			type: Object,
+			required: false
+		},
+		locale: {
+			type: Object,
+			required: false
+		},
+		componentSize: {
+			type: [String, null],
+			required: false
+		},
+		componentDisabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		direction: {
+			type: [String, null],
+			required: false
+		},
+		space: {
+			type: Object,
+			required: false
+		},
+		splitter: {
+			type: Object,
+			required: false
+		},
+		virtual: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		popupMatchSelectWidth: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		popupOverflow: {
+			type: String,
+			required: false
+		},
+		theme: {
+			type: Object,
+			required: false
+		},
+		warning: {
+			type: Object,
+			required: false
+		},
+		alert: {
+			type: Object,
+			required: false
+		},
+		anchor: {
+			type: Object,
+			required: false
+		},
+		button: {
+			type: Object,
+			required: false
+		},
+		calendar: {
+			type: Object,
+			required: false
+		},
+		carousel: {
+			type: Object,
+			required: false
+		},
+		cascader: {
+			type: Object,
+			required: false
+		},
+		treeSelect: {
+			type: Object,
+			required: false
+		},
+		collapse: {
+			type: Object,
+			required: false
+		},
+		divider: {
+			type: Object,
+			required: false
+		},
+		drawer: {
+			type: Object,
+			required: false
+		},
+		typography: {
+			type: Object,
+			required: false
+		},
+		skeleton: {
+			type: Object,
+			required: false
+		},
+		spin: {
+			type: Object,
+			required: false
+		},
+		segmented: {
+			type: Object,
+			required: false
+		},
+		statistic: {
+			type: Object,
+			required: false
+		},
+		steps: {
+			type: Object,
+			required: false
+		},
+		image: {
+			type: Object,
+			required: false
+		},
+		layout: {
+			type: Object,
+			required: false
+		},
+		modal: {
+			type: Object,
+			required: false
+		},
+		progress: {
+			type: Object,
+			required: false
+		},
+		result: {
+			type: Object,
+			required: false
+		},
+		slider: {
+			type: Object,
+			required: false
+		},
+		breadcrumb: {
+			type: Object,
+			required: false
+		},
+		menu: {
+			type: Object,
+			required: false
+		},
+		floatButton: {
+			type: Object,
+			required: false
+		},
+		floatButtonGroup: {
+			type: Object,
+			required: false
+		},
+		checkbox: {
+			type: Object,
+			required: false
+		},
+		descriptions: {
+			type: Object,
+			required: false
+		},
+		empty: {
+			type: Object,
+			required: false
+		},
+		badge: {
+			type: Object,
+			required: false
+		},
+		radio: {
+			type: Object,
+			required: false
+		},
+		rate: {
+			type: Object,
+			required: false
+		},
+		switch: {
+			type: Object,
+			required: false
+		},
+		transfer: {
+			type: Object,
+			required: false
+		},
+		avatar: {
+			type: Object,
+			required: false
+		},
+		message: {
+			type: Object,
+			required: false
+		},
+		tag: {
+			type: Object,
+			required: false
+		},
+		table: {
+			type: Object,
+			required: false
+		},
+		card: {
+			type: Object,
+			required: false
+		},
+		tabs: {
+			type: Object,
+			required: false
+		},
+		timeline: {
+			type: Object,
+			required: false
+		},
+		timePicker: {
+			type: Object,
+			required: false
+		},
+		upload: {
+			type: Object,
+			required: false
+		},
+		notification: {
+			type: Object,
+			required: false
+		},
+		tree: {
+			type: Object,
+			required: false
+		},
+		colorPicker: {
+			type: Object,
+			required: false
+		},
+		datePicker: {
+			type: Object,
+			required: false
+		},
+		rangePicker: {
+			type: Object,
+			required: false
+		},
+		dropdown: {
+			type: Object,
+			required: false
+		},
+		flex: {
+			type: Object,
+			required: false
+		},
+		masonry: {
+			type: Object,
+			required: false
+		},
+		wave: {
+			type: Object,
+			required: false
+		},
+		tour: {
+			type: Object,
+			required: false
+		},
+		tooltip: {
+			type: Object,
+			required: false
+		},
+		popover: {
+			type: Object,
+			required: false
+		},
+		popconfirm: {
+			type: Object,
+			required: false
+		}
+	}, providerDefaultProps),
+	name: "AConfigProvider",
+	inheritAttrs: false
+});
+ConfigProvider.config = setGlobalConfig;
+ConfigProvider.useConfig = useExportConfig;
+ConfigProvider.install = (app) => {
+	app.component(ConfigProvider.name, ConfigProvider);
+};
+var config_provider_default = ConfigProvider;
+function globalConfig() {
+	return {
+		getPrefixCls: (suffixCls, customizePrefixCls) => {
+			if (customizePrefixCls) return customizePrefixCls;
+			return suffixCls ? `${getGlobalPrefixCls()}-${suffixCls}` : getGlobalPrefixCls();
+		},
+		getIconPrefixCls: getGlobalIconPrefixCls,
+		getRootPrefixCls: () => {
+			if (globalConfigData.prefixCls || globalPrefixCls) return globalConfigData.prefixCls || globalPrefixCls;
+			return getGlobalPrefixCls();
+		},
+		getTheme: () => globalTheme,
+		theme: computed(() => globalConfigData.theme || globalTheme),
+		holderRender: globalHolderRender,
+		get appContext() {
+			return globalConfigData.appContext;
+		}
+	};
+}
+
+//#endregion
+export { config_provider_default as default, globalConfig, useConfig, useExportConfig };

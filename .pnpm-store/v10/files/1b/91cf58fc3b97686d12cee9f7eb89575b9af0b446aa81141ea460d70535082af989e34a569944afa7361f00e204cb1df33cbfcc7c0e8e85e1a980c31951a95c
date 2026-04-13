@@ -1,0 +1,9 @@
+import * as vue713 from "vue";
+
+//#region src/steps/PanelArrow.d.ts
+interface PanelArrowProps {
+  prefixCls: string;
+}
+declare const PanelArrow: vue713.DefineSetupFnComponent<PanelArrowProps, {}, {}, PanelArrowProps & {}, vue713.PublicProps>;
+//#endregion
+export { PanelArrowProps, PanelArrow as default };

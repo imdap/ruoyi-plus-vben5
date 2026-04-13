@@ -1,0 +1,20 @@
+import type { AnyIterable, PipeAsyncTx, PipeSyncTx } from './internalTypes.js';
+export declare function pipeAsync<T>(i: AnyIterable<T>): AsyncIterable<T>;
+export declare function pipeAsync<T, T0>(i: AnyIterable<T>, ...f: PipeAsyncTx<[T, T0]>): AsyncIterable<T0>;
+export declare function pipeAsync<T, T0, T1>(i: AnyIterable<T>, ...f: PipeAsyncTx<[T, T0, T1]>): AsyncIterable<T1>;
+export declare function pipeAsync<T, T0, T1, T2>(i: AnyIterable<T>, ...f: PipeAsyncTx<[T, T0, T1, T2]>): AsyncIterable<T2>;
+export declare function pipeAsync<T, T0, T1, T2, T3>(i: AnyIterable<T>, ...f: PipeAsyncTx<[T, T0, T1, T2, T3]>): AsyncIterable<T3>;
+export declare function pipeAsync<T, T0, T1, T2, T3, T4>(i: AnyIterable<T>, ...f: PipeAsyncTx<[T, T0, T1, T2, T3, T4]>): AsyncIterable<T4>;
+export declare function pipeAsync<T, T0, T1, T2, T3, T4, T5>(i: AnyIterable<T>, ...f: PipeAsyncTx<[T, T0, T1, T2, T3, T4, T5]>): AsyncIterable<T5>;
+export declare function pipeAsync<T, T0, T1, T2, T3, T4, T5, T6>(i: AnyIterable<T>, ...f: PipeAsyncTx<[T, T0, T1, T2, T3, T4, T5, T6]>): AsyncIterable<T6>;
+export declare function pipeAsync<T, T0, T1, T2, T3, T4, T5, T6, T7>(i: AnyIterable<T>, ...f: PipeAsyncTx<[T, T0, T1, T2, T3, T4, T5, T6, T7]>): AsyncIterable<T7>;
+export declare function pipeSync<T>(i: Iterable<T>): Iterable<T>;
+export declare function pipeSync<T, T0 = T>(i: Iterable<T>, ...f: PipeSyncTx<[T, T0]>): Iterable<T0>;
+export declare function pipeSync<T, T0, T1>(i: Iterable<T>, ...f: PipeSyncTx<[T, T0, T1]>): Iterable<T1>;
+export declare function pipeSync<T, T0, T1, T2>(i: Iterable<T>, ...f: PipeSyncTx<[T, T0, T1, T2]>): Iterable<T2>;
+export declare function pipeSync<T, T0, T1, T2, T3>(i: Iterable<T>, ...f: PipeSyncTx<[T, T0, T1, T2, T3]>): Iterable<T3>;
+export declare function pipeSync<T, T0, T1, T2, T3, T4>(i: Iterable<T>, ...f: PipeSyncTx<[T, T0, T1, T2, T3, T4]>): Iterable<T4>;
+export declare function pipeSync<T, T0, T1, T2, T3, T4, T5>(i: Iterable<T>, ...f: PipeSyncTx<[T, T0, T1, T2, T3, T4, T5]>): Iterable<T5>;
+export declare function pipeSync<T, T0, T1, T2, T3, T4, T5, T6>(i: Iterable<T>, ...f: PipeSyncTx<[T, T0, T1, T2, T3, T4, T5, T6]>): Iterable<T6>;
+export declare function pipeSync<T, T0, T1, T2, T3, T4, T5, T6, T7>(i: Iterable<T>, ...f: PipeSyncTx<[T, T0, T1, T2, T3, T4, T5, T6, T7]>): Iterable<T7>;
+//# sourceMappingURL=pipe.d.ts.map

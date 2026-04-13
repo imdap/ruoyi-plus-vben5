@@ -1,0 +1,1 @@
+{"version":3,"file":"IClipboardEventInit.d.ts","sourceRoot":"","sources":["../../../src/event/events/IClipboardEventInit.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,YAAY,MAAM,oBAAoB,CAAC;AACnD,OAAO,KAAK,UAAU,MAAM,kBAAkB,CAAC;AAE/C,MAAM,CAAC,OAAO,WAAW,mBAAoB,SAAQ,UAAU;IAC9D,aAAa,CAAC,EAAE,YAAY,GAAG,IAAI,CAAC;CACpC"}

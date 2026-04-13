@@ -1,0 +1,23 @@
+import type { PaFn, PipeAsyncTx, PipeSyncTx, PsFn } from '../internalTypes.js';
+import type { OperatorAsync, OperatorSync } from './types.js';
+export declare function opCombineAsync<T>(): OperatorAsync<T>;
+export declare function opCombineAsync<T, T0>(...f: PipeAsyncTx<[T, T0]>): OperatorAsync<T0>;
+export declare function opCombineAsync<T, T0, T1>(...f: PipeAsyncTx<[T, T0, T1]>): OperatorAsync<T1>;
+export declare function opCombineAsync<T, T0, T1, T2>(...f: PipeAsyncTx<[T, T0, T1, T2]>): OperatorAsync<T2>;
+export declare function opCombineAsync<T, T0, T1, T2, T3>(...f: PipeAsyncTx<[T, T0, T1, T2, T3]>): OperatorAsync<T3>;
+export declare function opCombineAsync<T, T0, T1, T2, T3, T4>(...f: PipeAsyncTx<[T, T0, T1, T2, T3, T4]>): OperatorAsync<T4>;
+export declare function opCombineAsync<T, T0, T1, T2, T3, T4, T5>(...f: PipeAsyncTx<[T, T0, T1, T2, T3, T4, T5]>): OperatorAsync<T5>;
+export declare function opCombineAsync<T, T0, T1, T2, T3, T4, T5, T6>(...f: PipeAsyncTx<[T, T0, T1, T2, T3, T4, T5, T6]>): OperatorAsync<T6>;
+export declare function opCombineAsync<T, T0, T1, T2, T3, T4, T5, T6, T7>(...f: PipeAsyncTx<[T, T0, T1, T2, T3, T4, T5, T6, T7]>): OperatorAsync<T7>;
+export declare function opCombineAsync<T>(...fns: PaFn<T, T>[]): OperatorAsync<T>;
+export declare function opCombineSync<T>(): OperatorSync<T>;
+export declare function opCombineSync<T, T0 = T>(...f: PipeSyncTx<[T, T0]>): OperatorSync<T0>;
+export declare function opCombineSync<T, T0, T1>(...f: PipeSyncTx<[T, T0, T1]>): OperatorSync<T1>;
+export declare function opCombineSync<T, T0, T1, T2>(...f: PipeSyncTx<[T, T0, T1, T2]>): OperatorSync<T2>;
+export declare function opCombineSync<T, T0, T1, T2, T3>(...f: PipeSyncTx<[T, T0, T1, T2, T3]>): OperatorSync<T3>;
+export declare function opCombineSync<T, T0, T1, T2, T3, T4>(...f: PipeSyncTx<[T, T0, T1, T2, T3, T4]>): OperatorSync<T4>;
+export declare function opCombineSync<T, T0, T1, T2, T3, T4, T5>(...f: PipeSyncTx<[T, T0, T1, T2, T3, T4, T5]>): OperatorSync<T5>;
+export declare function opCombineSync<T, T0, T1, T2, T3, T4, T5, T6>(...f: PipeSyncTx<[T, T0, T1, T2, T3, T4, T5, T6]>): OperatorSync<T6>;
+export declare function opCombineSync<T, T0, T1, T2, T3, T4, T5, T6, T7>(...f: PipeSyncTx<[T, T0, T1, T2, T3, T4, T5, T6, T7]>): OperatorSync<T7>;
+export declare function opCombineSync<T>(...fns: PsFn<T, T>[]): OperatorSync<T>;
+//# sourceMappingURL=combine.d.ts.map

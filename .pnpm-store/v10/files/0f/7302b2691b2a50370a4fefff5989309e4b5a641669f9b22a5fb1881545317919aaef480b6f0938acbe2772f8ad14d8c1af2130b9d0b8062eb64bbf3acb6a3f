@@ -1,0 +1,105 @@
+import { type InstallerOptions, InstallTarget, InstallMode } from '../install/installer.js';
+import { Installer } from '../install/installer.js';
+import { ImportMap, IImportMap } from '@jspm/import-map';
+import { Resolver, TraceEntry } from './resolver.js';
+import { Log } from '../common/log.js';
+import { InstalledResolution } from '../install/lock.js';
+export interface TraceMapOptions extends InstallerOptions {
+    /**
+     * Whether or not to trace the dependency tree as systemJS modules.
+     */
+    system?: boolean;
+    /**
+     * Whether or not to try and trace dynamic imports.
+     */
+    static?: boolean;
+    /**
+     * Whether the import map is a full generic import map for the app, or an
+     * exact trace for the provided entry points. (currently unused)
+     */
+    fullMap?: boolean;
+    /**
+     * List of module specifiers to ignore during tracing.
+     */
+    ignore?: string[];
+    /**
+     * Whether or not to enable CommonJS tracing for local dependencies.
+     */
+    commonJS?: boolean;
+    /**
+     * Custom resolver function for intercepting resolution operations.
+     */
+    customResolver?: (specifier: string, parentUrl: string, context: {
+        parentPkgUrl: string;
+        env?: string[];
+        installMode: any;
+        toplevel: boolean;
+        [key: string]: any;
+    }) => string | undefined | Promise<string | undefined>;
+    /**
+     * No pins
+     *
+     * Disables treating top-level "imports" as pinned dependencies.
+     * This will be the default in the next major.
+     */
+    noPins?: boolean;
+    inputMapFallbacks?: boolean | 'semver-compatible';
+}
+interface VisitOpts {
+    static?: boolean;
+    toplevel: boolean;
+    installMode: InstallMode;
+    visitor?: (specifier: string, parentUrl: string, resolvedUrl: string, toplevel: boolean, entry: TraceEntry | null) => Promise<boolean | void>;
+}
+export default class TraceMap {
+    installer: Installer | undefined;
+    opts: TraceMapOptions;
+    inputMap: ImportMap;
+    mapUrl: URL;
+    baseUrl: URL;
+    rootUrl: URL | null;
+    pins: Array<string> | null;
+    log: Log | undefined;
+    resolver: Resolver;
+    customResolver?: (specifier: string, parentUrl: string, context: {
+        parentPkgUrl: string;
+        env?: string[];
+        installMode: any;
+        toplevel: boolean;
+        [key: string]: any;
+    }) => string | undefined | Promise<string | undefined>;
+    visitedEdges: Map<string, {
+        resolved: string;
+        entry: TraceEntry | null;
+    }>;
+    /**
+     * Lock to ensure no races against input map processing.
+     * @type {Promise<void>}
+     */
+    processInputMap: Promise<void>;
+    constructor(opts: TraceMapOptions, log: Log | undefined, resolver: Resolver);
+    addInputMap(map: IImportMap, mapUrl?: URL, rootUrl?: URL | null, preloads?: string[]): Promise<void>;
+    /**
+     * Resolves, analyses and recursively visits the given module specifier and all of its dependencies.
+     *
+     * @param {string} specifier Module specifier to visit.
+     * @param {VisitOpts} opts Visitor configuration.
+     * @param {} parentUrl URL of the parent context for the specifier.
+     * @param {} seen Cache for optimisation.
+     */
+    visit(specifier: string, opts: VisitOpts, parentUrl?: string, seen?: Set<string>): Promise<string>;
+    private _visit;
+    extractMap(modules: string[], integrity: boolean, toplevel?: boolean, parentUrl?: string): Promise<{
+        map: ImportMap;
+        staticDeps: string[];
+        dynamicDeps: string[];
+    }>;
+    private _extractMapAsync;
+    /**
+     * Synchronous graph walk for extractMap when all caches are warm.
+     * Returns true if successful, false if a cache miss requires async fallback.
+     */
+    add(name: string, target: InstallTarget, opts: InstallMode): Promise<InstalledResolution>;
+    resolve(specifier: string, parentUrl: string, installOpts: InstallMode, toplevel: boolean): Promise<string>;
+}
+export {};

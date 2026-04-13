@@ -1,0 +1,21 @@
+import { EmptyEmit } from "../_util/type.js";
+import * as vue1045 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { TabPaneProps as TabPaneProps$1 } from "@v-c/tabs";
+
+//#region src/tabs/TabPane.d.ts
+interface TabPaneProps extends TabPaneProps$1 {
+  /** @deprecated Please use `destroyOnHidden` instead */
+  destroyInactiveTabPane?: boolean;
+  class?: string;
+  style?: CSSProperties;
+}
+interface TabPaneSlots {
+  default?: () => any;
+  tab?: () => any;
+  closeIcon?: () => any;
+  icon?: () => any;
+}
+declare const TabPane: vue1045.DefineSetupFnComponent<TabPaneProps, EmptyEmit, SlotsType<TabPaneSlots>, TabPaneProps, vue1045.PublicProps>;
+//#endregion
+export { TabPaneProps, TabPaneSlots, TabPane as default };

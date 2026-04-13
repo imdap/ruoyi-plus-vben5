@@ -1,0 +1,16 @@
+import { ShowCollapsibleIconMode } from "../SplitBar.js";
+import { ItemType } from "./useItems.js";
+import * as vue651 from "vue";
+import { Ref } from "vue";
+
+//#region src/splitter/hooks/useResizable.d.ts
+interface ResizableInfo {
+  resizable: boolean;
+  startCollapsible: boolean;
+  endCollapsible: boolean;
+  showStartCollapsibleIcon: ShowCollapsibleIconMode;
+  showEndCollapsibleIcon: ShowCollapsibleIconMode;
+}
+declare function useResizable(items: Ref<ItemType[]>, pxSizes: Ref<number[]>, reverse: Ref<boolean>): vue651.ComputedRef<ResizableInfo[]>;
+//#endregion
+export { ResizableInfo, useResizable as default };

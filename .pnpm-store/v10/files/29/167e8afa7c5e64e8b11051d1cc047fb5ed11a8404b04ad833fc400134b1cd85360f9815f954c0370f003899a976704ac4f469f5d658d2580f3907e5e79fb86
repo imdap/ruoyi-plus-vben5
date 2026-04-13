@@ -1,0 +1,21 @@
+import { VueNode } from "../_util/type.js";
+import { KeyWiseTransferItem, TransferSemanticClassNames, TransferSemanticStyles } from "./interface.js";
+import * as vue258 from "vue";
+
+//#region src/transfer/ListItem.d.ts
+interface ListItemProps<RecordType> {
+  prefixCls: string;
+  classes: TransferSemanticClassNames;
+  styles: TransferSemanticStyles;
+  renderedText?: string | number;
+  renderedEl: VueNode;
+  disabled?: boolean;
+  checked?: boolean;
+  onClick: (item: RecordType, e: MouseEvent) => void;
+  onRemove?: (item: RecordType) => void;
+  item: RecordType;
+  showRemove?: boolean;
+}
+declare const ListItem: vue258.DefineSetupFnComponent<ListItemProps<KeyWiseTransferItem>, {}, {}, ListItemProps<KeyWiseTransferItem> & {}, vue258.PublicProps>;
+//#endregion
+export { ListItem as default };

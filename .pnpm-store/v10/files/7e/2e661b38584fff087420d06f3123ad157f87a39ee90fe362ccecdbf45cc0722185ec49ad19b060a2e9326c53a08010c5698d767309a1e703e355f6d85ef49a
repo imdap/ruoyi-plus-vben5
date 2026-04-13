@@ -1,0 +1,5 @@
+import { Ref } from 'vue';
+import { GenerateConfig } from '../../generate';
+import { InternalMode, Locale, PanelMode } from '../../interface';
+export declare function offsetPanelDate<DateType = any>(generateConfig: GenerateConfig<DateType>, picker: InternalMode, date: DateType, offset: number): DateType;
+export default function useRangePickerValue<DateType extends object, ValueType extends DateType[]>(generateConfig: Ref<GenerateConfig<DateType>>, locale: Ref<Locale>, calendarValue: Ref<ValueType>, modes: Ref<PanelMode[]>, open: Ref<boolean>, activeIndex: Ref<number>, pickerMode: Ref<InternalMode>, multiplePanel: Ref<boolean>, defaultPickerValue?: Ref<any>, pickerValue?: Ref<any>, timeDefaultValue?: Ref<any>, onPickerValueChange?: ((dates: ValueType, info: any) => void) | Ref<((dates: ValueType, info: any) => void) | undefined>, minDate?: Ref<DateType | undefined>, maxDate?: Ref<DateType | undefined>): [currentIndexPickerValue: Ref<DateType>, setCurrentIndexPickerValue: (value: DateType, source?: 'reset' | 'panel') => void];

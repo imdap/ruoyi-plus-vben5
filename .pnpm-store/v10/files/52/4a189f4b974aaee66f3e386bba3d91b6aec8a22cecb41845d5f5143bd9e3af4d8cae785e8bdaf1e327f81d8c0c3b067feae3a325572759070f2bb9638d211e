@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:!0}),exports.globalConfigStore=void 0;let globalConfigStore=exports.globalConfigStore={size:"",version:1,zIndex:999,resizeInterval:500};

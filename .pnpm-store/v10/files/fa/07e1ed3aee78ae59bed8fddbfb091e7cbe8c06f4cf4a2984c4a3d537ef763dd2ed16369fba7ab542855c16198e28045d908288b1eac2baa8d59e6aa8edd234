@@ -1,0 +1,47 @@
+{
+  "name": "@cspell/dict-cpp",
+  "version": "7.0.2",
+  "description": "C/C++ Dictionary dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "cspell-tools-cli build",
+    "test": "pnpm test-samples && pnpm test-src",
+    "test-samples": "cspell samples",
+    "test-src": "shx head -n 10000 \"src/cpp.txt\" | cspell -c ./cspell-ext.json --locale=* --languageId=cpp stdin",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/cpp"
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "cpp",
+    "C++",
+    "C",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/cpp#readme",
+  "files": [
+    "dict/*.txt.gz",
+    "cspell-ext.json"
+  ],
+  "gitHead": "cb65800c6de2a5b0f05996cf68aab96fc71f45fa"
+}

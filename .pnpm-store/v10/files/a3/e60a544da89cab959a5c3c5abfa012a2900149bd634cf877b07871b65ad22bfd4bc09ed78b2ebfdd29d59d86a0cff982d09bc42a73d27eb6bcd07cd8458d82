@@ -1,0 +1,54 @@
+.vxe-empty {
+  position: relative;
+  color: var(--vxe-ui-font-color);
+  font-family: var(--vxe-ui-font-family);
+  text-align: center;
+  font-size: var(--vxe-ui-font-size-default);
+}
+.vxe-empty.theme--primary .vxe-empty--icon-wrapper {
+  color: var(--vxe-ui-font-primary-color);
+}
+.vxe-empty.theme--success .vxe-empty--icon-wrapper {
+  color: var(--vxe-ui-status-success-color);
+}
+.vxe-empty.theme--info .vxe-empty--icon-wrapper {
+  color: var(--vxe-ui-status-info-color);
+}
+.vxe-empty.theme--warning .vxe-empty--icon-wrapper {
+  color: var(--vxe-ui-status-warning-color);
+}
+.vxe-empty.theme--danger .vxe-empty--icon-wrapper {
+  color: var(--vxe-ui-status-danger-color);
+}
+.vxe-empty.theme--error .vxe-empty--icon-wrapper {
+  color: var(--vxe-ui-status-error-color);
+}
+
+.vxe-empty--inner {
+  display: inline-block;
+}
+
+.vxe-empty--icon-wrapper {
+  font-size: 4.8em;
+}
+.vxe-empty--icon-wrapper > i {
+  display: block;
+}
+
+.vxe-empty--img-wrapper > img {
+  height: 5.2em;
+}
+
+.vxe-empty--content-wrapper {
+  padding-top: 0.5em 0;
+}
+
+.vxe-empty.size--medium {
+  font-size: var(--vxe-ui-font-size-medium);
+}
+.vxe-empty.size--small {
+  font-size: var(--vxe-ui-font-size-small);
+}
+.vxe-empty.size--mini {
+  font-size: var(--vxe-ui-font-size-mini);
+}

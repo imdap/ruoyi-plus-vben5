@@ -1,0 +1,7 @@
+import * as vue_jsx_runtime14 from "vue/jsx-runtime";
+
+//#region src/select/usePopupRender.d.ts
+type RenderFunction = (...args: any[]) => any;
+declare function usePopupRender(renderFn?: RenderFunction): ((...args: any[]) => vue_jsx_runtime14.JSX.Element) | undefined;
+//#endregion
+export { usePopupRender as default };

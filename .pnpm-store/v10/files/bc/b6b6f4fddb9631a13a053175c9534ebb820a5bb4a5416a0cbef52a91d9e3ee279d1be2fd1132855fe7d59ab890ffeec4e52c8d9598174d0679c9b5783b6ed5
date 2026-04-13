@@ -1,0 +1,6 @@
+import * as vue_jsx_runtime9 from "vue/jsx-runtime";
+
+//#region src/result/unauthorized.d.ts
+declare function Unauthorized(): vue_jsx_runtime9.JSX.Element;
+//#endregion
+export { Unauthorized as default };

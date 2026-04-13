@@ -1,0 +1,107 @@
+import { AnyObject, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import locale from "../date-picker/locale/en_US.js";
+import "./locale/en_US.js";
+import * as vue202 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { GenerateConfig } from "@v-c/picker/generate/index";
+
+//#region src/calendar/generateCalendar.d.ts
+type CalendarMode = 'year' | 'month';
+type HeaderRender<DateType> = (config: {
+  value: DateType;
+  type: CalendarMode;
+  onChange: (date: DateType) => void;
+  onTypeChange: (type: CalendarMode) => void;
+}) => VueNode;
+interface SelectInfo {
+  source: 'year' | 'month' | 'date' | 'customize';
+}
+type CalendarSemanticName = keyof CalendarSemanticClassNames & keyof CalendarSemanticStyles;
+interface CalendarSemanticClassNames {
+  root?: string;
+  header?: string;
+  body?: string;
+  content?: string;
+  item?: string;
+}
+interface CalendarSemanticStyles {
+  root?: CSSProperties;
+  header?: CSSProperties;
+  body?: CSSProperties;
+  content?: CSSProperties;
+  item?: CSSProperties;
+}
+type CalendarClassNamesType<DateType> = SemanticClassNamesType<CalendarProps<DateType>, CalendarSemanticClassNames>;
+type CalendarStylesType<DateType> = SemanticStylesType<CalendarProps<DateType>, CalendarSemanticStyles>;
+interface CalendarProps<DateType> extends CalendarEmitsProps<DateType> {
+  prefixCls?: string;
+  rootClass?: string;
+  classes?: CalendarClassNamesType<DateType>;
+  styles?: CalendarStylesType<DateType>;
+  locale?: typeof locale;
+  validRange?: [DateType, DateType];
+  disabledDate?: (date: DateType) => boolean;
+  /** @deprecated Please use fullCellRender instead. */
+  dateFullCellRender?: (date: DateType) => VueNode;
+  /** @deprecated Please use cellRender instead. */
+  dateCellRender?: (date: DateType) => VueNode;
+  /** @deprecated Please use fullCellRender instead. */
+  monthFullCellRender?: (date: DateType) => VueNode;
+  /** @deprecated Please use cellRender instead. */
+  monthCellRender?: (date: DateType) => VueNode;
+  cellRender?: (date: DateType, info: any) => VueNode;
+  fullCellRender?: (date: DateType, info: any) => VueNode;
+  headerRender?: HeaderRender<DateType>;
+  value?: DateType;
+  defaultValue?: DateType;
+  mode?: CalendarMode;
+  fullscreen?: boolean;
+  showWeek?: boolean;
+}
+declare const calendarProps: string[];
+interface CalendarSlots {
+  dateFullCellRender?: (ctx: {
+    date: AnyObject;
+  }) => any;
+  dateCellRender?: (ctx: {
+    date: AnyObject;
+  }) => any;
+  monthFullCellRender?: (ctx: {
+    date: AnyObject;
+  }) => any;
+  monthCellRender?: (ctx: {
+    date: AnyObject;
+  }) => any;
+  cellRender?: (ctx: {
+    date: AnyObject;
+    info: any;
+  }) => any;
+  fullCellRender?: (ctx: {
+    date: AnyObject;
+    info: any;
+  }) => any;
+  headerRender?: (config: {
+    value: AnyObject;
+    type: CalendarMode;
+    onChange: (date: AnyObject) => void;
+    onTypeChange: (type: CalendarMode) => void;
+  }) => any;
+  [key: string]: any;
+}
+interface CalendarEmits<DateType = AnyObject> {
+  'change': (date: DateType) => void;
+  'update:value': (date: DateType) => void;
+  'panelChange': (date: DateType, mode: CalendarMode) => void;
+  'select': (date: DateType, selectInfo: SelectInfo) => void;
+}
+interface CalendarEmitsProps<DateType = AnyObject> {
+  onChange?: CalendarEmits<DateType>['change'];
+  'onUpdate:value'?: CalendarEmits<DateType>['update:value'];
+  onPanelChange?: CalendarEmits<DateType>['panelChange'];
+  onSelect?: CalendarEmits<DateType>['select'];
+}
+declare function generateCalendar<DateType extends AnyObject>(generateConfig: GenerateConfig<DateType>): vue202.DefineSetupFnComponent<CalendarProps<DateType>, CalendarEmits<DateType>, SlotsType<CalendarSlots>, CalendarProps<DateType>, vue202.PublicProps>;
+//#endregion
+export { CalendarClassNamesType, CalendarEmits, CalendarEmitsProps, CalendarMode, CalendarProps, CalendarSemanticClassNames, CalendarSemanticName, CalendarSemanticStyles, CalendarSlots, CalendarStylesType, HeaderRender, SelectInfo, calendarProps, generateCalendar as default };

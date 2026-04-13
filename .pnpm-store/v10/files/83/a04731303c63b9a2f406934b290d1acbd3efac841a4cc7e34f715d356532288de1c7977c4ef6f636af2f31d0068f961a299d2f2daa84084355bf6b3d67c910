@@ -1,0 +1,43 @@
+{
+  "name": "@cspell/dict-fonts",
+  "version": "4.0.6",
+  "description": "Font names dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "fonts",
+    "font names",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/fonts#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/fonts"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "files": [
+    "dict/fonts.txt",
+    "cspell-ext.json"
+  ],
+  "scripts": {
+    "build": "cspell-tools-cli compile --keep-raw-case --use-legacy-splitter src/fonts.txt --no-compress -o ./dict",
+    "prepare:dictionary": "pnpm run build",
+    "prepublishOnly": "echo pre-publish",
+    "test": "shx head -n 100 src/fonts.txt | cspell -c ./cspell.json \"--locale=*\" \"--languageId=*\" stdin"
+  },
+  "gitHead": "86d6d1fc5212a9b9ec281cc238176989e3980f65"
+}

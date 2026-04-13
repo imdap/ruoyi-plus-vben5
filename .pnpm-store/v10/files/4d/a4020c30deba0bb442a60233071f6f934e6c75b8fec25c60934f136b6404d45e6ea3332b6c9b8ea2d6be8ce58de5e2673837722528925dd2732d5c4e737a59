@@ -1,0 +1,23 @@
+import { EmptyEmit, VueNode } from "../../_util/type.js";
+import * as vue800 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/typography/Base/Ellipsis.d.ts
+interface EllipsisProps {
+  enableMeasure?: boolean;
+  text?: VueNode;
+  width: number;
+  rows: number;
+  onEllipsis: (isEllipsis: boolean) => void;
+  expanded: boolean;
+  /**
+   * Mark for misc update. Which will not affect ellipsis content length.
+   * e.g. tooltip content update.
+   */
+  miscDeps: any[];
+}
+declare const Ellipsis: vue800.DefineSetupFnComponent<EllipsisProps, EmptyEmit, SlotsType<{
+  default?: (nodeList: any[], canEllipsis: boolean) => any;
+}>, EllipsisProps, vue800.PublicProps>;
+//#endregion
+export { EllipsisProps, Ellipsis as default };

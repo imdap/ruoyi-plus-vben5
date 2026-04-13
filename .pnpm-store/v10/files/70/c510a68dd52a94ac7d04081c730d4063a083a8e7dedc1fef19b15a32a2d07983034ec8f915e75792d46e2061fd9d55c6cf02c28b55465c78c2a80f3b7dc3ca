@@ -1,0 +1,12 @@
+import { AggregationColor } from "../color.js";
+import * as vue732 from "vue";
+
+//#region src/color-picker/components/ColorClear.d.ts
+interface ColorClearProps {
+  prefixCls: string;
+  value?: AggregationColor;
+  onChange?: (value: AggregationColor) => void;
+}
+declare const _default: vue732.DefineSetupFnComponent<ColorClearProps, {}, {}, ColorClearProps & {}, vue732.PublicProps>;
+//#endregion
+export { ColorClearProps, _default as default };

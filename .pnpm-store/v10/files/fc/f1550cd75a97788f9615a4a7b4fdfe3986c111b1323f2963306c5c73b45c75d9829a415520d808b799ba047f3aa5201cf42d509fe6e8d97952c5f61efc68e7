@@ -1,0 +1,46 @@
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue389 from "vue";
+
+//#region src/timeline/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 轨迹颜色
+   * @descEN Line color
+   */
+  tailColor?: string;
+  /**
+   * @desc 轨迹宽度
+   * @descEN Line width
+   */
+  tailWidth?: number | string;
+  /**
+   * @desc 节点边框宽度
+   * @descEN Border width of node
+   */
+  dotBorderWidth?: number | string;
+  /**
+   * @desc 节点大小
+   * @descEN Node size
+   */
+  dotSize?: number | string;
+  /**
+   * @desc 节点背景色
+   * @descEN Background color of node
+   */
+  dotBg?: string;
+  /**
+   * @desc 时间项下间距
+   * @descEN Bottom padding of item
+   */
+  itemPaddingBottom?: number;
+}
+interface TimelineToken extends FullToken<'Timeline'> {
+  itemHeadSize: number;
+  customHeadPaddingVertical: number;
+  paddingInlineEnd: number;
+}
+declare const prepareComponentToken: GetDefaultToken<'Timeline'>;
+declare const _default: (prefixCls: vue389.Ref<string>, rootCls?: vue389.Ref<string | undefined>) => readonly [vue389.Ref<string, string>, vue389.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, TimelineToken, _default as default, prepareComponentToken };

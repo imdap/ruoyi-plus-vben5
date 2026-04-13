@@ -1,0 +1,1 @@
+{"version":3,"file":"IModuleImportMapScope.d.ts","sourceRoot":"","sources":["../../../src/module/types/IModuleImportMapScope.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,oBAAoB,MAAM,2BAA2B,CAAC;AAElE,MAAM,CAAC,OAAO,WAAW,qBAAqB;IAC7C,KAAK,EAAE,MAAM,CAAC;IACd,KAAK,EAAE,oBAAoB,EAAE,CAAC;CAC9B"}

@@ -1,0 +1,14 @@
+import { EmptyEmit } from "../_util/type.js";
+import { UploadProps, UploadSlots } from "./interface.js";
+import * as vue176 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/upload/Dragger.d.ts
+type DraggerProps<T = any> = UploadProps<T> & {
+  height?: number;
+};
+declare const Dragger: vue176.DefineSetupFnComponent<DraggerProps<any>, EmptyEmit, SlotsType<UploadSlots<any>>, UploadProps<any> & {
+  height?: number;
+}, vue176.PublicProps>;
+//#endregion
+export { DraggerProps, Dragger as default };

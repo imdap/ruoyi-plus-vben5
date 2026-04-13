@@ -1,0 +1,11 @@
+import * as vue18 from "vue";
+
+//#region src/badge/SingleNumber.d.ts
+interface SingleNumberProps {
+  prefixCls: string;
+  value: string;
+  count: number;
+}
+declare const _default: vue18.DefineSetupFnComponent<SingleNumberProps, {}, {}, SingleNumberProps & {}, vue18.PublicProps>;
+//#endregion
+export { SingleNumberProps, _default as default };

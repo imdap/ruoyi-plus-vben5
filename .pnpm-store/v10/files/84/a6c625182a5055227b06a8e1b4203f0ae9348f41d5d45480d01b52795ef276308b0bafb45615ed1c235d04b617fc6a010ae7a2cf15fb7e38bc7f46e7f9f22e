@@ -1,0 +1,10 @@
+import { FullToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue223 from "vue";
+
+//#region src/_util/wave/style.d.ts
+interface ComponentToken {}
+interface WaveToken extends FullToken<'Wave'> {}
+declare const _default: (prefixCls: vue223.Ref<string>, rootCls?: vue223.Ref<string | undefined>) => vue223.Ref<string, string>;
+//#endregion
+export { ComponentToken, WaveToken, _default as default };

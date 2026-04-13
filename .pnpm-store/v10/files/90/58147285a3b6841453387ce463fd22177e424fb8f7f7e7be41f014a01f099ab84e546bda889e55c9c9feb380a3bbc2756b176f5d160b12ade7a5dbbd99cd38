@@ -1,0 +1,24 @@
+import { CascaderProps as CascaderProps$1 } from "./index.js";
+import * as vue145 from "vue";
+import { SlotsType } from "vue";
+import { CascaderProps, DefaultOptionType } from "@v-c/cascader";
+
+//#region src/cascader/Panel.d.ts
+type PanelPickType = 'value' | 'defaultValue' | 'changeOnSelect' | 'options' | 'prefixCls' | 'fieldNames' | 'showCheckedStrategy' | 'loadData' | 'expandTrigger' | 'expandIcon' | 'loadingIcon' | 'direction' | 'notFoundContent' | 'disabled' | 'optionRender' | 'multiple' | 'rootClass';
+interface CascaderPanelProps<OptionType extends DefaultOptionType = DefaultOptionType, ValueField extends keyof OptionType = keyof OptionType, Multiple extends boolean = boolean> extends Pick<CascaderProps$1<OptionType, ValueField, Multiple>, PanelPickType>, CascaderPanelEmitsProps {}
+interface CascaderPanelEmits {
+  'change': NonNullable<CascaderProps['onChange']>;
+  'update:value': (value: any) => void;
+}
+interface CascaderPanelEmitsProps {
+  onChange?: CascaderPanelEmits['change'];
+  'onUpdate:value'?: CascaderPanelEmits['update:value'];
+}
+interface CascaderPanelSlots {
+  expandIcon?: () => any;
+  notFoundContent?: () => any;
+  optionRender?: (option: DefaultOptionType) => any;
+}
+declare const CascaderPanel: vue145.DefineSetupFnComponent<CascaderPanelProps<DefaultOptionType, string, boolean>, CascaderPanelEmits, SlotsType<CascaderPanelSlots>, CascaderPanelProps<DefaultOptionType, string, boolean>, vue145.PublicProps>;
+//#endregion
+export { CascaderPanelEmits, CascaderPanelEmitsProps, CascaderPanelProps, CascaderPanelSlots, PanelPickType, CascaderPanel as default };

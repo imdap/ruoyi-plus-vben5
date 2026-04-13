@@ -1,0 +1,270 @@
+import { genCssVar } from "../theme/util/genStyleUtils.js";
+import { getSlotPropsFnRun, toPropsRefs } from "../_util/tools.js";
+import { computed, createVNode, defineComponent, mergeProps, shallowRef, watch } from "vue";
+import { clsx } from "@v-c/util";
+import { DownOutlined, LeftOutlined, RightOutlined, UpOutlined } from "@antdv-next/icons";
+
+//#region src/splitter/SplitBar.tsx
+function getValidNumber(num) {
+	return typeof num === "number" && !Number.isNaN(num) && Number.isFinite(num) ? Math.round(num) : 0;
+}
+const DOUBLE_CLICK_TIME_GAP = 300;
+const SplitBar = /* @__PURE__ */ defineComponent((props, { slots, attrs }) => {
+	const { vertical, resizable, index, containerSize, ariaNow, ariaMin, ariaMax, prefixCls, rootPrefixCls, lazy } = toPropsRefs(props, "vertical", "resizable", "index", "containerSize", "ariaNow", "ariaMin", "ariaMax", "prefixCls", "rootPrefixCls", "lazy");
+	const splitBarPrefixCls = computed(() => `${prefixCls.value}-bar`);
+	const lastClickTimeRef = shallowRef(0);
+	const barVarName = computed(() => genCssVar(rootPrefixCls.value, "splitter")[0]);
+	const startPos = shallowRef();
+	const constrainedOffset = shallowRef(0);
+	const constrainedOffsetX = computed(() => vertical.value ? 0 : constrainedOffset.value);
+	const constrainedOffsetY = computed(() => vertical.value ? constrainedOffset.value : 0);
+	const onMouseDown = (event) => {
+		event.stopPropagation();
+		const currentTime = Date.now();
+		const timeGap = currentTime - lastClickTimeRef.value;
+		if (timeGap > 0 && timeGap < DOUBLE_CLICK_TIME_GAP) return;
+		lastClickTimeRef.value = currentTime;
+		if (resizable.value && event.currentTarget) {
+			startPos.value = [event.pageX, event.pageY];
+			props?.onOffsetStart?.(index.value);
+		}
+	};
+	const onTouchStart = (e) => {
+		if (resizable.value && e.touches.length === 1) {
+			const touch = e.touches[0];
+			startPos.value = [touch.pageX, touch.pageY];
+			props?.onOffsetStart?.(index.value);
+		}
+	};
+	const getConstrainedOffset = (rawOffset) => {
+		const currentPos = containerSize.value * ariaNow.value / 100;
+		const newPos = currentPos + rawOffset;
+		const minAllowed = Math.max(0, containerSize.value * ariaMin.value / 100);
+		const maxAllowed = Math.min(containerSize.value, containerSize.value * ariaMax.value / 100);
+		return Math.max(minAllowed, Math.min(maxAllowed, newPos)) - currentPos;
+	};
+	const handleLazyMove = (offsetX, offsetY) => {
+		constrainedOffset.value = getConstrainedOffset(vertical.value ? offsetY : offsetX);
+	};
+	const handleLazyEnd = () => {
+		props?.onOffsetUpdate?.(index.value, constrainedOffsetX.value, constrainedOffsetY.value, true);
+		constrainedOffset.value = 0;
+		props?.onOffsetEnd?.(true);
+	};
+	const getVisibilityClass = (mode) => {
+		switch (mode) {
+			case true: return `${splitBarPrefixCls.value}-collapse-bar-always-visible`;
+			case false: return `${splitBarPrefixCls.value}-collapse-bar-always-hidden`;
+			case "auto": return `${splitBarPrefixCls.value}-collapse-bar-hover-only`;
+		}
+	};
+	watch([
+		startPos,
+		index,
+		lazy
+	], (_n, _o, onCleanup) => {
+		if (!startPos.value) return;
+		const onMouseMove = (e) => {
+			const { pageX, pageY } = e;
+			const offsetX = pageX - startPos.value[0];
+			const offsetY = pageY - startPos.value[1];
+			if (lazy.value) handleLazyMove(offsetX, offsetY);
+			else props?.onOffsetUpdate?.(index.value, offsetX, offsetY);
+		};
+		const onMouseUp = () => {
+			if (lazy.value) handleLazyEnd();
+			else props?.onOffsetEnd?.();
+			startPos.value = void 0;
+		};
+		const handleTouchMove = (e) => {
+			if (e.touches.length === 1) {
+				const touch = e.touches[0];
+				const offsetX = touch.pageX - startPos.value[0];
+				const offsetY = touch.pageY - startPos.value[1];
+				if (lazy.value) handleLazyMove(offsetX, offsetY);
+				else props?.onOffsetUpdate?.(index.value, offsetX, offsetY);
+			}
+		};
+		const handleTouchEnd = () => {
+			if (lazy.value) handleLazyEnd();
+			else props?.onOffsetEnd?.();
+			startPos.value = void 0;
+		};
+		const eventHandlerMap = {
+			mousemove: onMouseMove,
+			mouseup: onMouseUp,
+			touchmove: handleTouchMove,
+			touchend: handleTouchEnd
+		};
+		for (const [event, handler] of Object.entries(eventHandlerMap)) window.addEventListener(event, handler);
+		onCleanup(() => {
+			for (const [event, handler] of Object.entries(eventHandlerMap)) window.removeEventListener(event, handler);
+		});
+	}, {
+		immediate: true,
+		flush: "post"
+	});
+	return () => {
+		const { collapsibleIcon, draggerClassName, draggerStyle, active, startCollapsible, showStartCollapsibleIcon, onCollapse, endCollapsible, showEndCollapsibleIcon } = props;
+		const transformStyle = { [barVarName.value("bar-preview-offset")]: `${constrainedOffset.value}px` };
+		const propCollapsibleIconStart = collapsibleIcon?.start;
+		const propCollapsibleIconEnd = collapsibleIcon?.end;
+		const collapsibleIconStart = getSlotPropsFnRun(slots, { collapsibleIconStart: propCollapsibleIconStart }, "collapsibleIconStart", false);
+		const collapsibleIconEnd = getSlotPropsFnRun(slots, { collapsibleIconEnd: propCollapsibleIconEnd }, "collapsibleIconEnd", false);
+		const draggerIcon = getSlotPropsFnRun(slots, props, "draggerIcon", false);
+		const renderIconsFn = () => {
+			let startIcon = null;
+			let endIcon = null;
+			const startCustomize = collapsibleIconStart !== void 0;
+			const endCustomize = collapsibleIconEnd !== void 0;
+			if (vertical.value) {
+				startIcon = startCustomize ? collapsibleIconStart : createVNode(UpOutlined, null, null);
+				endIcon = endCustomize ? collapsibleIconEnd : createVNode(DownOutlined, null, null);
+			} else {
+				startIcon = startCustomize ? collapsibleIconStart : createVNode(LeftOutlined, null, null);
+				endIcon = endCustomize ? collapsibleIconEnd : createVNode(RightOutlined, null, null);
+			}
+			return [
+				startIcon,
+				endIcon,
+				startCustomize,
+				endCustomize
+			];
+		};
+		const [startIcon, endIcon, startCustomize, endCustomize] = renderIconsFn();
+		return createVNode("div", mergeProps(attrs, {
+			"class": splitBarPrefixCls.value,
+			"role": "separator",
+			"aria-valuenow": getValidNumber(ariaNow.value),
+			"aria-valuemin": getValidNumber(ariaMin.value),
+			"aria-valuemax": getValidNumber(ariaMax.value)
+		}), [
+			lazy.value && createVNode("div", {
+				"class": clsx(`${splitBarPrefixCls.value}-preview`, { [`${splitBarPrefixCls.value}-preview-active`]: !!constrainedOffset.value }),
+				"style": transformStyle
+			}, null),
+			createVNode("div", {
+				"style": draggerStyle,
+				"class": clsx(`${splitBarPrefixCls.value}-dragger`, {
+					[`${splitBarPrefixCls.value}-dragger-disabled`]: !resizable.value,
+					[`${splitBarPrefixCls.value}-dragger-active`]: active,
+					[`${splitBarPrefixCls.value}-dragger-customize`]: draggerIcon !== void 0
+				}, draggerClassName?.default, active && draggerClassName?.active),
+				"onMousedown": onMouseDown,
+				"onTouchstart": onTouchStart,
+				"onDblclick": () => props?.onDraggerDoubleClick?.(index.value)
+			}, [draggerIcon !== void 0 ? createVNode("div", { "class": clsx(`${splitBarPrefixCls.value}-dragger-icon`) }, [draggerIcon]) : null]),
+			startCollapsible && createVNode("div", {
+				"class": clsx(`${splitBarPrefixCls.value}-collapse-bar`, `${splitBarPrefixCls.value}-collapse-bar-start`, { [`${splitBarPrefixCls.value}-collapse-bar-customize`]: startCustomize }, getVisibilityClass(showStartCollapsibleIcon)),
+				"onClick": () => onCollapse(index.value, "start")
+			}, [createVNode("span", { "class": clsx(`${splitBarPrefixCls.value}-collapse-icon`, `${splitBarPrefixCls.value}-collapse-start`) }, [startIcon])]),
+			endCollapsible && createVNode("div", {
+				"class": clsx(`${splitBarPrefixCls.value}-collapse-bar`, `${splitBarPrefixCls.value}-collapse-bar-end`, { [`${splitBarPrefixCls.value}-collapse-bar-customize`]: endCustomize }, getVisibilityClass(showEndCollapsibleIcon)),
+				"onClick": () => onCollapse(index.value, "end")
+			}, [createVNode("span", { "class": clsx(`${splitBarPrefixCls.value}-collapse-icon`, `${splitBarPrefixCls.value}-collapse-end`) }, [endIcon])])
+		]);
+	};
+}, {
+	props: {
+		index: {
+			type: Number,
+			required: true
+		},
+		active: {
+			type: Boolean,
+			required: true
+		},
+		draggerStyle: {
+			type: Object,
+			required: false
+		},
+		draggerClassName: {
+			type: Object,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: true
+		},
+		rootPrefixCls: {
+			type: String,
+			required: true
+		},
+		resizable: {
+			type: Boolean,
+			required: true
+		},
+		startCollapsible: {
+			type: Boolean,
+			required: true
+		},
+		endCollapsible: {
+			type: Boolean,
+			required: true
+		},
+		draggerIcon: { required: false },
+		collapsibleIcon: {
+			type: Object,
+			required: false
+		},
+		showStartCollapsibleIcon: {
+			type: [Boolean, String],
+			required: true
+		},
+		showEndCollapsibleIcon: {
+			type: [Boolean, String],
+			required: true
+		},
+		onDraggerDoubleClick: {
+			type: Function,
+			required: false
+		},
+		onOffsetStart: {
+			type: Function,
+			required: true
+		},
+		onOffsetUpdate: {
+			type: Function,
+			required: true
+		},
+		onOffsetEnd: {
+			type: Function,
+			required: true
+		},
+		onCollapse: {
+			type: Function,
+			required: true
+		},
+		vertical: {
+			type: Boolean,
+			required: true
+		},
+		ariaNow: {
+			type: Number,
+			required: true
+		},
+		ariaMin: {
+			type: Number,
+			required: true
+		},
+		ariaMax: {
+			type: Number,
+			required: true
+		},
+		lazy: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		containerSize: {
+			type: Number,
+			required: true
+		}
+	},
+	name: "SplitBar",
+	inheritAttrs: false
+});
+var SplitBar_default = SplitBar;
+
+//#endregion
+export { SplitBar_default as default };

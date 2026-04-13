@@ -1,0 +1,404 @@
+import { devUseWarning, isDev } from "../_util/warning.js";
+import { globalConfig } from "../config-provider/index.js";
+import { getVueInstance } from "../_util/instance.js";
+import ConfirmDialog_default from "./ConfirmDialog.js";
+import destroyFns_default from "./destroyFns.js";
+import { createVNode, defineComponent, render, watch } from "vue";
+
+//#region src/modal/confirm.tsx
+let defaultRootPrefixCls = "";
+function getRootPrefixCls() {
+	return defaultRootPrefixCls;
+}
+const ConfirmDialogWrapper = /* @__PURE__ */ defineComponent((props) => {
+	return () => createVNode(ConfirmDialog_default, props, null);
+}, { props: {
+	prefixCls: {
+		type: String,
+		required: false
+	},
+	class: {
+		type: String,
+		required: false
+	},
+	rootClass: {
+		type: String,
+		required: false
+	},
+	open: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	title: {
+		type: [
+			Function,
+			String,
+			Number,
+			null,
+			Object,
+			Boolean
+		],
+		required: false,
+		default: void 0
+	},
+	content: {
+		type: [
+			Function,
+			String,
+			Number,
+			null,
+			Object,
+			Boolean
+		],
+		required: false,
+		default: void 0
+	},
+	onOk: {
+		type: Function,
+		required: false
+	},
+	onCancel: {
+		type: Function,
+		required: false
+	},
+	onClose: {
+		type: Function,
+		required: false
+	},
+	afterClose: {
+		type: Function,
+		required: false
+	},
+	okButtonProps: {
+		type: Object,
+		required: false
+	},
+	cancelButtonProps: {
+		type: Object,
+		required: false
+	},
+	centered: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	width: {
+		type: [String, Number],
+		required: false
+	},
+	okText: {
+		type: [
+			Function,
+			String,
+			Number,
+			null,
+			Object,
+			Boolean
+		],
+		required: false,
+		default: void 0
+	},
+	okType: {
+		type: String,
+		required: false
+	},
+	cancelText: {
+		type: [
+			Function,
+			String,
+			Number,
+			null,
+			Object,
+			Boolean
+		],
+		required: false,
+		default: void 0
+	},
+	icon: {
+		type: [
+			Function,
+			String,
+			Number,
+			null,
+			Object,
+			Boolean
+		],
+		required: false,
+		default: void 0
+	},
+	mask: {
+		type: [Object, Boolean],
+		required: false,
+		default: void 0
+	},
+	maskClosable: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	zIndex: {
+		type: Number,
+		required: false
+	},
+	okCancel: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	style: {
+		type: Object,
+		required: false
+	},
+	wrapClassName: {
+		type: String,
+		required: false
+	},
+	maskStyle: {
+		type: Object,
+		required: false
+	},
+	type: {
+		type: String,
+		required: false
+	},
+	keyboard: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	getContainer: {
+		type: [
+			String,
+			Function,
+			Boolean
+		],
+		required: false,
+		skipCheck: true,
+		default: void 0
+	},
+	autoFocusButton: {
+		type: [null, String],
+		required: false
+	},
+	transitionName: {
+		type: String,
+		required: false
+	},
+	maskTransitionName: {
+		type: String,
+		required: false
+	},
+	direction: {
+		type: [String, null],
+		required: false
+	},
+	bodyStyle: {
+		type: Object,
+		required: false
+	},
+	closeIcon: {
+		type: [
+			Function,
+			String,
+			Number,
+			null,
+			Object,
+			Boolean
+		],
+		required: false,
+		default: void 0
+	},
+	footer: {
+		type: [
+			Function,
+			String,
+			Number,
+			null,
+			Object,
+			Boolean
+		],
+		required: false,
+		default: void 0
+	},
+	modalRender: {
+		type: Function,
+		required: false
+	},
+	focusTriggerAfterClose: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	appContext: {
+		type: Object,
+		required: false
+	},
+	closable: {
+		type: [Boolean, Object],
+		required: false,
+		default: void 0
+	},
+	classes: {
+		type: [Object, Function],
+		required: false
+	},
+	styles: {
+		type: [Object, Function],
+		required: false
+	},
+	className: {
+		type: String,
+		required: false
+	},
+	children: {
+		type: [
+			Object,
+			Function,
+			String,
+			Number,
+			null,
+			Boolean,
+			Array
+		],
+		required: false,
+		default: void 0
+	},
+	afterOpenChange: {
+		type: Function,
+		required: false
+	},
+	visible: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	destroyOnHidden: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	mousePosition: {
+		type: [Object, null],
+		required: false
+	},
+	wrapStyle: {
+		type: Object,
+		required: false
+	},
+	height: {
+		type: [String, Number],
+		required: false
+	},
+	bodyProps: { required: false },
+	maskProps: { required: false },
+	rootClassName: {
+		type: String,
+		required: false
+	},
+	wrapProps: { required: false },
+	forceRender: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	panelRef: { required: false }
+} });
+function confirm(config) {
+	const global = globalConfig();
+	const warning = devUseWarning("Modal");
+	if (isDev && config.getContainer === false) warning(false, "usage", "Static method not support `getContainer` to be `false` since it do not have context env.");
+	const container = document.createElement("div");
+	document.body.appendChild(container);
+	let currentConfig = {
+		...config,
+		close,
+		open: true
+	};
+	function destroy(...args) {
+		if (args.some((param) => param?.triggerCancel)) config.onCancel?.(() => {}, ...args.slice(1));
+		const index = destroyFns_default.indexOf(close);
+		if (index !== -1) destroyFns_default.splice(index, 1);
+		render(null, container);
+		container.parentNode?.removeChild(container);
+	}
+	function renderWithProps(props) {
+		const rootPrefixCls = global.getPrefixCls(void 0, getRootPrefixCls());
+		const iconPrefixCls = global.getIconPrefixCls?.();
+		const theme = global.theme.value;
+		const appContext = props?.appContext ?? getVueInstance() ?? null;
+		const prefixCls = props.prefixCls ?? `${rootPrefixCls}-modal`;
+		const vnode = createVNode(ConfirmDialogWrapper, {
+			...props,
+			prefixCls,
+			rootPrefixCls,
+			iconPrefixCls,
+			theme
+		});
+		vnode.appContext = appContext;
+		watch(() => global.theme.value, () => {
+			vnode.component?.update?.();
+		});
+		render(vnode, container);
+	}
+	function close(...args) {
+		currentConfig = {
+			...currentConfig,
+			open: false,
+			afterClose: () => {
+				config.afterClose?.();
+				destroy(...args);
+			}
+		};
+		renderWithProps(currentConfig);
+	}
+	function update(configUpdate) {
+		currentConfig = typeof configUpdate === "function" ? configUpdate(currentConfig) : {
+			...currentConfig,
+			...configUpdate
+		};
+		renderWithProps(currentConfig);
+	}
+	renderWithProps(currentConfig);
+	destroyFns_default.push(close);
+	return {
+		destroy: close,
+		update
+	};
+}
+function withWarn(props) {
+	return {
+		...props,
+		type: "warning"
+	};
+}
+function withInfo(props) {
+	return {
+		...props,
+		type: "info"
+	};
+}
+function withSuccess(props) {
+	return {
+		...props,
+		type: "success"
+	};
+}
+function withError(props) {
+	return {
+		...props,
+		type: "error"
+	};
+}
+function withConfirm(props) {
+	return {
+		...props,
+		type: "confirm"
+	};
+}
+function modalGlobalConfig({ rootPrefixCls }) {
+	defaultRootPrefixCls = rootPrefixCls;
+}
+
+//#endregion
+export { confirm as default, modalGlobalConfig, withConfirm, withError, withInfo, withSuccess, withWarn };

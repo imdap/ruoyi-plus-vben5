@@ -1,0 +1,7 @@
+import { ComponentToken } from "./token.js";
+import * as vue409 from "vue";
+
+//#region src/select/style/index.d.ts
+declare const _default: (prefixCls: vue409.Ref<string>, rootCls?: vue409.Ref<string | undefined>) => readonly [vue409.Ref<string, string>, vue409.ComputedRef<string | undefined>];
+//#endregion
+export { type ComponentToken, _default as default };

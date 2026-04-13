@@ -1,0 +1,80 @@
+@use '../helpers/baseMixin.scss';
+
+/*radio-group*/
+.vxe-radio-group {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  font-size: 0;
+}
+
+.vxe-radio--readonly {
+  color: var(--vxe-ui-font-color);
+  display: inline-flex;
+}
+
+/*radio*/
+.vxe-radio {
+  display: inline-block;
+  vertical-align: middle;
+  white-space: nowrap;
+  line-height: 1;
+  @include baseMixin.createRadioIcon();
+  > input {
+    &[type="radio"] {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border: 0;
+      appearance: none;
+    }
+  }
+  .vxe-radio--label {
+    vertical-align: middle;
+    display: inline-block;
+    max-width: 50em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  &:not(.is--disabled) {
+    > input {
+      &:focus+.vxe-radio--icon {
+        color: var(--vxe-ui-font-primary-darken-color);
+      }
+    }
+  }
+}
+
+.vxe-radio {
+  font-size: var(--vxe-ui-font-size-default);
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+  &:last-of-type {
+    margin-right: 0;
+  }
+}
+
+.vxe-radio--default,
+.vxe-radio-group {
+  margin-right: var(--vxe-ui-base-margin-gap-default);
+  &.size--medium {
+    margin-right: var(--vxe-ui-base-margin-gap-medium);
+  }
+  &.size--small {
+    margin-right: var(--vxe-ui-base-margin-gap-small);
+  }
+  &.size--mini {
+    margin-right: var(--vxe-ui-base-margin-gap-mini);
+  }
+  &:last-of-type {
+    margin-right: 0;
+  }
+}

@@ -1,0 +1,1272 @@
+import { h, resolveComponent } from 'vue';
+import XEUtils from 'xe-utils';
+import { VxeUI } from '../../ui';
+import { getCellValue, setCellValue } from '../../table/src/util';
+import { getFuncText, formatText, isEmptyValue } from '../../ui/src/utils';
+import { getOnName, getModelEvent, getChangeEvent, hasInputType } from '../../ui/src/vn';
+import { errLog } from '../../ui/src/log';
+const { getConfig, renderer, getI18n, getComponent } = VxeUI;
+const componentDefaultModelProp = 'modelValue';
+const defaultCompProps = {};
+function handleDefaultValue(value, defaultVal, initVal) {
+    return XEUtils.eqNull(value) ? (XEUtils.eqNull(defaultVal) ? initVal : defaultVal) : value;
+}
+function parseDate(value, props) {
+    return value && props.valueFormat ? XEUtils.toStringDate(value, props.valueFormat) : value;
+}
+function getFormatDate(value, props, defaultFormat) {
+    const { dateConfig = {} } = props;
+    return XEUtils.toDateString(parseDate(value, props), dateConfig.labelFormat || defaultFormat);
+}
+function getLabelFormatDate(value, props) {
+    return getFormatDate(value, props, getI18n(`vxe.input.date.labelFormat.${props.type || 'date'}`));
+}
+/**
+ * 已废弃
+ * @deprecated
+ */
+function getOldComponentName(name) {
+    return `vxe-${name.replace('$', '')}`;
+}
+function getDefaultComponent({ name }) {
+    return getComponent(name);
+}
+/**
+ * 已废弃
+ * @deprecated
+ */
+function getOldComponent({ name }) {
+    return resolveComponent(getOldComponentName(name));
+}
+function updateFilterChangeOption(params, checked, option) {
+    const { $table } = params;
+    $table.updateFilterOptionStatus(option, checked);
+}
+function saveFilterEvent(params) {
+    const { $table, column } = params;
+    $table.saveFilterByEvent(new Event('change'), column);
+}
+function getNativeAttrs(renderOpts) {
+    let { name, attrs } = renderOpts;
+    if (name === 'input') {
+        attrs = Object.assign({ type: 'text' }, attrs);
+    }
+    return attrs;
+}
+function getInputImmediateModel(renderOpts) {
+    const { name, immediate, props } = renderOpts;
+    if (!immediate) {
+        if (name === 'VxeInput' || name === '$input') {
+            const { type } = props || {};
+            return !(!type || type === 'text' || type === 'number' || type === 'integer' || type === 'float');
+        }
+        if (name === 'input' || name === 'textarea' || name === '$textarea') {
+            return false;
+        }
+        return true;
+    }
+    return immediate;
+}
+function getCellEditProps(renderOpts, params, value, defaultProps) {
+    return XEUtils.assign({ immediate: getInputImmediateModel(renderOpts) }, defaultCompProps, defaultProps, renderOpts.props, { [componentDefaultModelProp]: value });
+}
+function getCellEditFilterProps(renderOpts, params, value, defaultProps) {
+    return XEUtils.assign({}, defaultCompProps, defaultProps, renderOpts.props, { [componentDefaultModelProp]: value });
+}
+function isImmediateCell(renderOpts, params) {
+    return params.$type === 'cell' || getInputImmediateModel(renderOpts);
+}
+function getCellLabelVNs(renderOpts, params, cellLabel, opts) {
+    const { placeholder } = renderOpts;
+    return [
+        h('span', {
+            class: ['vxe-cell--label', opts ? opts.class : '']
+        }, placeholder && isEmptyValue(cellLabel)
+            ? [
+                h('span', {
+                    class: 'vxe-cell--placeholder'
+                }, formatText(getFuncText(placeholder), 1))
+            ]
+            : formatText(cellLabel, 1))
+    ];
+}
+/**
+ * 原生事件处理
+ * @param renderOpts
+ * @param params
+ * @param modelFunc
+ * @param changeFunc
+ */
+function getNativeElementOns(renderOpts, params, eFns) {
+    const { events } = renderOpts;
+    const modelEvent = getModelEvent(renderOpts);
+    const changeEvent = getChangeEvent(renderOpts);
+    const { model: modelFunc, change: changeFunc, blur: blurFunc } = eFns || {};
+    const isSameEvent = changeEvent === modelEvent;
+    const ons = {};
+    if (events) {
+        XEUtils.objectEach(events, (func, key) => {
+            ons[getOnName(key)] = function (...args) {
+                func(params, ...args);
+            };
+        });
+    }
+    if (modelFunc) {
+        ons[getOnName(modelEvent)] = function (targetEvnt) {
+            modelFunc(targetEvnt);
+            if (isSameEvent && changeFunc) {
+                changeFunc(targetEvnt);
+            }
+            if (events && events[modelEvent]) {
+                events[modelEvent](params, targetEvnt);
+            }
+        };
+    }
+    if (!isSameEvent && changeFunc) {
+        ons[getOnName(changeEvent)] = function (evnt) {
+            changeFunc(evnt);
+            if (events && events[changeEvent]) {
+                events[changeEvent](params, evnt);
+            }
+        };
+    }
+    if (blurFunc) {
+        ons[getOnName(blurEvent)] = function (evnt) {
+            blurFunc(evnt);
+            if (events && events[blurEvent]) {
+                events[blurEvent](params, evnt);
+            }
+        };
+    }
+    return ons;
+}
+const blurEvent = 'blur';
+const clearEvent = 'clear';
+/**
+ * 组件事件处理
+ * @param renderOpts
+ * @param params
+ * @param modelFunc
+ * @param changeFunc
+ */
+function getComponentOns(renderOpts, params, eFns, eventOns) {
+    const { events } = renderOpts;
+    const modelEvent = getModelEvent(renderOpts);
+    const changeEvent = getChangeEvent(renderOpts);
+    const { model: modelFunc, change: changeFunc, blur: blurFunc, clear: clearFunc } = eFns || {};
+    const ons = {};
+    XEUtils.objectEach(events, (func, key) => {
+        ons[getOnName(key)] = function (...args) {
+            if (!XEUtils.isFunction(func)) {
+                errLog('vxe.error.errFunc', [func]);
+            }
+            func(params, ...args);
+        };
+    });
+    if (modelFunc) {
+        ons[getOnName(modelEvent)] = function (targetEvnt) {
+            modelFunc(targetEvnt);
+            if (events && events[modelEvent]) {
+                events[modelEvent](params, targetEvnt);
+            }
+        };
+    }
+    if (changeFunc) {
+        ons[getOnName(changeEvent)] = function (...args) {
+            changeFunc(...args);
+            if (events && events[changeEvent]) {
+                events[changeEvent](params, ...args);
+            }
+        };
+    }
+    if (blurFunc) {
+        ons[getOnName(blurEvent)] = function (...args) {
+            blurFunc(...args);
+            if (events && events[blurEvent]) {
+                events[blurEvent](params, ...args);
+            }
+        };
+    }
+    if (clearFunc) {
+        ons[getOnName(clearEvent)] = function (...args) {
+            clearFunc(...args);
+            if (events && events[clearEvent]) {
+                events[clearEvent](params, ...args);
+            }
+        };
+    }
+    return eventOns ? Object.assign(ons, eventOns) : ons;
+}
+function getEditOns(renderOpts, params) {
+    const { $table, row, column } = params;
+    const { name } = renderOpts;
+    const { model } = column;
+    const isImmediate = isImmediateCell(renderOpts, params);
+    return getComponentOns(renderOpts, params, {
+        model(cellValue) {
+            // 处理 model 值双向绑定
+            model.update = true;
+            model.value = cellValue;
+            if (isImmediate) {
+                setCellValue(row, column, cellValue);
+            }
+        },
+        change(eventParams) {
+            // 处理 change 事件相关逻辑
+            if (!isImmediate && name && (['VxeInput', 'VxeNumberInput', 'VxeTextarea', '$input', '$textarea'].includes(name))) {
+                const cellValue = eventParams.value;
+                model.update = true;
+                model.value = cellValue;
+                $table.updateStatus(params, cellValue);
+            }
+            else {
+                $table.updateStatus(params);
+            }
+        },
+        blur() {
+            if (isImmediate) {
+                $table.handleCellRuleUpdateStatus('blur', params);
+            }
+            else {
+                $table.handleCellRuleUpdateStatus('blur', params, model.value);
+            }
+        }
+    });
+}
+function getFilterOns(renderOpts, params, option) {
+    return getComponentOns(renderOpts, params, {
+        model(value) {
+            // 处理 model 值双向绑定
+            option.data = value;
+        },
+        change() {
+            updateFilterChangeOption(params, !isEmptyValue(option.data), option);
+        },
+        blur() {
+            updateFilterChangeOption(params, !isEmptyValue(option.data), option);
+        }
+    });
+}
+function getFloatingFilterOns(renderOpts, params, option) {
+    const { $table, column } = params;
+    if (hasInputType(renderOpts)) {
+        return getComponentOns(renderOpts, params, {
+            model(value) {
+                // 处理 model 值双向绑定
+                option.data = value;
+            },
+            change() {
+                updateFilterChangeOption(params, !isEmptyValue(option.data), option);
+            },
+            clear() {
+                updateFilterChangeOption(params, !isEmptyValue(option.data), option);
+                saveFilterEvent(params);
+            },
+            blur() {
+                $table.saveFilterByEvent(new Event('change'), column);
+            }
+        }, renderOpts.name === 'VxeNumberInput'
+            ? {
+                [getOnName('plus-number')]() {
+                    updateFilterChangeOption(params, !isEmptyValue(option.data), option);
+                    saveFilterEvent(params);
+                },
+                [getOnName('minus-number')]() {
+                    updateFilterChangeOption(params, !isEmptyValue(option.data), option);
+                    saveFilterEvent(params);
+                }
+            }
+            : {});
+    }
+    return getComponentOns(renderOpts, params, {
+        model(value) {
+            // 处理 model 值双向绑定
+            option.data = value;
+        },
+        clear() {
+            updateFilterChangeOption(params, !isEmptyValue(option.data), option);
+            $table.saveFilterByEvent(new Event('change'), column);
+        },
+        change() {
+            updateFilterChangeOption(params, !isEmptyValue(option.data), option);
+            $table.saveFilterByEvent(new Event('change'), column);
+        }
+    });
+}
+function getNativeEditOns(renderOpts, params) {
+    const { $table, row, column } = params;
+    const { model } = column;
+    return getNativeElementOns(renderOpts, params, {
+        model(evnt) {
+            // 处理 model 值双向绑定
+            const targetEl = evnt.target;
+            if (targetEl) {
+                const cellValue = targetEl.value;
+                if (isImmediateCell(renderOpts, params)) {
+                    setCellValue(row, column, cellValue);
+                }
+                else {
+                    model.update = true;
+                    model.value = cellValue;
+                }
+            }
+        },
+        change(evnt) {
+            // 处理 change 事件相关逻辑
+            const targetEl = evnt.target;
+            if (targetEl) {
+                const cellValue = targetEl.value;
+                $table.updateStatus(params, cellValue);
+            }
+        },
+        blur(evnt) {
+            const targetEl = evnt.target;
+            if (targetEl) {
+                const cellValue = targetEl.value;
+                $table.updateStatus(params, cellValue);
+            }
+        }
+    });
+}
+function getNativeFilterOns(renderOpts, params, option) {
+    return getNativeElementOns(renderOpts, params, {
+        model(evnt) {
+            // 处理 model 值双向绑定
+            const targetEl = evnt.target;
+            if (targetEl) {
+                option.data = targetEl.value;
+            }
+        },
+        change() {
+            updateFilterChangeOption(params, !XEUtils.eqNull(option.data), option);
+        },
+        blur() {
+            updateFilterChangeOption(params, !XEUtils.eqNull(option.data), option);
+        }
+    });
+}
+/**
+ * 单元格可编辑渲染-原生的标签
+ * input、textarea、select
+ */
+function nativeEditRender(renderOpts, params) {
+    const { row, column } = params;
+    const { name } = renderOpts;
+    const cellValue = isImmediateCell(renderOpts, params) ? getCellValue(row, column) : column.model.value;
+    return [
+        h(`${name}`, Object.assign(Object.assign(Object.assign({ class: `vxe-default-${name}` }, getNativeAttrs(renderOpts)), { value: cellValue }), getNativeEditOns(renderOpts, params)))
+    ];
+}
+function buttonCellRender(renderOpts, params) {
+    return [
+        h(getDefaultComponent(renderOpts), Object.assign(Object.assign({}, getCellEditProps(renderOpts, params, null)), getComponentOns(renderOpts, params)))
+    ];
+}
+function defaultEditRender(renderOpts, params) {
+    const { row, column } = params;
+    const cellValue = getCellValue(row, column);
+    return [
+        h(getDefaultComponent(renderOpts), Object.assign(Object.assign({}, getCellEditProps(renderOpts, params, cellValue)), getEditOns(renderOpts, params)))
+    ];
+}
+function checkboxEditRender(renderOpts, params) {
+    const { row, column } = params;
+    const cellValue = getCellValue(row, column);
+    return [
+        h(getDefaultComponent(renderOpts), Object.assign(Object.assign({}, getCellEditProps(renderOpts, params, cellValue)), getEditOns(renderOpts, params)))
+    ];
+}
+function radioAndCheckboxGroupEditRender(renderOpts, params) {
+    const { options } = renderOpts;
+    const { row, column } = params;
+    const cellValue = getCellValue(row, column);
+    return [
+        h(getDefaultComponent(renderOpts), Object.assign(Object.assign({ options }, getCellEditProps(renderOpts, params, cellValue)), getEditOns(renderOpts, params)))
+    ];
+}
+/**
+ * 已废弃
+ * @deprecated
+ */
+function oldEditRender(renderOpts, params) {
+    const { row, column } = params;
+    const cellValue = getCellValue(row, column);
+    return [
+        h(getOldComponent(renderOpts), Object.assign(Object.assign({}, getCellEditProps(renderOpts, params, cellValue)), getEditOns(renderOpts, params)))
+    ];
+}
+/**
+ * 已废弃
+ * @deprecated
+ */
+function oldButtonEditRender(renderOpts, params) {
+    return [
+        h(getComponent('vxe-button'), Object.assign(Object.assign({}, getCellEditProps(renderOpts, params, null)), getComponentOns(renderOpts, params)))
+    ];
+}
+/**
+ * 已废弃
+ * @deprecated
+ */
+function oldButtonsEditRender(renderOpts, params) {
+    const { children } = renderOpts;
+    return children ? children.map((childRenderOpts) => oldButtonEditRender(childRenderOpts, params)[0]) : [];
+}
+function renderNativeOptgroups(renderOpts, params, renderOptionsMethods) {
+    const { optionGroups, optionGroupProps = {} } = renderOpts;
+    const groupOptions = optionGroupProps.options || 'options';
+    const groupLabel = optionGroupProps.label || 'label';
+    if (optionGroups) {
+        return optionGroups.map((group, gIndex) => {
+            return h('optgroup', {
+                key: gIndex,
+                label: group[groupLabel]
+            }, renderOptionsMethods(group[groupOptions], renderOpts, params));
+        });
+    }
+    return [];
+}
+/**
+ * 渲染原生的 option 标签
+ */
+function renderNativeOptions(options, renderOpts, params) {
+    const { optionProps = {} } = renderOpts;
+    const { row, column } = params;
+    const labelProp = optionProps.label || 'label';
+    const valueProp = optionProps.value || 'value';
+    const disabledProp = optionProps.disabled || 'disabled';
+    const cellValue = isImmediateCell(renderOpts, params) ? getCellValue(row, column) : column.model.value;
+    if (options) {
+        return options.map((option, oIndex) => {
+            return h('option', {
+                key: oIndex,
+                value: option[valueProp],
+                disabled: option[disabledProp],
+                /* eslint-disable eqeqeq */
+                selected: option[valueProp] == cellValue
+            }, option[labelProp]);
+        });
+    }
+    return [];
+}
+function nativeFilterRender(renderOpts, params) {
+    const { column } = params;
+    const { name } = renderOpts;
+    const attrs = getNativeAttrs(renderOpts);
+    return column.filters.map((option, oIndex) => {
+        return h(`${name}`, Object.assign(Object.assign(Object.assign({ key: oIndex, class: `vxe-default-${name}` }, attrs), { value: option.data }), getNativeFilterOns(renderOpts, params, option)));
+    });
+}
+function defaultFilterRender(renderOpts, params) {
+    const { column } = params;
+    return column.filters.map((option, oIndex) => {
+        const optionValue = option.data;
+        return h(getDefaultComponent(renderOpts), Object.assign(Object.assign({ key: oIndex }, getCellEditFilterProps(renderOpts, renderOpts, optionValue)), getFilterOns(renderOpts, params, option)));
+    });
+}
+function defaultFloatingFilterRender(renderOpts, params) {
+    const { option } = params;
+    const optionValue = option.data;
+    return [
+        h(getDefaultComponent(renderOpts), Object.assign(Object.assign({}, getCellEditFilterProps(renderOpts, renderOpts, optionValue)), getFloatingFilterOns(renderOpts, params, option)))
+    ];
+}
+function defaultFilterOptions() {
+    return [
+        { data: null }
+    ];
+}
+/**
+ * 已废弃
+ * @deprecated
+ */
+function oldFilterRender(renderOpts, params) {
+    const { column } = params;
+    return column.filters.map((option, oIndex) => {
+        const optionValue = option.data;
+        return h(getOldComponent(renderOpts), Object.assign(Object.assign({ key: oIndex }, getCellEditFilterProps(renderOpts, renderOpts, optionValue)), getFilterOns(renderOpts, params, option)));
+    });
+}
+function handleFilterMethod({ option, row, column }) {
+    const { data } = option;
+    const cellValue = XEUtils.get(row, column.field);
+    /* eslint-disable eqeqeq */
+    return cellValue == data;
+}
+function handleInputFilterMethod({ option, row, column }) {
+    const { data } = option;
+    const cellValue = XEUtils.get(row, column.field);
+    /* eslint-disable eqeqeq */
+    return XEUtils.toValueString(cellValue).indexOf(data) > -1;
+}
+function nativeSelectEditRender(renderOpts, params) {
+    return [
+        h('select', Object.assign(Object.assign({ class: 'vxe-default-select' }, getNativeAttrs(renderOpts)), getNativeEditOns(renderOpts, params)), renderOpts.optionGroups ? renderNativeOptgroups(renderOpts, params, renderNativeOptions) : renderNativeOptions(renderOpts.options, renderOpts, params))
+    ];
+}
+function defaultSelectEditRender(renderOpts, params) {
+    const { row, column } = params;
+    const { options, optionProps, optionGroups, optionGroupProps } = renderOpts;
+    const cellValue = getCellValue(row, column);
+    return [
+        h(getDefaultComponent(renderOpts), Object.assign(Object.assign({}, getCellEditProps(renderOpts, params, cellValue, { options, optionProps, optionGroups, optionGroupProps })), getEditOns(renderOpts, params)))
+    ];
+}
+function defaultTableOrTreeSelectEditRender(renderOpts, params) {
+    const { row, column } = params;
+    const { options, optionProps } = renderOpts;
+    const cellValue = getCellValue(row, column);
+    return [
+        h(getDefaultComponent(renderOpts), Object.assign(Object.assign({}, getCellEditProps(renderOpts, params, cellValue, { options, optionProps })), getEditOns(renderOpts, params)))
+    ];
+}
+/**
+ * 已废弃
+ * @deprecated
+ */
+function oldSelectEditRender(renderOpts, params) {
+    const { row, column } = params;
+    const { options, optionProps, optionGroups, optionGroupProps } = renderOpts;
+    const cellValue = getCellValue(row, column);
+    return [
+        h(getOldComponent(renderOpts), Object.assign(Object.assign({}, getCellEditProps(renderOpts, params, cellValue, { options, optionProps, optionGroups, optionGroupProps })), getEditOns(renderOpts, params)))
+    ];
+}
+function handleSelectCellValue(cellValue, renderOpts) {
+    const { options, optionGroups, optionProps = {}, optionGroupProps = {}, props = {} } = renderOpts;
+    let selectItem;
+    const labelProp = optionProps.label || 'label';
+    const valueProp = optionProps.value || 'value';
+    if (!(cellValue === null || cellValue === undefined)) {
+        let vals = [];
+        if (XEUtils.isArray(cellValue)) {
+            vals = cellValue;
+        }
+        else {
+            if (props.multiple && `${cellValue}`.indexOf(',') > -1) {
+                vals = `${cellValue}`.split(',');
+            }
+            else {
+                vals = [cellValue];
+            }
+        }
+        return XEUtils.map(vals, optionGroups
+            ? (value) => {
+                const groupOptions = optionGroupProps.options || 'options';
+                for (let index = 0; index < optionGroups.length; index++) {
+                    /* eslint-disable eqeqeq */
+                    selectItem = XEUtils.find(optionGroups[index][groupOptions], item => item[valueProp] == value);
+                    if (selectItem) {
+                        break;
+                    }
+                }
+                return selectItem ? selectItem[labelProp] : value;
+            }
+            : (value) => {
+                /* eslint-disable eqeqeq */
+                selectItem = XEUtils.find(options, item => item[valueProp] == value);
+                return selectItem ? selectItem[labelProp] : value;
+            }).join(', ');
+    }
+    return '';
+}
+function getSelectCellValue(renderOpts, { row, column }) {
+    const cellValue = XEUtils.get(row, column.field);
+    return handleSelectCellValue(cellValue, renderOpts);
+}
+function handleExportSelectMethod(params) {
+    const { row, column, options } = params;
+    return options.original ? getCellValue(row, column) : getSelectCellValue(column.editRender || column.cellRender, params);
+}
+function handleTreeSelectCellValue(cellValue, renderOpts) {
+    const { options, optionProps = {} } = renderOpts;
+    const labelProp = optionProps.label || 'label';
+    const valueProp = optionProps.value || 'value';
+    const childrenProp = optionProps.children || 'children';
+    if (!(cellValue === null || cellValue === undefined)) {
+        const keyMaps = {};
+        XEUtils.eachTree(options, item => {
+            keyMaps[XEUtils.get(item, valueProp)] = item;
+        }, { children: childrenProp });
+        return XEUtils.map(XEUtils.isArray(cellValue) ? cellValue : [cellValue], (value) => {
+            const item = keyMaps[value];
+            return item ? XEUtils.get(item, labelProp) : item;
+        }).join(', ');
+    }
+    return '';
+}
+function getTreeSelectCellValue(renderOpts, { row, column }) {
+    const cellValue = XEUtils.get(row, column.field);
+    return handleTreeSelectCellValue(cellValue, renderOpts);
+}
+function handleExportTreeSelectMethod(params) {
+    const { row, column, options } = params;
+    return options.original ? getCellValue(row, column) : getTreeSelectCellValue(column.editRender || column.cellRender, params);
+}
+function handleNumberCell(renderOpts, params) {
+    const { props = {}, showNegativeStatus } = renderOpts;
+    const { row, column } = params;
+    const { type } = props;
+    let cellValue = XEUtils.get(row, column.field);
+    let isNegative = false;
+    if (!isEmptyValue(cellValue)) {
+        const numberInputConfig = getConfig().numberInput || {};
+        if (type === 'float') {
+            const autoFill = handleDefaultValue(props.autoFill, numberInputConfig.autoFill, true);
+            const digits = handleDefaultValue(props.digits, numberInputConfig.digits, 1);
+            cellValue = XEUtils.toFixed(XEUtils.floor(cellValue, digits), digits);
+            if (!autoFill) {
+                cellValue = XEUtils.toNumber(cellValue);
+            }
+            if (showNegativeStatus) {
+                if (cellValue < 0) {
+                    isNegative = true;
+                }
+            }
+        }
+        else if (type === 'amount') {
+            const autoFill = handleDefaultValue(props.autoFill, numberInputConfig.autoFill, true);
+            const digits = handleDefaultValue(props.digits, numberInputConfig.digits, 2);
+            const showCurrency = handleDefaultValue(props.showCurrency, numberInputConfig.showCurrency, false);
+            cellValue = XEUtils.toNumber(cellValue);
+            if (showNegativeStatus) {
+                if (cellValue < 0) {
+                    isNegative = true;
+                }
+            }
+            cellValue = XEUtils.commafy(cellValue, { digits });
+            if (!autoFill) {
+                const [iStr, dStr] = cellValue.split('.');
+                if (dStr) {
+                    const dRest = dStr.replace(/0+$/, '');
+                    cellValue = dRest ? [iStr, '.', dRest].join('') : iStr;
+                }
+            }
+            if (showCurrency) {
+                cellValue = `${props.currencySymbol || numberInputConfig.currencySymbol || getI18n('vxe.numberInput.currencySymbol') || ''}${cellValue}`;
+            }
+        }
+        else {
+            if (type === 'integer') {
+                cellValue = XEUtils.toInteger(cellValue);
+            }
+            if (showNegativeStatus) {
+                if (XEUtils.toNumber(cellValue) < 0) {
+                    isNegative = true;
+                }
+            }
+        }
+    }
+    return getCellLabelVNs(renderOpts, params, cellValue, isNegative
+        ? {
+            class: 'is--negative'
+        }
+        : {});
+}
+function handleFormatDatePicker(renderOpts, params) {
+    const { props = {} } = renderOpts;
+    const { cellValue } = params;
+    if (cellValue) {
+        if (props.type !== 'time') {
+            return getLabelFormatDate(cellValue, props);
+        }
+    }
+    return cellValue;
+}
+function handleFormatSelect(renderOpts, params) {
+    const { cellValue } = params;
+    return handleSelectCellValue(cellValue, renderOpts);
+}
+function handleSetSelectValue(renderOpts, params) {
+    const { row, column, cellValue } = params;
+    const { field } = column;
+    if (field) {
+        const { options, optionGroups, optionProps = {}, optionGroupProps = {}, props } = renderOpts;
+        if (isEmptyValue(cellValue)) {
+            XEUtils.set(row, field, props && props.multiple ? [] : null);
+            return;
+        }
+        const isMultiVal = XEUtils.indexOf(`${cellValue}`, ',') > -1;
+        const labelProp = optionProps.label || 'label';
+        const valueProp = optionProps.value || 'value';
+        const labelMpas = {};
+        if (optionGroups && optionGroups.length) {
+            const groupOptions = optionGroupProps.options || 'options';
+            for (let i = 0; i < optionGroups.length; i++) {
+                const opts = optionGroups[i][groupOptions] || {};
+                for (let j = 0; j < opts.length; j++) {
+                    const item = opts[j];
+                    if (isMultiVal) {
+                        labelMpas[item[labelProp]] = item;
+                        /* eslint-disable eqeqeq */
+                    }
+                    else if (item[labelProp] == cellValue) {
+                        XEUtils.set(row, field, item[valueProp]);
+                        return;
+                    }
+                }
+            }
+        }
+        else {
+            if (options) {
+                for (let i = 0; i < options.length; i++) {
+                    const item = options[i];
+                    if (isMultiVal) {
+                        labelMpas[item[labelProp]] = item;
+                        /* eslint-disable eqeqeq */
+                    }
+                    else if (item[labelProp] == cellValue) {
+                        XEUtils.set(row, field, item[valueProp]);
+                        return;
+                    }
+                }
+            }
+        }
+        if (isMultiVal) {
+            XEUtils.set(row, field, (isMultiVal
+                ? cellValue.split(',')
+                : [cellValue]).map((label) => {
+                const item = labelMpas[label];
+                return item ? item[valueProp] : label;
+            }));
+        }
+        else {
+            XEUtils.set(row, field, cellValue);
+        }
+    }
+}
+function handleFormatTreeSelect(renderOpts, params) {
+    const { cellValue } = params;
+    return handleTreeSelectCellValue(cellValue, renderOpts);
+}
+function handleSetTreeSelectValue(renderOpts, params) {
+    const { row, column, cellValue } = params;
+    const { field } = column;
+    if (field) {
+        const { options, optionProps = {} } = renderOpts;
+        const labelProp = optionProps.label || 'label';
+        const valueProp = optionProps.value || 'value';
+        const childrenProp = optionProps.children || 'children';
+        const matchRest = XEUtils.findTree(options || [], item => XEUtils.get(item, labelProp) === cellValue, { children: childrenProp });
+        if (matchRest) {
+            const selectItem = matchRest.item;
+            if (selectItem) {
+                XEUtils.set(row, field, selectItem[valueProp]);
+                return;
+            }
+        }
+        XEUtils.set(row, field, cellValue);
+    }
+}
+/**
+ * 表格 - 渲染器
+ */
+renderer.mixin({
+    input: {
+        tableAutoFocus: 'input',
+        renderTableEdit: nativeEditRender,
+        renderTableDefault: nativeEditRender,
+        createTableFilterOptions: defaultFilterOptions,
+        renderTableFilter: nativeFilterRender,
+        tableFilterDefaultMethod: handleInputFilterMethod
+    },
+    textarea: {
+        tableAutoFocus: 'textarea',
+        renderTableEdit: nativeEditRender
+    },
+    select: {
+        renderTableEdit: nativeSelectEditRender,
+        renderTableDefault: nativeSelectEditRender,
+        renderTableCell(renderOpts, params) {
+            return getCellLabelVNs(renderOpts, params, getSelectCellValue(renderOpts, params));
+        },
+        createTableFilterOptions: defaultFilterOptions,
+        renderTableFilter(renderOpts, params) {
+            const { column } = params;
+            return column.filters.map((option, oIndex) => {
+                return h('select', Object.assign(Object.assign({ key: oIndex, class: 'vxe-default-select' }, getNativeAttrs(renderOpts)), getNativeFilterOns(renderOpts, params, option)), renderOpts.optionGroups ? renderNativeOptgroups(renderOpts, params, renderNativeOptions) : renderNativeOptions(renderOpts.options, renderOpts, params));
+            });
+        },
+        tableCellFormatter: handleFormatSelect,
+        tableCellCopyMethod: handleFormatSelect,
+        tableCellPasteMethod: handleSetSelectValue,
+        tableFilterDefaultMethod: handleFilterMethod,
+        tableExportMethod: handleExportSelectMethod
+    },
+    VxeInput: {
+        tableAutoFocus: 'input',
+        renderTableEdit: defaultEditRender,
+        renderTableCell(renderOpts, params) {
+            const { props = {} } = renderOpts;
+            const { row, column } = params;
+            const inputConfig = getConfig().input || {};
+            const digits = props.digits || inputConfig.digits || 2;
+            let cellValue = XEUtils.get(row, column.field);
+            if (cellValue) {
+                switch (props.type) {
+                    case 'date':
+                    case 'week':
+                    case 'month':
+                    case 'quarter':
+                    case 'year':
+                        cellValue = getLabelFormatDate(cellValue, props);
+                        break;
+                    case 'float':
+                        cellValue = XEUtils.toFixed(XEUtils.floor(cellValue, digits), digits);
+                        break;
+                }
+            }
+            return getCellLabelVNs(renderOpts, params, cellValue);
+        },
+        renderTableDefault: defaultEditRender,
+        createTableFilterOptions: defaultFilterOptions,
+        renderTableFilter: defaultFilterRender,
+        renderTableFloatingFilter: defaultFloatingFilterRender,
+        tableFilterDefaultMethod: handleInputFilterMethod
+    },
+    FormatNumberInput: {
+        renderTableDefault: handleNumberCell,
+        tableFilterDefaultMethod: handleInputFilterMethod,
+        tableExportMethod(params) {
+            const { row, column } = params;
+            const cellValue = XEUtils.get(row, column.field);
+            return cellValue;
+        }
+    },
+    VxeNumberInput: {
+        tableAutoFocus: 'input',
+        renderTableEdit: defaultEditRender,
+        renderTableCell: handleNumberCell,
+        renderTableFooter(renderOpts, params) {
+            const { props = {} } = renderOpts;
+            const { row, column, _columnIndex } = params;
+            const { type } = props;
+            // 兼容老模式
+            const itemValue = XEUtils.isArray(row) ? row[_columnIndex] : XEUtils.get(row, column.field);
+            if (XEUtils.isNumber(itemValue)) {
+                const numberInputConfig = getConfig().numberInput || {};
+                if (type === 'float') {
+                    const autoFill = handleDefaultValue(props.autoFill, numberInputConfig.autoFill, true);
+                    const digits = handleDefaultValue(props.digits, numberInputConfig.digits, 1);
+                    let amountLabel = XEUtils.toFixed(XEUtils.floor(itemValue, digits), digits);
+                    if (!autoFill) {
+                        amountLabel = XEUtils.toNumber(amountLabel);
+                    }
+                    return amountLabel;
+                }
+                else if (type === 'amount') {
+                    const autoFill = handleDefaultValue(props.autoFill, numberInputConfig.autoFill, true);
+                    const digits = handleDefaultValue(props.digits, numberInputConfig.digits, 2);
+                    const showCurrency = handleDefaultValue(props.showCurrency, numberInputConfig.showCurrency, false);
+                    let amountLabel = XEUtils.commafy(XEUtils.toNumber(itemValue), { digits });
+                    if (!autoFill) {
+                        const [iStr, dStr] = amountLabel.split('.');
+                        if (dStr) {
+                            const dRest = dStr.replace(/0+$/, '');
+                            amountLabel = dRest ? [iStr, '.', dRest].join('') : iStr;
+                        }
+                    }
+                    if (showCurrency) {
+                        amountLabel = `${props.currencySymbol || numberInputConfig.currencySymbol || getI18n('vxe.numberInput.currencySymbol') || ''}${amountLabel}`;
+                    }
+                    return amountLabel;
+                }
+            }
+            return getFuncText(itemValue, 1);
+        },
+        renderTableDefault: defaultEditRender,
+        createTableFilterOptions: defaultFilterOptions,
+        renderTableFilter: defaultFilterRender,
+        renderTableFloatingFilter: defaultFloatingFilterRender,
+        tableFilterDefaultMethod: handleInputFilterMethod,
+        tableExportMethod(params) {
+            const { row, column } = params;
+            const cellValue = XEUtils.get(row, column.field);
+            return cellValue;
+        }
+    },
+    VxeDatePicker: {
+        tableAutoFocus: 'input',
+        renderTableEdit: defaultEditRender,
+        renderTableCell(renderOpts, params) {
+            const { props = {} } = renderOpts;
+            const { row, column } = params;
+            let cellValue = XEUtils.get(row, column.field);
+            if (cellValue) {
+                if (props.type !== 'time') {
+                    cellValue = getLabelFormatDate(cellValue, props);
+                }
+            }
+            return getCellLabelVNs(renderOpts, params, cellValue);
+        },
+        tableCellFormatter: handleFormatDatePicker,
+        renderTableDefault: defaultEditRender,
+        createTableFilterOptions: defaultFilterOptions,
+        renderTableFilter: defaultFilterRender,
+        renderTableFloatingFilter: defaultFloatingFilterRender,
+        tableFilterDefaultMethod: handleFilterMethod
+    },
+    VxeDateRangePicker: {
+        tableAutoFocus: 'input',
+        renderTableEdit(renderOpts, params) {
+            const { startField, endField } = renderOpts;
+            const { $table, row, column } = params;
+            const { model } = column;
+            const cellValue = getCellValue(row, column);
+            const seProps = {};
+            const seOs = {};
+            if (startField && endField) {
+                seProps.startValue = XEUtils.get(row, startField);
+                seProps.endValue = XEUtils.get(row, endField);
+                seOs['onUpdate:startValue'] = (value) => {
+                    if (startField) {
+                        XEUtils.set(row, startField, value);
+                    }
+                };
+                seOs['onUpdate:endValue'] = (value) => {
+                    if (endField) {
+                        XEUtils.set(row, endField, value);
+                    }
+                };
+            }
+            return [
+                h(getDefaultComponent(renderOpts), Object.assign(Object.assign({}, getCellEditProps(renderOpts, params, cellValue, seProps)), getComponentOns(renderOpts, params, {
+                    model(cellValue) {
+                        model.update = true;
+                        model.value = cellValue;
+                        setCellValue(row, column, cellValue);
+                    },
+                    change() {
+                        $table.updateStatus(params);
+                    },
+                    blur() {
+                        $table.handleCellRuleUpdateStatus('blur', params);
+                    }
+                }, seOs)))
+            ];
+        },
+        renderTableCell(renderOpts, params) {
+            const { startField, endField } = renderOpts;
+            const { row, column } = params;
+            let startValue = '';
+            let endValue = '';
+            if (startField && endField) {
+                startValue = XEUtils.get(row, startField);
+                endValue = XEUtils.get(row, endField);
+            }
+            else {
+                const cellValue = XEUtils.get(row, column.field);
+                if (cellValue) {
+                    if (XEUtils.isArray(cellValue)) {
+                        startValue = cellValue[0];
+                        endValue = cellValue[1];
+                    }
+                    else {
+                        const strs = `${cellValue}`.split(',');
+                        startValue = strs[0];
+                        endValue = strs[1];
+                    }
+                }
+            }
+            let cellLabel = '';
+            if (startValue && endValue) {
+                cellLabel = `${startValue} ~ ${endValue}`;
+            }
+            return getCellLabelVNs(renderOpts, params, cellLabel);
+        }
+    },
+    VxeTextarea: {
+        tableAutoFocus: 'textarea',
+        renderTableEdit: defaultEditRender,
+        renderTableCell(renderOpts, params) {
+            const { row, column } = params;
+            const cellValue = XEUtils.get(row, column.field);
+            return getCellLabelVNs(renderOpts, params, cellValue);
+        }
+    },
+    VxeButton: {
+        renderTableDefault: buttonCellRender
+    },
+    VxeButtonGroup: {
+        renderTableDefault(renderOpts, params) {
+            const { options } = renderOpts;
+            return [
+                h(getDefaultComponent(renderOpts), Object.assign(Object.assign({ options }, getCellEditProps(renderOpts, params, null)), getComponentOns(renderOpts, params)))
+            ];
+        }
+    },
+    VxeSelect: {
+        tableAutoFocus: 'input',
+        renderTableEdit: defaultSelectEditRender,
+        renderTableDefault: defaultSelectEditRender,
+        renderTableCell(renderOpts, params) {
+            return getCellLabelVNs(renderOpts, params, getSelectCellValue(renderOpts, params));
+        },
+        createTableFilterOptions: defaultFilterOptions,
+        renderTableFilter(renderOpts, params) {
+            const { column } = params;
+            const { options, optionProps, optionGroups, optionGroupProps } = renderOpts;
+            return column.filters.map((option, oIndex) => {
+                const optionValue = option.data;
+                return h(getDefaultComponent(renderOpts), Object.assign(Object.assign({ key: oIndex }, getCellEditFilterProps(renderOpts, params, optionValue, { options, optionProps, optionGroups, optionGroupProps })), getFilterOns(renderOpts, params, option)));
+            });
+        },
+        renderTableFloatingFilter(renderOpts, params) {
+            const { option } = params;
+            const { options, optionProps, optionGroups, optionGroupProps } = renderOpts;
+            const optionValue = option.data;
+            return h(getDefaultComponent(renderOpts), Object.assign(Object.assign({}, getCellEditFilterProps(renderOpts, params, optionValue, { options, optionProps, optionGroups, optionGroupProps })), getFloatingFilterOns(renderOpts, params, option)));
+        },
+        tableCellFormatter: handleFormatSelect,
+        tableCellCopyMethod: handleFormatSelect,
+        tableCellPasteMethod: handleSetSelectValue,
+        tableFilterDefaultMethod: handleFilterMethod,
+        tableExportMethod: handleExportSelectMethod
+    },
+    VxeText: {
+        renderTableDefault(renderOpts, params) {
+            const { $table, row, column } = params;
+            const { props } = renderOpts;
+            const cellLabel = $table.getCellLabel(row, column);
+            return [
+                h(getDefaultComponent(renderOpts), Object.assign(Object.assign(Object.assign({}, (props || {})), { content: cellLabel }), getComponentOns(renderOpts, params)))
+            ];
+        }
+    },
+    VxeLink: {
+        renderTableDefault(renderOpts, params) {
+            const { $table, row, column } = params;
+            const { props } = renderOpts;
+            const { href } = props || {};
+            const cellLabel = $table.getCellLabel(row, column);
+            return [
+                h(getDefaultComponent(renderOpts), Object.assign(Object.assign(Object.assign({}, (props || {})), { content: cellLabel, href: XEUtils.toFormatString(href, params) }), getComponentOns(renderOpts, params)))
+            ];
+        }
+    },
+    /**
+     * 已废弃，被 FormatSelect 替换
+     * @deprecated
+     */
+    formatOption: {
+        renderTableDefault(renderOpts, params) {
+            return getCellLabelVNs(renderOpts, params, getSelectCellValue(renderOpts, params));
+        }
+    },
+    FormatSelect: {
+        renderTableDefault(renderOpts, params) {
+            return getCellLabelVNs(renderOpts, params, getSelectCellValue(renderOpts, params));
+        },
+        tableCellFormatter: handleFormatSelect,
+        tableCellCopyMethod: handleFormatSelect,
+        tableCellPasteMethod: handleSetSelectValue,
+        tableFilterDefaultMethod: handleFilterMethod,
+        tableExportMethod: handleExportSelectMethod
+    },
+    VxeTreeSelect: {
+        tableAutoFocus: 'input',
+        renderTableEdit: defaultTableOrTreeSelectEditRender,
+        renderTableCell(renderOpts, params) {
+            return getCellLabelVNs(renderOpts, params, getTreeSelectCellValue(renderOpts, params));
+        },
+        tableCellFormatter: handleFormatTreeSelect,
+        tableCellCopyMethod: handleFormatTreeSelect,
+        tableCellPasteMethod: handleSetTreeSelectValue,
+        tableExportMethod: handleExportTreeSelectMethod
+    },
+    /**
+     * 已废弃，被 FormatTreeSelect 替换
+     * @deprecated
+     */
+    formatTree: {
+        renderTableDefault(renderOpts, params) {
+            return getCellLabelVNs(renderOpts, params, getTreeSelectCellValue(renderOpts, params));
+        }
+    },
+    FormatTreeSelect: {
+        renderTableDefault(renderOpts, params) {
+            return getCellLabelVNs(renderOpts, params, getTreeSelectCellValue(renderOpts, params));
+        },
+        tableCellFormatter: handleFormatTreeSelect,
+        tableCellCopyMethod: handleFormatTreeSelect,
+        tableCellPasteMethod: handleSetTreeSelectValue,
+        tableExportMethod: handleExportTreeSelectMethod
+    },
+    VxeTableSelect: {
+        tableAutoFocus: 'input',
+        renderTableEdit: defaultTableOrTreeSelectEditRender,
+        renderTableCell(renderOpts, params) {
+            return getCellLabelVNs(renderOpts, params, getTreeSelectCellValue(renderOpts, params));
+        },
+        tableCellFormatter: handleFormatTreeSelect,
+        tableCellCopyMethod: handleFormatTreeSelect,
+        tableCellPasteMethod: handleSetTreeSelectValue,
+        tableExportMethod: handleExportTreeSelectMethod
+    },
+    VxeColorPicker: {
+        tableAutoFocus: 'input',
+        renderTableEdit(renderOpts, params) {
+            const { row, column } = params;
+            const { options } = renderOpts;
+            const cellValue = getCellValue(row, column);
+            return [
+                h(getDefaultComponent(renderOpts), Object.assign(Object.assign({}, getCellEditProps(renderOpts, params, cellValue, { colors: options })), getEditOns(renderOpts, params)))
+            ];
+        },
+        renderTableCell(renderOpts, params) {
+            const { row, column } = params;
+            const cellValue = XEUtils.get(row, column.field);
+            return h('span', {
+                class: 'vxe-color-picker--readonly'
+            }, [
+                h('div', {
+                    class: 'vxe-color-picker--readonly-color',
+                    style: {
+                        backgroundColor: cellValue
+                    }
+                })
+            ]);
+        }
+    },
+    VxeIconPicker: {
+        tableAutoFocus: 'input',
+        renderTableEdit(renderOpts, params) {
+            const { row, column } = params;
+            const { options } = renderOpts;
+            const cellValue = getCellValue(row, column);
+            return [
+                h(getDefaultComponent(renderOpts), Object.assign(Object.assign({}, getCellEditProps(renderOpts, params, cellValue, { icons: options })), getEditOns(renderOpts, params)))
+            ];
+        },
+        renderTableCell(renderOpts, params) {
+            const { row, column } = params;
+            const cellValue = XEUtils.get(row, column.field);
+            return h('i', {
+                class: cellValue
+            });
+        }
+    },
+    VxeRadioGroup: {
+        renderTableDefault: radioAndCheckboxGroupEditRender
+    },
+    VxeCheckbox: {
+        renderTableDefault: checkboxEditRender
+    },
+    VxeCheckboxGroup: {
+        renderTableDefault: radioAndCheckboxGroupEditRender
+    },
+    VxeSwitch: {
+        tableAutoFocus: 'button',
+        renderTableEdit: defaultEditRender,
+        renderTableDefault: defaultEditRender
+    },
+    VxeUpload: {
+        renderTableEdit: defaultEditRender,
+        renderTableCell: defaultEditRender,
+        renderTableDefault: defaultEditRender
+    },
+    VxeImage: {
+        renderTableDefault(renderOpts, params) {
+            const { row, column } = params;
+            const { props } = renderOpts;
+            const cellValue = getCellValue(row, column);
+            return [
+                h(getDefaultComponent(renderOpts), Object.assign(Object.assign(Object.assign({}, props), { src: cellValue }), getEditOns(renderOpts, params)))
+            ];
+        }
+    },
+    VxeImageGroup: {
+        renderTableDefault(renderOpts, params) {
+            const { row, column } = params;
+            const { props } = renderOpts;
+            const cellValue = getCellValue(row, column);
+            return [
+                h(getDefaultComponent(renderOpts), Object.assign(Object.assign(Object.assign({}, props), { urlList: cellValue }), getEditOns(renderOpts, params)))
+            ];
+        }
+    },
+    VxeTextEllipsis: {
+        renderTableDefault(renderOpts, params) {
+            const { row, column } = params;
+            const { props } = renderOpts;
+            const cellValue = getCellValue(row, column);
+            return [
+                h(getDefaultComponent(renderOpts), Object.assign(Object.assign(Object.assign({}, props), { content: cellValue }), getEditOns(renderOpts, params)))
+            ];
+        }
+    },
+    VxeRate: {
+        renderTableDefault: defaultEditRender
+    },
+    VxeSlider: {
+        renderTableDefault: defaultEditRender
+    },
+    // 以下已废弃
+    $input: {
+        tableAutoFocus: '.vxe-input--inner',
+        renderTableEdit: oldEditRender,
+        renderTableCell(renderOpts, params) {
+            var _a;
+            const { props = {} } = renderOpts;
+            const { row, column } = params;
+            const digits = props.digits || ((_a = getConfig().input) === null || _a === void 0 ? void 0 : _a.digits) || 2;
+            let cellValue = XEUtils.get(row, column.field);
+            if (cellValue) {
+                switch (props.type) {
+                    case 'date':
+                    case 'week':
+                    case 'month':
+                    case 'year':
+                        cellValue = getLabelFormatDate(cellValue, props);
+                        break;
+                    case 'float':
+                        cellValue = XEUtils.toFixed(XEUtils.floor(cellValue, digits), digits);
+                        break;
+                }
+            }
+            return getCellLabelVNs(renderOpts, params, cellValue);
+        },
+        renderTableDefault: oldEditRender,
+        renderTableFilter: oldFilterRender,
+        tableFilterDefaultMethod: handleInputFilterMethod
+    },
+    $textarea: {
+        tableAutoFocus: '.vxe-textarea--inner'
+    },
+    $button: {
+        renderTableDefault: oldButtonEditRender
+    },
+    $buttons: {
+        renderTableDefault: oldButtonsEditRender
+    },
+    $select: {
+        tableAutoFocus: '.vxe-input--inner',
+        renderTableEdit: oldSelectEditRender,
+        renderTableDefault: oldSelectEditRender,
+        renderTableCell(renderOpts, params) {
+            return getCellLabelVNs(renderOpts, params, getSelectCellValue(renderOpts, params));
+        },
+        renderTableFilter(renderOpts, params) {
+            const { column } = params;
+            const { options, optionProps, optionGroups, optionGroupProps } = renderOpts;
+            return column.filters.map((option, oIndex) => {
+                const optionValue = option.data;
+                return h(getOldComponent(renderOpts), Object.assign(Object.assign({ key: oIndex }, getCellEditFilterProps(renderOpts, params, optionValue, { options, optionProps, optionGroups, optionGroupProps })), getFilterOns(renderOpts, params, option)));
+            });
+        },
+        tableFilterDefaultMethod: handleFilterMethod,
+        tableExportMethod: handleExportSelectMethod
+    },
+    $radio: {
+        tableAutoFocus: '.vxe-radio--input'
+    },
+    $checkbox: {
+        tableAutoFocus: '.vxe-checkbox--input'
+    },
+    $switch: {
+        tableAutoFocus: '.vxe-switch--button',
+        renderTableEdit: oldEditRender,
+        renderTableDefault: oldEditRender
+    }
+    // 以上已废弃
+});

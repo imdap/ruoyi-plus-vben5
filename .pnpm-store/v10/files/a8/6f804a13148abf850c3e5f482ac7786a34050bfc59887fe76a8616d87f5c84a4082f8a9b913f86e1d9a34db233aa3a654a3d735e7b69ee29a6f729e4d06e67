@@ -1,0 +1,45 @@
+import { ArrowToken } from "../../style/roundedArrow.js";
+import { ArrowOffsetToken } from "../../style/placementArrow.js";
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue532 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/dropdown/style/index.d.ts
+interface ComponentToken extends ArrowToken, ArrowOffsetToken {
+  /**
+   * @desc 下拉菜单 z-index
+   * @descEN z-index of dropdown
+   */
+  zIndexPopup: number;
+  /**
+   * @desc 下拉菜单纵向内边距
+   * @descEN Vertical padding of dropdown
+   */
+  paddingBlock: CSSProperties['paddingBlock'];
+}
+/**
+ * @desc Dropdown 组件的 Token
+ * @descEN Token for Dropdown component
+ */
+interface DropdownToken extends FullToken<'Dropdown'> {
+  /**
+   * @desc 下拉箭头距离
+   * @descEN Distance of dropdown arrow
+   */
+  dropdownArrowDistance: number | string;
+  /**
+   * @desc 下拉菜单边缘子项内边距
+   * @descEN Padding of edge child in dropdown menu
+   */
+  dropdownEdgeChildPadding: number;
+  /**
+   * @desc 菜单类名
+   * @descEN Menu class name
+   */
+  menuCls: string;
+}
+declare const prepareComponentToken: GetDefaultToken<'Dropdown'>;
+declare const _default: (prefixCls: vue532.Ref<string>, rootCls?: vue532.Ref<string | undefined>) => readonly [vue532.Ref<string, string>, vue532.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, DropdownToken, _default as default, prepareComponentToken };

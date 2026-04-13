@@ -1,0 +1,55 @@
+{
+  "name": "@cspell/dict-public-licenses",
+  "version": "2.0.16",
+  "description": "Common Public Licenses dictionary for cspell.",
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "pnpm run generate && pnpm run compile",
+    "generate": "node ./src/extract.js",
+    "checksum": "cspell-tools-cli shasum -c checksum.txt",
+    "compile": "cspell-tools-cli build",
+    "conditional-build": "pnpm run --silent checksum || pnpm run build && pnpm run gen-checksum",
+    "test-dict": "cspell -c ./cspell-ext.json --locale=en --languageId=* --file-list source-files.txt",
+    "gen-checksum": "cspell-tools-cli shasum -u checksum.txt --list-file source-files.txt source-dependencies.txt",
+    "test": "pnpm run test-dict",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/public-licenses"
+  },
+  "keywords": [
+    "cspell",
+    "public-licenses",
+    "Common Public Licenses",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/public-licenses#readme",
+  "devDependencies": {
+    "spdx-license-ids": "^3.0.23"
+  },
+  "files": [
+    "public-licenses.txt.gz",
+    "cspell-ext.json",
+    "*.js",
+    "*.d.ts"
+  ],
+  "gitHead": "1c4816c37b2f2b1d6272f25b694b8a563f09661b"
+}

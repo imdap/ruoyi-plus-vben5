@@ -1,0 +1,1 @@
+.vxe-image{display:inline-flex;flex-direction:row;justify-content:center;align-items:center;vertical-align:middle}.vxe-image.is--circle{border-radius:50%}.vxe-image.is--circle .vxe-image-img{border-radius:50%}.vxe-image-img{border-style:none}

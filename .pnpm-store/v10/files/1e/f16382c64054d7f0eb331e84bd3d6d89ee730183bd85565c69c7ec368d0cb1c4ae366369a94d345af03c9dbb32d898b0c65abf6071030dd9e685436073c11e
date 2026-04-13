@@ -1,0 +1,106 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { PresetColorType } from "../_util/colors.js";
+import { AdjustOverflow } from "../_util/placements.js";
+import PurePanel from "./PurePanel.js";
+import UniqueProvider from "./UniqueProvider/index.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue246 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { TooltipProps as TooltipProps$1, placements } from "@v-c/tooltip";
+import { ActionType, AlignType } from "@v-c/trigger";
+import { LiteralUnion } from "@v-c/util/dist/type";
+
+//#region src/tooltip/index.d.ts
+interface TooltipRef {
+  /** @deprecated Please use `forceAlign` instead */
+  forcePopupAlign: VoidFunction;
+  forceAlign: VoidFunction;
+  /** Wrapped dom element. Not promise valid if child not support ref */
+  nativeElement: HTMLElement;
+  /** Popup dom element */
+  popupElement: HTMLDivElement;
+}
+type TooltipPlacement = 'top' | 'left' | 'right' | 'bottom' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom';
+interface TooltipAlignConfig {
+  points?: [string, string];
+  offset?: [number | string, number | string];
+  targetOffset?: [number | string, number | string];
+  overflow?: {
+    adjustX: boolean;
+    adjustY: boolean;
+  };
+  useCssRight?: boolean;
+  useCssBottom?: boolean;
+  useCssTransform?: boolean;
+}
+type TooltipSemanticName = keyof TooltipSemanticClassNames & keyof TooltipSemanticStyles;
+interface TooltipSemanticClassNames {
+  root?: string;
+  container?: string;
+  arrow?: string;
+}
+interface TooltipSemanticStyles {
+  root?: CSSProperties;
+  container?: CSSProperties;
+  arrow?: CSSProperties;
+}
+type TooltipClassNamesType = SemanticClassNamesType<TooltipProps, TooltipSemanticClassNames>;
+type TooltipStylesType = SemanticStylesType<TooltipProps, TooltipSemanticStyles>;
+interface TriggerCommonApi extends ComponentBaseProps {
+  align?: AlignType;
+  arrow?: boolean | {
+    pointAtCenter?: boolean;
+  };
+  autoAdjustOverflow?: boolean | AdjustOverflow;
+  color?: LiteralUnion<PresetColorType>;
+  open?: boolean;
+  defaultOpen?: boolean;
+  getPopupContainer?: (triggerNode: HTMLElement) => HTMLElement;
+  destroyOnHidden?: boolean;
+  zIndex?: number;
+  placement?: TooltipPlacement;
+  trigger?: ActionType | ActionType[];
+  fresh?: boolean;
+  mouseEnterDelay?: number;
+  mouseLeaveDelay?: number;
+  classes?: TooltipClassNamesType;
+  styles?: TooltipStylesType;
+  getTooltipContainer?: (node: HTMLElement) => HTMLElement;
+  motion?: TooltipProps$1['motion'];
+}
+interface TooltipProps extends TriggerCommonApi, TooltipEmitsProps {
+  afterOpenChange?: (open: boolean) => void;
+  builtinPlacements?: typeof placements;
+  title?: VueNode;
+  overlay?: VueNode;
+  openClass?: string;
+  unique?: boolean;
+}
+interface TooltipEmits {
+  'openChange': (open: boolean) => void;
+  'update:open': (open: boolean) => void;
+}
+interface TooltipEmitsProps {
+  onOpenChange?: TooltipEmits['openChange'];
+  'onUpdate:open'?: TooltipEmits['update:open'];
+}
+interface TooltipSlots {
+  title: () => any;
+  default: () => any;
+}
+/**
+ * @internal
+ * Internal props type with hidden properties
+ */
+interface InternalTooltipProps extends TooltipProps {
+  dataPopoverInject?: boolean;
+}
+declare const InternalTooltip: vue246.DefineSetupFnComponent<InternalTooltipProps, TooltipEmits, SlotsType<TooltipSlots>, InternalTooltipProps, vue246.PublicProps>;
+declare const _default: typeof InternalTooltip & {
+  UniqueProvider: typeof UniqueProvider;
+  _InternalPanelDoNotUseOrYouWillBeFired: typeof PurePanel;
+};
+//#endregion
+export { TooltipAlignConfig, TooltipClassNamesType, TooltipEmits, TooltipEmitsProps, TooltipPlacement, TooltipProps, TooltipRef, TooltipSemanticClassNames, TooltipSemanticName, TooltipSemanticStyles, TooltipSlots, TooltipStylesType, TriggerCommonApi, UniqueProvider, _default as default };

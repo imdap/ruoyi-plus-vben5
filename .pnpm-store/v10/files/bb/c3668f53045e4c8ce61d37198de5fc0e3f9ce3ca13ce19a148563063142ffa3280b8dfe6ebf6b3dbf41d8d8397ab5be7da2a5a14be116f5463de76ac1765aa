@@ -1,0 +1,22 @@
+import { EmptyEmit } from "../_util/type.js";
+import { InternalDescriptionsItemType, RenderDescriptionsItem } from "./index.js";
+import * as vue742 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/descriptions/Row.d.ts
+interface RowProps {
+  prefixCls: string;
+  vertical: boolean;
+  row: InternalDescriptionsItemType[];
+  bordered?: boolean;
+  colon: boolean;
+  index: number;
+  labelRender?: RenderDescriptionsItem;
+  contentRender?: RenderDescriptionsItem;
+}
+interface RowSlots {
+  default?: () => any;
+}
+declare const Row: vue742.DefineSetupFnComponent<RowProps, EmptyEmit, SlotsType<RowSlots>, RowProps, vue742.PublicProps>;
+//#endregion
+export { RowProps, RowSlots, Row as default };

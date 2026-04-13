@@ -1,0 +1,1 @@
+export declare const QRCodeCanvas: import('vue').DefineComponent<import('./interface').QRProps, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {}, string, import('vue').PublicProps, Readonly<import('./interface').QRProps> & Readonly<{}>, {}, {}, {}, {}, string, import('vue').ComponentProvideOptions, false, {}, any>;

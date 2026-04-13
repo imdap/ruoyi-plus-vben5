@@ -1,0 +1,133 @@
+import { boolean, description, optional, pipe, strictObject } from "valibot";
+import { createRule } from "../utils/rule.js";
+import { splitClasses, splitWhitespaces } from "../utils/utils.js";
+export const noUnnecessaryWhitespace = createRule({
+    autofix: true,
+    category: "stylistic",
+    description: "Disallow unnecessary whitespace between Tailwind CSS classes.",
+    docs: "https://github.com/schoero/eslint-plugin-better-tailwindcss/blob/main/docs/rules/no-unnecessary-whitespace.md",
+    name: "no-unnecessary-whitespace",
+    recommended: true,
+    messages: {
+        unnecessary: "Unnecessary whitespace."
+    },
+    schema: strictObject({
+        allowMultiline: optional(pipe(boolean(), description("Allow multi-line class declarations. If this option is disabled, template literal strings will be collapsed into a single line string wherever possible. Must be set to `true` when used in combination with [better-tailwindcss/enforce-consistent-line-wrapping](./enforce-consistent-line-wrapping.md).")), true)
+    }),
+    lintLiterals: (ctx, literals) => lintLiterals(ctx, literals)
+});
+function lintLiterals(ctx, literals) {
+    const { allowMultiline } = ctx.options;
+    for (const literal of literals) {
+        const classChunks = splitClasses(literal.content);
+        const whitespaceChunks = splitWhitespaces(literal.content);
+        for (let whitespaceIndex = 0, stringIndex = 0; whitespaceIndex < whitespaceChunks.length; whitespaceIndex++) {
+            const isFirstChunk = whitespaceIndex === 0;
+            const isLastChunk = whitespaceIndex === whitespaceChunks.length - 1;
+            const startIndex = stringIndex + (literal.openingQuote?.length || 0) + (literal.closingBraces?.length || 0);
+            const whitespace = whitespaceChunks[whitespaceIndex];
+            stringIndex += whitespace.length;
+            const endIndex = startIndex + whitespace.length;
+            const className = classChunks[whitespaceIndex] ?? "";
+            stringIndex += className.length;
+            const [literalStart] = literal.range;
+            const keepLeadingWhitespace = literal.isConcatenatedLeft === true;
+            const keepTrailingWhitespace = literal.isConcatenatedRight === true;
+            // whitespaces only
+            if (classChunks.length === 0 && !literal.closingBraces && !literal.openingBraces) {
+                if (keepLeadingWhitespace || keepTrailingWhitespace) {
+                    if (whitespace.length <= 1) {
+                        continue;
+                    }
+                    ctx.report({
+                        fix: " ",
+                        id: "unnecessary",
+                        range: [
+                            literalStart + startIndex,
+                            literalStart + endIndex
+                        ]
+                    });
+                    continue;
+                }
+                if (whitespace === "") {
+                    continue;
+                }
+                ctx.report({
+                    fix: "",
+                    id: "unnecessary",
+                    range: [
+                        literalStart + startIndex,
+                        literalStart + endIndex
+                    ]
+                });
+                continue;
+            }
+            // trailing whitespace before multiline string
+            if (whitespace.includes("\n") && allowMultiline === true) {
+                const whitespaceWithoutLeadingSpaces = whitespace.replace(/^ +/, "");
+                if (whitespace === whitespaceWithoutLeadingSpaces) {
+                    continue;
+                }
+                ctx.report({
+                    fix: whitespaceWithoutLeadingSpaces,
+                    id: "unnecessary",
+                    range: [
+                        literalStart + startIndex,
+                        literalStart + endIndex
+                    ]
+                });
+                continue;
+            }
+            // whitespace between interpolated literals
+            if (!isFirstChunk && !isLastChunk ||
+                (literal.isInterpolated && literal.closingBraces && isFirstChunk && !isLastChunk ||
+                    literal.isInterpolated && literal.openingBraces && isLastChunk && !isFirstChunk ||
+                    literal.isInterpolated && literal.closingBraces && literal.openingBraces)) {
+                if (whitespace.length <= 1) {
+                    continue;
+                }
+                ctx.report({
+                    fix: " ",
+                    id: "unnecessary",
+                    range: [
+                        literalStart + startIndex,
+                        literalStart + endIndex
+                    ]
+                });
+                continue;
+            }
+            // leading or trailing whitespace
+            if (isFirstChunk || isLastChunk) {
+                const keepCurrentWhitespace = isFirstChunk && keepLeadingWhitespace ||
+                    isLastChunk && keepTrailingWhitespace;
+                if (keepCurrentWhitespace) {
+                    if (whitespace.length <= 1) {
+                        continue;
+                    }
+                    ctx.report({
+                        fix: " ",
+                        id: "unnecessary",
+                        range: [
+                            literalStart + startIndex,
+                            literalStart + endIndex
+                        ]
+                    });
+                    continue;
+                }
+                if (whitespace === "") {
+                    continue;
+                }
+                ctx.report({
+                    fix: "",
+                    id: "unnecessary",
+                    range: [
+                        literalStart + startIndex,
+                        literalStart + endIndex
+                    ]
+                });
+                continue;
+            }
+        }
+    }
+}
+//# sourceMappingURL=no-unnecessary-whitespace.js.map

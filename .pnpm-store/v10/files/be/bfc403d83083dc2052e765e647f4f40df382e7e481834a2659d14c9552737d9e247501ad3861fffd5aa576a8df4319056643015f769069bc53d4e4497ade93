@@ -1,0 +1,43 @@
+import isArray from './isArray'
+import isPlainObject from './isPlainObject'
+import isFunction from './isFunction'
+import each from './each'
+import clone from './clone'
+
+import helperCheckCopyKey from './helperCheckCopyKey'
+
+function handleMerge (target, source) {
+  if ((isPlainObject(target) && isPlainObject(source)) || (isArray(target) && isArray(source))) {
+    each(source, function (val, key) {
+      if (helperCheckCopyKey(key)) {
+        target[key] = isFunction(source) ? val : handleMerge(target[key], val)
+      }
+    })
+    return target
+  }
+  return clone(source, true)
+}
+
+/**
+  * 将一个或多个源对象合并到目标对象中
+  *
+  * @param {Object} target 目标对象
+  * @param {...Object}
+  * @return {Boolean}
+  */
+var merge = function (target) {
+  if (!target) {
+    target = {}
+  }
+  var args = arguments
+  var len = args.length
+  for (var source, i = 1; i < len; i++) {
+    source = args[i]
+    if (source) {
+      handleMerge(target, source)
+    }
+  }
+  return target
+}
+
+export default merge

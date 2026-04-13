@@ -1,0 +1,1 @@
+{"version":3,"file":"InvalidWorkspaceManifestError.js","sourceRoot":"","sources":["../../src/errors/InvalidWorkspaceManifestError.ts"],"names":[],"mappings":";;;AAAA,uCAAuC;AAEvC,MAAa,6BAA8B,SAAQ,iBAAS;IAC1D,YAAa,OAAe;QAC1B,KAAK,CAAC,iCAAiC,EAAE,OAAO,CAAC,CAAA;IACnD,CAAC;CACF;AAJD,sEAIC"}

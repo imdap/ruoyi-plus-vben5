@@ -1,0 +1,12 @@
+import { AggregationColor } from "../color.js";
+import * as vue831 from "vue";
+
+//#region src/color-picker/components/ColorHexInput.d.ts
+interface ColorHexInputProps {
+  prefixCls: string;
+  value?: AggregationColor;
+  onChange?: (value: AggregationColor) => void;
+}
+declare const _default: vue831.DefineSetupFnComponent<ColorHexInputProps, {}, {}, ColorHexInputProps & {}, vue831.PublicProps>;
+//#endregion
+export { ColorHexInputProps, _default as default };

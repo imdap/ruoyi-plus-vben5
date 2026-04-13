@@ -1,0 +1,15 @@
+import { AnyObject } from "../../../_util/type.js";
+import { FilterSearchType, TableLocale } from "../../interface.js";
+import * as vue_jsx_runtime15 from "vue/jsx-runtime";
+
+//#region src/table/hooks/useFilter/FilterSearch.d.ts
+interface FilterSearchProps<RecordType = AnyObject> {
+  value: string;
+  onChange: (e: Event) => void;
+  filterSearch: FilterSearchType<RecordType>;
+  tablePrefixCls: string;
+  locale: TableLocale;
+}
+declare function FilterSearch<RecordType extends AnyObject = AnyObject>(props: FilterSearchProps<RecordType>): vue_jsx_runtime15.JSX.Element | null;
+//#endregion
+export { FilterSearch as default };

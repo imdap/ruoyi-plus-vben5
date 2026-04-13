@@ -1,0 +1,1 @@
+{"version":3,"file":"rimraf-posix.d.ts","sourceRoot":"","sources":["../../src/rimraf-posix.ts"],"names":[],"mappings":"AAUA,OAAO,EAAE,kBAAkB,EAAE,iBAAiB,EAAE,MAAM,YAAY,CAAA;AAKlE,eAAO,MAAM,WAAW,GACtB,MAAM,MAAM,EACZ,KAAK,kBAAkB,qBAQxB,CAAA;AAED,eAAO,MAAM,eAAe,GAAI,MAAM,MAAM,EAAE,KAAK,iBAAiB,YAOnE,CAAA"}

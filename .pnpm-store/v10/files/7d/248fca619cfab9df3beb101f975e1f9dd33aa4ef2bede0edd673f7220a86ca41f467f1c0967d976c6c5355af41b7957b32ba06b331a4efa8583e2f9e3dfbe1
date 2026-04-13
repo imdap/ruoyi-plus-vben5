@@ -1,0 +1,48 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNames, SemanticStyles } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue132 from "vue";
+
+//#region src/tag/CheckableTagGroup.d.ts
+type CheckableTagDefaultValue = string | number;
+interface CheckableTagOption<CheckableTagValue = CheckableTagDefaultValue> {
+  value: CheckableTagValue;
+  label: VueNode;
+  disabled?: boolean;
+}
+interface CheckableTagGroupSingleProps<CheckableTagValue = CheckableTagDefaultValue> {
+  multiple?: false;
+  value?: CheckableTagValue | null;
+  defaultValue?: CheckableTagValue | null;
+  onChange?: (value: CheckableTagValue | null) => void;
+}
+interface CheckableTagGroupMultipleProps<CheckableTagValue = CheckableTagDefaultValue> {
+  multiple: true;
+  value?: CheckableTagValue[];
+  defaultValue?: CheckableTagValue[];
+}
+type SemanticName = 'root' | 'item';
+type CheckableTagGroupProps<CheckableTagValue = CheckableTagDefaultValue> = ComponentBaseProps & {
+  classes?: SemanticClassNames<SemanticName>;
+  styles?: SemanticStyles<SemanticName>;
+  options?: (CheckableTagOption<CheckableTagValue> | CheckableTagValue)[];
+  id?: string;
+  role?: string;
+  disabled?: boolean;
+} & (CheckableTagGroupSingleProps<CheckableTagValue> | CheckableTagGroupMultipleProps<CheckableTagValue>);
+interface CheckableTagGroupRef {
+  nativeElement: HTMLDivElement;
+}
+interface CheckableTagGroupEmits<CheckableTagValue = CheckableTagDefaultValue> {
+  'change': (value: CheckableTagValue | CheckableTagValue[] | null) => void;
+  'update:value': (value: CheckableTagValue | CheckableTagValue[] | null) => void;
+}
+interface CheckableTagGroupEmitsProps<CheckableTagValue = CheckableTagDefaultValue> {
+  onChange?: CheckableTagGroupEmits<CheckableTagValue>['change'];
+  'onUpdate:value'?: CheckableTagGroupEmits<CheckableTagValue>['update:value'];
+}
+interface InternalCheckableTagGroupProps extends CheckableTagGroupProps, CheckableTagGroupEmitsProps {}
+declare const CheckableTagGroup: vue132.DefineSetupFnComponent<InternalCheckableTagGroupProps, CheckableTagGroupEmits<CheckableTagDefaultValue>, {}, InternalCheckableTagGroupProps, vue132.PublicProps>;
+//#endregion
+export { CheckableTagGroupEmits, CheckableTagGroupEmitsProps, CheckableTagGroupProps, CheckableTagGroupRef, CheckableTagOption, SemanticName, CheckableTagGroup as default };

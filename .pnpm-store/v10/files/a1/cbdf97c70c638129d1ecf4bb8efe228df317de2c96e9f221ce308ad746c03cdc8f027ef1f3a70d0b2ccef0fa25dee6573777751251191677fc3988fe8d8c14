@@ -1,0 +1,13 @@
+import { FullToken } from "../../theme/interface/cssinjs-utils.js";
+import { GenerateStyle } from "../../theme/interface/index.js";
+import "../../theme/internal.js";
+import * as vue467 from "vue";
+import { CSSObject } from "@antdv-next/cssinjs";
+
+//#region src/masonry/style/index.d.ts
+interface ComponentToken {}
+interface MasonryToken extends FullToken<'Masonry'> {}
+declare const genMasonryStyle: GenerateStyle<MasonryToken, CSSObject>;
+declare const _default: (prefixCls: vue467.Ref<string>, rootCls?: vue467.Ref<string | undefined>) => readonly [vue467.Ref<string, string>, vue467.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, MasonryToken, _default as default, genMasonryStyle };

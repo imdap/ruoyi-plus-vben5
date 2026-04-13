@@ -1,0 +1,33 @@
+import { EmptyEmit } from "../../_util/type.js";
+import { ItemRender, UploadFile, UploadListProgressProps, UploadListType, UploadLocale, UploadSemanticClassNames, UploadSemanticStyles } from "../interface.js";
+import * as vue819 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/upload/UploadList/ListItem.d.ts
+interface ListItemProps {
+  prefixCls: string;
+  classes?: UploadSemanticClassNames;
+  styles?: UploadSemanticStyles;
+  locale: UploadLocale;
+  file: UploadFile;
+  items: UploadFile[];
+  listType?: UploadListType;
+  isImgUrl?: (file: UploadFile) => boolean;
+  showRemoveIcon?: boolean | ((file: UploadFile) => boolean);
+  showDownloadIcon?: boolean | ((file: UploadFile) => boolean);
+  showPreviewIcon?: boolean | ((file: UploadFile) => boolean);
+  removeIcon?: any | ((file: UploadFile) => any);
+  downloadIcon?: any | ((file: UploadFile) => any);
+  previewIcon?: any | ((file: UploadFile) => any);
+  extra?: any | ((file: UploadFile) => any);
+  iconRender: (file: UploadFile) => any;
+  actionIconRender: (customIcon: any, callback: () => void, prefixCls: string, title?: string, acceptUploadDisabled?: boolean) => any;
+  itemRender?: ItemRender;
+  onPreview: (file: UploadFile, e?: MouseEvent) => void;
+  onClose: (file: UploadFile) => void;
+  onDownload: (file: UploadFile) => void;
+  progress?: UploadListProgressProps;
+}
+declare const ListItem: vue819.DefineSetupFnComponent<ListItemProps, EmptyEmit, SlotsType<Record<string, never>>, ListItemProps, vue819.PublicProps>;
+//#endregion
+export { ListItemProps, ListItem as default };

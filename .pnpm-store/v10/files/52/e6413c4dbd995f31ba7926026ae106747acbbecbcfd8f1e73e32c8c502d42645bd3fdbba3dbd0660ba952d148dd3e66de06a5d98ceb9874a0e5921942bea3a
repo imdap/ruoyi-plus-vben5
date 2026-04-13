@@ -1,0 +1,48 @@
+import { EmptyEmit } from "../_util/type.js";
+import { PercentPositionType, ProgressGradient, ProgressProps, ProgressSemanticClassNames, ProgressSemanticStyles, StringGradients } from "./progress.js";
+import { DirectionType } from "../config-provider/context.js";
+import * as vue320 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/progress/Line.d.ts
+interface LineProps extends Omit<ProgressProps, 'classes' | 'styles'> {
+  prefixCls: string;
+  direction?: DirectionType;
+  strokeColor?: string | ProgressGradient;
+  percentPosition: PercentPositionType;
+  classes: ProgressSemanticClassNames;
+  styles: ProgressSemanticStyles;
+}
+/**
+ * @example
+ *   {
+ *     "0%": "#afc163",
+ *     "75%": "#009900",
+ *     "50%": "green", // ====> '#afc163 0%, #66FF00 25%, #00CC00 50%, #009900 75%, #ffffff 100%'
+ *     "25%": "#66FF00",
+ *     "100%": "#ffffff"
+ *   }
+ */
+declare function sortGradient(gradients: StringGradients): string;
+/**
+ * Then this man came to realize the truth: Besides six pence, there is the moon. Besides bread and
+ * butter, there is the bug. And... Besides women, there is the code.
+ *
+ * @example
+ *   {
+ *     "0%": "#afc163",
+ *     "25%": "#66FF00",
+ *     "50%": "#00CC00", // ====>  linear-gradient(to right, #afc163 0%, #66FF00 25%,
+ *     "75%": "#009900", //        #00CC00 50%, #009900 75%, #ffffff 100%)
+ *     "100%": "#ffffff"
+ *   }
+ */
+declare function handleGradient(strokeColor: ProgressGradient, directionConfig?: DirectionType): {
+  background: string;
+  "--progress-line-stroke-color": string;
+};
+declare const Line: vue320.DefineSetupFnComponent<LineProps, EmptyEmit, SlotsType<{
+  default?: () => any;
+}>, LineProps, vue320.PublicProps>;
+//#endregion
+export { LineProps, Line as default, handleGradient, sortGradient };

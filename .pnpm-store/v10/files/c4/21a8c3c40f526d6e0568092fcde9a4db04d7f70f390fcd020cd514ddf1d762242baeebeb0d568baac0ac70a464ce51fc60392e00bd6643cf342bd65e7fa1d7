@@ -1,0 +1,16 @@
+import { VueNode } from "../_util/type.js";
+import { ValidateStatus } from "./FormItem/index.js";
+import * as vue1000 from "vue";
+
+//#region src/form/ErrorList.d.ts
+interface ErrorListProps {
+  fieldId?: string;
+  help?: VueNode;
+  helpStatus?: ValidateStatus;
+  errors?: any[];
+  warnings?: any[];
+  onVisibleChanged?: (visible: boolean) => void;
+}
+declare const ErrorList: vue1000.DefineSetupFnComponent<ErrorListProps, {}, {}, ErrorListProps & {}, vue1000.PublicProps>;
+//#endregion
+export { ErrorListProps, ErrorList as default };

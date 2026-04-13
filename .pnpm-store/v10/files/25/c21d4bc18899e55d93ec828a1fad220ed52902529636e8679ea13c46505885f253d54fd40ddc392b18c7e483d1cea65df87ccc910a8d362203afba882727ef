@@ -1,0 +1,164 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { InputStatus } from "../_util/statusUtils.js";
+import { SelectCommonPlacement } from "../_util/motion.js";
+import { ComponentBaseProps, Variant } from "../config-provider/context.js";
+import * as vue662 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { SelectProps as SelectProps$1 } from "@v-c/select";
+import * as _v_c_select_dist_Option_js0 from "@v-c/select/dist/Option.js";
+import * as _v_c_select_dist_OptGroup_js0 from "@v-c/select/dist/OptGroup.js";
+
+//#region src/select/index.d.ts
+type RawValue = string | number;
+interface LabeledValue {
+  key?: string;
+  value: RawValue;
+  label: VueNode;
+}
+type SelectValue = RawValue | RawValue[] | LabeledValue | LabeledValue[] | undefined;
+interface InternalSelectProps extends ComponentBaseProps, Omit<SelectProps$1, 'mode' | 'classNames' | 'className' | 'style' | 'prefix' | 'styles'> {
+  prefix?: VueNode;
+  suffixIcon?: VueNode;
+  size?: SizeType;
+  disabled?: boolean;
+  mode?: 'multiple' | 'tags' | 'SECRET_COMBOBOX_MODE_DO_NOT_USE' | 'combobox';
+  /** @deprecated Use `variant` instead. */
+  bordered?: boolean;
+  /**
+   * @deprecated `showArrow` is deprecated which will be removed in next major version. It will be a
+   *   default behavior, you can hide it by setting `suffixIcon` to null.
+   */
+  showArrow?: boolean;
+  /**
+   * @since 5.13.0
+   * @default "outlined"
+   */
+  variant?: Variant;
+  styles?: SelectStylesType;
+  classes?: SelectClassNamesType;
+}
+interface SelectSemanticClassNames {
+  root?: string;
+  prefix?: string;
+  suffix?: string;
+  input?: string;
+  placeholder?: string;
+  content?: string;
+  item?: string;
+  itemContent?: string;
+  itemRemove?: string;
+  clear?: string;
+}
+interface SelectSemanticStyles {
+  root?: CSSProperties;
+  prefix?: CSSProperties;
+  suffix?: CSSProperties;
+  input?: CSSProperties;
+  placeholder?: CSSProperties;
+  content?: CSSProperties;
+  item?: CSSProperties;
+  itemContent?: CSSProperties;
+  itemRemove?: CSSProperties;
+  clear?: CSSProperties;
+}
+interface SelectPopupSemanticClassNames {
+  root?: string;
+  listItem?: string;
+  list?: string;
+}
+interface SelectPopupSemanticStyles {
+  root?: CSSProperties;
+  listItem?: CSSProperties;
+  list?: CSSProperties;
+}
+type SelectClassNamesType = SemanticClassNamesType<SelectProps, SelectSemanticClassNames, {
+  popup?: SelectPopupSemanticClassNames;
+}>;
+type SelectStylesType = SemanticStylesType<SelectProps, SelectSemanticStyles, {
+  popup?: SelectPopupSemanticStyles;
+}>;
+type RcEventKeys = 'onClear' | 'onKeyUp' | 'onKeyDown' | 'onBlur' | 'onClick' | 'onActive' | 'onChange' | 'onDeselect' | 'onInputKeyDown' | 'onMouseDown' | 'onMouseLeave' | 'onMouseEnter' | 'onFocus' | 'onPopupScroll' | 'onPopupVisibleChange' | 'onSelect' | 'optionRender';
+interface SelectProps extends Omit<InternalSelectProps, 'mode' | 'getInputElement' | 'getRawInputElement' | 'backfill' | 'placement' | 'dropdownClassName' | 'dropdownStyle' | 'classes' | 'styles' | RcEventKeys>, SelectEmitsProps {
+  placement?: SelectCommonPlacement;
+  mode?: 'multiple' | 'tags';
+  status?: InputStatus;
+  /** @deprecated Please use `classNames.popup.root` instead */
+  popupClassName?: string;
+  /** @deprecated Please use `classNames.popup.root` instead */
+  dropdownClassName?: string;
+  /** @deprecated Please use `styles.popup` instead */
+  dropdownStyle?: CSSProperties;
+  /** @deprecated Please use `popupRender` instead */
+  dropdownRender?: SelectProps['popupRender'];
+  /** @deprecated Please use `popupMatchSelectWidth` instead */
+  dropdownMatchSelectWidth?: boolean | number;
+  popupMatchSelectWidth?: boolean | number;
+  styles?: SelectStylesType;
+  classes?: SelectClassNamesType;
+  optionRender?: (params: {
+    option: OptionParams[0];
+    info: OptionParams[1];
+  }) => any;
+}
+interface SelectEmits {
+  'openChange': (open: boolean) => void;
+  'dropdownVisibleChange': (open: boolean) => void;
+  'clear': NonNullable<SelectProps$1['onClear']>;
+  'keydown': NonNullable<SelectProps$1['onKeyDown']>;
+  'keyup': NonNullable<SelectProps$1['onKeyUp']>;
+  'blur': NonNullable<SelectProps$1['onBlur']>;
+  'update:value': (value: SelectValue) => void;
+  'click': NonNullable<SelectProps$1['onClick']>;
+  'active': NonNullable<SelectProps$1['onActive']>;
+  'change': NonNullable<SelectProps$1['onChange']>;
+  'deselect': NonNullable<SelectProps$1['onDeselect']>;
+  'inputKeydown': NonNullable<SelectProps$1['onInputKeyDown']>;
+  'mousedown': NonNullable<SelectProps$1['onMouseDown']>;
+  'mouseleave': NonNullable<SelectProps$1['onMouseLeave']>;
+  'mouseenter': NonNullable<SelectProps$1['onMouseEnter']>;
+  'focus': NonNullable<SelectProps$1['onFocus']>;
+  'popupScroll': NonNullable<SelectProps$1['onPopupScroll']>;
+  'select': NonNullable<SelectProps$1['onSelect']>;
+}
+interface SelectEmitsProps {
+  onOpenChange?: SelectEmits['openChange'];
+  onDropdownVisibleChange?: SelectEmits['dropdownVisibleChange'];
+  onClear?: SelectEmits['clear'];
+  onKeydown?: SelectEmits['keydown'];
+  onKeyup?: SelectEmits['keyup'];
+  onBlur?: SelectEmits['blur'];
+  'onUpdate:value'?: SelectEmits['update:value'];
+  onClick?: SelectEmits['click'];
+  onActive?: SelectEmits['active'];
+  onChange?: SelectEmits['change'];
+  onDeselect?: SelectEmits['deselect'];
+  onInputKeydown?: SelectEmits['inputKeydown'];
+  onMousedown?: SelectEmits['mousedown'];
+  onMouseleave?: SelectEmits['mouseleave'];
+  onMouseenter?: SelectEmits['mouseenter'];
+  onFocus?: SelectEmits['focus'];
+  onPopupScroll?: SelectEmits['popupScroll'];
+  onSelect?: SelectEmits['select'];
+}
+type OptionParams = Parameters<NonNullable<SelectProps$1['optionRender']>>;
+interface SelectSlots {
+  suffixIcon?: () => any;
+  prefix?: () => any;
+  tagRender?: SelectProps['tagRender'];
+  labelRender?: SelectProps['labelRender'];
+  popupRender?: SelectProps['popupRender'];
+  optionRender?: (params: {
+    option: OptionParams[0];
+    info: OptionParams[1];
+  }) => any;
+  maxTagPlaceholder?: (data: any[]) => any;
+  notFoundContent?: () => any;
+}
+declare const Select: vue662.DefineSetupFnComponent<SelectProps, SelectEmits, SlotsType<SelectSlots>, SelectProps, vue662.PublicProps>;
+declare const SelectOption: vue662.FunctionalComponent<_v_c_select_dist_Option_js0.OptionProps, {}, any, {}>;
+declare const SelectOptGroup: vue662.FunctionalComponent<_v_c_select_dist_OptGroup_js0.OptGroupProps, {}, any, {}>;
+//#endregion
+export { InternalSelectProps, LabeledValue, SelectClassNamesType, SelectEmits, SelectEmitsProps, SelectOptGroup, SelectOption, SelectPopupSemanticClassNames, SelectPopupSemanticStyles, SelectProps, SelectSemanticClassNames, SelectSemanticStyles, SelectSlots, SelectStylesType, SelectValue, Select as default };

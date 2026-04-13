@@ -1,0 +1,8 @@
+import { ComponentToken, PanelComponentToken, PickerPanelToken, initPanelComponentToken, initPickerPanelToken } from "./token.js";
+import { genPanelStyle } from "./panel.js";
+import * as vue986 from "vue";
+
+//#region src/date-picker/style/index.d.ts
+declare const _default: (prefixCls: vue986.Ref<string>, rootCls?: vue986.Ref<string | undefined>) => readonly [vue986.Ref<string, string>, vue986.ComputedRef<string | undefined>];
+//#endregion
+export { type ComponentToken, type PanelComponentToken, type PickerPanelToken, _default as default, genPanelStyle, initPanelComponentToken, initPickerPanelToken };

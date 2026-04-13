@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test:*)",
+      "Bash(npm install:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: add full version range support to SemverRange\n\nAdd four new backwards-compatible SemverRange types: lower_bound \\(>=/>\\),\nupper_bound \\(<=/<\\), intersection \\(space-separated AND\\), and union\n\\(||-separated OR\\). This enables lossless representation of complex\nsemver ranges that were previously lossy-compressed by convert-range.js.\n\nSemverRange now natively parses comparator operators, hyphen ranges,\nx-ranges, and composite range expressions. convert-range.js is\nsimplified to a thin wrapper since SemverRange handles all syntax\ndirectly, removing the semver npm dependency.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh api:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(node -e:*)",
+      "Bash(npx mocha)",
+      "Bash(npx:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: add TypeScript definitions, remove convert-range\n\nAdd comprehensive index.d.ts covering the full public API for both\nSemver and SemverRange classes, including v2 range types \\(bounds,\nintersection, union\\). Remove convert-range.js since SemverRange now\nnatively handles all Node semver range syntax.\n\nCloses #3\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+    ]
+  }
+}

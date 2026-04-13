@@ -1,0 +1,20 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.log = void 0;
+var _i18n = require("./i18n");
+function createLog(type, name) {
+  return function (key, args) {
+    const msg = `[vxe ${name || ''}] ${(0, _i18n.getI18n)(key, args)}`;
+    console[type](msg);
+    return msg;
+  };
+}
+const version = "4.4.4";
+const log = exports.log = {
+  create: createLog,
+  warn: createLog('warn', `v${version}`),
+  err: createLog('error', `v${version}`)
+};

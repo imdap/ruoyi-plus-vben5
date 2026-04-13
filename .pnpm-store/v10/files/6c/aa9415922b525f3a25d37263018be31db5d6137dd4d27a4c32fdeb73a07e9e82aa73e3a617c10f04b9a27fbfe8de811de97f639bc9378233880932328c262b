@@ -1,0 +1,34 @@
+import { VueNode } from "../../_util/type.js";
+import { ScreenMap } from "../../_util/responsiveObserver.js";
+import { CellSemanticClassNames, CellSemanticStyles } from "../DescriptionsContext.js";
+import { DescriptionsItemType } from "../index.js";
+import * as vue525 from "vue";
+import { Ref } from "vue";
+import * as _v_c_util_dist_type0 from "@v-c/util/dist/type";
+
+//#region src/descriptions/hooks/useItems.d.ts
+declare function useItems(screens: Ref<ScreenMap>, items: Ref<DescriptionsItemType[]>): vue525.ComputedRef<({
+  filled: boolean;
+  _$index: number;
+  key?: _v_c_util_dist_type0.Key;
+  label?: VueNode;
+  style?: vue525.CSSProperties | undefined;
+  class?: string | undefined;
+  classes?: CellSemanticClassNames | undefined;
+  styles?: CellSemanticStyles | undefined;
+  rootClass?: string | undefined;
+  content?: VueNode;
+} | {
+  span: number | undefined;
+  key?: _v_c_util_dist_type0.Key;
+  label?: VueNode;
+  style?: vue525.CSSProperties | undefined;
+  class?: string | undefined;
+  classes?: CellSemanticClassNames | undefined;
+  styles?: CellSemanticStyles | undefined;
+  rootClass?: string | undefined;
+  content?: VueNode;
+  _$index: number;
+})[]>;
+//#endregion
+export { useItems as default };

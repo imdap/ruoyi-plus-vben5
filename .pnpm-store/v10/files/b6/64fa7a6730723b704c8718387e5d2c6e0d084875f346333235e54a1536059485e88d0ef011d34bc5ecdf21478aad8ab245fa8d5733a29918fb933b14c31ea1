@@ -1,0 +1,27 @@
+import { SharedComponentToken } from "../../input/style/token.js";
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue393 from "vue";
+
+//#region src/mentions/style/index.d.ts
+interface ComponentToken extends SharedComponentToken {
+  /**
+   * @desc 弹层 z-index
+   * @descEN z-index of popup
+   */
+  zIndexPopup: number;
+  /**
+   * @desc 弹层高度
+   * @descEN Height of popup
+   */
+  dropdownHeight: number | string;
+  /**
+   * @desc 菜单项高度
+   * @descEN Height of menu item
+   */
+  controlItemWidth: number | string;
+}
+declare const prepareComponentToken: GetDefaultToken<'Mentions'>;
+declare const _default: (prefixCls: vue393.Ref<string>, rootCls?: vue393.Ref<string | undefined>) => readonly [vue393.Ref<string, string>, vue393.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

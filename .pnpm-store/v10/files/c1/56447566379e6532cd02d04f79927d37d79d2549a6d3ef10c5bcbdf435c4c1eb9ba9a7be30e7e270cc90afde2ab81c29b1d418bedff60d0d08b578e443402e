@@ -1,0 +1,10 @@
+import * as vue40 from "vue";
+
+//#region src/card/CardGrid.d.ts
+interface CardGridProps {
+  prefixCls?: string;
+  hoverable?: boolean;
+}
+declare const CardGrid: vue40.DefineSetupFnComponent<CardGridProps, {}, {}, CardGridProps & {}, vue40.PublicProps>;
+//#endregion
+export { CardGridProps, CardGrid as default };

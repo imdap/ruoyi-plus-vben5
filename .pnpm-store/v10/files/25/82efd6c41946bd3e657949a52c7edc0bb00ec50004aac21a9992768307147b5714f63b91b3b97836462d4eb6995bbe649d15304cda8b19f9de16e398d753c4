@@ -1,0 +1,46 @@
+{
+  "name": "@cspell/dict-al",
+  "version": "1.1.1",
+  "description": "AL Dictionary",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "cspell-tools-cli build",
+    "test": "shx head -n 1000 \"src/al.txt\" | cspell -c ./cspell-ext.json \"--locale=*\" \"--languageId=AL\" stdin",
+    "prepublishOnly": "echo OK",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/al"
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "dict-al",
+    "AL",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/dict-al#readme",
+  "files": [
+    "dict/al.txt",
+    "cspell-ext.json",
+    "*.js",
+    "*.d.ts"
+  ],
+  "gitHead": "30c5c53b8e28152fc1d8a6cf0c872b068a64221a"
+}

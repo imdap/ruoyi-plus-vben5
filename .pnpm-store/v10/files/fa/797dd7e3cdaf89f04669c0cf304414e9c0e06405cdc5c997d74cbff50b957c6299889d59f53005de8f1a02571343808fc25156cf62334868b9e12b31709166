@@ -1,0 +1,12 @@
+import { TreeSharedToken } from "../../tree/style/index.js";
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue887 from "vue";
+import { ComputedRef } from "vue";
+
+//#region src/tree-select/style/index.d.ts
+interface ComponentToken extends TreeSharedToken {}
+declare const prepareComponentToken: GetDefaultToken<'TreeSelect'>;
+declare function useTreeSelectStyle(prefixCls: ComputedRef<string>, treePrefixCls: ComputedRef<string>, rootCls: ComputedRef<string>): readonly [vue887.Ref<string, string>, ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, useTreeSelectStyle as default, prepareComponentToken };

@@ -1,0 +1,35 @@
+import { SplitterProps, SplitterSemanticDraggerClassNames } from "./interface.js";
+import * as vue721 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/splitter/SplitBar.d.ts
+type ShowCollapsibleIconMode = boolean | 'auto';
+interface SplitBarProps {
+  index: number;
+  active: boolean;
+  draggerStyle?: CSSProperties;
+  draggerClassName?: SplitterSemanticDraggerClassNames;
+  prefixCls: string;
+  rootPrefixCls: string;
+  resizable: boolean;
+  startCollapsible: boolean;
+  endCollapsible: boolean;
+  draggerIcon?: SplitterProps['draggerIcon'];
+  collapsibleIcon?: SplitterProps['collapsibleIcon'];
+  showStartCollapsibleIcon: ShowCollapsibleIconMode;
+  showEndCollapsibleIcon: ShowCollapsibleIconMode;
+  onDraggerDoubleClick?: (index: number) => void;
+  onOffsetStart: (index: number) => void;
+  onOffsetUpdate: (index: number, offsetX: number, offsetY: number, lazyEnd?: boolean) => void;
+  onOffsetEnd: (lazyEnd?: boolean) => void;
+  onCollapse: (index: number, type: 'start' | 'end') => void;
+  vertical: boolean;
+  ariaNow: number;
+  ariaMin: number;
+  ariaMax: number;
+  lazy?: boolean;
+  containerSize: number;
+}
+declare const SplitBar: vue721.DefineSetupFnComponent<SplitBarProps, {}, {}, SplitBarProps & {}, vue721.PublicProps>;
+//#endregion
+export { ShowCollapsibleIconMode, SplitBarProps, SplitBar as default };

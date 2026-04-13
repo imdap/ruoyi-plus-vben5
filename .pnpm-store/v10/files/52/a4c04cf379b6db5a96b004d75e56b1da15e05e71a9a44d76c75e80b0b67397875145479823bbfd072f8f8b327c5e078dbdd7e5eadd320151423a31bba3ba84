@@ -1,0 +1,97 @@
+import { MaskType } from "../_util/hooks/useMergedMask.js";
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import InternalPreviewGroup, { PreviewGroupProps as PreviewGroupProps$1 } from "./PreviewGroup.js";
+import * as vue901 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { ImageProps as ImageProps$1 } from "@v-c/image";
+
+//#region src/image/index.d.ts
+type OriginPreviewConfig = NonNullable<Exclude<ImageProps$1['preview'], boolean>>;
+interface DeprecatedPreviewConfig {
+  /** @deprecated Use `open` instead */
+  visible?: boolean;
+  /** @deprecated Use `classNames.root` instead */
+  rootClass?: string;
+  /**
+   * @deprecated This has been removed.
+   * Preview will always be rendered after show.
+   */
+  forceRender?: boolean;
+  /**
+   * @deprecated This has been removed.
+   * Preview will always be rendered after show.
+   */
+  destroyOnClose?: boolean;
+  /** @deprecated Use `actionsRender` instead */
+  toolbarRender?: OriginPreviewConfig['actionsRender'];
+}
+type ImageSemanticName = keyof ImageSemanticClassNames & keyof ImageSemanticStyles;
+interface ImageSemanticClassNames {
+  root?: string;
+  image?: string;
+  cover?: string;
+}
+interface ImageSemanticStyles {
+  root?: CSSProperties;
+  image?: CSSProperties;
+  cover?: CSSProperties;
+}
+type ImagePopupSemanticName = keyof ImagePopupSemanticClassNames & keyof ImagePopupSemanticStyles;
+interface ImagePopupSemanticClassNames {
+  root?: string;
+  mask?: string;
+  body?: string;
+  footer?: string;
+  actions?: string;
+}
+interface ImagePopupSemanticStyles {
+  root?: CSSProperties;
+  mask?: CSSProperties;
+  body?: CSSProperties;
+  footer?: CSSProperties;
+  actions?: CSSProperties;
+}
+type ImageClassNamesType = SemanticClassNamesType<ImageProps, ImageSemanticClassNames, {
+  popup?: ImagePopupSemanticClassNames;
+}>;
+type ImageStylesType = SemanticStylesType<ImageProps, ImageSemanticStyles, {
+  popup?: ImagePopupSemanticStyles;
+}>;
+type PreviewConfig = OriginPreviewConfig & DeprecatedPreviewConfig & {
+  /** @deprecated Use `onOpenChange` instead */onVisibleChange?: (visible: boolean, prevVisible: boolean) => void; /** @deprecated Use `classNames.cover` instead */
+  maskClassName?: string;
+  mask?: MaskType | VueNode;
+};
+interface ImageProps extends Omit<ImageProps$1, 'preview' | 'classNames' | 'styles' | 'rootClassName' | 'onError' | 'onClick'>, ImageEmitsProps {
+  preview?: boolean | PreviewConfig;
+  /** @deprecated Use `styles.root` instead */
+  wrapperStyle?: CSSProperties;
+  classes?: ImageClassNamesType;
+  styles?: ImageStylesType;
+  rootClass?: string;
+}
+interface ImageEmits {
+  error: NonNullable<ImageProps$1['onError']>;
+  click: NonNullable<ImageProps$1['onClick']>;
+}
+interface ImageEmitsProps {
+  onError?: ImageEmits['error'];
+  onClick?: ImageEmits['click'];
+}
+interface ImageSlots {
+  fallback: () => any;
+  placeholder: () => any;
+  imageRender: () => any;
+  cover: () => any;
+  actionsRender: () => OriginPreviewConfig['actionsRender'];
+}
+declare const Image: vue901.DefineSetupFnComponent<ImageProps, ImageEmits, SlotsType<ImageSlots>, ImageProps, vue901.PublicProps>;
+declare const _default_1: typeof Image & {
+  PreviewGroup: typeof InternalPreviewGroup;
+};
+declare const ImagePreviewGroup: vue901.DefineSetupFnComponent<PreviewGroupProps$1, {}, {}, PreviewGroupProps$1 & {}, vue901.PublicProps>;
+type ImagePreviewGroupProps = PreviewGroupProps$1;
+//#endregion
+export { DeprecatedPreviewConfig, ImageClassNamesType, ImageEmits, ImageEmitsProps, ImagePopupSemanticClassNames, ImagePopupSemanticName, ImagePopupSemanticStyles, ImagePreviewGroup, ImagePreviewGroupProps, ImageProps, ImageSemanticClassNames, ImageSemanticName, ImageSemanticStyles, ImageSlots, ImageStylesType, PreviewConfig, _default_1 as default };

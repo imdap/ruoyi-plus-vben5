@@ -1,0 +1,13 @@
+import { ModalEmits, ModalProps } from "./interface.js";
+import * as vue238 from "vue";
+import * as vue_jsx_runtime8 from "vue/jsx-runtime";
+
+//#region src/modal/shared.d.ts
+declare function renderCloseIcon(prefixCls: string, closeIcon?: any): vue_jsx_runtime8.JSX.Element;
+interface FooterProps extends Pick<ModalProps, 'footer' | 'okText' | 'okType' | 'cancelText' | 'confirmLoading' | 'okButtonProps' | 'cancelButtonProps'> {
+  onOk?: ModalEmits['ok'];
+  onCancel?: ModalEmits['cancel'];
+}
+declare const Footer: vue238.DefineSetupFnComponent<FooterProps, {}, {}, FooterProps & {}, vue238.PublicProps>;
+//#endregion
+export { Footer, FooterProps, renderCloseIcon };

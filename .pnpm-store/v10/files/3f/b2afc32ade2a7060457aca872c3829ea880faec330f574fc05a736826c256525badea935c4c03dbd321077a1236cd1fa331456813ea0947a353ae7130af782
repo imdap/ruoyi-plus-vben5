@@ -1,0 +1,82 @@
+import { SlotsDefineType, VueNode } from "../_util/type.js";
+import { SemanticType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { ClosableType } from "../_util/hooks/useClosable.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue12 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/alert/Alert.d.ts
+interface AlertSemanticType {
+  classes: {
+    root?: string;
+    icon?: string;
+    section?: string;
+    title?: string;
+    description?: string;
+    actions?: string;
+    close?: string;
+  };
+  styles: {
+    root?: CSSProperties;
+    icon?: CSSProperties;
+    section?: CSSProperties;
+    title?: CSSProperties;
+    description?: CSSProperties;
+    actions?: CSSProperties;
+    close?: CSSProperties;
+  };
+}
+type AlertClassNamesType = SemanticType<AlertProps, AlertSemanticType['classes']>;
+type AlertStylesType = SemanticType<AlertProps, AlertSemanticType['styles']>;
+interface AlertProps extends ComponentBaseProps, AlertEmitsProps {
+  /** Type of Alert styles, options:`success`, `info`, `warning`, `error` */
+  type?: 'success' | 'info' | 'warning' | 'error';
+  /** Whether Alert can be closed */
+  closable?: ClosableType;
+  /** Content of Alert */
+  title?: VueNode;
+  /**
+   * @deprecated please use `title` instead.
+   */
+  message?: VueNode;
+  /** Additional content of Alert */
+  description?: VueNode;
+  /** Trigger when animation ending of Alert */
+  afterClose?: () => void;
+  /** Whether to show icon */
+  showIcon?: boolean;
+  /** https://www.w3.org/TR/2014/REC-html5-20141028/dom.html#aria-role-attribute */
+  role?: string;
+  classes?: AlertClassNamesType;
+  styles?: AlertStylesType;
+  banner?: boolean;
+  icon?: VueNode;
+  closeIcon?: VueNode;
+  action?: VueNode;
+  id?: string;
+}
+type AlertSlots = SlotsDefineType<{
+  message?: () => any;
+  description?: () => any;
+  icon?: () => any;
+  closeIcon?: () => any;
+  action?: () => any;
+  title?: () => any;
+}>;
+interface AlertEmits {
+  /** Callback when close Alert */
+  close: (e: any) => any;
+  mouseenter: (e: any) => any;
+  mouseleave: (e: any) => any;
+  click: (e: any) => any;
+}
+interface AlertEmitsProps {
+  onClose?: AlertEmits['close'];
+  onMouseenter?: AlertEmits['mouseenter'];
+  onMouseleave?: AlertEmits['mouseleave'];
+  onClick?: AlertEmits['click'];
+}
+declare const Alert: vue12.DefineSetupFnComponent<AlertProps, AlertEmits, SlotsType<AlertSlots>, AlertProps, vue12.PublicProps>;
+//#endregion
+export { AlertClassNamesType, AlertEmits, AlertEmitsProps, AlertProps, AlertSemanticType, AlertSlots, AlertStylesType, Alert as default };

@@ -1,0 +1,48 @@
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import { Orientation } from "../_util/hooks/useOrientation.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue73 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/divider/index.d.ts
+type TitlePlacement = 'left' | 'right' | 'center' | 'start' | 'end';
+type DividerSemanticName = keyof DividerSemanticClassNames & keyof DividerSemanticStyles;
+interface DividerSemanticClassNames {
+  root?: string;
+  rail?: string;
+  content?: string;
+}
+interface DividerSemanticStyles {
+  root?: CSSProperties;
+  rail?: CSSProperties;
+  content?: CSSProperties;
+}
+type DividerClassNamesType = SemanticClassNamesType<DividerProps, DividerSemanticClassNames>;
+type DividerStylesType = SemanticStylesType<DividerProps, DividerSemanticStyles>;
+interface DividerProps extends ComponentBaseProps {
+  /**  @deprecated please use `orientation` */
+  type?: Orientation;
+  /**
+   * @default center
+   */
+  orientation?: Orientation;
+  vertical?: boolean;
+  titlePlacement?: TitlePlacement;
+  /** @deprecated please use `styles.content.margin` */
+  orientationMargin?: string | number;
+  dashed?: boolean;
+  /**
+   * @since 5.20.0
+   * @default solid
+   */
+  variant?: 'dashed' | 'dotted' | 'solid';
+  size?: SizeType;
+  plain?: boolean;
+  classes?: DividerClassNamesType;
+  styles?: DividerStylesType;
+}
+declare const Divider: vue73.DefineSetupFnComponent<DividerProps, {}, {}, DividerProps & {}, vue73.PublicProps>;
+//#endregion
+export { DividerClassNamesType, DividerProps, DividerSemanticClassNames, DividerSemanticName, DividerSemanticStyles, DividerStylesType, TitlePlacement, Divider as default };

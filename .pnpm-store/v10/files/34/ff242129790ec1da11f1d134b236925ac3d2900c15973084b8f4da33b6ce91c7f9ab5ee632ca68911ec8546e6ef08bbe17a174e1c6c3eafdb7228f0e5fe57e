@@ -1,0 +1,15 @@
+import { AnyObject, VueNode } from "./type.js";
+import { VNodeChild } from "vue";
+import { isFragment } from "@v-c/util/dist/Children/isFragment";
+
+//#region src/_util/vueNode.d.ts
+type RenderProps = AnyObject | ((originProps: AnyObject) => AnyObject | undefined);
+declare function replaceElement(element: VNodeChild, replacement: VNodeChild, props?: RenderProps): VNodeChild;
+declare function cloneElement(element: VNodeChild, props?: RenderProps): VNodeChild;
+declare function getVNode(node: VueNode): VNodeChild;
+declare function checkRenderNode(node: any): any;
+declare function getTextByNode(node: any): any;
+declare function getTextNodeArr(nodes: any[]): any[];
+type EmitToProps<T extends Record<string, any>> = { [K in keyof T as `on${Capitalize<K & string>}`]: T[K] };
+//#endregion
+export { EmitToProps, checkRenderNode, cloneElement, getTextByNode, getTextNodeArr, getVNode, isFragment, replaceElement };

@@ -1,0 +1,80 @@
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { AdjustOverflow } from "../_util/placements.js";
+import { MenuEmits, MenuSlots } from "../menu/menu.js";
+import { MenuProps as MenuProps$1 } from "../menu/index.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue909 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { AlignType } from "@v-c/trigger";
+import { MenuProps } from "@v-c/menu";
+
+//#region src/dropdown/dropdown.d.ts
+declare const _Placements: readonly ["topLeft", "topCenter", "topRight", "bottomLeft", "bottomCenter", "bottomRight", "top", "bottom"];
+type Placement = (typeof _Placements)[number];
+interface DropdownArrowOptions {
+  pointAtCenter?: boolean;
+}
+type DropdownSemanticName = keyof DropdownSemanticClassNames & keyof DropdownSemanticStyles;
+interface DropdownSemanticClassNames {
+  root?: string;
+  item?: string;
+  itemTitle?: string;
+  itemIcon?: string;
+  itemContent?: string;
+}
+interface DropdownSemanticStyles {
+  root?: CSSProperties;
+  item?: CSSProperties;
+  itemTitle?: CSSProperties;
+  itemIcon?: CSSProperties;
+  itemContent?: CSSProperties;
+}
+type DropdownClassNamesType = SemanticClassNamesType<DropdownProps, DropdownSemanticClassNames>;
+type DropdownStylesType = SemanticStylesType<DropdownProps, DropdownSemanticStyles>;
+interface DropdownProps extends ComponentBaseProps, DropdownEmitsProps {
+  classes?: DropdownClassNamesType;
+  styles?: DropdownStylesType;
+  menu?: MenuProps$1 & {
+    activeKey?: MenuProps['activeKey'];
+    onClick?: MenuEmits['click'];
+  };
+  autoFocus?: boolean;
+  arrow?: boolean | DropdownArrowOptions;
+  trigger?: ('click' | 'hover' | 'contextmenu' | 'contextMenu')[];
+  popupRender?: (Vnode: any) => any;
+  open?: boolean;
+  disabled?: boolean;
+  destroyOnHidden?: boolean;
+  align?: AlignType;
+  getPopupContainer?: (triggerNode: HTMLElement) => HTMLElement;
+  prefixCls?: string;
+  transitionName?: string;
+  placement?: Placement;
+  forceRender?: boolean;
+  mouseEnterDelay?: number;
+  mouseLeaveDelay?: number;
+  openClassName?: string;
+  autoAdjustOverflow?: boolean | AdjustOverflow;
+}
+interface DropdownEmits {
+  'update:open': (open: boolean) => void;
+  'openChange': (open: boolean, info: {
+    source: 'trigger' | 'menu';
+  }) => void;
+  'menuClick': MenuEmits['click'];
+}
+interface DropdownEmitsProps {
+  'onUpdate:open'?: DropdownEmits['update:open'];
+  onOpenChange?: DropdownEmits['openChange'];
+  onMenuClick?: DropdownEmits['menuClick'];
+}
+interface DropdownSlots extends MenuSlots {
+  popupRender: (info: {
+    open: boolean;
+    source: 'trigger' | 'menu';
+  }) => any;
+}
+declare const Dropdown: vue909.DefineSetupFnComponent<DropdownProps, DropdownEmits, SlotsType<DropdownSlots>, DropdownProps, vue909.PublicProps>;
+//#endregion
+export { DropdownArrowOptions, DropdownClassNamesType, DropdownEmits, DropdownEmitsProps, DropdownProps, DropdownSemanticClassNames, DropdownSemanticName, DropdownSemanticStyles, DropdownSlots, DropdownStylesType, Dropdown as default };

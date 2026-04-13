@@ -1,0 +1,12 @@
+import { useMenuContext } from "../context/MenuContext.js";
+import { computed } from "vue";
+function useDirectionStyle(level) {
+	const menuContext = useMenuContext();
+	return computed(() => {
+		const { mode, rtl, inlineIndent } = menuContext?.value ?? {};
+		if (mode !== "inline") return null;
+		const len = level.value;
+		return rtl ? { paddingRight: `${len * inlineIndent}px` } : { paddingLeft: `${len * inlineIndent}px` };
+	});
+}
+export { useDirectionStyle as default };

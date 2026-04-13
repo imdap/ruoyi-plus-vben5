@@ -1,0 +1,7 @@
+import { KeyWiseTransferItem, TransferListProps } from "./interface.js";
+import * as vue264 from "vue";
+
+//#region src/transfer/Section.d.ts
+declare const TransferSection: vue264.DefineSetupFnComponent<TransferListProps<KeyWiseTransferItem>, {}, {}, TransferListProps<KeyWiseTransferItem> & {}, vue264.PublicProps>;
+//#endregion
+export { TransferSection as default };

@@ -1,0 +1,61 @@
+import isFirefox_default from "../utils/isFirefox.js";
+import useOriginScroll from "./useOriginScroll.js";
+import { onUnmounted, ref } from "vue";
+function useFrameWheel(inVirtual, isScrollAtTop, isScrollAtBottom, isScrollAtLeft, isScrollAtRight, horizontalScroll, onWheelDelta) {
+	const offsetRef = ref(0);
+	let nextFrame = null;
+	const wheelValueRef = ref(null);
+	const isMouseScrollRef = ref(false);
+	const originScroll = useOriginScroll(isScrollAtTop, isScrollAtBottom, isScrollAtLeft, isScrollAtRight);
+	function onWheelY(e, deltaY) {
+		if (nextFrame) cancelAnimationFrame(nextFrame);
+		if (originScroll(false, deltaY)) return;
+		const event = e;
+		if (!event._virtualHandled) event._virtualHandled = true;
+		else return;
+		offsetRef.value += deltaY;
+		wheelValueRef.value = deltaY;
+		if (!isFirefox_default) event.preventDefault();
+		nextFrame = requestAnimationFrame(() => {
+			const patchMultiple = isMouseScrollRef.value ? 10 : 1;
+			onWheelDelta(offsetRef.value * patchMultiple, false);
+			offsetRef.value = 0;
+		});
+	}
+	function onWheelX(event, deltaX) {
+		onWheelDelta(deltaX, true);
+		if (!isFirefox_default) event.preventDefault();
+	}
+	const wheelDirectionRef = ref(null);
+	let wheelDirectionClean = null;
+	function onWheel(event) {
+		if (!inVirtual.value) return;
+		if (wheelDirectionClean) cancelAnimationFrame(wheelDirectionClean);
+		wheelDirectionClean = requestAnimationFrame(() => {
+			wheelDirectionRef.value = null;
+		});
+		const { deltaX, deltaY, shiftKey } = event;
+		let mergedDeltaX = deltaX;
+		let mergedDeltaY = deltaY;
+		if (wheelDirectionRef.value === "sx" || !wheelDirectionRef.value && (shiftKey || false) && deltaY && !deltaX) {
+			mergedDeltaX = deltaY;
+			mergedDeltaY = 0;
+			wheelDirectionRef.value = "sx";
+		}
+		const absX = Math.abs(mergedDeltaX);
+		const absY = Math.abs(mergedDeltaY);
+		if (wheelDirectionRef.value === null) wheelDirectionRef.value = horizontalScroll && absX > absY ? "x" : "y";
+		if (wheelDirectionRef.value === "y") onWheelY(event, mergedDeltaY);
+		else onWheelX(event, mergedDeltaX);
+	}
+	function onFireFoxScroll(event) {
+		if (!inVirtual.value) return;
+		isMouseScrollRef.value = event.detail === wheelValueRef.value;
+	}
+	onUnmounted(() => {
+		if (nextFrame) cancelAnimationFrame(nextFrame);
+		if (wheelDirectionClean) cancelAnimationFrame(wheelDirectionClean);
+	});
+	return [onWheel, onFireFoxScroll];
+}
+export { useFrameWheel as default };

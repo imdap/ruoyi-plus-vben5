@@ -1,0 +1,8 @@
+import { InternalPanelProps, PanelProps } from "./interface.js";
+import * as vue715 from "vue";
+
+//#region src/splitter/Panel.d.ts
+declare const InternalPanel: vue715.DefineSetupFnComponent<InternalPanelProps, {}, {}, InternalPanelProps & {}, vue715.PublicProps>;
+declare const Panel: vue715.DefineSetupFnComponent<PanelProps, {}, {}, PanelProps & {}, vue715.PublicProps>;
+//#endregion
+export { InternalPanel, Panel as default };

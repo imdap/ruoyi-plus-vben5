@@ -1,0 +1,493 @@
+import { useComponentBaseConfig } from "../config-provider/context.js";
+import { useSizeProvider } from "../config-provider/SizeContext.js";
+import { useSize } from "../config-provider/hooks/useSize.js";
+import { getAttrStyleAndClass, useMergeSemantic, useToArr, useToProps } from "../_util/hooks/useMergeSemantic.js";
+import { toPropsRefs } from "../_util/tools.js";
+import useCSSVarCls_default from "../config-provider/hooks/useCSSVarCls.js";
+import { useDisabledContext, useDisabledContextProvider } from "../config-provider/DisabledContext.js";
+import useLocale_default from "../locale/useLocale.js";
+import { NoFormStyle, useFormContextProvider, useVariantContextProvider } from "./context.js";
+import { getFieldId, toArray } from "./util.js";
+import style_default from "./style/index.js";
+import { allPromiseFinish } from "./utils/asyncUtil.js";
+import { defaultValidateMessages } from "./utils/messages.js";
+import { cloneByNamePathList, containsNamePath, getNamePath, setValue } from "./utils/valueUtil.js";
+import { useValidateMessagesContext, useValidateMessagesProvider } from "./validateMessagesContext.js";
+import { computed, createVNode, defineComponent, mergeDefaults, mergeProps, shallowRef, watch } from "vue";
+import { clsx, get, set } from "@v-c/util";
+import { pick } from "es-toolkit";
+import scrollIntoView from "scroll-into-view-if-needed";
+
+//#region src/form/Form.tsx
+const InternalForm = /* @__PURE__ */ defineComponent((props, { slots, expose, emit, attrs }) => {
+	const contextDisabled = useDisabledContext();
+	const { prefixCls, direction, requiredMark: contextRequiredMark, colon: contextColon, scrollToFirstError: contextScrollToFirstError, class: contextClassName, style: contextStyle, styles: contextStyles, classes: contextClassNames, tooltip: contextTooltip } = useComponentBaseConfig("form", props, [
+		"scrollToFirstError",
+		"colon",
+		"requiredMark",
+		"tooltip"
+	]);
+	const { size, styles, classes, variant, model, rules, validateTrigger, validateMessages, feedbackIcons } = toPropsRefs(props, "size", "classes", "styles", "variant", "model", "rules", "validateTrigger", "validateMessages", "feedbackIcons");
+	const mergedSize = useSize(size);
+	const disabled = computed(() => props?.disabled ?? contextDisabled.value);
+	const contextValidateMessages = useValidateMessagesContext();
+	const [formLocale] = useLocale_default("Form");
+	const mergedRequiredMark = computed(() => {
+		if (props.requiredMark !== void 0) return props.requiredMark;
+		if (contextRequiredMark.value !== void 0) return contextRequiredMark.value;
+		return true;
+	});
+	const mergedColon = computed(() => props.colon ?? contextColon.value);
+	const mergedTooltip = computed(() => {
+		return {
+			...contextTooltip.value,
+			...props.tooltip
+		};
+	});
+	const mergedValidateMessages = computed(() => ({
+		...defaultValidateMessages,
+		...formLocale?.value?.defaultValidateMessages || {},
+		...contextValidateMessages?.value || {},
+		...validateMessages.value || {}
+	}));
+	useValidateMessagesProvider(mergedValidateMessages);
+	const rootCls = useCSSVarCls_default(prefixCls);
+	const [hashId, cssVarCls] = style_default(prefixCls, rootCls);
+	const mergedProps = computed(() => {
+		return {
+			...props,
+			size: mergedSize.value,
+			colon: mergedColon.value,
+			requiredMark: mergedRequiredMark.value
+		};
+	});
+	const [mergedClassNames, mergedStyles] = useMergeSemantic(useToArr(contextClassNames, classes), useToArr(contextStyles, styles), useToProps(mergedProps));
+	const fields = shallowRef({});
+	const lastValidatePromise = shallowRef();
+	const addField = (eventKey, field) => {
+		fields.value[eventKey] = field;
+	};
+	const removeField = (eventKey) => {
+		delete fields.value[eventKey];
+	};
+	const getFieldsByNameList = (namePathList) => {
+		const mergedNamePathList = namePathList?.length ? namePathList : void 0;
+		const fieldList = Object.values(fields.value);
+		if (!mergedNamePathList) return fieldList;
+		return fieldList.filter((field) => containsNamePath(mergedNamePathList, field.namePath()));
+	};
+	const getFieldValue = (namePath) => {
+		return get(model.value ?? {}, namePath);
+	};
+	const getFieldsValue = (nameList = true) => {
+		if (nameList === true) {
+			const allNameList = Object.values(fields.value).map((field) => field.namePath());
+			return cloneByNamePathList(model.value ?? {}, allNameList);
+		}
+		return cloneByNamePathList(model.value ?? {}, nameList);
+	};
+	const getFields = (namePathList) => {
+		return getFieldsByNameList(namePathList).map((field) => {
+			return {
+				...field.getMeta(),
+				name: field.namePath(),
+				value: field.getValue()
+			};
+		});
+	};
+	const triggerFieldsChange = (namePathList) => {
+		emit("fieldsChange", getFields(namePathList), getFields());
+	};
+	const triggerValuesChange = (namePath, value) => {
+		if (model.value) emit("valuesChange", setValue({}, namePath, value), model.value);
+		triggerFieldsChange([namePath]);
+	};
+	const onValidate = (name, status, errors) => {
+		emit("validate", name, status, errors);
+	};
+	const resetFields = (nameList) => {
+		getFieldsByNameList(nameList ? nameList.map(getNamePath) : void 0).forEach((field) => field.resetField());
+	};
+	const clearValidate = (nameList) => {
+		getFieldsByNameList(nameList ? nameList.map(getNamePath) : void 0).forEach((field) => field.clearValidate());
+	};
+	const validateFields = (nameList, options = {}) => {
+		const provideNameList = !!(nameList && toArray(nameList).length);
+		const namePathList = provideNameList ? toArray(nameList).map(getNamePath) : [];
+		const promiseList = [];
+		getFieldsByNameList(provideNameList ? namePathList : void 0).forEach((field) => {
+			if (!provideNameList) namePathList.push(field.namePath());
+			if (!field.rules || !field.rules()?.length) return;
+			const promise = field.validateRules(options).then(() => ({
+				name: field.namePath(),
+				errors: [],
+				warnings: []
+			})).catch((ruleErrors) => {
+				const mergedErrors = [];
+				const mergedWarnings = [];
+				ruleErrors?.forEach(({ rule: { warningOnly }, errors }) => {
+					if (warningOnly) mergedWarnings.push(...errors);
+					else mergedErrors.push(...errors);
+				});
+				if (mergedErrors.length) return Promise.reject({
+					name: field.namePath(),
+					errors: mergedErrors,
+					warnings: mergedWarnings
+				});
+				return {
+					name: field.namePath(),
+					errors: mergedErrors,
+					warnings: mergedWarnings
+				};
+			});
+			promiseList.push(promise);
+		});
+		const summaryPromise = allPromiseFinish(promiseList);
+		lastValidatePromise.value = summaryPromise;
+		const returnPromise = summaryPromise.then(() => {
+			if (lastValidatePromise.value === summaryPromise) return Promise.resolve(getFieldsValue(namePathList));
+			return Promise.reject([]);
+		}).catch((results) => {
+			const errorList = results.filter((result) => result && result.errors.length);
+			return Promise.reject({
+				values: getFieldsValue(namePathList),
+				errorFields: errorList,
+				outOfDate: lastValidatePromise.value !== summaryPromise
+			});
+		});
+		returnPromise.catch((e) => e);
+		return returnPromise;
+	};
+	const formContextValue = computed(() => {
+		return {
+			...pick(props, [
+				"name",
+				"labelAlign",
+				"labelCol",
+				"labelWrap",
+				"wrapperCol",
+				"layout"
+			]),
+			colon: mergedColon.value,
+			requiredMark: mergedRequiredMark.value,
+			classes: mergedClassNames.value,
+			styles: mergedStyles.value,
+			rules: rules.value,
+			model: model.value,
+			validateTrigger: validateTrigger.value,
+			tooltip: mergedTooltip.value,
+			validateMessages: mergedValidateMessages.value,
+			feedbackIcons: feedbackIcons.value,
+			addField,
+			removeField,
+			onValidate,
+			triggerValuesChange,
+			triggerFieldsChange,
+			getFieldValue,
+			getFieldsValue
+		};
+	});
+	const nativeElementRef = shallowRef();
+	const scrollToField = (fieldName, options = {}) => {
+		let defaultScrollToFirstError = { block: "nearest" };
+		if (typeof options === "object") defaultScrollToFirstError = {
+			...defaultScrollToFirstError,
+			...options
+		};
+		const targetId = getFieldId(fieldName, props.name);
+		const node = targetId ? document.getElementById(targetId) : null;
+		if (node) {
+			scrollIntoView(node, defaultScrollToFirstError);
+			if (defaultScrollToFirstError.focus !== false) try {
+				node.focus();
+			} catch {}
+		}
+	};
+	const onInternalFinishFailed = (errorInfo) => {
+		emit("finishFailed", errorInfo);
+		if (errorInfo.errorFields?.length) {
+			const fieldName = errorInfo.errorFields?.[0]?.name;
+			if (props.scrollToFirstError !== void 0) scrollToField(fieldName, props.scrollToFirstError);
+			else if (contextScrollToFirstError.value !== void 0) scrollToField(fieldName, contextScrollToFirstError.value);
+		}
+	};
+	const updateModelValue = (namePath, value) => {
+		if (!model.value) return;
+		const newStore = set(model.value, namePath, value);
+		Object.assign(model.value, newStore);
+	};
+	const setFieldValue = (name, value) => {
+		const namePath = getNamePath(name);
+		updateModelValue(namePath, value);
+		triggerValuesChange(namePath, value);
+	};
+	const setFieldsValue = (values) => {
+		if (!model.value) return;
+		Object.keys(values || {}).forEach((key) => {
+			updateModelValue(getNamePath(key), values[key]);
+		});
+		triggerFieldsChange();
+	};
+	const getFieldError = (name) => {
+		return getFields([getNamePath(name)])[0]?.errors || [];
+	};
+	const getFieldWarning = (name) => {
+		return getFields([getNamePath(name)])[0]?.warnings || [];
+	};
+	const getFieldsError = (nameList) => {
+		return getFields(nameList?.length ? nameList.map(getNamePath) : void 0).map((field) => ({
+			name: field.name,
+			errors: field.errors,
+			warnings: field.warnings
+		}));
+	};
+	const isFieldTouched = (name) => {
+		return !!getFields([getNamePath(name)])[0]?.touched;
+	};
+	const isFieldsTouched = (nameList, allFieldsTouched) => {
+		const fieldsData = getFields(typeof nameList === "boolean" || nameList === void 0 ? void 0 : nameList.map(getNamePath));
+		if (nameList === false) return false;
+		if (!fieldsData.length) return false;
+		if (allFieldsTouched) return fieldsData.every((field) => field.touched);
+		return fieldsData.some((field) => field.touched);
+	};
+	const isFieldValidating = (name) => {
+		return !!getFields([getNamePath(name)])[0]?.validating;
+	};
+	const isFieldsValidating = (nameList) => {
+		return getFields(nameList?.length ? nameList.map(getNamePath) : void 0).some((field) => field.validating);
+	};
+	const setFields = (data) => {
+		data.forEach((item) => {
+			const target = Object.values(fields.value).find((field) => containsNamePath([field.namePath()], item.name));
+			if (target?.setFieldState) target.setFieldState({
+				errors: item.errors || [],
+				warnings: item.warnings || [],
+				touched: item.touched ?? target.getMeta().touched,
+				validating: item.validating ?? target.getMeta().validating
+			});
+			if (Object.prototype.hasOwnProperty.call(item, "value")) updateModelValue(item.name, item.value);
+		});
+		triggerFieldsChange();
+	};
+	const submit = () => {
+		handleSubmit(new Event("submit"));
+	};
+	useFormContextProvider(formContextValue);
+	useVariantContextProvider(variant);
+	useDisabledContextProvider(disabled);
+	useSizeProvider(mergedSize);
+	expose({
+		getFieldValue: (name) => getFieldValue(getNamePath(name)),
+		getFieldsValue,
+		getFieldError,
+		getFieldsError,
+		getFieldWarning,
+		isFieldsTouched,
+		isFieldTouched,
+		isFieldValidating,
+		isFieldsValidating,
+		resetFields,
+		clearValidate,
+		setFields,
+		setFieldValue,
+		setFieldsValue,
+		validateFields,
+		validate: () => validateFields(),
+		submit,
+		nativeElement: nativeElementRef,
+		el: nativeElementRef,
+		scrollToField: (name, options = {}) => {
+			scrollToField(getNamePath(name), options);
+		},
+		focusField: (name) => {
+			const targetId = getFieldId(getNamePath(name), props.name);
+			const node = targetId ? document.getElementById(targetId) : null;
+			if (node) try {
+				node.focus?.();
+			} finally {}
+		},
+		getFieldInstance: (name) => {
+			const targetId = getFieldId(getNamePath(name), props.name);
+			if (targetId) return fields.value?.[targetId];
+		}
+	});
+	watch(() => rules.value, () => {
+		if (props.validateOnRuleChange) validateFields();
+	}, { deep: true });
+	function handleSubmit(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		emit("submit", e);
+		if (props.model) validateFields().then((values) => {
+			emit("finish", values);
+		}).catch((errors) => {
+			onInternalFinishFailed(errors);
+		});
+	}
+	const handleReset = (e) => {
+		e.preventDefault();
+		emit("reset", e);
+		resetFields();
+	};
+	return () => {
+		const { layout, rootClass, name } = props;
+		const { className, style, restAttrs } = getAttrStyleAndClass(attrs);
+		const formClassName = clsx(prefixCls.value, `${prefixCls.value}-${layout}`, {
+			[`${prefixCls.value}-hide-required-mark`]: mergedRequiredMark.value === false,
+			[`${prefixCls.value}-rtl`]: direction.value === "rtl",
+			[`${prefixCls.value}-${mergedSize.value}`]: mergedSize.value
+		}, cssVarCls.value, rootCls.value, hashId.value, contextClassName.value, className, rootClass, mergedClassNames.value.root);
+		return createVNode("form", mergeProps({ "id": name }, restAttrs, {
+			"name": name,
+			"ref": nativeElementRef,
+			"style": [
+				mergedStyles.value.root,
+				contextStyle.value,
+				style
+			],
+			"class": formClassName,
+			"onSubmit": handleSubmit,
+			"onReset": handleReset
+		}), [createVNode(NoFormStyle, { "status": true }, { default: () => [slots?.default?.()] })]);
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		},
+		colon: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		name: {
+			type: String,
+			required: false
+		},
+		layout: {
+			type: String,
+			required: false
+		},
+		labelAlign: {
+			type: String,
+			required: false
+		},
+		labelWrap: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		labelCol: {
+			type: Object,
+			required: false
+		},
+		wrapperCol: {
+			type: Object,
+			required: false
+		},
+		feedbackIcons: {
+			type: Function,
+			required: false
+		},
+		size: {
+			type: [String, null],
+			required: false
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		scrollToFirstError: {
+			type: [Object, Boolean],
+			required: false,
+			default: void 0
+		},
+		requiredMark: {
+			type: [
+				Boolean,
+				String,
+				Function
+			],
+			required: false,
+			default: void 0
+		},
+		variant: {
+			type: String,
+			required: false
+		},
+		validateMessages: {
+			type: Object,
+			required: false
+		},
+		model: {
+			type: Object,
+			required: false
+		},
+		rules: {
+			type: Object,
+			required: false
+		},
+		validateTrigger: {
+			type: [
+				String,
+				Array,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		preserve: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		clearOnDestroy: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		validateOnRuleChange: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		autoComplete: {
+			type: [String, null],
+			required: false
+		},
+		tooltip: {
+			type: Object,
+			required: false
+		},
+		rootClass: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		}
+	}, { layout: "horizontal" }),
+	emits: [
+		"finish",
+		"finishFailed",
+		"submit",
+		"reset",
+		"validate",
+		"valuesChange",
+		"fieldsChange"
+	],
+	name: "AForm",
+	inheritAttrs: false
+});
+var Form_default = InternalForm;
+
+//#endregion
+export { Form_default as default };

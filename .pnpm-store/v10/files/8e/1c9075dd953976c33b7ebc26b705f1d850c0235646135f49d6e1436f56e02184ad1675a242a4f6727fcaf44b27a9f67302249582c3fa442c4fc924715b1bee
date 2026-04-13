@@ -1,0 +1,36 @@
+import { VueNode } from "../_util/type.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue126 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/tag/CheckableTag.d.ts
+interface CheckableTagProps extends ComponentBaseProps, CheckableTagEmitsProps {
+  /**
+   * It is an absolute controlled component and has no uncontrolled mode.
+   *
+   * .zh-cn 该组件为完全受控组件，不支持非受控用法。
+   */
+  checked: boolean;
+  /**
+   * @since 5.27.0
+   */
+  icon?: VueNode;
+  disabled?: boolean;
+}
+interface CheckableTagEmits {
+  'change': (checked: boolean) => void;
+  'update:checked': (checked: boolean) => void;
+  'click': (e: MouseEvent) => void;
+}
+interface CheckableTagEmitsProps {
+  onChange?: CheckableTagEmits['change'];
+  'onUpdate:checked'?: CheckableTagEmits['update:checked'];
+  onClick?: CheckableTagEmits['click'];
+}
+interface CheckableTagSlots {
+  default: () => any;
+  icon: () => any;
+}
+declare const CheckableTag: vue126.DefineSetupFnComponent<CheckableTagProps, CheckableTagEmits, SlotsType<CheckableTagSlots>, CheckableTagProps, vue126.PublicProps>;
+//#endregion
+export { CheckableTagEmits, CheckableTagEmitsProps, CheckableTagProps, CheckableTagSlots, CheckableTag as default };

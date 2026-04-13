@@ -1,0 +1,25 @@
+import { FloatButtonProps } from "./FloatButton.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue1078 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/float-button/BackTop.d.ts
+interface BackTopProps extends Omit<FloatButtonProps, 'target'>, ComponentBaseProps, BackTopEmitsProps {
+  visibilityHeight?: number;
+  target?: () => HTMLElement | Window | Document;
+  duration?: number;
+}
+interface BackTopEmits {
+  click: (e: MouseEvent) => void;
+}
+interface BackTopEmitsProps {
+  onClick?: BackTopEmits['click'];
+}
+interface BackTopSlots {
+  default?: () => any;
+  icon?: () => any;
+}
+declare const BackTop: vue1078.DefineSetupFnComponent<BackTopProps, BackTopEmits, SlotsType<BackTopSlots>, BackTopProps, vue1078.PublicProps>;
+declare const BackTopWithInstall: typeof BackTop;
+//#endregion
+export { BackTopEmits, BackTopEmitsProps, BackTopProps, BackTopSlots, BackTopWithInstall as default };

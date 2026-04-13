@@ -1,0 +1,33 @@
+{
+	"name": "@iconify/icons-simple-icons",
+	"description": "Iconify icon components for Simple Icons",
+	"version": "1.2.74",
+	"iconSetInfo": {
+		"name": "Simple Icons",
+		"total": 2750,
+		"version": "9.19.0",
+		"author": {
+			"name": "Simple Icons Collaborators",
+			"url": "https://github.com/simple-icons/simple-icons"
+		},
+		"license": {
+			"title": "CC0 1.0",
+			"spdx": "CC0-1.0",
+			"url": "https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md"
+		},
+		"samples": [
+			"wise",
+			"nintendo",
+			"vuetify"
+		],
+		"height": 24,
+		"category": "Brands / Social",
+		"palette": false
+	},
+	"homepage": "https://icon-sets.iconify.design/simple-icons/",
+	"bugs": "https://github.com/iconify/icon-sets/issues",
+	"license": "CC0-1.0",
+	"dependencies": {
+		"@iconify/types": "*"
+	}
+}

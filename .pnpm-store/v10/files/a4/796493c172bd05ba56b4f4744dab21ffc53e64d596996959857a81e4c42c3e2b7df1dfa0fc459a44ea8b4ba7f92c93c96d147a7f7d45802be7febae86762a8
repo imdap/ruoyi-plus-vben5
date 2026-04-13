@@ -1,0 +1,50 @@
+{
+  "name": "@cspell/dict-golang",
+  "version": "6.0.26",
+  "description": "Go Language dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "sync:manual": "GITHUB_TOKEN=$(gh auth token) pnpm sync",
+    "sync": "sync-github-files AlekSi/go-words  --tag=main -o src/go-words",
+    "conditional-build": "pnpm run sync && pnpm run build",
+    "build": "cspell-tools-cli build",
+    "test": "shx head -n 100 src/go.txt | cspell -c ./cspell-ext.json --locale=* --languageId=go stdin",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/golang"
+  },
+  "keywords": [
+    "cspell",
+    "golang",
+    "Go Language",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "contributors": [
+    "Alexey Palazhchenko",
+    "Jason Dent <jason@streetsidesoftware.nl>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/golang#readme",
+  "files": [
+    "./dict/go.txt",
+    "cspell-ext.json"
+  ],
+  "gitHead": "eb2dd1fb97fdc4e6fb74cd3bfd192d493a4c6f86"
+}

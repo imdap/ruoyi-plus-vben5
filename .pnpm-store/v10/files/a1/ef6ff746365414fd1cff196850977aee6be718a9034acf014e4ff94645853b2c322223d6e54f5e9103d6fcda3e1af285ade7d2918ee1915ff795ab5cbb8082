@@ -1,0 +1,19 @@
+import { FloatButtonProps } from "./FloatButton.js";
+import { FloatButtonGroupProps } from "./FloatButtonGroup.js";
+import * as vue905 from "vue";
+
+//#region src/float-button/PurePanel.d.ts
+interface PureFloatButtonProps extends Omit<FloatButtonProps, 'target'> {
+  backTop?: boolean;
+}
+type ClassNamesType = PureFloatButtonProps['classes'] | FloatButtonGroupProps['classes'];
+type StylesType = PureFloatButtonProps['styles'] | FloatButtonGroupProps['styles'];
+interface PurePanelProps extends Omit<PureFloatButtonProps, 'classes' | 'styles'>, Omit<FloatButtonGroupProps, 'classes' | 'styles'> {
+  /** Convert to FloatGroup when configured */
+  items?: PureFloatButtonProps[];
+  classes?: ClassNamesType;
+  styles?: StylesType;
+}
+declare const PurePanel: vue905.DefineSetupFnComponent<PurePanelProps, {}, {}, PurePanelProps & {}, vue905.PublicProps>;
+//#endregion
+export { PureFloatButtonProps, PurePanelProps, PurePanel as default };

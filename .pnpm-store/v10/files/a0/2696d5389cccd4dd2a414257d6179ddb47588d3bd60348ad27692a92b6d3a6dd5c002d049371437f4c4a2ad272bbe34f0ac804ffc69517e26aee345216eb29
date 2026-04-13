@@ -1,0 +1,12 @@
+{
+  "name": "pinia-plugin-persistedstate",
+  "configKey": "piniaPluginPersistedstate",
+  "compatibility": {
+    "nuxt": ">=3.0.0"
+  },
+  "version": "4.7.1",
+  "builder": {
+    "@nuxt/module-builder": "1.0.2",
+    "unbuild": "3.6.0"
+  }
+}

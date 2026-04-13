@@ -1,0 +1,21 @@
+import { BlockProps, TypographyBaseEmits, TypographySlots } from "./interface.js";
+import Text$1, { TextProps } from "./Text.js";
+import Link, { LinkProps } from "./Link.js";
+import Title, { TitleProps } from "./Title.js";
+import Paragraph, { ParagraphProps } from "./Paragraph.js";
+import Typography$1 from "./Typography.js";
+import * as vue184 from "vue";
+
+//#region src/typography/index.d.ts
+declare const TypographyText: vue184.DefineSetupFnComponent<TextProps, TypographyBaseEmits, vue184.SlotsType<TypographySlots>, TextProps, vue184.PublicProps>;
+declare const TypographyLink: vue184.DefineSetupFnComponent<LinkProps, TypographyBaseEmits, vue184.SlotsType<TypographySlots>, LinkProps, vue184.PublicProps>;
+declare const TypographyTitle: vue184.DefineSetupFnComponent<TitleProps, TypographyBaseEmits, vue184.SlotsType<TypographySlots>, TitleProps, vue184.PublicProps>;
+declare const TypographyParagraph: vue184.DefineSetupFnComponent<ParagraphProps, TypographyBaseEmits, vue184.SlotsType<TypographySlots>, ParagraphProps, vue184.PublicProps>;
+declare const Typography: typeof Typography$1 & {
+  Text: typeof Text$1;
+  Link: typeof Link;
+  Title: typeof Title;
+  Paragraph: typeof Paragraph;
+};
+//#endregion
+export { type BlockProps, type LinkProps, type ParagraphProps, type TextProps, type TitleProps, TypographyLink, TypographyParagraph, TypographyText, TypographyTitle, Typography as default };

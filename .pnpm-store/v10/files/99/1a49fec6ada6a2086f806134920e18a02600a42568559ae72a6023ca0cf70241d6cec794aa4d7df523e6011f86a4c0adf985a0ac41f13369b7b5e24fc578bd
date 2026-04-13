@@ -1,0 +1,6 @@
+import * as vue867 from "vue";
+
+//#region src/tooltip/UniqueProvider/MotionContent.d.ts
+declare const MotionContent: vue867.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue867.PublicProps>;
+//#endregion
+export { MotionContent as default };

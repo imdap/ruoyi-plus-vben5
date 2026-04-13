@@ -1,0 +1,13 @@
+import { PanelProps } from "../interface.js";
+import * as vue657 from "vue";
+import { Ref } from "vue";
+
+//#region src/splitter/hooks/useSizes.d.ts
+declare function getPtg(str: string): number;
+/**
+ * Save the size state.
+ * Align the size into flex percentage base.
+ */
+declare function useSizes(items: Ref<PanelProps[]>, containerSize?: Ref<number>): readonly [vue657.ComputedRef<(string | number | undefined)[]>, vue657.ComputedRef<number[]>, vue657.ComputedRef<number[]>, vue657.ComputedRef<number[]>, vue657.ComputedRef<number[]>, (newSizes: number[]) => void];
+//#endregion
+export { useSizes as default, getPtg };

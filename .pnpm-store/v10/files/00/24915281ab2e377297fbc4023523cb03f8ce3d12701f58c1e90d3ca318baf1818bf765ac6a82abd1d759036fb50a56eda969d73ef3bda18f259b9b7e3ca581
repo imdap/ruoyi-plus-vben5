@@ -1,0 +1,19 @@
+import { TourEmits, TourLocale, TourProps as TourProps$1, TourSemanticName, TourSlots, TourStepProps, TourStylesType } from "./interface.js";
+import * as vue151 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/tour/index.d.ts
+interface InternalTourProps extends TourProps$1, TourEmitsProps {}
+interface TourEmitsProps {
+  onChange?: TourEmits['change'];
+  onClose?: TourEmits['close'];
+  onFinish?: TourEmits['finish'];
+  'onUpdate:open'?: TourEmits['update:open'];
+  'onUpdate:current'?: TourEmits['update:current'];
+  onPopupAlign?: TourEmits['popupAlign'];
+}
+declare const Tour: vue151.DefineSetupFnComponent<InternalTourProps, TourEmits, SlotsType<TourSlots>, InternalTourProps, vue151.PublicProps>;
+type TourProps = InternalTourProps;
+type TourStepItem = TourStepProps;
+//#endregion
+export { InternalTourProps, type TourEmits, TourEmitsProps, type TourLocale, TourProps, type TourSemanticName, type TourSlots, TourStepItem, type TourStylesType, Tour as default };

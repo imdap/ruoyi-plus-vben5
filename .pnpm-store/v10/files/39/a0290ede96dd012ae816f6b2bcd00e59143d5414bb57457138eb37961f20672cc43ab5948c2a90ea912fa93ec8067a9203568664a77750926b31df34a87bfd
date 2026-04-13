@@ -1,0 +1,41 @@
+import { AnyObject, EmptyEmit } from "../../../_util/type.js";
+import { ColumnFilterItem, ColumnType, FilterDropdownProps as FilterDropdownProps$1, FilterSearchType, FilterValue, GetPopupContainer, Key as Key$1, TableLocale } from "../../interface.js";
+import { FilterState } from "./index.js";
+import * as vue827 from "vue";
+import { SlotsType } from "vue";
+import { DataNode } from "@v-c/tree";
+
+//#region src/table/hooks/useFilter/FilterDropdown.d.ts
+declare function flattenKeys(filters?: ColumnFilterItem[]): FilterValue;
+type TreeColumnFilterItem = ColumnFilterItem & FilterTreeDataNode;
+interface FilterDropdownProps<RecordType = AnyObject> {
+  tablePrefixCls: string;
+  prefixCls: string;
+  dropdownPrefixCls: string;
+  column: ColumnType<RecordType>;
+  filterDropdownRender?: (ctx: FilterDropdownProps$1 & {
+    column: ColumnType<RecordType>;
+  }) => any;
+  filterIconRender?: (ctx: {
+    column: ColumnType<RecordType>;
+    filtered: boolean;
+  }) => any;
+  filterState?: FilterState<RecordType>;
+  filterOnClose: boolean;
+  filterMultiple: boolean;
+  filterMode?: 'menu' | 'tree';
+  filterSearch?: FilterSearchType<ColumnFilterItem | TreeColumnFilterItem>;
+  columnKey: Key$1;
+  children?: any;
+  triggerFilter: (filterState: FilterState<RecordType>) => void;
+  locale: TableLocale;
+  getPopupContainer?: GetPopupContainer;
+  filterResetToDefaultFilteredValue?: boolean;
+  rootClassName?: string;
+}
+type FilterTreeDataNode = DataNode;
+declare const FilterDropdown: vue827.DefineSetupFnComponent<FilterDropdownProps<AnyObject>, EmptyEmit, SlotsType<{
+  default?: () => any;
+}>, FilterDropdownProps<AnyObject>, vue827.PublicProps>;
+//#endregion
+export { FilterDropdownProps, TreeColumnFilterItem, FilterDropdown as default, flattenKeys };

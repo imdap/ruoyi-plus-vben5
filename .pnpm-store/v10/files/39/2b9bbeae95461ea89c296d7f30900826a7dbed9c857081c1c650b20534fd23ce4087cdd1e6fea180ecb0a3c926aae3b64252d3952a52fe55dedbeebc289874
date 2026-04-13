@@ -1,0 +1,116 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import TabPane, { TabPaneProps } from "./TabPane.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue893 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { GetIndicatorSize, MoreProps, Tab as Tab$1, TabsProps as TabsProps$1 } from "@v-c/tabs";
+
+//#region src/tabs/index.d.ts
+type TabsType = 'line' | 'card' | 'editable-card';
+type TabPosition = 'top' | 'right' | 'bottom' | 'left';
+type TabPlacement = 'top' | 'end' | 'bottom' | 'start';
+type TabsSemanticName = keyof TabsSemanticClassNames & keyof TabsSemanticStyles;
+interface TabsSemanticClassNames {
+  root?: string;
+  item?: string;
+  indicator?: string;
+  content?: string;
+  header?: string;
+}
+interface TabsSemanticStyles {
+  root?: CSSProperties;
+  item?: CSSProperties;
+  indicator?: CSSProperties;
+  content?: CSSProperties;
+  header?: CSSProperties;
+}
+type TabsClassNamesType = SemanticClassNamesType<TabsProps, TabsSemanticClassNames, {
+  popup?: {
+    root?: string;
+  };
+}>;
+type TabsStylesType = SemanticStylesType<TabsProps, TabsSemanticStyles, {
+  popup?: {
+    root?: CSSProperties;
+  };
+}>;
+interface CompatibilityProps {
+  /** @deprecated Please use `destroyOnHidden` instead */
+  destroyInactiveTabPane?: boolean;
+}
+interface Tab extends Omit<Tab$1, 'children' | 'className'> {
+  content?: VueNode;
+  class?: string;
+}
+interface TabsRef {
+  nativeElement: any;
+}
+interface BaseTabsProps extends ComponentBaseProps {
+  type?: TabsType;
+  size?: SizeType;
+  hideAdd?: boolean;
+  centered?: boolean;
+  classes?: TabsClassNamesType;
+  styles?: TabsStylesType;
+  /** @deprecated please use `tabPlacement` instead */
+  tabPosition?: TabPosition;
+  tabPlacement?: TabPlacement;
+  /** @deprecated Please use `indicator={{ size: ... }}` instead */
+  indicatorSize?: GetIndicatorSize;
+  items?: Tab[];
+}
+interface TabsEmits {
+  'edit': (e: MouseEvent | KeyboardEvent | string, action: 'add' | 'remove') => void;
+  'change': NonNullable<TabsProps$1['onChange']>;
+  'tabClick': NonNullable<TabsProps$1['onTabClick']>;
+  'tabScroll': NonNullable<TabsProps$1['onTabScroll']>;
+  'update:activeKey': (activeKey: string) => void;
+}
+interface TabsEmitsProps {
+  onEdit?: TabsEmits['edit'];
+  onChange?: TabsEmits['change'];
+  onTabClick?: TabsEmits['tabClick'];
+  onTabScroll?: TabsEmits['tabScroll'];
+  'onUpdate:activeKey'?: TabsEmits['update:activeKey'];
+}
+interface TabsProps extends BaseTabsProps, CompatibilityProps, Omit<TabsProps$1, 'editable' | 'items' | 'classNames' | 'className' | 'popupClassName' | 'styles' | 'style' | 'onChange' | 'onTabScroll' | 'onTabClick' | 'renderTabBar'>, TabsEmitsProps {
+  addIcon?: VueNode;
+  moreIcon?: VueNode;
+  more?: MoreProps;
+  removeIcon?: VueNode;
+  styles?: TabsStylesType;
+  classes?: TabsClassNamesType;
+  /** @deprecated Please use `classes.popup` instead */
+  popupClassName?: string;
+  renderTabBar?: (args: {
+    props: any;
+    TabNavListComponent: any;
+  }) => any;
+}
+type TabItem = Tab & Record<string, any>;
+interface TabsSlots {
+  default: () => any;
+  addIcon: () => any;
+  moreIcon: () => any;
+  removeIcon: () => any;
+  labelRender: (args: {
+    item: TabItem;
+    index: number;
+  }) => any;
+  contentRender: (args: {
+    item: TabItem;
+    index: number;
+  }) => any;
+  renderTabBar?: (args: {
+    props: any;
+    TabNavListComponent: any;
+  }) => any;
+  rightExtra?: () => any;
+  leftExtra?: () => any;
+}
+declare const Tabs: vue893.DefineSetupFnComponent<TabsProps, TabsEmits, SlotsType<TabsSlots>, TabsProps, vue893.PublicProps>;
+//#endregion
+export { BaseTabsProps, CompatibilityProps, Tab, TabItem, TabPane, type TabPaneProps, TabPlacement, TabPosition, TabsClassNamesType, TabsEmits, TabsEmitsProps, TabsProps, TabsRef, TabsSemanticClassNames, TabsSemanticName, TabsSemanticStyles, TabsSlots, TabsStylesType, TabsType, Tabs as default };

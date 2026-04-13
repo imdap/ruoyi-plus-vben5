@@ -1,0 +1,19 @@
+import { EmptyEmit } from "../../_util/type.js";
+import { InputProps } from "../Input.js";
+import * as vue352 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/input/OTP/OTPInput.d.ts
+interface OTPInputProps extends Omit<InputProps, 'onChange'> {
+  prefixCls: string;
+  index: number;
+  value?: string;
+  onChange: (index: number, value: string) => void;
+  onActiveChange: (nextIndex: number) => void;
+  mask?: boolean | string;
+}
+declare const OTPInput: vue352.DefineSetupFnComponent<OTPInputProps, EmptyEmit, SlotsType<{
+  default?: () => any;
+}>, OTPInputProps, vue352.PublicProps>;
+//#endregion
+export { OTPInputProps, OTPInput as default };

@@ -1,0 +1,44 @@
+import { readFile } from 'node:fs/promises';
+import { createTextDocument } from '../Models/TextDocument.js';
+import * as Uri from '../util/Uri.js';
+import { clean } from '../util/util.js';
+const defaultEncoding = 'utf8';
+export function fileToDocument(file, text, languageId, locale) {
+    return clean({
+        uri: Uri.toUri(file).toString(),
+        text,
+        languageId,
+        locale,
+    });
+}
+export async function fileToTextDocument(file) {
+    return documentToTextDocument(await resolveDocument(fileToDocument(file)));
+}
+export function documentToTextDocument(document) {
+    const { uri, text: content, languageId, locale } = document;
+    return createTextDocument({ uri, content, languageId, locale });
+}
+export async function resolveDocumentToTextDocument(doc) {
+    return documentToTextDocument(await resolveDocument(doc));
+}
+async function readDocument(filename, encoding = defaultEncoding) {
+    const text = await readFile(filename, encoding);
+    const uri = Uri.toUri(filename).toString();
+    return {
+        uri,
+        text,
+    };
+}
+export function resolveDocument(document, encoding) {
+    if (isDocumentWithText(document))
+        return Promise.resolve(document);
+    const uri = Uri.toUri(document.uri);
+    if (uri.scheme !== 'file') {
+        throw new Error(`Unsupported schema: "${uri.scheme}", open "${uri.toString()}"`);
+    }
+    return readDocument(Uri.uriToFilePath(uri), encoding);
+}
+function isDocumentWithText(doc) {
+    return doc.text !== undefined;
+}
+//# sourceMappingURL=resolveDocument.js.map

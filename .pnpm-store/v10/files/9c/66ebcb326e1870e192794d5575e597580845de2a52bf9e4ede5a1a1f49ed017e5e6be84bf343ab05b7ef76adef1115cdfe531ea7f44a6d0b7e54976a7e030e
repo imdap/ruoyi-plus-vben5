@@ -1,0 +1,25 @@
+{
+    "name": "@types/bigi",
+    "version": "1.4.5",
+    "description": "TypeScript definitions for bigi",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/bigi",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Mohamed Hegazy",
+            "githubUsername": "mhegazy",
+            "url": "https://github.com/mhegazy"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/bigi"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "55fb0cd67d35719073f0d8d467ad795beff4d8f11c83c1eb4e1fd89b18ccc403",
+    "typeScriptVersion": "4.5"
+}

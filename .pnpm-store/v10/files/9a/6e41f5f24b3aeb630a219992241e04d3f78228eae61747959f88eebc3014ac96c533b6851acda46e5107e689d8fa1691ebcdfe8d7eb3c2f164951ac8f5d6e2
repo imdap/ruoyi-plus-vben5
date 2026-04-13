@@ -1,0 +1,27 @@
+import { ModalClassNamesType, ModalFuncProps, ModalStylesType } from "./interface.js";
+import { DialogProps } from "@v-c/dialog";
+import * as vue_jsx_runtime3 from "vue/jsx-runtime";
+
+//#region src/modal/PurePanel.d.ts
+interface PurePanelProps extends Omit<DialogProps, 'prefixCls' | 'footer' | 'visible' | 'classNames' | 'styles' | 'style'>, Pick<ModalFuncProps, 'type' | 'footer'>, PurePanelEmitsProps {
+  prefixCls?: string;
+  rootClass?: string;
+  classes?: ModalClassNamesType;
+  styles?: ModalStylesType;
+}
+interface PurePanelEmitsProps {}
+interface PurePanelSlots {
+  default?: () => any;
+  title?: () => any;
+  closeIcon?: () => any;
+  footer?: (params: {
+    originNode: any;
+    extra: {
+      OkBtn: any;
+      CancelBtn: any;
+    };
+  }) => any;
+}
+declare const _default: (props: any) => vue_jsx_runtime3.JSX.Element;
+//#endregion
+export { PurePanelEmitsProps, PurePanelProps, PurePanelSlots, _default as default };

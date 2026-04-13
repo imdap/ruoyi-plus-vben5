@@ -1,0 +1,49 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue314 from "vue";
+
+//#region src/carousel/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 指示点宽度
+   * @descEN Width of indicator
+   */
+  dotWidth: number | string;
+  /**
+   * @desc 指示点高度
+   * @descEN Height of indicator
+   */
+  dotHeight: number | string;
+  /**
+   * @desc 指示点之间的间距
+   * @descEN gap between indicator
+   */
+  dotGap: number;
+  /**
+   * @desc 指示点距离边缘的距离
+   * @descEN dot offset to Carousel edge
+   */
+  dotOffset: number;
+  /** @deprecated Use `dotActiveWidth` instead. */
+  dotWidthActive: number;
+  /**
+   * @desc 激活态指示点宽度
+   * @descEN Width of active indicator
+   */
+  dotActiveWidth: number | string;
+  /**
+   * @desc 切换箭头大小
+   * @descEN Size of arrows
+   */
+  arrowSize: number;
+  /**
+   * @desc 切换箭头边距
+   * @descEN arrows offset to Carousel edge
+   */
+  arrowOffset: number;
+}
+declare const DotDuration = "--dot-duration";
+declare const prepareComponentToken: GetDefaultToken<'Carousel'>;
+declare const _default: (prefixCls: vue314.Ref<string>, rootCls?: vue314.Ref<string | undefined>) => readonly [vue314.Ref<string, string>, vue314.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, DotDuration, _default as default, prepareComponentToken };

@@ -1,0 +1,105 @@
+@use '../helpers/baseMixin.scss';
+@use '../helpers/placement.scss';
+
+.vxe-table-select {
+  position: relative;
+  display: inline-block;
+  width: 180px;
+  color: var(--vxe-ui-font-color);
+  text-align: left;
+  & > .vxe-input {
+    .vxe-input--inner {
+      cursor: pointer;
+    }
+  }
+  &.is--disabled {
+    & > .vxe-input {
+      .vxe-input--inner {
+        cursor: no-drop;
+      }
+    }
+  }
+  &.is--loading {
+    & > .vxe-input {
+      .vxe-input--inner {
+        cursor: progress;
+      }
+    }
+  }
+  & > .vxe-input {
+    width: 100%;
+    .vxe-input--suffix-icon > i {
+      display: inline-block;
+      @include baseMixin.createAnimationTransition(transform, .2s);
+    }
+  }
+  &.is--active {
+    &:not(.is--filter) {
+      & > .vxe-input {
+        border-color: var(--vxe-ui-font-primary-color);
+      }
+    }
+  }
+}
+.vxe-table-select--readonly {
+  color: var(--vxe-ui-font-color);
+  display: inline-flex;
+}
+
+.vxe-table-select--panel {
+  pointer-events: none;
+  @include placement.createPlacementPanel();
+}
+
+.vxe-table-select--panel-search {
+  display: block;
+  .vxe-table-select-search--input {
+    width: 100%;
+  }
+}
+
+.vxe-table-select--panel-wrapper {
+  display: inline-flex;
+  position: relative;
+  border-radius: var(--vxe-ui-base-border-radius);
+  border: 1px solid var(--vxe-ui-base-popup-border-color);
+  box-shadow: var(--vxe-ui-base-popup-box-shadow);
+  background-color: var(--vxe-ui-layout-background-color);
+  pointer-events: auto;
+}
+
+.vxe-table-select--panel-header {
+  border-bottom: 1px solid var(--vxe-ui-base-popup-border-color);
+}
+
+.vxe-table-select--panel-footer {
+  border-top: 1px solid var(--vxe-ui-base-popup-border-color);
+}
+
+.vxe-table-select--panel-header,
+.vxe-table-select--panel-footer {
+  padding: 4px 0;
+}
+
+.vxe-table-select-grid--wrapper {
+  position: relative;
+  overflow: auto;
+  padding: var(--vxe-ui-layout-padding-default);
+  height: 21em;
+  width: 36em;
+  outline: 0;
+}
+
+.vxe-table-select,
+.vxe-table-select--panel {
+  font-size: var(--vxe-ui-font-size-default);
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}

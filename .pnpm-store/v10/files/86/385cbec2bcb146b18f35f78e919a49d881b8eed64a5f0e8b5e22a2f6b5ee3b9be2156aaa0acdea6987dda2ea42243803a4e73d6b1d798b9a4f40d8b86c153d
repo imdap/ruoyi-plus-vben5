@@ -1,0 +1,25 @@
+import { VueNode } from "../_util/type.js";
+import * as vue366 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/transfer/search.d.ts
+interface TransferSearchProps extends TransferSearchEmitsProps {
+  prefixCls?: string;
+  placeholder?: string;
+  value?: string;
+  disabled?: boolean;
+}
+interface TransferSearchEmits {
+  change: (e: Event) => void;
+  clear: () => void;
+}
+interface TransferSearchEmitsProps {
+  onChange?: TransferSearchEmits['change'];
+  onClear?: TransferSearchEmits['clear'];
+}
+interface TransferSearchSlots {
+  prefix?: () => VueNode;
+}
+declare const Search: vue366.DefineSetupFnComponent<TransferSearchProps, TransferSearchEmits, SlotsType<TransferSearchSlots>, TransferSearchProps, vue366.PublicProps>;
+//#endregion
+export { TransferSearchEmits, TransferSearchEmitsProps, TransferSearchProps, TransferSearchSlots, Search as default };

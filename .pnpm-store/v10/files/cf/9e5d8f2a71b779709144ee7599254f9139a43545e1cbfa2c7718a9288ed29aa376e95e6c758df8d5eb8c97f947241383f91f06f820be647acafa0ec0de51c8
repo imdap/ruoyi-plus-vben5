@@ -1,0 +1,16 @@
+import { EmptyEmit } from "../_util/type.js";
+import { SkeletonElementProps } from "./Element.js";
+import * as vue680 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/skeleton/Node.d.ts
+interface SkeletonNodeProps extends Omit<SkeletonElementProps, 'size' | 'shape'> {
+  fullSize?: boolean;
+  internalClassName?: string;
+}
+interface SkeletonNodeSlots {
+  default?: () => any;
+}
+declare const SkeletonNode: vue680.DefineSetupFnComponent<SkeletonNodeProps, EmptyEmit, SlotsType<SkeletonNodeSlots>, SkeletonNodeProps, vue680.PublicProps>;
+//#endregion
+export { SkeletonNodeProps, SkeletonNodeSlots, SkeletonNode as default };

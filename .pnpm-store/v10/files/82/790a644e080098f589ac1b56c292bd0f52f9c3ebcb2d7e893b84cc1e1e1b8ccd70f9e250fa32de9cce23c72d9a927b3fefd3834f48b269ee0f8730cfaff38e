@@ -1,0 +1,185 @@
+@use "sass:map";
+@use "sass:list";
+
+$tagThemeList: (
+  (
+    name: "primary",
+    textColor: var(--vxe-ui-font-primary-color),
+    bgColor: var(--vxe-ui-font-primary-tinge-color),
+    brColor: var(--vxe-ui-font-primary-lighten-color),
+    btnBgColor: var(--vxe-ui-font-primary-darken-color)
+  ),
+  (
+    name: "success",
+    textColor: var(--vxe-ui-status-success-color),
+    bgColor: var(--vxe-ui-status-success-tinge-color),
+    brColor: var(--vxe-ui-status-success-lighten-color),
+    btnBgColor: var(--vxe-ui-status-success-darken-color)
+  ),
+  (
+    name: "info",
+    textColor: var(--vxe-ui-status-info-color),
+    bgColor: var(--vxe-ui-status-info-tinge-color),
+    brColor: var(--vxe-ui-status-info-lighten-color),
+    btnBgColor: var(--vxe-ui-status-info-darken-color)
+  ),
+  (
+    name: "warning",
+    textColor: var(--vxe-ui-status-warning-color),
+    bgColor: var(--vxe-ui-status-warning-tinge-color),
+    brColor: var(--vxe-ui-status-warning-lighten-color),
+    btnBgColor: var(--vxe-ui-status-warning-darken-color)
+  ),
+  (
+    name: "danger",
+    textColor: var(--vxe-ui-status-danger-color),
+    bgColor: var(--vxe-ui-status-danger-tinge-color),
+    brColor: var(--vxe-ui-status-danger-lighten-color),
+    btnBgColor: var(--vxe-ui-status-danger-darken-color)
+  ),
+  (
+    name: "error",
+    textColor: var(--vxe-ui-status-error-color),
+    bgColor: var(--vxe-ui-status-error-tinge-color),
+    brColor: var(--vxe-ui-status-error-lighten-color),
+    btnBgColor: var(--vxe-ui-status-error-darken-color)
+  )
+);
+
+.vxe-tag {
+  &.color--gray {
+    color: #827d7d;
+    background-color: #f3f3f3;
+  }
+  &.color--orangered {
+    color: #877568;
+    background-color: #f4e9e1;
+  }
+  &.color--orange {
+    color: #9a9079;
+    background-color: #fff8e8;
+  }
+  &.color--green {
+    color: #627865;
+    background-color: #e7ffea;
+  }
+  &.color--blue {
+    color: #6b7b82;
+    background-color: #e8f8ff;
+  }
+  &.color--purple {
+    color: #8f7e97;
+    background-color: #f8e8ff;
+  }
+  &.color--pinkpurple {
+    color: #82687a;
+    background-color: #ffe8f8;
+  }
+  &.color--magenta {
+    color: #846084;
+    background-color: #f4c9f4;
+  }
+  &.color--chocolate {
+    color: #7f6e61;
+    background-color: #f7e2d2;
+  }
+  &.color--cyan {
+    color: #577474;
+    background-color: #d7f7f7;
+  }
+}
+
+.vxe-tag {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.25em 0.5em;
+  color: var(--vxe-ui-font-color);
+  border-radius: var(--vxe-ui-base-border-radius);
+  @for $index from 0 to list.length($tagThemeList) {
+    $item: list.nth($tagThemeList, $index + 1);
+    &.theme--#{map.get($item, name)} {
+      color: map.get($item, textColor);
+      background-color: map.get($item, bgColor);
+      &.is--border {
+        border-color: map.get($item, brColor);
+      }
+      & > .vxe-tag--close {
+        &:hover {
+          background-color: map.get($item, btnBgColor);
+        }
+      }
+    }
+  }
+  &.is--border {
+    border: 1px solid var(--vxe-ui-font-lighten-color);
+  }
+  &.is--round {
+    border-radius: 1em;
+  }
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+  & + .vxe-tag {
+    margin-left: 8px;
+  }
+}
+.vxe-tag--icon {
+  padding: 0 0.1em;
+}
+.vxe-tag--content {
+  padding: 0 0.1em;
+}
+.vxe-tag--icon,
+.vxe-tag--loading {
+  & > i {
+    font-size: 1em;
+    line-height: 1em;
+  }
+}
+.vxe-tag--close,
+.vxe-tag--loading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1em 0;
+  border-radius: 50%;
+  width: 1.2em;
+  height: 1.2em;
+  line-height: 1em;
+}
+.vxe-tag--close {
+  transition: all 0.3s;
+  &:hover {
+    color: #fff;
+    background-color: var(--vxe-ui-font-darken-color);
+  }
+  & > i {
+    font-size: 0.7em;
+    line-height: 0.7em;
+  }
+  cursor: pointer;
+}
+.vxe-tag--icon,
+.vxe-tag--close,
+.vxe-tag--loading {
+  user-select: none;
+}
+
+.vxe-tag {
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}

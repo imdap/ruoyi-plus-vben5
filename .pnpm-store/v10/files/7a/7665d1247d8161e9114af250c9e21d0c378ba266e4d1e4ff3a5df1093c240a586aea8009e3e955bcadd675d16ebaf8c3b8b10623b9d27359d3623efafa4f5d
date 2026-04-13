@@ -1,0 +1,14 @@
+import * as vue182 from "vue";
+import { Ref } from "vue";
+
+//#region src/watermark/context.d.ts
+interface WatermarkContextProps {
+  add: (ele: HTMLElement) => void;
+  remove: (ele: HTMLElement) => void;
+}
+declare function useWatermarkProvider(props: WatermarkContextProps): void;
+declare function useWatermarkContext(): WatermarkContextProps;
+declare const WatermarkContextProvider: vue182.DefineSetupFnComponent<WatermarkContextProps, {}, {}, WatermarkContextProps & {}, vue182.PublicProps>;
+declare function usePanelRef(panelSelector?: Ref<string>): (_ele: any) => void;
+//#endregion
+export { WatermarkContextProps, WatermarkContextProvider, usePanelRef, useWatermarkContext, useWatermarkProvider };

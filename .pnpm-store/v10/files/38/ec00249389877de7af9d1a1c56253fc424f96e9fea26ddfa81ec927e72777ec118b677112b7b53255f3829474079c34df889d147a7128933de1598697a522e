@@ -1,0 +1,25 @@
+import { ArrowToken } from "../../style/roundedArrow.js";
+import { ArrowOffsetToken } from "../../style/placementArrow.js";
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue888 from "vue";
+import { ComputedRef } from "vue";
+
+//#region src/tooltip/style/index.d.ts
+interface ComponentToken extends ArrowOffsetToken, ArrowToken {
+  /**
+   * @since 6.2.0
+   * @desc 文字提示最大宽度
+   * @descEN Max width of tooltip
+   */
+  maxWidth: number;
+  /**
+   * @desc 文字提示 z-index
+   * @descEN z-index of tooltip
+   */
+  zIndexPopup: number;
+}
+declare const prepareComponentToken: GetDefaultToken<'Tooltip'>;
+declare const _default: (prefixCls: ComputedRef<string>, rootCls: ComputedRef<string>, injectStyle?: boolean) => readonly [vue888.Ref<string, string>, ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

@@ -1,0 +1,10 @@
+import { AnyObject } from "../../_util/type.js";
+import { KeyWise, TransferKey, TransferProps } from "../interface.js";
+import * as vue869 from "vue";
+import { Ref } from "vue";
+
+//#region src/transfer/hooks/useData.d.ts
+type MaybeRef<T> = T | Ref<T>;
+declare function useData<RecordType extends AnyObject>(dataSource?: MaybeRef<RecordType[] | undefined>, rowKey?: MaybeRef<TransferProps<RecordType>['rowKey']>, targetKeys?: MaybeRef<TransferKey[] | undefined>): readonly [vue869.ComputedRef<RecordType[]>, vue869.ComputedRef<KeyWise<RecordType>[]>, vue869.ComputedRef<KeyWise<RecordType>[]>];
+//#endregion
+export { useData as default };

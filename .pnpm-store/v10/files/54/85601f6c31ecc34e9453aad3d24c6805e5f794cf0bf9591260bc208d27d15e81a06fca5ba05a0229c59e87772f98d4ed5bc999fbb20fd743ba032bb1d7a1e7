@@ -1,0 +1,10 @@
+import * as vue649 from "vue";
+
+//#region src/spin/Indicator/Looper.d.ts
+interface IndicatorProps {
+  prefixCls: string;
+  percent?: number;
+}
+declare const Looper: vue649.DefineSetupFnComponent<IndicatorProps, {}, {}, IndicatorProps & {}, vue649.PublicProps>;
+//#endregion
+export { IndicatorProps, Looper };

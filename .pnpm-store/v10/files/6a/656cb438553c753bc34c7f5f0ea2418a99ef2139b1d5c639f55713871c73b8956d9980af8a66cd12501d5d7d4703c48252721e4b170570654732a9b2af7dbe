@@ -1,0 +1,27 @@
+import * as vue230 from "vue";
+
+//#region src/watermark/index.d.ts
+interface WatermarkProps {
+  zIndex?: number;
+  rotate?: number;
+  width?: number;
+  height?: number;
+  image?: string;
+  content?: string | string[];
+  font?: {
+    color?: CanvasFillStrokeStyles['fillStyle'];
+    fontSize?: number | string;
+    fontWeight?: 'normal' | 'light' | 'weight' | number;
+    fontStyle?: 'none' | 'normal' | 'italic' | 'oblique';
+    fontFamily?: string;
+    textAlign?: CanvasTextAlign;
+  };
+  rootClass?: string;
+  gap?: [number, number];
+  offset?: [number, number];
+  inherit?: boolean;
+  onRemove?: (() => void) | undefined;
+}
+declare const Watermark: vue230.DefineSetupFnComponent<WatermarkProps, {}, {}, WatermarkProps & {}, vue230.PublicProps>;
+//#endregion
+export { WatermarkProps, Watermark as default };

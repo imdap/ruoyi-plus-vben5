@@ -1,0 +1,16 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue226 from "vue";
+
+//#region src/affix/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 弹出层的 z-index
+   * @descEN z-index of popup
+   */
+  zIndexPopup: number;
+}
+declare const prepareComponentToken: GetDefaultToken<'Affix'>;
+declare const _default: (prefixCls: vue226.Ref<string>, rootCls?: vue226.Ref<string | undefined>) => readonly [vue226.Ref<string, string>, vue226.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

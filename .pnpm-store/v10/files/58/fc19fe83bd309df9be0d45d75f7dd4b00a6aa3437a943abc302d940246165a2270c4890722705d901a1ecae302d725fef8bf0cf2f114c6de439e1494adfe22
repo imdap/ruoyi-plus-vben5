@@ -1,0 +1,490 @@
+import { useComponentBaseConfig } from "../../config-provider/context.js";
+import { getAttrStyleAndClass as getAttrStyleAndClass$1, useMergeSemantic, useToArr, useToProps } from "../../_util/hooks/useMergeSemantic.js";
+import { toPropsRefs as toPropsRefs$1 } from "../../_util/tools.js";
+import tooltip_default from "../../tooltip/index.js";
+import useLocale_default from "../../locale/useLocale.js";
+import { isStyleSupport } from "../../_util/styleChecker.js";
+import Editable_default from "../Editable.js";
+import useCopyClick_default from "../hooks/useCopyClick.js";
+import useMergedConfig from "../hooks/useMergedConfig.js";
+import usePrevious_default from "../hooks/usePrevious.js";
+import useTooltipProps_default from "../hooks/useTooltipProps.js";
+import Typography_default from "../Typography.js";
+import { isEleEllipsis, isValidText, toList } from "./util.js";
+import CopyBtn_default from "./CopyBtn.js";
+import Ellipsis_default from "./Ellipsis.js";
+import EllipsisTooltip_default from "./EllipsisTooltip.js";
+import { Fragment, computed, createVNode, defineComponent, h, mergeProps, nextTick, onBeforeUnmount, onMounted, shallowRef, watch, watchEffect } from "vue";
+import { classNames } from "@v-c/util";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+import { EditOutlined } from "@antdv-next/icons";
+import ResizeObserver from "@v-c/resize-observer";
+
+//#region src/typography/Base/index.tsx
+const ELLIPSIS_STR = "...";
+const DECORATION_PROPS = [
+	"delete",
+	"mark",
+	"code",
+	"underline",
+	"strong",
+	"keyboard",
+	"italic"
+];
+function wrapperDecorations(props, content) {
+	let currentContent = content;
+	function wrap(tag, needed) {
+		if (!needed) return;
+		currentContent = h(tag, null, currentContent);
+	}
+	wrap("strong", props.strong);
+	wrap("u", props.underline);
+	wrap("del", props.delete);
+	wrap("code", props.code);
+	wrap("mark", props.mark);
+	wrap("kbd", props.keyboard);
+	wrap("i", props.italic);
+	return currentContent;
+}
+const Base = /* @__PURE__ */ defineComponent((props, { slots, attrs, emit }) => {
+	const typographyRef = shallowRef();
+	const typographyDom = computed(() => {
+		const val = typographyRef.value;
+		if (val && typeof val === "object" && "el" in val) return val.el;
+		return val;
+	});
+	const editIconRef = shallowRef();
+	const { prefixCls, direction: contextDirection, class: contextClassName, style: contextStyle, classes: contextClassNames, styles: contextStyles } = useComponentBaseConfig("typography", props);
+	const mergedDirection = computed(() => props.direction ?? contextDirection.value);
+	const { classes, styles } = toPropsRefs$1(props, "classes", "styles");
+	const mergedProps = computed(() => {
+		return {
+			...props,
+			direction: mergedDirection.value
+		};
+	});
+	const [mergedClassNames, mergedStyles] = useMergeSemantic(useToArr(contextClassNames, classes), useToArr(contextStyles, styles), useToProps(mergedProps));
+	const [textLocale] = useLocale_default("Text");
+	const [enableEdit, editConfig] = useMergedConfig(computed(() => props.editable));
+	const editing = shallowRef(editConfig.value.editing ?? false);
+	watch(() => editConfig.value.editing, (val) => editing.value = !!val);
+	const triggerType = computed(() => editConfig.value.triggerType ?? ["icon"]);
+	const triggerEdit = (edit) => {
+		if (edit) editConfig.value.onStart?.();
+		editing.value = edit;
+		emit("update:editing", edit);
+		if (edit) emit("edit:start");
+	};
+	const prevEditing = usePrevious_default(() => editing.value);
+	watch(() => editing.value, (val) => {
+		if (!val && prevEditing.value) nextTick(() => {
+			editIconRef.value?.focus();
+		});
+	}, { flush: "post" });
+	const onEditClick = (e) => {
+		e?.preventDefault();
+		triggerEdit(true);
+	};
+	const onEditChange = (value) => {
+		editConfig.value.onChange?.(value);
+		emit("edit:change", value);
+		triggerEdit(false);
+	};
+	const onEditCancel = () => {
+		editConfig.value.onCancel?.();
+		emit("edit:cancel");
+		triggerEdit(false);
+	};
+	const [enableCopy, copyConfig] = useMergedConfig(computed(() => props.copyable));
+	const childrenNodes = shallowRef([]);
+	const { copied, copyLoading, onClick: onCopyClick } = useCopyClick_default({
+		copyConfig,
+		getText: () => childrenNodes.value
+	});
+	const handleCopyClick = async (e) => {
+		await onCopyClick(e);
+		emit("copy", e);
+	};
+	const isLineClampSupport = shallowRef(false);
+	const isTextOverflowSupport = shallowRef(false);
+	const supportCheckMounted = shallowRef(false);
+	const isJsEllipsis = shallowRef(false);
+	const isNativeEllipsis = shallowRef(false);
+	const isNativeVisible = shallowRef(true);
+	const [enableEllipsis, rawEllipsisConfig] = useMergedConfig(computed(() => props.ellipsis));
+	const ellipsisConfig = computed(() => ({
+		expandable: false,
+		symbol: (isExpanded) => isExpanded ? textLocale?.value?.collapse : textLocale?.value?.expand,
+		...rawEllipsisConfig.value
+	}));
+	const expanded = shallowRef(ellipsisConfig.value.defaultExpanded || false);
+	watch(() => ellipsisConfig.value.expanded, (val) => {
+		expanded.value = !!val;
+	});
+	const mergedEnableEllipsis = computed(() => enableEllipsis.value && (!expanded.value || ellipsisConfig.value.expandable === "collapsible"));
+	const rows = computed(() => ellipsisConfig.value.rows ?? 1);
+	const needMeasureEllipsis = computed(() => {
+		return mergedEnableEllipsis.value && (ellipsisConfig.value.suffix !== void 0 || ellipsisConfig.value.onEllipsis || ellipsisConfig.value.expandable || enableEdit.value || enableCopy.value);
+	});
+	onMounted(() => {
+		supportCheckMounted.value = true;
+	});
+	watchEffect(() => {
+		if (!supportCheckMounted.value) return;
+		if (enableEllipsis.value && !needMeasureEllipsis.value) {
+			isLineClampSupport.value = isStyleSupport("webkitLineClamp");
+			isTextOverflowSupport.value = isStyleSupport("textOverflow");
+		}
+	});
+	const cssEllipsis = shallowRef(mergedEnableEllipsis.value);
+	const canUseCssEllipsis = computed(() => {
+		if (needMeasureEllipsis.value) return false;
+		if (rows.value === 1) return isTextOverflowSupport.value;
+		return isLineClampSupport.value;
+	});
+	watch([canUseCssEllipsis, mergedEnableEllipsis], () => {
+		cssEllipsis.value = canUseCssEllipsis.value && mergedEnableEllipsis.value;
+	}, { immediate: true });
+	const isMergedEllipsis = computed(() => mergedEnableEllipsis.value && (cssEllipsis.value ? isNativeEllipsis.value : isJsEllipsis.value));
+	const cssTextOverflow = computed(() => mergedEnableEllipsis.value && rows.value === 1 && cssEllipsis.value);
+	const cssLineClamp = computed(() => mergedEnableEllipsis.value && rows.value > 1 && cssEllipsis.value);
+	const onExpandClick = (e, info) => {
+		expanded.value = info.expanded;
+		emit("update:expanded", info.expanded);
+		emit("expand", info.expanded, e);
+		ellipsisConfig.value.onExpand?.(e, info);
+	};
+	const ellipsisWidth = shallowRef(0);
+	const isHoveringOperations = shallowRef(false);
+	const isHoveringTypography = shallowRef(false);
+	const onResize = ({ offsetWidth }) => {
+		ellipsisWidth.value = offsetWidth;
+	};
+	const onJsEllipsis = (jsEllipsis) => {
+		const changed = isJsEllipsis.value !== jsEllipsis;
+		isJsEllipsis.value = jsEllipsis;
+		if (changed) ellipsisConfig.value.onEllipsis?.(jsEllipsis);
+	};
+	watch(() => [
+		enableEllipsis.value,
+		cssEllipsis.value,
+		childrenNodes.value,
+		cssLineClamp.value,
+		isNativeVisible.value,
+		ellipsisWidth.value
+	], () => {
+		const textEle = typographyDom.value;
+		if (enableEllipsis.value && cssEllipsis.value && textEle) {
+			const currentEllipsis = isEleEllipsis(textEle);
+			if (isNativeEllipsis.value !== currentEllipsis) isNativeEllipsis.value = currentEllipsis;
+		}
+	}, { flush: "post" });
+	let observer = null;
+	watch(() => [cssEllipsis.value, mergedEnableEllipsis.value], () => {
+		observer?.disconnect();
+		if (typeof IntersectionObserver === "undefined" || !typographyDom.value || !cssEllipsis.value || !mergedEnableEllipsis.value) return;
+		observer = new IntersectionObserver(() => {
+			if (typographyDom.value) isNativeVisible.value = !!typographyDom.value.offsetParent;
+		});
+		if (typographyDom.value) observer.observe(typographyDom.value);
+	}, {
+		flush: "post",
+		immediate: true
+	});
+	onBeforeUnmount(() => {
+		observer?.disconnect();
+		observer = null;
+	});
+	const tooltipProps = useTooltipProps_default(computed(() => ellipsisConfig.value.tooltip), computed(() => editConfig.value.text), childrenNodes);
+	const getChildrenText = computed(() => {
+		for (const node of childrenNodes.value) {
+			if (isValidText(node)) return node;
+			if (node?.children && isValidText(node.children)) return node.children;
+		}
+	});
+	const topAriaLabel = computed(() => {
+		if (!enableEllipsis.value || cssEllipsis.value) return void 0;
+		return [
+			editConfig.value.text,
+			getChildrenText.value,
+			props.title,
+			tooltipProps.value?.title
+		].find(isValidText);
+	});
+	const renderExpand = () => {
+		const { expandable, symbol } = ellipsisConfig.value;
+		return expandable ? createVNode("button", {
+			"type": "button",
+			"key": "expand",
+			"class": classNames(`${prefixCls.value}-${expanded.value ? "collapse" : "expand"}`, mergedClassNames.value.expand),
+			"onClick": (e) => onExpandClick(e, { expanded: !expanded.value }),
+			"aria-label": expanded.value ? textLocale?.value?.collapse : textLocale?.value?.expand,
+			"style": mergedStyles.value.expand
+		}, [typeof symbol === "function" ? symbol(expanded.value) : symbol]) : null;
+	};
+	const renderEdit = () => {
+		if (!enableEdit.value) return null;
+		const { icon, tooltip, tabIndex } = editConfig.value;
+		const editTitle = toList(tooltip)[0] || textLocale?.value?.edit;
+		const ariaLabel = typeof editTitle === "string" ? editTitle : "";
+		return triggerType.value.includes("icon") ? createVNode(tooltip_default, {
+			"key": "edit",
+			"title": tooltip === false ? "" : editTitle
+		}, { default: () => [createVNode("button", {
+			"type": "button",
+			"ref": editIconRef,
+			"class": classNames(`${prefixCls.value}-edit`, mergedClassNames.value.edit),
+			"onClick": onEditClick,
+			"aria-label": ariaLabel,
+			"tabindex": tabIndex,
+			"style": mergedStyles.value.edit
+		}, [icon || createVNode(EditOutlined, { role: "button" }, null)])] }) : null;
+	};
+	const renderCopy = () => {
+		if (!enableCopy.value) return null;
+		return createVNode(CopyBtn_default, mergeProps({ "key": "copy" }, copyConfig.value, {
+			"prefixCls": prefixCls.value,
+			"copied": copied.value,
+			"locale": textLocale?.value,
+			"onCopy": handleCopyClick,
+			"loading": copyLoading.value,
+			"iconOnly": childrenNodes.value.length === 0,
+			"className": mergedClassNames.value.copy,
+			"style": mergedStyles.value.copy
+		}), null);
+	};
+	const renderOperations = (canEllipsis) => {
+		const expandNode = canEllipsis && renderExpand();
+		const editNode = renderEdit();
+		const copyNode = renderCopy();
+		if (!expandNode && !editNode && !copyNode) return null;
+		return createVNode("span", {
+			"key": "operations",
+			"class": `${prefixCls.value}-actions`,
+			"onMouseenter": () => {
+				isHoveringOperations.value = true;
+			},
+			"onMouseleave": () => {
+				isHoveringOperations.value = false;
+			}
+		}, [
+			expandNode,
+			editNode,
+			copyNode
+		]);
+	};
+	const renderEllipsis = (canEllipsis) => {
+		return [
+			canEllipsis && !expanded.value && createVNode("span", {
+				"aria-hidden": true,
+				"key": "ellipsis"
+			}, [ELLIPSIS_STR]),
+			ellipsisConfig.value.suffix,
+			renderOperations(canEllipsis)
+		];
+	};
+	const componentCls = computed(() => classNames({
+		[`${prefixCls.value}-${props.type}`]: props.type,
+		[`${prefixCls.value}-disabled`]: props.disabled,
+		[`${prefixCls.value}-ellipsis`]: enableEllipsis.value,
+		[`${prefixCls.value}-ellipsis-single-line`]: cssTextOverflow.value,
+		[`${prefixCls.value}-ellipsis-multiple-line`]: cssLineClamp.value,
+		[`${prefixCls.value}-link`]: props.component === "a"
+	}, mergedClassNames.value.root));
+	return () => {
+		const { className: attrClass, style: attrStyle, restAttrs } = getAttrStyleAndClass$1(attrs);
+		const onMouseenter = restAttrs.onMouseenter ?? restAttrs.onMouseEnter;
+		const onMouseleave = restAttrs.onMouseleave ?? restAttrs.onMouseLeave;
+		delete restAttrs.onMouseenter;
+		delete restAttrs.onMouseEnter;
+		delete restAttrs.onMouseleave;
+		delete restAttrs.onMouseLeave;
+		const children = filterEmpty(slots?.default?.());
+		childrenNodes.value = children;
+		const clickHandler = triggerType.value.includes("text") ? onEditClick : (e) => emit("click", e);
+		const mergedClassName = classNames(componentCls.value, attrClass);
+		const mergedStyle = [
+			mergedStyles.value.root,
+			cssLineClamp.value ? { WebkitLineClamp: rows.value } : null,
+			attrStyle
+		];
+		if (editing.value) return createVNode(Editable_default, {
+			"value": editConfig.value.text ?? (getChildrenText.value != null ? String(getChildrenText.value) : ""),
+			"onSave": onEditChange,
+			"onCancel": onEditCancel,
+			"onEnd": () => {
+				editConfig.value.onEnd?.();
+				emit("edit:end");
+			},
+			"prefixCls": prefixCls.value,
+			"className": classNames(attrClass, mergedClassNames.value.root, props.rootClass, contextClassName.value),
+			"style": [
+				mergedStyles.value.root,
+				contextStyle.value,
+				attrStyle
+			],
+			"direction": mergedDirection.value,
+			"component": props.component,
+			"maxLength": editConfig.value.maxLength,
+			"autoSize": editConfig.value.autoSize,
+			"enterIcon": editConfig.value.enterIcon
+		}, null);
+		return createVNode(ResizeObserver, {
+			"onResize": onResize,
+			"disabled": !mergedEnableEllipsis.value
+		}, { default: () => [createVNode(EllipsisTooltip_default, {
+			"tooltipProps": tooltipProps.value,
+			"enableEllipsis": mergedEnableEllipsis.value,
+			"isEllipsis": isMergedEllipsis.value,
+			"open": isHoveringTypography.value && !isHoveringOperations.value
+		}, { default: () => [createVNode(Typography_default, mergeProps({
+			"class": mergedClassName,
+			"prefixCls": prefixCls.value,
+			"style": mergedStyle,
+			"component": props.component,
+			"ref": typographyRef,
+			"direction": mergedDirection.value,
+			"onClick": clickHandler,
+			"onMouseenter": (e) => {
+				isHoveringTypography.value = true;
+				onMouseenter?.(e);
+			},
+			"onMouseleave": (e) => {
+				isHoveringTypography.value = false;
+				onMouseleave?.(e);
+			},
+			"title": props.title,
+			"aria-label": topAriaLabel.value,
+			"rootClass": props.rootClass
+		}, restAttrs), { default: () => [createVNode(Ellipsis_default, mergeProps({
+			"enableMeasure": mergedEnableEllipsis.value && !cssEllipsis.value,
+			"text": children,
+			"rows": rows.value,
+			"width": ellipsisWidth.value
+		}, { onEllipsis: onJsEllipsis }, {
+			"expanded": expanded.value,
+			"miscDeps": [
+				copied.value,
+				expanded.value,
+				copyLoading.value,
+				enableEdit.value,
+				enableCopy.value,
+				textLocale?.value,
+				...DECORATION_PROPS.map((key) => props[key])
+			]
+		}), { default: (node, canEllipsis) => {
+			return wrapperDecorations(props, createVNode(Fragment, null, [node.length > 0 && canEllipsis && !expanded.value && topAriaLabel.value ? createVNode("span", {
+				"key": "show-content",
+				"aria-hidden": true
+			}, [node]) : node, createVNode(Fragment, null, [renderEllipsis(canEllipsis)])]));
+		} })] })] })] });
+	};
+}, {
+	props: {
+		title: {
+			type: String,
+			required: false
+		},
+		editable: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		copyable: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		type: {
+			type: String,
+			required: false
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		ellipsis: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		code: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		mark: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		underline: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		delete: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		strong: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		keyboard: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		italic: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		component: { required: false },
+		direction: {
+			type: [String, null],
+			required: false
+		},
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		},
+		id: {
+			type: String,
+			required: false
+		},
+		rootClass: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		}
+	},
+	emits: [
+		"click",
+		"expand",
+		"copy",
+		"edit:start",
+		"edit:change",
+		"edit:cancel",
+		"edit:end",
+		"update:expanded",
+		"update:editing"
+	],
+	name: "ATypographyBase",
+	inheritAttrs: false
+});
+var Base_default = Base;
+
+//#endregion
+export { Base_default as default };

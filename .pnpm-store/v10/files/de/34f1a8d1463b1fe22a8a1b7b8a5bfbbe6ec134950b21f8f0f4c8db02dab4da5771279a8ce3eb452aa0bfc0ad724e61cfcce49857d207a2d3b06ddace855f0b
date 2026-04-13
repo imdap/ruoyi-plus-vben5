@@ -1,0 +1,51 @@
+import { RenderNodeFn, VueNode } from "../_util/type.js";
+import * as vue666 from "vue";
+import * as vue_jsx_runtime12 from "vue/jsx-runtime";
+
+//#region src/select/useIcons.d.ts
+type RenderNode = VueNode;
+declare function useIcons({
+  suffixIcon,
+  clearIcon,
+  menuItemSelectedIcon,
+  removeIcon,
+  loading,
+  loadingIcon,
+  multiple,
+  hasFeedback,
+  showSuffixIcon,
+  feedbackIcon,
+  showArrow,
+  componentName
+}: {
+  suffixIcon?: VueNode;
+  clearIcon?: RenderNode;
+  menuItemSelectedIcon?: RenderNode;
+  removeIcon?: RenderNode;
+  loading?: boolean;
+  loadingIcon?: any;
+  multiple?: boolean;
+  hasFeedback?: boolean;
+  feedbackIcon?: VueNode;
+  prefixCls: string;
+  showSuffixIcon?: boolean;
+  showArrow?: boolean;
+  componentName: string;
+}): {
+  clearIcon: VueNode;
+  suffixIcon: vue_jsx_runtime12.JSX.Element | (({
+    open,
+    showSearch
+  }: {
+    open: boolean;
+    showSearch: boolean;
+  }) => vue_jsx_runtime12.JSX.Element | null) | null;
+  itemIcon: string | number | boolean | vue666.VNode<vue666.RendererNode, vue666.RendererElement, {
+    [key: string]: any;
+  }> | RenderNodeFn<any[]> | null;
+  removeIcon: string | number | boolean | vue666.VNode<vue666.RendererNode, vue666.RendererElement, {
+    [key: string]: any;
+  }> | RenderNodeFn<any[]> | null;
+};
+//#endregion
+export { useIcons as default };

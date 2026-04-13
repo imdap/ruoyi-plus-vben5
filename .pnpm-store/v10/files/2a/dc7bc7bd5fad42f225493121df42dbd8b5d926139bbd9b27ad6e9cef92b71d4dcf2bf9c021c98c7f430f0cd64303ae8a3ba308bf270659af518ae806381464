@@ -1,0 +1,21 @@
+import { ButtonProps } from "../../button/Button.js";
+import "../../index.js";
+import * as vue953 from "vue";
+import { Components } from "@v-c/picker";
+import * as _v_c_picker_dist_interface0 from "@v-c/picker/dist/interface";
+
+//#region src/date-picker/generatePicker/useComponents.d.ts
+declare function useComponents(components?: Components): {
+  time?: vue953.DefineComponent<_v_c_picker_dist_interface0.SharedPanelProps<any>> | undefined;
+  date?: vue953.DefineComponent<_v_c_picker_dist_interface0.SharedPanelProps<any>> | undefined;
+  week?: vue953.DefineComponent<_v_c_picker_dist_interface0.SharedPanelProps<any>> | undefined;
+  month?: vue953.DefineComponent<_v_c_picker_dist_interface0.SharedPanelProps<any>> | undefined;
+  quarter?: vue953.DefineComponent<_v_c_picker_dist_interface0.SharedPanelProps<any>> | undefined;
+  year?: vue953.DefineComponent<_v_c_picker_dist_interface0.SharedPanelProps<any>> | undefined;
+  decade?: vue953.DefineComponent<_v_c_picker_dist_interface0.SharedPanelProps<any>> | undefined;
+  datetime?: vue953.DefineComponent<_v_c_picker_dist_interface0.SharedPanelProps<any>> | undefined;
+  button: string | vue953.DefineSetupFnComponent<ButtonProps, {}, {}, ButtonProps & {}, vue953.PublicProps> | vue953.DefineComponent;
+  input?: (vue953.DefineComponent | string) | undefined;
+};
+//#endregion
+export { useComponents as default };

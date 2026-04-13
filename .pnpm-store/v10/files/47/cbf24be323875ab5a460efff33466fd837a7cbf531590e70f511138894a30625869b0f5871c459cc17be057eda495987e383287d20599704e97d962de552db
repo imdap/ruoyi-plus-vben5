@@ -1,0 +1,44 @@
+id: markdown
+version: '0.2'
+name: Markdown
+description: Markdown dictionary for cspell.
+readonly: true
+dictionaryDefinitions:
+  # To be added when there are keywords.
+  # - name: markdown
+  #   path: ./markdown.txt.gz
+  #   description: Markdown dictionary for cspell.
+patterns:
+  - name: MARKDOWN-link-reference
+    description: 'Markdown reference link: `[This is a link][reference]`, matches `[reference]`'
+    pattern: >-
+      /(?<=\])\[[-\w.`'"*&;#@ ]+\]/g
+  - name: MARKDOWN-link-footer
+    description: 'Markdown referenced link: `[reference]: https://www.google.com`, matches the entire reference.'
+    pattern: >-
+      /\[[-\w.`'"*&;#@ ]+\]:( [^\s]*)?/g
+  - name: MARKDOWN-link
+    description: 'Markdown link: `[link text](link)`, matches `link`'
+    pattern: >-
+      /(?<=\]\()[^)\s]+/g
+  - name: MARKDOWN-anchor
+    description: 'Markdown Anchors: `<a id="my_link"></a>`, matches `my_link`'
+    pattern: >-
+      /(?<=<a\s+id=")[^"\s]+/g
+languageSettings:
+  - languageId: markdown,mdx
+    locale: '*'
+    ignoreRegExpList:
+      - MARKDOWN-link-reference
+      - MARKDOWN-link-footer
+      - MARKDOWN-link
+      - MARKDOWN-anchor
+      - HTML-symbol-entity
+    dictionaries:
+      - html
+      - html-symbol-entities
+  - languageId: mdx
+    locale: '*'
+    dictionaries:
+      - typescript
+      - css

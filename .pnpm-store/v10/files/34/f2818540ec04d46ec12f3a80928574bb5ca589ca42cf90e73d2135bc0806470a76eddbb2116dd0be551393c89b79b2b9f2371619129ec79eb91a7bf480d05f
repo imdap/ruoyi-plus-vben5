@@ -1,0 +1,757 @@
+import { useProvideTableContext } from "./context/TableContext.js";
+import ColGroup from "./ColGroup.js";
+import { getColumnsKey, validNumberValue, validateValue } from "./utils/valueUtil.js";
+import Body from "./Body/index.js";
+import { EXPAND_COLUMN, INTERNAL_HOOKS } from "./constant.js";
+import FixedHolder from "./FixedHolder/index.js";
+import Footer, { FooterComponents } from "./Footer/index.js";
+import Header from "./Header/Header.js";
+import useColumns from "./hooks/useColumns/index.js";
+import useExpand from "./hooks/useExpand.js";
+import useFixedInfo from "./hooks/useFixedInfo.js";
+import { useTimeoutLock } from "./hooks/useFrame.js";
+import useHover from "./hooks/useHover.js";
+import useSticky from "./hooks/useSticky.js";
+import useStickyOffsets from "./hooks/useStickyOffsets.js";
+import Panel from "./Panel/index.js";
+import StickyScrollBar from "./stickyScrollBar.js";
+import Column from "./sugar/Column.js";
+import ColumnGroup from "./sugar/ColumnGroup.js";
+import { Fragment, computed, createVNode, defineComponent, isVNode, mergeDefaults, mergeProps, nextTick, onMounted, reactive, ref, shallowRef, watch, watchEffect } from "vue";
+import ResizeObserver from "@v-c/resize-observer";
+import { clsx, get, warning } from "@v-c/util";
+import canUseDom from "@v-c/util/dist/Dom/canUseDom";
+import { getDOM } from "@v-c/util/dist/Dom/findDOMNode";
+import { getTargetScrollBarSize } from "@v-c/util/dist/getScrollBarSize";
+import isEqual from "@v-c/util/dist/isEqual";
+import pickAttrs from "@v-c/util/dist/pickAttrs";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+//#region src/Table.tsx
+/**
+* Feature:
+*  - fixed not need to set width
+*  - support `rowExpandable` to config row expand logic
+*  - add `summary` to support `() => VueNode`
+*
+* Update:
+*  - `dataIndex` is `array[]` now
+*  - `expandable` wrap all the expand related props
+*
+* Removed:
+*  - expandIconAsCell
+*  - useFixedHeader
+*  - rowRef
+*  - columns[number].onCellClick
+*  - onRowClick
+*  - onRowDoubleClick
+*  - onRowMouseEnter
+*  - onRowMouseLeave
+*  - getBodyWrapper
+*  - bodyStyle
+*
+* Deprecated:
+*  - All expanded props, move into expandable
+*/
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+var DEFAULT_PREFIX = "vc-table";
+var EMPTY_DATA = [];
+var EMPTY_SCROLL_TARGET = {};
+function defaultEmpty() {
+	return "No Data";
+}
+var defaults = {
+	rowKey: "key",
+	prefixCls: DEFAULT_PREFIX,
+	emptyText: defaultEmpty,
+	rowHoverable: true
+};
+var ImmutableTable = /* @__PURE__ */ defineComponent((props, { attrs, slots, expose }) => {
+	const mergedData = shallowRef(props.data || EMPTY_DATA);
+	watch(() => props.data, () => {
+		mergedData.value = props.data || EMPTY_DATA;
+	});
+	const hasData = computed(() => !!mergedData.value.length);
+	const useInternalHooks = computed(() => props.internalHooks === INTERNAL_HOOKS);
+	const mergedPrefixCls = computed(() => props.prefixCls || "vc-table");
+	const mergedRowHoverable = computed(() => props.rowHoverable !== void 0 ? props.rowHoverable : true);
+	const mergedEmptyText = computed(() => props.emptyText === void 0 ? defaultEmpty : props.emptyText);
+	const mergedDirection = computed(() => props.direction || "ltr");
+	const getComponent = (path, defaultComponent) => {
+		return get(props.components, path) || defaultComponent;
+	};
+	const getRowKey = computed(() => {
+		if (typeof props.rowKey === "function") return props.rowKey;
+		const rowKey = props.rowKey ?? "key";
+		return (record) => {
+			const key = record && record[rowKey];
+			if (process.env.NODE_ENV !== "production") warning(key !== void 0, "Each record in table should have a unique `key` prop, or set `rowKey` to an unique primary key.");
+			return key;
+		};
+	});
+	const customizeScrollBody = computed(() => getComponent(["body"]));
+	const [startRow, endRow, onHover] = useHover();
+	const [expandableConfig, expandableType, mergedExpandedKeys, mergedExpandIcon, mergedChildrenColumnName, onTriggerExpand] = useExpand(props, mergedData, getRowKey);
+	const componentWidth = ref(0);
+	const slotChildren = shallowRef(null);
+	const [columns, flattenColumns, flattenScrollX] = useColumns({
+		prefixCls: mergedPrefixCls,
+		columns: computed(() => props.columns),
+		children: slotChildren,
+		expandable: computed(() => !!expandableConfig.value.expandedRowRender),
+		columnTitle: computed(() => expandableConfig.value.columnTitle),
+		expandedKeys: mergedExpandedKeys,
+		getRowKey,
+		onTriggerExpand,
+		expandIcon: mergedExpandIcon,
+		rowExpandable: computed(() => expandableConfig.value.rowExpandable),
+		expandIconColumnIndex: computed(() => expandableConfig.value.expandIconColumnIndex),
+		expandedRowOffset: expandableConfig.value.expandedRowOffset,
+		direction: mergedDirection,
+		expandRowByClick: computed(() => expandableConfig.value.expandRowByClick),
+		columnWidth: computed(() => expandableConfig.value.columnWidth),
+		fixed: computed(() => expandableConfig.value.fixed),
+		scrollWidth: computed(() => useInternalHooks.value && props.tailor && typeof props.scroll?.x === "number" ? props.scroll?.x : null),
+		clientWidth: componentWidth
+	}, computed(() => useInternalHooks.value ? props.transformColumns || null : null));
+	const mergedScrollX = computed(() => flattenScrollX.value ?? props.scroll?.x);
+	const fullTableRef = ref(null);
+	const scrollHeaderRef = ref(null);
+	const scrollBodyRef = ref(null);
+	const scrollBodyContainerRef = ref(null);
+	expose({
+		get nativeElement() {
+			return fullTableRef.value;
+		},
+		scrollTo: (config) => {
+			const targetRef = scrollBodyRef.value;
+			const targetElement = getDOM(targetRef);
+			if (targetElement instanceof HTMLElement) {
+				const { index, top, key, offset, align = "nearest" } = config || {};
+				if (validNumberValue(top)) targetElement.scrollTo({ top });
+				else {
+					const mergedKey = key ?? getRowKey.value(mergedData.value[index]);
+					const rowElement = targetElement.querySelector(`[data-row-key="${mergedKey}"]`);
+					if (rowElement) {
+						rowElement.scrollIntoView({ block: align });
+						if (offset) targetElement.scrollTo({ top: targetElement.scrollTop + offset });
+					}
+				}
+			} else if (targetRef?.scrollTo) targetRef.scrollTo(config);
+		}
+	});
+	const scrollSummaryRef = ref(null);
+	const shadowStart = ref(false);
+	const shadowEnd = ref(false);
+	const colsWidths = ref(/* @__PURE__ */ new Map());
+	const colsKeys = computed(() => getColumnsKey(flattenColumns.value));
+	const colWidths = computed(() => colsKeys.value.map((columnKey) => colsWidths.value.get(columnKey)));
+	const stickyRef = ref(null);
+	const stickyConfig = useSticky(computed(() => props.sticky), mergedPrefixCls);
+	const stickyOffsets = useStickyOffsets(colWidths, flattenColumns);
+	const mergedStickyOffsets = computed(() => ({
+		...stickyOffsets.value,
+		isSticky: stickyConfig.value.isSticky
+	}));
+	const fixHeader = computed(() => !!(props.scroll && validateValue(props.scroll.y)));
+	const horizonScroll = computed(() => !!(props.scroll && validateValue(mergedScrollX.value)) || !!expandableConfig.value.fixed);
+	const fixColumn = computed(() => horizonScroll.value && flattenColumns.value.some(({ fixed }) => fixed));
+	const summaryNode = computed(() => props.summary?.(mergedData.value));
+	const fixFooter = computed(() => {
+		const node = Array.isArray(summaryNode.value) ? filterEmpty(summaryNode.value)?.[0] : summaryNode.value;
+		if (!node || !isVNode(node)) return false;
+		const fixed = node.props?.fixed;
+		return (fixHeader.value || stickyConfig.value.isSticky) && node?.type?.name === "TableSummary" && (fixed || fixed === "");
+	});
+	const scrollXStyle = computed(() => {
+		if (horizonScroll.value) return { overflowX: "auto" };
+	});
+	const scrollYStyle = computed(() => {
+		if (fixHeader.value) return {
+			overflowY: hasData.value ? "scroll" : "auto",
+			maxHeight: typeof props.scroll?.y === "number" ? `${props.scroll?.y}px` : props.scroll?.y
+		};
+		if (horizonScroll.value && !fixHeader.value) return { overflowY: "hidden" };
+	});
+	const scrollTableStyle = computed(() => {
+		if (!horizonScroll.value) return;
+		return {
+			width: mergedScrollX.value === true ? "auto" : typeof mergedScrollX.value === "number" ? `${mergedScrollX.value}px` : mergedScrollX.value,
+			minWidth: "100%"
+		};
+	});
+	const onColumnResize = (columnKey, width) => {
+		if (colsWidths.value.get(columnKey) !== width) {
+			const newWidths = new Map(colsWidths.value);
+			newWidths.set(columnKey, width);
+			colsWidths.value = newWidths;
+		}
+	};
+	const [setScrollTarget, getScrollTarget] = useTimeoutLock(null);
+	function forceScroll(scrollLeft, target) {
+		if (!target) return;
+		if (typeof target === "function") {
+			target(scrollLeft);
+			return;
+		}
+		const element = target.nativeElement ? getDOM(target.nativeElement) : getDOM(target);
+		if (element && element.scrollLeft !== scrollLeft) {
+			element.scrollLeft = scrollLeft;
+			if (element.scrollLeft !== scrollLeft) setTimeout(() => {
+				element.scrollLeft = scrollLeft;
+			}, 0);
+		}
+	}
+	const scrollInfo = ref([0, 0]);
+	const onInternalScroll = (info) => {
+		const currentTarget = info.currentTarget || scrollBodyRef.value;
+		const mergedScrollLeft = typeof info.scrollLeft === "number" ? info.scrollLeft : currentTarget?.scrollLeft || 0;
+		const compareTarget = currentTarget || EMPTY_SCROLL_TARGET;
+		if (!getScrollTarget() || getScrollTarget() === compareTarget) {
+			setScrollTarget(compareTarget);
+			forceScroll(mergedScrollLeft, scrollHeaderRef.value);
+			forceScroll(mergedScrollLeft, scrollBodyRef.value);
+			forceScroll(mergedScrollLeft, scrollSummaryRef.value);
+			forceScroll(mergedScrollLeft, stickyRef.value?.setScrollLeft);
+		}
+		const measureTarget = currentTarget || getDOM(scrollHeaderRef.value);
+		if (measureTarget) {
+			const scrollWidth = useInternalHooks.value && props.tailor && typeof mergedScrollX.value === "number" ? mergedScrollX.value : measureTarget.scrollWidth;
+			const clientWidth = measureTarget.clientWidth;
+			const absScrollStart = Math.abs(mergedScrollLeft);
+			const nextScrollInfo = [absScrollStart, scrollWidth - clientWidth];
+			scrollInfo.value = isEqual(scrollInfo.value, nextScrollInfo) ? scrollInfo.value : nextScrollInfo;
+			if (scrollWidth === clientWidth) {
+				shadowStart.value = false;
+				shadowEnd.value = false;
+				return;
+			}
+			shadowStart.value = absScrollStart > 0;
+			shadowEnd.value = absScrollStart < scrollWidth - clientWidth - 1;
+		}
+	};
+	const onBodyScroll = (event) => {
+		onInternalScroll({ currentTarget: event.currentTarget });
+		props.onScroll?.(event);
+	};
+	const triggerOnScroll = () => {
+		if (horizonScroll.value && scrollBodyRef.value) {
+			const bodyElement = getDOM(scrollBodyRef.value);
+			onInternalScroll({
+				currentTarget: bodyElement,
+				scrollLeft: bodyElement?.scrollLeft
+			});
+		} else {
+			shadowStart.value = false;
+			shadowEnd.value = false;
+		}
+	};
+	const onFullTableResize = (offsetWidth) => {
+		stickyRef.value?.checkScrollBarVisible?.();
+		let mergedWidth = offsetWidth ?? fullTableRef.value?.offsetWidth ?? 0;
+		if (useInternalHooks.value && props.getContainerWidth && fullTableRef.value) mergedWidth = props.getContainerWidth(fullTableRef.value, mergedWidth) || mergedWidth;
+		if (mergedWidth !== componentWidth.value) {
+			triggerOnScroll();
+			componentWidth.value = mergedWidth;
+		}
+	};
+	watch(horizonScroll, () => {
+		if (horizonScroll.value) onFullTableResize();
+	}, {
+		immediate: true,
+		flush: "post"
+	});
+	const mounted = ref(false);
+	watch(() => [
+		horizonScroll.value,
+		props.data,
+		columns.value.length
+	], async () => {
+		if (mounted.value) {
+			await nextTick();
+			triggerOnScroll();
+		}
+	});
+	onMounted(() => {
+		mounted.value = true;
+	});
+	const scrollbarSize = ref(0);
+	onMounted(() => {
+		if (!props.tailor || !useInternalHooks.value) if (scrollBodyRef.value?.nodeType === 1) scrollbarSize.value = getTargetScrollBarSize(scrollBodyRef.value).width;
+		else scrollbarSize.value = getTargetScrollBarSize(scrollBodyContainerRef.value).width;
+	});
+	watchEffect(() => {
+		if (!canUseDom()) return;
+		if (useInternalHooks.value && props.internalRefs?.body) props.internalRefs.body.value = getDOM(scrollBodyRef.value);
+	});
+	const TableComponent = computed(() => getComponent(["table"], "table"));
+	const mergedTableLayout = computed(() => {
+		if (props.tableLayout) return props.tableLayout;
+		if (fixColumn.value) return mergedScrollX.value === "max-content" ? "auto" : "fixed";
+		if (fixHeader.value || stickyConfig.value.isSticky || flattenColumns.value.some(({ ellipsis }) => ellipsis)) return "fixed";
+		return "auto";
+	});
+	const headerProps = computed(() => ({
+		colWidths: colWidths.value,
+		columCount: flattenColumns.value.length,
+		stickyOffsets: mergedStickyOffsets.value,
+		onHeaderRow: props.onHeaderRow,
+		fixHeader: fixHeader.value,
+		scroll: props.scroll
+	}));
+	const emptyNode = computed(() => {
+		if (hasData.value) return null;
+		const emptyText = mergedEmptyText.value;
+		if (typeof emptyText === "function") return emptyText();
+		return emptyText;
+	});
+	const dataProps = pickAttrs(attrs, { data: true });
+	const ariaProps = pickAttrs(attrs, { aria: true });
+	const fixedInfoList = useFixedInfo(flattenColumns, mergedStickyOffsets);
+	const tableContext = reactive({});
+	useProvideTableContext(tableContext);
+	watchEffect(() => {
+		tableContext.scrollX = mergedScrollX.value;
+		tableContext.scrollInfo = scrollInfo.value;
+		tableContext.classNames = props.classNames;
+		tableContext.styles = props.styles;
+		tableContext.prefixCls = mergedPrefixCls.value;
+		tableContext.getComponent = getComponent;
+		tableContext.scrollbarSize = scrollbarSize.value;
+		tableContext.direction = mergedDirection.value;
+		tableContext.fixedInfoList = fixedInfoList.value;
+		tableContext.isSticky = stickyConfig.value.isSticky;
+		tableContext.componentWidth = componentWidth.value;
+		tableContext.fixHeader = fixHeader.value;
+		tableContext.fixColumn = fixColumn.value;
+		tableContext.horizonScroll = horizonScroll.value;
+		tableContext.tableLayout = mergedTableLayout.value;
+		tableContext.rowClassName = props.rowClassName;
+		tableContext.expandedRowClassName = expandableConfig.value.expandedRowClassName;
+		tableContext.expandIcon = mergedExpandIcon.value;
+		tableContext.expandableType = expandableType.value;
+		tableContext.expandRowByClick = expandableConfig.value.expandRowByClick;
+		tableContext.expandedRowRender = expandableConfig.value.expandedRowRender;
+		tableContext.expandedRowOffset = expandableConfig.value.expandedRowOffset;
+		tableContext.onTriggerExpand = onTriggerExpand;
+		tableContext.expandIconColumnIndex = expandableConfig.value.expandIconColumnIndex;
+		tableContext.indentSize = expandableConfig.value.indentSize ?? 15;
+		tableContext.allColumnsFixedLeft = flattenColumns.value.every((col) => col.fixed === "start");
+		tableContext.emptyNode = emptyNode.value;
+		tableContext.columns = columns.value;
+		tableContext.flattenColumns = flattenColumns.value;
+		tableContext.onColumnResize = onColumnResize;
+		tableContext.colWidths = colWidths.value;
+		tableContext.hoverStartRow = startRow.value;
+		tableContext.hoverEndRow = endRow.value;
+		tableContext.onHover = onHover;
+		tableContext.rowExpandable = expandableConfig.value.rowExpandable;
+		tableContext.onRow = props.onRow;
+		tableContext.getRowKey = getRowKey.value;
+		tableContext.expandedKeys = mergedExpandedKeys.value;
+		tableContext.childrenColumnName = mergedChildrenColumnName.value;
+		tableContext.rowHoverable = mergedRowHoverable.value;
+		tableContext.measureRowRender = props.measureRowRender;
+		tableContext.headerCell = props.headerCell;
+		tableContext.bodyCell = props.bodyCell;
+	});
+	const setScrollBodyRef = (el) => {
+		scrollBodyRef.value = el;
+	};
+	return () => {
+		let _slot, _slot2;
+		slotChildren.value = slots.default?.();
+		const renderFixedHeaderTable = (fixedHolderPassProps) => {
+			return createVNode(Fragment, null, [createVNode(Header, fixedHolderPassProps, null), fixFooter.value === "top" && createVNode(Footer, fixedHolderPassProps, { default: () => [summaryNode.value] })]);
+		};
+		const renderFixedFooterTable = (fixedHolderPassProps) => createVNode(Footer, fixedHolderPassProps, { default: () => [summaryNode.value] });
+		const bodyTableNode = createVNode(Body, {
+			"data": mergedData.value,
+			"measureColumnWidth": fixHeader.value || horizonScroll.value || stickyConfig.value.isSticky
+		}, null);
+		const bodyColGroupNode = createVNode(ColGroup, {
+			"colWidths": flattenColumns.value.map(({ width }) => width),
+			"columns": flattenColumns.value
+		}, null);
+		const captionElement = props.caption !== null && props.caption !== void 0 ? createVNode("caption", { "class": `${mergedPrefixCls.value}-caption` }, [props.caption]) : void 0;
+		let groupTableNode;
+		if (fixHeader.value || stickyConfig.value.isSticky) {
+			let bodyContent;
+			if (typeof customizeScrollBody.value === "function") bodyContent = customizeScrollBody.value(mergedData.value, {
+				scrollbarSize: scrollbarSize.value,
+				ref: setScrollBodyRef,
+				onScroll: onInternalScroll
+			});
+			else {
+				const TableComp = TableComponent.value;
+				bodyContent = createVNode("div", {
+					"style": {
+						...scrollXStyle.value,
+						...scrollYStyle.value
+					},
+					"onScroll": onBodyScroll,
+					"ref": setScrollBodyRef,
+					"class": `${mergedPrefixCls.value}-body`
+				}, [createVNode(TableComp, mergeProps({ "style": {
+					...scrollTableStyle.value,
+					tableLayout: mergedTableLayout.value
+				} }, ariaProps), { default: () => [
+					captionElement,
+					bodyColGroupNode,
+					bodyTableNode,
+					!fixFooter.value && summaryNode.value && createVNode(Footer, {
+						"stickyOffsets": mergedStickyOffsets.value,
+						"flattenColumns": flattenColumns.value
+					}, { default: () => [summaryNode.value] })
+				] })]);
+			}
+			const fixedHolderProps = {
+				noData: !mergedData.value.length,
+				maxContentScroll: horizonScroll.value && mergedScrollX.value === "max-content",
+				...headerProps.value,
+				columns: columns.value,
+				flattenColumns: flattenColumns.value,
+				direction: mergedDirection.value,
+				stickyClassName: stickyConfig.value.stickyClassName,
+				scrollX: mergedScrollX.value,
+				tableLayout: mergedTableLayout.value,
+				onScroll: onInternalScroll
+			};
+			groupTableNode = createVNode(Fragment, null, [
+				props.showHeader !== false && createVNode(FixedHolder, mergeProps(fixedHolderProps, {
+					"stickyTopOffset": stickyConfig.value.offsetHeader,
+					"className": `${mergedPrefixCls.value}-header`,
+					"ref": scrollHeaderRef,
+					"colGroup": bodyColGroupNode
+				}), { default: renderFixedHeaderTable }),
+				bodyContent,
+				fixFooter.value && fixFooter.value !== "top" && createVNode(FixedHolder, mergeProps(fixedHolderProps, {
+					"stickyBottomOffset": stickyConfig.value.offsetSummary,
+					"className": `${mergedPrefixCls.value}-summary`,
+					"ref": scrollSummaryRef,
+					"colGroup": bodyColGroupNode
+				}), { default: renderFixedFooterTable }),
+				stickyConfig.value.isSticky && scrollBodyRef.value?.nodeType === 1 && createVNode(StickyScrollBar, {
+					"ref": stickyRef,
+					"offsetScroll": stickyConfig.value.offsetScroll,
+					"scrollBodyRef": scrollBodyRef,
+					"onScroll": onInternalScroll,
+					"container": stickyConfig.value.container,
+					"direction": mergedDirection.value
+				}, null)
+			]);
+		} else {
+			const TableComp = TableComponent.value;
+			groupTableNode = createVNode("div", {
+				"style": {
+					...scrollXStyle.value,
+					...scrollYStyle.value,
+					...props.styles?.content
+				},
+				"class": clsx(`${mergedPrefixCls.value}-content`, props.classNames?.content),
+				"onScroll": onBodyScroll,
+				"ref": scrollBodyRef
+			}, [createVNode(TableComp, mergeProps({ "style": {
+				...scrollTableStyle.value,
+				tableLayout: mergedTableLayout.value
+			} }, ariaProps), { default: () => [
+				captionElement,
+				bodyColGroupNode,
+				props.showHeader !== false && createVNode(Header, mergeProps(headerProps.value, {
+					"columns": columns.value,
+					"flattenColumns": flattenColumns.value
+				}), null),
+				bodyTableNode,
+				!fixFooter.value && summaryNode.value && createVNode(Footer, {
+					"stickyOffsets": mergedStickyOffsets.value,
+					"flattenColumns": flattenColumns.value
+				}, { default: () => [summaryNode.value] })
+			] })]);
+		}
+		const tableStyle = { ...props.style };
+		if (stickyConfig.value.isSticky) tableStyle["--columns-count"] = flattenColumns.value.length;
+		const fullTable = createVNode("div", mergeProps({
+			"class": clsx(mergedPrefixCls.value, props.className, {
+				[`${mergedPrefixCls.value}-rtl`]: mergedDirection.value === "rtl",
+				[`${mergedPrefixCls.value}-fix-start-shadow`]: horizonScroll.value,
+				[`${mergedPrefixCls.value}-fix-end-shadow`]: horizonScroll.value,
+				[`${mergedPrefixCls.value}-fix-start-shadow-show`]: horizonScroll.value && shadowStart.value,
+				[`${mergedPrefixCls.value}-fix-end-shadow-show`]: horizonScroll.value && shadowEnd.value,
+				[`${mergedPrefixCls.value}-layout-fixed`]: props.tableLayout === "fixed",
+				[`${mergedPrefixCls.value}-fixed-header`]: fixHeader.value,
+				[`${mergedPrefixCls.value}-fixed-column`]: fixColumn.value,
+				[`${mergedPrefixCls.value}-scroll-horizontal`]: horizonScroll.value,
+				[`${mergedPrefixCls.value}-has-fix-start`]: flattenColumns.value[0]?.fixed,
+				[`${mergedPrefixCls.value}-has-fix-end`]: flattenColumns.value[flattenColumns.value.length - 1]?.fixed === "end"
+			}),
+			"style": tableStyle,
+			"id": props.id,
+			"ref": fullTableRef
+		}, dataProps), [
+			props.title && createVNode(Panel, {
+				"className": clsx(`${mergedPrefixCls.value}-title`, props.classNames?.title),
+				"style": props.styles?.title
+			}, _isSlot(_slot = props.title(mergedData.value)) ? _slot : { default: () => [_slot] }),
+			createVNode("div", {
+				"ref": scrollBodyContainerRef,
+				"class": clsx(`${mergedPrefixCls.value}-container`, props.classNames?.section),
+				"style": props.styles?.section
+			}, [groupTableNode]),
+			props.footer && createVNode(Panel, {
+				"className": clsx(`${mergedPrefixCls.value}-footer`, props.classNames?.footer),
+				"style": props.styles?.footer
+			}, _isSlot(_slot2 = props.footer(mergedData.value)) ? _slot2 : { default: () => [_slot2] })
+		]);
+		if (horizonScroll.value) return createVNode(ResizeObserver, { "onResize": ({ offsetWidth }) => onFullTableResize(offsetWidth) }, _isSlot(fullTable) ? fullTable : { default: () => [fullTable] });
+		return fullTable;
+	};
+}, { props: /* @__PURE__ */ mergeDefaults({
+	prefixCls: {
+		type: String,
+		required: false,
+		default: void 0
+	},
+	className: {
+		type: String,
+		required: false,
+		default: void 0
+	},
+	style: {
+		type: Object,
+		required: false,
+		default: void 0
+	},
+	classNames: {
+		type: Object,
+		required: false,
+		default: void 0
+	},
+	styles: {
+		type: Object,
+		required: false,
+		default: void 0
+	},
+	data: {
+		type: Array,
+		required: false,
+		default: void 0
+	},
+	columns: {
+		type: Array,
+		required: false,
+		default: void 0
+	},
+	rowKey: {
+		type: [String, Function],
+		required: false,
+		default: void 0
+	},
+	tableLayout: {
+		type: String,
+		required: false,
+		default: void 0
+	},
+	scroll: {
+		type: Object,
+		required: false,
+		default: void 0
+	},
+	expandable: {
+		type: Object,
+		required: false,
+		default: void 0
+	},
+	indentSize: {
+		type: Number,
+		required: false,
+		default: void 0
+	},
+	rowClassName: {
+		type: [String, Function],
+		required: false,
+		default: void 0
+	},
+	title: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	footer: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	summary: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	headerCell: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	bodyCell: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	caption: {
+		required: false,
+		default: void 0
+	},
+	id: {
+		type: String,
+		required: false,
+		default: void 0
+	},
+	showHeader: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	components: {
+		type: Object,
+		required: false,
+		default: void 0
+	},
+	onRow: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	onHeaderRow: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	emptyText: {
+		type: Function,
+		required: false,
+		skipCheck: true,
+		default: void 0
+	},
+	direction: {
+		type: String,
+		required: false,
+		default: void 0
+	},
+	sticky: {
+		type: [Boolean, Object],
+		required: false,
+		default: void 0
+	},
+	rowHoverable: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	onScroll: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	internalHooks: {
+		type: String,
+		required: false,
+		default: void 0
+	},
+	transformColumns: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	tailor: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	getContainerWidth: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	internalRefs: {
+		type: Object,
+		required: false,
+		default: void 0
+	},
+	measureRowRender: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	getPopupContainer: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	"onUpdate:expandedRowKeys": {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	expandedRowKeys: {
+		type: Array,
+		required: false,
+		default: void 0
+	},
+	defaultExpandedRowKeys: {
+		type: Array,
+		required: false,
+		default: void 0
+	},
+	expandedRowRender: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	expandRowByClick: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	expandIcon: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	onExpand: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	onExpandedRowsChange: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	defaultExpandAllRows: {
+		type: Boolean,
+		required: false,
+		default: void 0
+	},
+	expandIconColumnIndex: {
+		type: Number,
+		required: false,
+		default: void 0
+	},
+	expandedRowClassName: {
+		type: Function,
+		required: false,
+		default: void 0
+	},
+	childrenColumnName: {
+		type: String,
+		required: false,
+		default: void 0
+	}
+}, defaults) });
+ImmutableTable.EXPAND_COLUMN = EXPAND_COLUMN;
+ImmutableTable.INTERNAL_HOOKS = INTERNAL_HOOKS;
+ImmutableTable.Column = Column;
+ImmutableTable.ColumnGroup = ColumnGroup;
+ImmutableTable.Summary = FooterComponents;
+//#endregion
+export { DEFAULT_PREFIX, ImmutableTable as default };

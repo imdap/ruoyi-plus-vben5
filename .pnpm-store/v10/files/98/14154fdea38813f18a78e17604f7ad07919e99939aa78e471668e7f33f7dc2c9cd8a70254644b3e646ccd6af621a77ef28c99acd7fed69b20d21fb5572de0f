@@ -1,0 +1,20 @@
+import { Meta, NamePath } from "../types.js";
+import { FeedbackIcons, ValidateStatus } from "./index.js";
+import * as vue585 from "vue";
+
+//#region src/form/FormItem/StatusProvider.d.ts
+interface StatusProviderProps {
+  validateStatus?: ValidateStatus;
+  prefixCls: string;
+  meta: Meta;
+  errors: any[];
+  warnings: any[];
+  hasFeedback?: boolean | {
+    icons?: FeedbackIcons;
+  };
+  noStyle?: boolean;
+  name?: NamePath;
+}
+declare const StatusProvider: vue585.DefineSetupFnComponent<StatusProviderProps, {}, {}, StatusProviderProps & {}, vue585.PublicProps>;
+//#endregion
+export { StatusProviderProps, StatusProvider as default };

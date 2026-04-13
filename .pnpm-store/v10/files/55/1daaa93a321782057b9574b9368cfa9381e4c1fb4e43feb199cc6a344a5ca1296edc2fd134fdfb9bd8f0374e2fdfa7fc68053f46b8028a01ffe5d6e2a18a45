@@ -1,0 +1,30 @@
+import throttleByAnimationFrame from "../_util/throttleByAnimationFrame.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue2 from "vue";
+
+//#region src/affix/index.d.ts
+interface AffixProps extends ComponentBaseProps, AffixEmitsProps {
+  /** Triggered when the specified offset is reached from the top of the window */
+  offsetTop?: number;
+  /** Triggered when the specified offset is reached from the bottom of the window */
+  offsetBottom?: number;
+  /** Set the element that Affix needs to listen to its scroll event, the value is a function that returns the corresponding DOM element */
+  target?: () => Window | HTMLElement | null;
+}
+interface AffixEmits {
+  change: (affixed: boolean) => void;
+}
+interface AffixEmitsProps {
+  onChange?: AffixEmits['change'];
+}
+interface AffixRef {
+  updatePosition: ReturnType<typeof throttleByAnimationFrame>;
+}
+type InternalAffixProps = AffixProps & {
+  onTestUpdatePosition?: any;
+};
+declare const Affix: vue2.DefineSetupFnComponent<InternalAffixProps, AffixEmits, {}, AffixProps & {
+  onTestUpdatePosition?: any;
+}, vue2.PublicProps>;
+//#endregion
+export { Affix, Affix as default, AffixEmits, AffixEmitsProps, AffixProps, AffixRef };

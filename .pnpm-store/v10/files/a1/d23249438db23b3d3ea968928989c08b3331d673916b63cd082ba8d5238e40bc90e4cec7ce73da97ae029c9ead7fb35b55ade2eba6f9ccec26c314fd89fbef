@@ -1,0 +1,15 @@
+import * as vue915 from "vue";
+import { Ref } from "vue";
+
+//#region src/drawer/useFocusable.d.ts
+type OmitFocusType = 'focusTriggerAfterClose' | 'focusTrap' | 'autoFocusButton';
+interface FocusableConfig {
+  focusTriggerAfterClose?: boolean;
+  trap?: boolean;
+}
+declare function useFocusable(focusable?: Ref<FocusableConfig | undefined>, defaultTrap?: Ref<boolean | undefined>, legacyFocusTriggerAfterClose?: Ref<FocusableConfig['focusTriggerAfterClose'] | undefined>): vue915.ComputedRef<{
+  focusTriggerAfterClose: boolean;
+  trap: boolean;
+}>;
+//#endregion
+export { FocusableConfig, OmitFocusType, useFocusable as default };

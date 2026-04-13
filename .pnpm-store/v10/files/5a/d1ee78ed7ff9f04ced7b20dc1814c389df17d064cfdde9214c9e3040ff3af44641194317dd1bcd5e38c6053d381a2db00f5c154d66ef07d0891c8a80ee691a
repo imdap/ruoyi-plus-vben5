@@ -1,0 +1,12 @@
+import * as vue496 from "vue";
+
+//#region src/notification/style/pure-panel.d.ts
+declare const _default: vue496.DefineComponent<vue496.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>, () => null, {}, {}, {}, vue496.ComponentOptionsMixin, vue496.ComponentOptionsMixin, {}, string, vue496.PublicProps, Readonly<vue496.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>> & Readonly<{}>, {}, {}, {}, {}, string, vue496.ComponentProvideOptions, true, {}, any>;
+//#endregion
+export { _default as default };

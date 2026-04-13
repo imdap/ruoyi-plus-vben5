@@ -1,0 +1,25 @@
+{
+    "id": "rust",
+    "name": "Rust",
+    "description": "Rust Keyword Dictionary",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "rust",
+            "path": "./dict/rust.txt.gz",
+            "description": "Rust Keyword Dictionary"
+        },
+        {
+            "name": "rust-crates",
+            "path": "./dict/crates.txt.gz",
+            "description": "Common Rust Crates Dictionary"
+        }
+    ],
+    "languageSettings": [
+        {
+            "languageId": "rust",
+            "locale": "*",
+            "dictionaries": ["rust", "rust-crates"]
+        }
+    ]
+}

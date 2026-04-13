@@ -1,0 +1,46 @@
+{
+  "name": "@cspell/dict-django",
+  "version": "4.1.6",
+  "description": "Django dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "cspell-tools-cli build",
+    "test": "shx head -n 100 src/django.txt | cspell -c ./cspell-ext.json --locale=* --languageId=python stdin",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/django"
+  },
+  "keywords": [
+    "cspell",
+    "Django",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "contributors": [
+    "canarduck",
+    "Jason Dent <jason@streetsidesoftware.nl>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/django#readme",
+  "files": [
+    "dict/django.txt.gz",
+    "cspell-ext.json"
+  ],
+  "gitHead": "519609cb729de9d4be7edb4353d3ef896e249a23"
+}

@@ -1,0 +1,119 @@
+import { ItemType } from "./interface.js";
+import { MenuTheme } from "./MenuContext.js";
+import * as vue164 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { MenuInfo, MenuItemProps, MenuProps as MenuProps$1, RenderIconInfo, SelectInfo } from "@v-c/menu";
+
+//#region src/menu/menu.d.ts
+type MenuSemanticName = keyof MenuSemanticClassNames & keyof MenuSemanticStyles;
+interface MenuSemanticClassNames {
+  root?: string;
+  itemTitle?: string;
+  list?: string;
+  item?: string;
+  itemIcon?: string;
+  itemContent?: string;
+}
+interface MenuSemanticStyles {
+  root?: CSSProperties;
+  itemTitle?: CSSProperties;
+  list?: CSSProperties;
+  item?: CSSProperties;
+  itemIcon?: CSSProperties;
+  itemContent?: CSSProperties;
+}
+type SubMenuSemanticName = keyof SubMenuSemanticClassNames & keyof SubMenuSemanticStyles;
+interface SubMenuSemanticClassNames {
+  item?: string;
+  itemTitle?: string;
+  list?: string;
+  itemContent?: string;
+  itemIcon?: string;
+}
+interface SubMenuSemanticStyles {
+  item?: CSSProperties;
+  itemTitle?: CSSProperties;
+  list?: CSSProperties;
+  itemContent?: CSSProperties;
+  itemIcon?: CSSProperties;
+}
+type MenuPopupSemanticName = keyof MenuPopupSemanticClassNames & keyof MenuPopupSemanticStyles;
+interface MenuPopupSemanticClassNames {
+  root?: string;
+}
+interface MenuPopupSemanticStyles {
+  root?: CSSProperties;
+}
+type MenuClassNamesSchemaType = MenuSemanticClassNames & {
+  popup?: MenuPopupSemanticClassNames | string;
+  subMenu?: SubMenuSemanticClassNames;
+};
+type MenuStylesSchemaType = MenuSemanticStyles & {
+  popup?: MenuPopupSemanticStyles | CSSProperties;
+  subMenu?: SubMenuSemanticStyles;
+};
+type MenuClassNamesType = MenuClassNamesSchemaType | ((info: {
+  props: MenuProps;
+}) => MenuClassNamesSchemaType);
+type MenuStylesType = MenuStylesSchemaType | ((info: {
+  props: MenuProps;
+}) => MenuStylesSchemaType);
+interface RenderItem {
+  key: string | number;
+  label?: any;
+  disabled?: boolean;
+  danger?: boolean;
+  type?: 'item' | 'submenu' | 'group' | 'divider';
+  theme?: 'dark' | 'light';
+  title?: string;
+  [key: string]: any;
+}
+interface MenuProps extends Omit<MenuProps$1, 'items' | '_internalComponents' | 'classes' | 'styles' | 'activeKey' | 'defaultActiveFirst' | 'onClick' | 'onDeselect' | 'onSelect' | 'onOpenChange' | 'rootClass' | 'labelRender' | 'extraRender' | 'itemIcon' | 'iconRender'> {
+  theme?: MenuTheme;
+  inlineIndent?: number;
+  /**
+   * @private Internal Usage. Not promise crash if used in production. Connect with chenshuai2144
+   *   for removing.
+   */
+  _internalDisableMenuItemTitleTooltip?: boolean;
+  items?: ItemType[];
+  classes?: MenuClassNamesType;
+  styles?: MenuStylesType;
+  rootClass?: string;
+  labelRender?: (item: RenderItem) => any;
+  extraRender?: (item: RenderItem) => any;
+  iconRender?: (item: RenderItem) => any;
+  itemIcon?: (props: MenuItemProps & RenderIconInfo) => any;
+}
+type InternalMenuProps = MenuProps & {
+  siderCollapsed?: boolean;
+  collapsedWidth?: string | number;
+};
+interface MenuEmits {
+  'click': (info: MenuInfo) => void;
+  'select': (info: SelectInfo) => void;
+  'deselect': (info: SelectInfo) => void;
+  'openChange': (openKeys: string[]) => void;
+  'update:openKeys': (openKeys: string[]) => void;
+  'update:selectedKeys': (selectedKeys: string[]) => void;
+}
+interface MenuEmitsProps {
+  onClick?: MenuEmits['click'];
+  onSelect?: MenuEmits['select'];
+  onDeselect?: MenuEmits['deselect'];
+  onOpenChange?: MenuEmits['openChange'];
+  'onUpdate:openKeys'?: MenuEmits['update:openKeys'];
+  'onUpdate:selectedKeys'?: MenuEmits['update:selectedKeys'];
+}
+interface MenuSlots {
+  default: () => any;
+  expandIcon: () => any;
+  labelRender?: (item: RenderItem) => any;
+  extraRender?: (item: RenderItem) => any;
+  iconRender?: (item: RenderItem) => any;
+  itemIcon?: (props: MenuItemProps & RenderIconInfo) => any;
+}
+interface InternalMenuRuntimeProps extends InternalMenuProps, MenuEmitsProps {}
+declare const InternalMenu: vue164.DefineSetupFnComponent<InternalMenuRuntimeProps, MenuEmits, SlotsType<MenuSlots>, InternalMenuRuntimeProps, vue164.PublicProps>;
+//#endregion
+export { MenuClassNamesType, MenuEmits, MenuEmitsProps, MenuPopupSemanticClassNames, MenuPopupSemanticName, MenuPopupSemanticStyles, MenuProps, MenuSemanticClassNames, MenuSemanticName, MenuSemanticStyles, MenuSlots, MenuStylesType, RenderItem, SubMenuSemanticClassNames, SubMenuSemanticName, SubMenuSemanticStyles, InternalMenu as default };

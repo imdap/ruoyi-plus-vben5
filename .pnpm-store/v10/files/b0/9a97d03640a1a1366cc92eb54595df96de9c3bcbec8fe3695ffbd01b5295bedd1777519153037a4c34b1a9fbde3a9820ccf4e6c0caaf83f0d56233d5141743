@@ -1,0 +1,44 @@
+{
+  "name": "@cspell/dict-css",
+  "version": "4.1.1",
+  "description": "CSS dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "css",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/css#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/css"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "files": [
+    "dict/css.txt",
+    "cspell-ext.json"
+  ],
+  "scripts": {
+    "build": "cspell-tools-cli compile --keep-raw-case src/css.txt --no-compress -o ./dict",
+    "prepare:dictionary": "pnpm run build",
+    "prepublishOnly": "echo pre-publish",
+    "test": "pnpm run test:keywords && pnpm run test:samples",
+    "test:keywords": "shx head -n 100 src/css.txt | cspell -c ./cspell-ext.json \"--locale=*\" \"--languageId=css\" stdin",
+    "test:samples": "cspell samples"
+  },
+  "gitHead": "86d6d1fc5212a9b9ec281cc238176989e3980f65"
+}

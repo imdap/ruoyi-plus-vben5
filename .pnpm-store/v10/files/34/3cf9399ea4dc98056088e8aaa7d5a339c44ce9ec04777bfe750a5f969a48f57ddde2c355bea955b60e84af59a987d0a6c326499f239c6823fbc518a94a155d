@@ -1,0 +1,12 @@
+import * as vue544 from "vue";
+
+//#region src/tag/style/statusCmp.d.ts
+declare const _default: vue544.DefineComponent<vue544.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>, () => null, {}, {}, {}, vue544.ComponentOptionsMixin, vue544.ComponentOptionsMixin, {}, string, vue544.PublicProps, Readonly<vue544.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>> & Readonly<{}>, {}, {}, {}, {}, string, vue544.ComponentProvideOptions, true, {}, any>;
+//#endregion
+export { _default as default };

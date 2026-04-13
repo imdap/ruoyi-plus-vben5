@@ -1,0 +1,18 @@
+import { EmptyEmit } from "../_util/type.js";
+import * as vue16 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/badge/ScrollNumber.d.ts
+interface ScrollNumberProps {
+  prefixCls?: string;
+  count?: string | number | null;
+  component?: string | object;
+  title?: string | number | null;
+  show: boolean;
+}
+interface ScrollNumberSlots {
+  default?: () => any;
+}
+declare const _default: vue16.DefineSetupFnComponent<ScrollNumberProps, EmptyEmit, SlotsType<ScrollNumberSlots>, ScrollNumberProps, vue16.PublicProps>;
+//#endregion
+export { ScrollNumberProps, ScrollNumberSlots, _default as default };

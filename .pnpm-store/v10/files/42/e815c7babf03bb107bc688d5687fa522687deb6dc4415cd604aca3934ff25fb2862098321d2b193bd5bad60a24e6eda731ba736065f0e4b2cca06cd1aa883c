@@ -1,0 +1,74 @@
+import { AliasToken } from "../../theme/interface/alias.js";
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import { CSSUtil } from "../../theme/internal.js";
+import * as vue1033 from "vue";
+import { CSSInterpolation, CSSObject } from "@antdv-next/cssinjs";
+
+//#region src/tree/style/index.d.ts
+interface TreeSharedToken {
+  /**
+   * @desc 节点标题高度
+   * @descEN Node title height
+   */
+  titleHeight: number;
+  /**
+   * @desc 展开按钮宽度
+   * @descEN Switcher width of tree
+   */
+  switcherSize?: number;
+  /**
+   * @desc 缩进宽度
+   * @descEN Indent width of tree
+   */
+  indentSize?: number;
+  /**
+   * @desc 节点悬浮态背景色
+   * @descEN Background color of hovered node
+   */
+  nodeHoverBg: string;
+  /**
+   * @desc 节点悬浮态态文字颜色
+   * @descEN Text color of hovered node
+   */
+  nodeHoverColor: string;
+  /**
+   * @desc 节点选中态背景色
+   * @descEN Background color of selected node
+   */
+  nodeSelectedBg: string;
+  /**
+   * @desc 节点选中态文字颜色
+   * @descEN Text color of selected node
+   */
+  nodeSelectedColor: string;
+}
+interface ComponentToken extends TreeSharedToken {
+  /**
+   * @desc 目录树节点选中文字颜色
+   * @descEN Text color of selected directory node
+   */
+  directoryNodeSelectedColor: string;
+  /**
+   * @desc 目录树节点选中背景色
+   * @descEN Background color of selected directory node
+   */
+  directoryNodeSelectedBg: string;
+}
+type TreeToken = FullToken<'Tree'> & {
+  treeCls: string;
+  treeNodeCls: string;
+  treeNodePadding: number | string;
+};
+declare function genBaseStyle(prefixCls: string, token: TreeToken): CSSObject;
+declare function genTreeStyle(prefixCls: string, token: AliasToken & TreeSharedToken & CSSUtil,
+/**
+ * @descCN 是否启用目录树样式
+ * @descEN Whether to enable directory style
+ * @default true
+ */
+enableDirectory?: boolean): CSSInterpolation;
+declare function initComponentToken(token: AliasToken): TreeSharedToken;
+declare const prepareComponentToken: GetDefaultToken<'Tree'>;
+declare const _default: (prefixCls: vue1033.Ref<string>, rootCls?: vue1033.Ref<string | undefined>) => readonly [vue1033.Ref<string, string>, vue1033.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, TreeSharedToken, TreeToken, _default as default, genBaseStyle, genTreeStyle, initComponentToken, prepareComponentToken };

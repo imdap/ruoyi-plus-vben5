@@ -1,0 +1,43 @@
+import { AliasToken } from "../interface/alias.js";
+import { ComponentTokenMap } from "../interface/components.js";
+import "../interface/index.js";
+import * as vue623 from "vue";
+import * as _antdv_next_cssinjs4 from "@antdv-next/cssinjs";
+
+//#region src/theme/util/genStyleUtils.d.ts
+declare const genComponentStyleHook: <C extends keyof ComponentTokenMap>(componentName: C | [C, string], styleFn: _antdv_next_cssinjs4.GenStyleFn<ComponentTokenMap, AliasToken, C>, getDefaultToken?: _antdv_next_cssinjs4.GetDefaultToken<ComponentTokenMap, AliasToken, C> | undefined, options?: {
+    resetStyle?: boolean;
+    resetFont?: boolean;
+    deprecatedTokens?: [keyof Exclude<_antdv_next_cssinjs4.OverrideTokenMap<ComponentTokenMap, AliasToken>[C], undefined>, keyof Exclude<_antdv_next_cssinjs4.OverrideTokenMap<ComponentTokenMap, AliasToken>[C], undefined>][] | undefined;
+    clientOnly?: boolean;
+    order?: number;
+    injectStyle?: boolean;
+    unitless?: Partial<Record<keyof Exclude<_antdv_next_cssinjs4.OverrideTokenMap<ComponentTokenMap, AliasToken>[C], undefined>, boolean>> | undefined;
+  } | undefined) => (prefixCls: vue623.Ref<string>, rootCls?: vue623.Ref<string | undefined>) => vue623.Ref<string, string>, genStyleHooks: <C extends keyof ComponentTokenMap>(component: C | [C, string], styleFn: _antdv_next_cssinjs4.GenStyleFn<ComponentTokenMap, AliasToken, C>, getDefaultToken?: _antdv_next_cssinjs4.GetDefaultToken<ComponentTokenMap, AliasToken, C> | undefined, options?: {
+    resetStyle?: boolean;
+    resetFont?: boolean;
+    deprecatedTokens?: [keyof Exclude<_antdv_next_cssinjs4.OverrideTokenMap<ComponentTokenMap, AliasToken>[C], undefined>, keyof Exclude<_antdv_next_cssinjs4.OverrideTokenMap<ComponentTokenMap, AliasToken>[C], undefined>][] | undefined;
+    unitless?: Partial<Record<keyof Exclude<_antdv_next_cssinjs4.OverrideTokenMap<ComponentTokenMap, AliasToken>[C], undefined>, boolean>> | undefined;
+    clientOnly?: boolean;
+    order?: number;
+    injectStyle?: boolean;
+  } | undefined) => (prefixCls: vue623.Ref<string>, rootCls?: vue623.Ref<string | undefined>) => readonly [vue623.Ref<string, string>, vue623.ComputedRef<string | undefined>], genSubStyleComponent: <C extends keyof ComponentTokenMap>(componentName: C | [C, string], styleFn: _antdv_next_cssinjs4.GenStyleFn<ComponentTokenMap, AliasToken, C>, getDefaultToken?: _antdv_next_cssinjs4.GetDefaultToken<ComponentTokenMap, AliasToken, C> | undefined, options?: {
+    resetStyle?: boolean;
+    resetFont?: boolean;
+    deprecatedTokens?: [keyof Exclude<_antdv_next_cssinjs4.OverrideTokenMap<ComponentTokenMap, AliasToken>[C], undefined>, keyof Exclude<_antdv_next_cssinjs4.OverrideTokenMap<ComponentTokenMap, AliasToken>[C], undefined>][] | undefined;
+    clientOnly?: boolean;
+    order?: number;
+    injectStyle?: boolean;
+    unitless?: Partial<Record<keyof Exclude<_antdv_next_cssinjs4.OverrideTokenMap<ComponentTokenMap, AliasToken>[C], undefined>, boolean>> | undefined;
+  } | undefined) => vue623.DefineComponent<vue623.ExtractPropTypes<{
+    prefixCls: StringConstructor;
+    rootCls: StringConstructor;
+  }>, () => null, {}, {}, {}, vue623.ComponentOptionsMixin, vue623.ComponentOptionsMixin, {}, string, vue623.PublicProps, Readonly<vue623.ExtractPropTypes<{
+    prefixCls: StringConstructor;
+    rootCls: StringConstructor;
+  }>> & Readonly<{}>, {}, {}, {}, {}, string, vue623.ComponentProvideOptions, true, {}, any>;
+type CssVarName = (name: string) => `--${string}`;
+type CssVarRef = (name: string, fallback?: string | number) => `var(--${string})`;
+declare function genCssVar(antCls: string, component: string): readonly [varName: CssVarName, varRef: CssVarRef];
+//#endregion
+export { genComponentStyleHook, genCssVar, genStyleHooks, genSubStyleComponent };

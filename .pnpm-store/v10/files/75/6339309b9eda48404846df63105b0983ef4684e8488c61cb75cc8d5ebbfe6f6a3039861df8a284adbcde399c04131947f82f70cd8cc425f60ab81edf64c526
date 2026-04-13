@@ -1,0 +1,14 @@
+import { computed, watch } from "vue";
+import { useLockFocus } from "@v-c/util/dist/Dom/focus";
+import { useFocusBoundaryProvider } from "@v-c/util/dist/Dom/focusBoundary";
+//#region src/hooks/useFocusable.ts
+function useFocusable(getContainer, open, autoFocus, focusTrap, mask) {
+	const mergedFocusTrap = computed(() => focusTrap?.value ?? mask?.value !== false);
+	const [, registerAllowedElement] = useLockFocus(computed(() => open.value && mergedFocusTrap.value), getContainer);
+	useFocusBoundaryProvider({ registerAllowedElement });
+	watch(open, (val) => {
+		if (val && autoFocus?.value === true) getContainer()?.focus({ preventScroll: true });
+	});
+}
+//#endregion
+export { useFocusable as default };

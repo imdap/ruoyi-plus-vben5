@@ -1,0 +1,110 @@
+.vxe-switch {
+  display: inline-block;
+  color: var(--vxe-ui-font-color);
+  vertical-align: middle;
+  padding: 0.4em;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  text-align: center;
+}
+.vxe-switch.is--animat .vxe-switch--button {
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.vxe-switch.is--animat .vxe-switch--icon {
+  transition: all 0.3s;
+}
+.vxe-switch.is--on .vxe-switch--button {
+  padding-right: 1.7em;
+  background-color: var(--vxe-ui-switch-open-background-color);
+}
+.vxe-switch.is--on .vxe-switch--icon {
+  left: 100%;
+  transform: translateX(-1.4em);
+  color: var(--vxe-primary-color);
+}
+.vxe-switch.is--off .vxe-switch--button {
+  padding-left: 1.7em;
+  background-color: var(--vxe-ui-switch-close-background-color);
+}
+.vxe-switch.is--off .vxe-switch--icon {
+  left: 0.2em;
+  transform: translateX(0);
+  color: var(--vxe-switch-close-background-color);
+}
+.vxe-switch.is--on .vxe-switch--label-off, .vxe-switch.is--off .vxe-switch--label-on {
+  height: 0;
+  visibility: hidden;
+  overflow: hidden;
+}
+.vxe-switch.is--on .vxe-switch--label, .vxe-switch.is--off .vxe-switch--label {
+  opacity: 1;
+}
+.vxe-switch:not(.is--disabled) .vxe-switch--button {
+  cursor: pointer;
+}
+.vxe-switch:not(.is--disabled) .vxe-switch--button:focus {
+  box-shadow: 0 0 0.4em 0 var(--vxe-ui-font-primary-color);
+}
+.vxe-switch.is--disabled .vxe-switch--button {
+  cursor: no-drop;
+}
+.vxe-switch.is--disabled.is--on .vxe-switch--button {
+  background-color: var(--vxe-ui-font-primary-lighten-color);
+}
+.vxe-switch.is--disabled.is--on .vxe-switch--icon {
+  color: var(--vxe-primary-lighten-color);
+}
+.vxe-switch.is--disabled.is--off .vxe-switch--button {
+  background-color: var(--vxe-ui-switch-disabled-background-color);
+}
+.vxe-switch.is--disabled.is--off .vxe-switch--icon {
+  color: var(--vxe-switch-disabled-background-color);
+}
+.vxe-switch.is--readonly .vxe-switch--button {
+  cursor: default;
+}
+.vxe-switch .vxe-switch--button {
+  display: block;
+  position: relative;
+  height: 1.6em;
+  line-height: 1;
+  min-width: 3.2em;
+  padding: 0 0.6em;
+  border-radius: 1em;
+  border: 0;
+  outline: 0;
+}
+.vxe-switch .vxe-switch--label {
+  opacity: 0;
+  display: block;
+  color: var(--vxe-ui-switch-font-color);
+  font-size: 0.8em;
+}
+.vxe-switch .vxe-switch--icon {
+  position: absolute;
+  top: 0.2em;
+  left: 0;
+  width: 1.2em;
+  height: 1.2em;
+  line-height: 1.4em;
+  text-align: center;
+  border-radius: 50%;
+  background-color: var(--vxe-ui-switch-icon-background-color);
+}
+.vxe-switch .vxe-switch--label-icon {
+  margin-right: 0.25em;
+}
+
+.vxe-switch {
+  font-size: var(--vxe-ui-font-size-default);
+}
+.vxe-switch.size--medium {
+  font-size: var(--vxe-ui-font-size-medium);
+}
+.vxe-switch.size--small {
+  font-size: var(--vxe-ui-font-size-small);
+}
+.vxe-switch.size--mini {
+  font-size: var(--vxe-ui-font-size-mini);
+}

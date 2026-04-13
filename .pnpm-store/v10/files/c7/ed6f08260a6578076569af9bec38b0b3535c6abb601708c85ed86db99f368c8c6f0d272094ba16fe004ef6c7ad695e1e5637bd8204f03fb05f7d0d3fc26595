@@ -1,0 +1,39 @@
+{
+  "name": "zod-defaults",
+  "version": "0.1.3",
+  "description": "Generate an 'empty' default object from a zod schema, mainly meant for initial state of a form.",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "main": "dist/zod-defaults.umd.js",
+  "module": "dist/zod-defaults.js",
+  "exports": {
+    ".": {
+      "import": "./dist/zod-defaults.js",
+      "require": "./dist/zod-defaults.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "prebuild": "rimraf dist && npm run lint && npm run test",
+    "build": "vite build && tsc && npm run minify",
+    "minify": "esbuild dist/zod-defaults.js --minify --outfile=dist/zod-defaults.js --allow-overwrite",
+    "lint": "biome check src",
+    "test": "vitest --run",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.1",
+    "@types/node": "^20.14.2",
+    "rimraf": "^5.0.7",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "vitest": "^1.6.0"
+  },
+  "packageManager": "pnpm@9.1.1+sha512.14e915759c11f77eac07faba4d019c193ec8637229e62ec99eefb7cf3c3b75c64447882b7c485142451ee3a6b408059cdfb7b7fa0341b975f12d0f7629c71195"
+}

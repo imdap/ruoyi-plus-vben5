@@ -1,0 +1,15 @@
+/**
+ * 创建一个函数, 调用次数超过 count 次之后执行回调并将所有结果记住后返回
+ * @param count 次数
+ * @param callback 回调
+ * @param context 上下文
+ */
+export declare function after<C = any>(count: number, callback: (this: C, ...args: any[]) => any, context?: C): (this: any,...args: any[]) => any;
+
+declare module './ctor' {
+  interface XEUtilsMethods {
+    after: typeof after;
+  }
+}
+
+export default after

@@ -1,0 +1,77 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { ClosableType } from "../_util/hooks/useClosable.js";
+import { DrawerProps as DrawerProps$1 } from "./index.js";
+import * as vue907 from "vue";
+import { CSSProperties } from "vue";
+import { DrawerProps } from "@v-c/drawer";
+
+//#region src/drawer/DrawerPanel.d.ts
+type DrawerSemanticName = keyof DrawerSemanticClassNames & keyof DrawerSemanticStyles;
+interface DrawerSemanticClassNames {
+  root?: string;
+  mask?: string;
+  header?: string;
+  title?: string;
+  extra?: string;
+  section?: string;
+  body?: string;
+  footer?: string;
+  wrapper?: string;
+  dragger?: string;
+  close?: string;
+}
+interface DrawerSemanticStyles {
+  root?: CSSProperties;
+  mask?: CSSProperties;
+  header?: CSSProperties;
+  title?: CSSProperties;
+  extra?: CSSProperties;
+  section?: CSSProperties;
+  body?: CSSProperties;
+  footer?: CSSProperties;
+  wrapper?: CSSProperties;
+  dragger?: CSSProperties;
+  close?: CSSProperties;
+}
+type DrawerClassNamesType = SemanticClassNamesType<DrawerProps$1, DrawerSemanticClassNames>;
+type DrawerStylesType = SemanticStylesType<DrawerProps$1, DrawerSemanticStyles>;
+interface DrawerPanelProps {
+  prefixCls: string;
+  ariaId?: string;
+  title?: VueNode;
+  footer?: VueNode;
+  extra?: VueNode;
+  size?: DrawerProps$1['size'];
+  /**
+   * Recommend to use closeIcon instead
+   *
+   * e.g.
+   *
+   * `<Drawer closeIcon={false} />`
+   */
+  closable?: boolean | (Extract<ClosableType, object> & {
+    placement?: 'start' | 'end';
+  });
+  closeIcon?: VueNode;
+  onClose?: DrawerProps['onClose'];
+  classes?: DrawerClassNamesType;
+  styles?: DrawerStylesType;
+  loading?: boolean;
+  /** @deprecated Please use `styles.header` instead */
+  headerStyle?: CSSProperties;
+  /** @deprecated Please use `styles.body` instead */
+  bodyStyle?: CSSProperties;
+  /** @deprecated Please use `styles.footer` instead */
+  footerStyle?: CSSProperties;
+  /** @deprecated Please use `styles.wrapper` instead */
+  contentWrapperStyle?: CSSProperties;
+  /** @deprecated Please use `styles.mask` instead */
+  maskStyle?: CSSProperties;
+  /** @deprecated Please use `styles.content` instead */
+  drawerStyle?: CSSProperties;
+}
+declare const DrawerPanel: vue907.DefineSetupFnComponent<DrawerPanelProps, {}, {}, DrawerPanelProps & {}, vue907.PublicProps>;
+//#endregion
+export { DrawerClassNamesType, DrawerPanelProps, DrawerSemanticClassNames, DrawerSemanticName, DrawerSemanticStyles, DrawerStylesType, DrawerPanel as default };

@@ -1,0 +1,20 @@
+import { Breakpoint } from "../_util/responsiveObserver.js";
+import * as vue1008 from "vue";
+
+//#region src/grid/row.d.ts
+declare const _RowAligns: readonly ["top", "middle", "bottom", "stretch"];
+declare const _RowJustify: readonly ["start", "end", "center", "space-around", "space-between", "space-evenly"];
+type ResponsiveLike<T> = { [key in Breakpoint]?: T };
+type Gutter = number | undefined | Partial<Record<Breakpoint, number>>;
+type ResponsiveAligns = ResponsiveLike<(typeof _RowAligns)[number]>;
+type ResponsiveJustify = ResponsiveLike<(typeof _RowJustify)[number]>;
+interface RowProps {
+  gutter?: Gutter | [Gutter, Gutter];
+  align?: (typeof _RowAligns)[number] | ResponsiveAligns;
+  justify?: (typeof _RowJustify)[number] | ResponsiveJustify;
+  prefixCls?: string;
+  wrap?: boolean;
+}
+declare const Row: vue1008.DefineSetupFnComponent<RowProps, {}, {}, RowProps & {}, vue1008.PublicProps>;
+//#endregion
+export { Gutter, RowProps, Row as default };

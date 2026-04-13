@@ -1,0 +1,59 @@
+import { createGetConflictingClasses, getConflictingClasses } from "../tailwindcss/conflicting-classes.js";
+import { async } from "../utils/context.js";
+import { lintClasses } from "../utils/lint.js";
+import { createRule } from "../utils/rule.js";
+import { splitClasses } from "../utils/utils.js";
+export const noConflictingClasses = createRule({
+    autofix: true,
+    category: "correctness",
+    description: "Disallow classes that produce conflicting styles.",
+    docs: "https://github.com/schoero/eslint-plugin-better-tailwindcss/blob/main/docs/rules/no-conflicting-classes.md",
+    name: "no-conflicting-classes",
+    recommended: true,
+    messages: {
+        conflicting: "Conflicting class detected: \"{{ className }}\" and \"{{ conflictingClassString }}\" apply the same CSS properties: \"{{ conflictingPropertiesString }}\"."
+    },
+    initialize(ctx) {
+        createGetConflictingClasses(ctx);
+    },
+    lintLiterals: (ctx, literals) => lintLiterals(ctx, literals)
+});
+function lintLiterals(ctx, literals) {
+    for (const literal of literals) {
+        const classes = splitClasses(literal.content);
+        const { conflictingClasses, warnings } = getConflictingClasses(async(ctx), classes);
+        if (Object.keys(conflictingClasses).length === 0) {
+            continue;
+        }
+        lintClasses(ctx, literal, className => {
+            if (!conflictingClasses[className]) {
+                return;
+            }
+            const conflicts = Object.entries(conflictingClasses[className]);
+            if (conflicts.length === 0) {
+                return;
+            }
+            const conflictingClassNames = conflicts.map(([conflictingClassName]) => conflictingClassName);
+            const conflictingProperties = conflicts.reduce((acc, [, properties]) => {
+                for (const property of properties) {
+                    if (!acc.includes(property.cssPropertyName)) {
+                        acc.push(property.cssPropertyName);
+                    }
+                }
+                return acc;
+            }, []);
+            const conflictingClassString = conflictingClassNames.join(", ");
+            const conflictingPropertiesString = conflictingProperties.map(conflictingProperty => `"${conflictingProperty}"`).join(", ");
+            return {
+                data: {
+                    className,
+                    conflictingClassString,
+                    conflictingPropertiesString
+                },
+                id: "conflicting",
+                warnings
+            };
+        });
+    }
+}
+//# sourceMappingURL=no-conflicting-classes.js.map

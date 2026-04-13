@@ -1,0 +1,9 @@
+import { warning } from "@v-c/util";
+function warnItemProp({ item, ...restInfo }) {
+	Object.defineProperty(restInfo, "item", { get: () => {
+		warning(false, "`info.item` is deprecated since we will move to function component that not provides React Node instance in future.");
+		return item;
+	} });
+	return restInfo;
+}
+export { warnItemProp };

@@ -1,0 +1,6 @@
+import * as vue767 from "vue";
+
+//#region src/typography/hooks/useMergedConfig.d.ts
+declare function useMergedConfig<Target>(propConfig: any, templateConfig?: Target): readonly [vue767.ComputedRef<boolean>, vue767.ComputedRef<Target>];
+//#endregion
+export { useMergedConfig as default };

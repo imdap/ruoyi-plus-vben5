@@ -1,0 +1,42 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue405 from "vue";
+import { CSSObject } from "@antdv-next/cssinjs";
+
+//#region src/rate/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 星星颜色
+   * @descEN Star color
+   */
+  starColor: string;
+  /**
+   * @desc 星星尺寸
+   * @descEN Star size
+   */
+  starSize: number;
+  /**
+   * @desc 小星星尺寸
+   * @descEN Small star size
+   */
+  starSizeSM: number;
+  /**
+   * @desc 大星星尺寸
+   * @descEN Large star size
+   */
+  starSizeLG: number;
+  /**
+   * @desc 星星悬浮时的缩放
+   * @descEN Scale of star when hover
+   */
+  starHoverScale: CSSObject['transform'];
+  /**
+   * @desc 星星背景色
+   * @descEN Star background color
+   */
+  starBg: string;
+}
+declare const prepareComponentToken: GetDefaultToken<'Rate'>;
+declare const _default: (prefixCls: vue405.Ref<string>, rootCls?: vue405.Ref<string | undefined>) => readonly [vue405.Ref<string, string>, vue405.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

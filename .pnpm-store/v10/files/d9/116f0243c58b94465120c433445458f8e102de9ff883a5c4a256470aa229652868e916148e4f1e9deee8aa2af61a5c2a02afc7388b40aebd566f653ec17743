@@ -1,0 +1,59 @@
+import { EmptyEmit } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import SkeletonAvatar, { SkeletonAvatarProps as SkeletonAvatarProps$1 } from "./Avatar.js";
+import { SkeletonParagraphProps } from "./Paragraph.js";
+import { SkeletonTitleProps } from "./Title.js";
+import SkeletonButton from "./Button.js";
+import SkeletonNode from "./Node.js";
+import SkeletonImage from "./Image.js";
+import SkeletonInput from "./Input.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue696 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/skeleton/Skeleton.d.ts
+type SkeletonAvatarProps = Omit<SkeletonAvatarProps$1, 'active'>;
+type SkeletonSemanticName = keyof SkeletonSemanticClassNames & keyof SkeletonSemanticStyles;
+interface SkeletonSemanticClassNames {
+  root?: string;
+  header?: string;
+  section?: string;
+  avatar?: string;
+  title?: string;
+  paragraph?: string;
+}
+interface SkeletonSemanticStyles {
+  root?: CSSProperties;
+  header?: CSSProperties;
+  section?: CSSProperties;
+  avatar?: CSSProperties;
+  title?: CSSProperties;
+  paragraph?: CSSProperties;
+}
+type SkeletonClassNamesType = SemanticClassNamesType<SkeletonProps, SkeletonSemanticClassNames>;
+type SkeletonStylesType = SemanticStylesType<SkeletonProps, SkeletonSemanticStyles>;
+interface SkeletonProps extends ComponentBaseProps {
+  active?: boolean;
+  loading?: boolean;
+  avatar?: SkeletonAvatarProps | boolean;
+  title?: SkeletonTitleProps | boolean;
+  paragraph?: SkeletonParagraphProps | boolean;
+  round?: boolean;
+  classes?: SkeletonClassNamesType;
+  styles?: SkeletonStylesType;
+}
+interface SkeletonSlots {
+  default?: () => any;
+}
+declare const Skeleton: vue696.DefineSetupFnComponent<SkeletonProps, EmptyEmit, SlotsType<SkeletonSlots>, SkeletonProps, vue696.PublicProps>;
+type SkeletonType = typeof Skeleton & {
+  Button: typeof SkeletonButton;
+  Avatar: typeof SkeletonAvatar;
+  Input: typeof SkeletonInput;
+  Image: typeof SkeletonImage;
+  Node: typeof SkeletonNode;
+};
+declare const SkeletonWithSubComponents: SkeletonType;
+//#endregion
+export { SkeletonAvatar, SkeletonButton, SkeletonClassNamesType, SkeletonImage, SkeletonInput, SkeletonNode, SkeletonProps, SkeletonSemanticClassNames, SkeletonSemanticName, SkeletonSemanticStyles, SkeletonSlots, SkeletonStylesType, SkeletonType, SkeletonWithSubComponents as default };

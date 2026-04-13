@@ -1,0 +1,92 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { CollapsibleType } from "./CollapsePanel.js";
+import * as vue168 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { ItemType } from "@v-c/collapse";
+
+//#region src/collapse/Collapse.d.ts
+type ExpandIconPlacement = 'start' | 'end';
+type CollapseSemanticName = keyof CollapseSemanticClassNames & keyof CollapseSemanticStyles;
+interface CollapseSemanticClassNames {
+  root?: string;
+  header?: string;
+  title?: string;
+  body?: string;
+  icon?: string;
+}
+interface CollapseSemanticStyles {
+  root?: CSSProperties;
+  header?: CSSProperties;
+  title?: CSSProperties;
+  body?: CSSProperties;
+  icon?: CSSProperties;
+}
+type CollapseClassNamesType = SemanticClassNamesType<CollapseProps, CollapseSemanticClassNames>;
+type CollapseStylesType = SemanticStylesType<CollapseProps, CollapseSemanticStyles>;
+type CollapseItemType = Omit<ItemType, 'children' | 'classNames'> & {
+  content?: ItemType['children'];
+  classes?: ItemType['classNames'];
+};
+interface CollapseProps extends CollapseEmitsProps {
+  activeKey?: Array<string | number> | string | number;
+  defaultActiveKey?: Array<string | number> | string | number;
+  /** 手风琴效果 */
+  accordion?: boolean;
+  /**
+   * @since 5.25.0
+   */
+  destroyOnHidden?: boolean;
+  rootClass?: string;
+  bordered?: boolean;
+  prefixCls?: string;
+  expandIcon?: (panelProps: PanelProps) => any;
+  expandIconPlacement?: ExpandIconPlacement;
+  ghost?: boolean;
+  size?: SizeType;
+  collapsible?: CollapsibleType;
+  labelRender?: (params: {
+    item: CollapseItemType;
+    index: number;
+  }) => any;
+  contentRender?: (params: {
+    item: CollapseItemType;
+    index: number;
+  }) => any;
+  classes?: CollapseClassNamesType;
+  styles?: CollapseStylesType;
+  items?: CollapseItemType[];
+}
+interface CollapseEmits {
+  change: (key: string[]) => void;
+}
+interface CollapseEmitsProps {
+  onChange?: CollapseEmits['change'];
+}
+interface PanelProps {
+  isActive?: boolean;
+  header?: VueNode;
+  className?: string;
+  style?: CSSProperties;
+  showArrow?: boolean;
+  forceRender?: boolean;
+  extra?: VueNode;
+  collapsible?: CollapsibleType;
+}
+interface CollapseSlots {
+  default?: () => any;
+  expandIcon: (panelProps: PanelProps) => any;
+  labelRender: (params: {
+    item: CollapseItemType;
+    index: number;
+  }) => any;
+  contentRender: (params: {
+    item: CollapseItemType;
+    index: number;
+  }) => any;
+}
+declare const Collapse: vue168.DefineSetupFnComponent<CollapseProps, CollapseEmits, SlotsType<CollapseSlots>, CollapseProps, vue168.PublicProps>;
+//#endregion
+export { CollapseClassNamesType, CollapseEmits, CollapseEmitsProps, CollapseItemType, CollapseProps, CollapseSemanticClassNames, CollapseSemanticName, CollapseSemanticStyles, CollapseStylesType, ExpandIconPlacement, Collapse as default };

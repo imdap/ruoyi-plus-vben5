@@ -1,0 +1,621 @@
+import { h, ref, computed, inject, createCommentVNode, reactive, nextTick, onBeforeUnmount } from 'vue';
+import { defineVxeComponent } from '../../ui/src/comp';
+import XEUtils from 'xe-utils';
+import { VxeUI } from '../../ui';
+import { getSlotVNs } from '../../ui/src/vn';
+import { warnLog, errLog } from '../../ui/src/log';
+const { getConfig, getIcon, getI18n, renderer, commands, createEvent, useFns } = VxeUI;
+function createReactData() {
+    return {
+        isRefresh: false,
+        connectFlag: 0,
+        columns: []
+    };
+}
+function createInternalData() {
+    return {
+        connectTable: null
+    };
+}
+export default defineVxeComponent({
+    name: 'VxeToolbar',
+    props: {
+        loading: Boolean,
+        refresh: [Boolean, Object],
+        refreshOptions: Object,
+        import: [Boolean, Object],
+        importOptions: Object,
+        export: [Boolean, Object],
+        exportOptions: Object,
+        print: [Boolean, Object],
+        printOptions: Object,
+        zoom: [Boolean, Object],
+        zoomOptions: Object,
+        custom: [Boolean, Object],
+        customOptions: Object,
+        buttons: {
+            type: Array,
+            default: () => getConfig().toolbar.buttons
+        },
+        tools: {
+            type: Array,
+            default: () => getConfig().toolbar.tools
+        },
+        perfect: {
+            type: Boolean,
+            default: () => getConfig().toolbar.perfect
+        },
+        size: {
+            type: String,
+            default: () => getConfig().toolbar.size || getConfig().size
+        },
+        className: [String, Function]
+    },
+    emits: [
+        'button-click',
+        'tool-click'
+    ],
+    setup(props, context) {
+        const { slots, emit } = context;
+        const xID = XEUtils.uniqueId();
+        // 使用已安装的组件，如果未安装则不渲染
+        const VxeUIButtonComponent = VxeUI.getComponent('VxeButton');
+        const $xeGrid = inject('$xeGrid', null);
+        const $xeGantt = inject('$xeGantt', null);
+        const $xeGGWrapper = $xeGrid || $xeGantt;
+        const { computeSize } = useFns.useSize(props);
+        const reactData = reactive(createReactData());
+        const internalData = createInternalData();
+        const refElem = ref();
+        const refMaps = {
+            refElem
+        };
+        const $xeToolbar = {
+            xID,
+            props,
+            context,
+            reactData,
+            internalData,
+            getRefMaps: () => refMaps
+        };
+        let toolbarMethods = {};
+        const computeRefreshOpts = computed(() => {
+            return Object.assign({}, XEUtils.clone(getConfig().toolbar.refresh, true), props.refreshOptions, props.refresh);
+        });
+        const computeImportOpts = computed(() => {
+            return Object.assign({}, XEUtils.clone(getConfig().toolbar.import, true), props.importOptions, props.import);
+        });
+        const computeExportOpts = computed(() => {
+            return Object.assign({}, XEUtils.clone(getConfig().toolbar.export, true), props.exportOptions, props.export);
+        });
+        const computePrintOpts = computed(() => {
+            return Object.assign({}, XEUtils.clone(getConfig().toolbar.print, true), props.printOptions, props.print);
+        });
+        const computeZoomOpts = computed(() => {
+            return Object.assign({}, XEUtils.clone(getConfig().toolbar.zoom, true), props.zoomOptions, props.zoom);
+        });
+        const computeCustomOpts = computed(() => {
+            return Object.assign({}, XEUtils.clone(getConfig().toolbar.custom, true), props.customOptions, props.custom);
+        });
+        const computeTableCustomOpts = computed(() => {
+            const { connectTable } = internalData;
+            const $table = connectTable;
+            if (reactData.connectFlag || $table) {
+                if ($table) {
+                    const { computeCustomOpts } = $table.getComputeMaps();
+                    return computeCustomOpts.value;
+                }
+            }
+            return { trigger: '' };
+        });
+        const computeTrigger = computed(() => {
+            const tableCustomOpts = computeTableCustomOpts.value;
+            return tableCustomOpts.trigger;
+        });
+        const checkTable = () => {
+            const { connectTable } = internalData;
+            const $table = connectTable;
+            if ($table) {
+                return true;
+            }
+            errLog('vxe.error.barUnableLink');
+        };
+        const handleClickSettingEvent = ({ $event }) => {
+            const { connectTable } = internalData;
+            const $table = connectTable;
+            if ($table) {
+                if ($table.triggerCustomEvent) {
+                    $table.triggerCustomEvent($event);
+                }
+            }
+        };
+        const handleMouseenterSettingEvent = ({ $event }) => {
+            const { connectTable } = internalData;
+            const $table = connectTable;
+            if ($table) {
+                $table.customOpenEvent($event);
+            }
+        };
+        const handleMouseleaveSettingEvent = ({ $event }) => {
+            const { connectTable } = internalData;
+            const $table = connectTable;
+            if ($table) {
+                const { customStore } = $table.reactData;
+                customStore.activeBtn = false;
+                setTimeout(() => {
+                    if (!customStore.activeBtn && !customStore.activeWrapper) {
+                        $table.customCloseEvent($event);
+                    }
+                }, 350);
+            }
+        };
+        const refreshEvent = ({ $event }) => {
+            const { isRefresh } = reactData;
+            const refreshOpts = computeRefreshOpts.value;
+            if (!isRefresh) {
+                const queryMethod = refreshOpts.queryMethod || refreshOpts.query;
+                if (queryMethod) {
+                    reactData.isRefresh = true;
+                    try {
+                        Promise.resolve(queryMethod({})).catch((e) => e).then(() => {
+                            reactData.isRefresh = false;
+                        });
+                    }
+                    catch (e) {
+                        reactData.isRefresh = false;
+                    }
+                }
+                else if ($xeGGWrapper) {
+                    reactData.isRefresh = true;
+                    $xeGGWrapper.triggerToolbarCommitEvent({ code: refreshOpts.code || 'reload' }, $event).catch(() => { }).then(() => {
+                        reactData.isRefresh = false;
+                    });
+                }
+            }
+        };
+        const zoomEvent = ({ $event }) => {
+            if ($xeGGWrapper) {
+                $xeGGWrapper.triggerZoomEvent($event);
+            }
+            else {
+                warnLog('vxe.error.notProp', ['[toolbar] zoom']);
+            }
+        };
+        const importEvent = () => {
+            if (checkTable()) {
+                const { connectTable } = internalData;
+                const $table = connectTable;
+                if ($table) {
+                    $table.importData();
+                }
+            }
+        };
+        const openImportEvent = () => {
+            if (checkTable()) {
+                const { connectTable } = internalData;
+                const $table = connectTable;
+                if ($table) {
+                    $table.openImport();
+                }
+            }
+        };
+        const exportEvent = () => {
+            if (checkTable()) {
+                const { connectTable } = internalData;
+                const $table = connectTable;
+                if ($table) {
+                    $table.exportData();
+                }
+            }
+        };
+        const openExportEvent = () => {
+            if (checkTable()) {
+                const { connectTable } = internalData;
+                const $table = connectTable;
+                if ($table) {
+                    $table.openExport();
+                }
+            }
+        };
+        const printEvent = () => {
+            if (checkTable()) {
+                const { connectTable } = internalData;
+                const $table = connectTable;
+                if ($table) {
+                    $table.print();
+                }
+            }
+        };
+        const openPrintEvent = () => {
+            if (checkTable()) {
+                const { connectTable } = internalData;
+                const $table = connectTable;
+                if ($table) {
+                    $table.openPrint();
+                }
+            }
+        };
+        const handleDefaultCodeEvent = (eventParams, item, cb) => {
+            switch (item.code) {
+                case 'print':
+                    printEvent();
+                    break;
+                case 'open_print':
+                    openPrintEvent();
+                    break;
+                case 'custom':
+                    handleClickSettingEvent(eventParams);
+                    break;
+                case 'export':
+                    exportEvent();
+                    break;
+                case 'open_export':
+                    openExportEvent();
+                    break;
+                case 'import':
+                    importEvent();
+                    break;
+                case 'open_import':
+                    openImportEvent();
+                    break;
+                case 'zoom':
+                    zoomEvent(eventParams);
+                    break;
+                case 'refresh':
+                    refreshEvent(eventParams);
+                    break;
+                default:
+                    cb();
+                    break;
+            }
+        };
+        const btnEvent = (eventParams, item) => {
+            const { $event } = eventParams;
+            const { connectTable } = internalData;
+            const $table = connectTable;
+            const { code } = item;
+            if (code) {
+                handleDefaultCodeEvent(eventParams, item, () => {
+                    if ($xeGGWrapper) {
+                        $xeGGWrapper.triggerToolbarBtnEvent(item, $event);
+                    }
+                    else {
+                        const gCommandOpts = commands.get(code);
+                        const params = { code, button: item, $table: $table, $grid: $xeGrid, $gantt: $xeGantt, $event };
+                        if (gCommandOpts) {
+                            const tCommandMethod = gCommandOpts.tableCommandMethod || gCommandOpts.commandMethod;
+                            if (tCommandMethod) {
+                                tCommandMethod(params);
+                            }
+                            else {
+                                errLog('vxe.error.notCommands', [`[toolbar] ${code}`]);
+                            }
+                        }
+                        $xeToolbar.dispatchEvent('button-click', params, $event);
+                    }
+                });
+            }
+        };
+        const tolEvent = (eventParams, item) => {
+            const { $event } = eventParams;
+            const { connectTable } = internalData;
+            const $table = connectTable;
+            const { code } = item;
+            if (code) {
+                handleDefaultCodeEvent(eventParams, item, () => {
+                    if ($xeGGWrapper) {
+                        $xeGGWrapper.triggerToolbarTolEvent(item, $event);
+                    }
+                    else {
+                        const gCommandOpts = commands.get(code);
+                        const params = { code, button: null, tool: item, $table: $table, $grid: $xeGrid, $gantt: $xeGantt, $event };
+                        if (gCommandOpts) {
+                            const tCommandMethod = gCommandOpts.tableCommandMethod || gCommandOpts.commandMethod;
+                            if (tCommandMethod) {
+                                tCommandMethod(params);
+                            }
+                            else {
+                                errLog('vxe.error.notCommands', [`[toolbar] ${code}`]);
+                            }
+                        }
+                        $xeToolbar.dispatchEvent('tool-click', params, $event);
+                    }
+                });
+            }
+        };
+        const dispatchEvent = (type, params, evnt) => {
+            emit(type, createEvent(evnt, { $toolbar: $xeToolbar }, params));
+        };
+        toolbarMethods = {
+            dispatchEvent,
+            syncUpdate(params) {
+                internalData.connectTable = params.$table;
+                reactData.columns = params.collectColumn;
+                reactData.connectFlag++;
+            }
+        };
+        Object.assign($xeToolbar, toolbarMethods);
+        const renderDropdowns = (item, isBtn) => {
+            const { dropdowns } = item;
+            const downVNs = [];
+            if (dropdowns) {
+                return dropdowns.map((child, index) => {
+                    if (child.visible === false) {
+                        return createCommentVNode();
+                    }
+                    return VxeUIButtonComponent
+                        ? h(VxeUIButtonComponent, Object.assign(Object.assign({ key: index }, Object.assign({}, child, {
+                            content: child.content || child.name,
+                            options: undefined
+                        })), { onClick: (eventParams) => isBtn ? btnEvent(eventParams, child) : tolEvent(eventParams, child) }))
+                        : createCommentVNode();
+                });
+            }
+            return downVNs;
+        };
+        /**
+         * 渲染按钮
+         */
+        const renderLeftBtns = () => {
+            const { buttons } = props;
+            const { connectTable } = internalData;
+            const $table = connectTable;
+            const buttonsSlot = slots.buttons;
+            const buttonPrefixSlot = slots.buttonPrefix || slots['button-prefix'];
+            const buttonSuffixSlot = slots.buttonSuffix || slots['button-suffix'];
+            const btnVNs = [];
+            if (buttons) {
+                buttons.forEach((item, index) => {
+                    const { dropdowns, buttonRender } = item;
+                    if (item.visible !== false) {
+                        const compConf = buttonRender ? renderer.get(buttonRender.name) : null;
+                        if (buttonRender && compConf && compConf.renderToolbarButton) {
+                            const toolbarButtonClassName = compConf.toolbarButtonClassName;
+                            const params = { $grid: $xeGrid, $gantt: $xeGantt, $table: $table, button: item };
+                            btnVNs.push(h('span', {
+                                key: `br${item.code || index}`,
+                                class: ['vxe-button--item', toolbarButtonClassName ? (XEUtils.isFunction(toolbarButtonClassName) ? toolbarButtonClassName(params) : toolbarButtonClassName) : '']
+                            }, getSlotVNs(compConf.renderToolbarButton(buttonRender, params))));
+                        }
+                        else {
+                            if (VxeUIButtonComponent) {
+                                btnVNs.push(h(VxeUIButtonComponent, Object.assign(Object.assign({ key: `bd${item.code || index}` }, Object.assign({}, item, {
+                                    content: item.content || item.name,
+                                    options: undefined
+                                })), { onClick: (eventParams) => btnEvent(eventParams, item) }), dropdowns && dropdowns.length
+                                    ? {
+                                        dropdowns: () => renderDropdowns(item, true)
+                                    }
+                                    : {}));
+                            }
+                        }
+                    }
+                });
+            }
+            return [
+                h('div', {
+                    class: 'vxe-button--prefix-wrapper'
+                }, buttonPrefixSlot ? getSlotVNs(buttonPrefixSlot({ buttons: buttons || [], $grid: $xeGrid, $gantt: $xeGantt, $table: $table })) : []),
+                h('div', {
+                    class: 'vxe-button--item-wrapper'
+                }, buttonsSlot ? getSlotVNs(buttonsSlot({ buttons: buttons || [], $grid: $xeGrid, $gantt: $xeGantt, $table: $table })) : btnVNs),
+                h('div', {
+                    class: 'vxe-button--suffix-wrapper'
+                }, buttonSuffixSlot ? getSlotVNs(buttonSuffixSlot({ buttons: buttons || [], $grid: $xeGrid, $gantt: $xeGantt, $table: $table })) : [])
+            ];
+        };
+        /**
+         * 渲染右侧工具
+         */
+        const renderRightTools = () => {
+            const { tools } = props;
+            const { connectTable } = internalData;
+            const $table = connectTable;
+            const toolsSlot = slots.tools;
+            const toolPrefixSlot = slots.toolPrefix || slots['tool-prefix'];
+            const toolSuffixSlot = slots.toolSuffix || slots['tool-suffix'];
+            const btnVNs = [];
+            if (tools) {
+                tools.forEach((item, tIndex) => {
+                    const { dropdowns, toolRender } = item;
+                    if (item.visible !== false) {
+                        const rdName = toolRender ? toolRender.name : null;
+                        const compConf = toolRender ? renderer.get(rdName) : null;
+                        if (toolRender && compConf && compConf.renderToolbarTool) {
+                            const toolbarToolClassName = compConf.toolbarToolClassName;
+                            const params = { $grid: $xeGrid, $gantt: $xeGantt, $table: $table, tool: item };
+                            btnVNs.push(h('span', {
+                                key: rdName,
+                                class: ['vxe-tool--item', toolbarToolClassName ? (XEUtils.isFunction(toolbarToolClassName) ? toolbarToolClassName(params) : toolbarToolClassName) : '']
+                            }, getSlotVNs(compConf.renderToolbarTool(toolRender, params))));
+                        }
+                        else {
+                            if (VxeUIButtonComponent) {
+                                btnVNs.push(h(VxeUIButtonComponent, Object.assign(Object.assign({ key: tIndex }, Object.assign({}, item, {
+                                    content: item.content || item.name,
+                                    options: undefined
+                                })), { onClick: (eventParams) => tolEvent(eventParams, item) }), dropdowns && dropdowns.length
+                                    ? {
+                                        dropdowns: () => renderDropdowns(item, false)
+                                    }
+                                    : {}));
+                            }
+                        }
+                    }
+                });
+            }
+            return [
+                h('div', {
+                    class: 'vxe-tool--prefix-wrapper'
+                }, toolPrefixSlot ? getSlotVNs(toolPrefixSlot({ tools: tools || [], $grid: $xeGrid, $gantt: $xeGantt, $table: $table })) : []),
+                h('div', {
+                    class: 'vxe-tool--item-wrapper'
+                }, toolsSlot ? getSlotVNs(toolsSlot({ tools: tools || [], $grid: $xeGrid, $gantt: $xeGantt, $table: $table })) : btnVNs),
+                h('div', {
+                    class: 'vxe-tool--suffix-wrapper'
+                }, toolSuffixSlot ? getSlotVNs(toolSuffixSlot({ tools: tools || [], $grid: $xeGrid, $gantt: $xeGantt, $table: $table })) : [])
+            ];
+        };
+        const renderToolImport = () => {
+            const importOpts = computeImportOpts.value;
+            return VxeUIButtonComponent
+                ? h(VxeUIButtonComponent, {
+                    key: 'import',
+                    circle: true,
+                    icon: importOpts.icon || getIcon().TOOLBAR_TOOLS_IMPORT,
+                    title: getI18n('vxe.toolbar.import'),
+                    onClick: openImportEvent
+                })
+                : createCommentVNode();
+        };
+        const renderToolExport = () => {
+            const exportOpts = computeExportOpts.value;
+            return VxeUIButtonComponent
+                ? h(VxeUIButtonComponent, {
+                    key: 'export',
+                    circle: true,
+                    icon: exportOpts.icon || getIcon().TOOLBAR_TOOLS_EXPORT,
+                    title: getI18n('vxe.toolbar.export'),
+                    onClick: openExportEvent
+                })
+                : createCommentVNode();
+        };
+        const renderToolPrint = () => {
+            const printOpts = computePrintOpts.value;
+            return VxeUIButtonComponent
+                ? h(VxeUIButtonComponent, {
+                    key: 'print',
+                    circle: true,
+                    icon: printOpts.icon || getIcon().TOOLBAR_TOOLS_PRINT,
+                    title: getI18n('vxe.toolbar.print'),
+                    onClick: openPrintEvent
+                })
+                : createCommentVNode();
+        };
+        const renderToolRefresh = () => {
+            const refreshOpts = computeRefreshOpts.value;
+            return VxeUIButtonComponent
+                ? h(VxeUIButtonComponent, {
+                    key: 'refresh',
+                    circle: true,
+                    icon: reactData.isRefresh ? (refreshOpts.iconLoading || getIcon().TOOLBAR_TOOLS_REFRESH_LOADING) : (refreshOpts.icon || getIcon().TOOLBAR_TOOLS_REFRESH),
+                    title: getI18n('vxe.toolbar.refresh'),
+                    onClick: refreshEvent
+                })
+                : createCommentVNode();
+        };
+        const renderToolZoom = () => {
+            const zoomOpts = computeZoomOpts.value;
+            return $xeGGWrapper && VxeUIButtonComponent
+                ? h(VxeUIButtonComponent, {
+                    key: 'zoom',
+                    circle: true,
+                    icon: $xeGGWrapper.isMaximized() ? (zoomOpts.iconOut || getIcon().TOOLBAR_TOOLS_MINIMIZE) : (zoomOpts.iconIn || getIcon().TOOLBAR_TOOLS_FULLSCREEN),
+                    title: getI18n(`vxe.toolbar.zoom${$xeGGWrapper.isMaximized() ? 'Out' : 'In'}`),
+                    onClick: zoomEvent
+                })
+                : createCommentVNode();
+        };
+        const renderToolCustom = () => {
+            const customOpts = computeCustomOpts.value;
+            const btnTrigger = computeTrigger.value;
+            const customBtnOns = {};
+            if (btnTrigger === 'manual') {
+                // 手动触发
+            }
+            else if (btnTrigger === 'hover') {
+                // hover 触发
+                customBtnOns.onMouseenter = handleMouseenterSettingEvent;
+                customBtnOns.onMouseleave = handleMouseleaveSettingEvent;
+            }
+            else {
+                // 点击触发
+                customBtnOns.onClick = handleClickSettingEvent;
+            }
+            return VxeUIButtonComponent
+                ? h(VxeUIButtonComponent, Object.assign({ key: 'custom', circle: true, icon: customOpts.icon || getIcon().TOOLBAR_TOOLS_CUSTOM, title: getI18n('vxe.toolbar.custom'), className: 'vxe-toolbar-custom-target' }, customBtnOns))
+                : createCommentVNode();
+        };
+        const renderVN = () => {
+            const { perfect, loading, refresh, zoom, custom, className } = props;
+            const vSize = computeSize.value;
+            return h('div', {
+                ref: refElem,
+                class: ['vxe-toolbar', className ? (XEUtils.isFunction(className) ? className({ $toolbar: $xeToolbar }) : className) : '', {
+                        [`size--${vSize}`]: vSize,
+                        'is--perfect': perfect,
+                        'is--loading': loading
+                    }]
+            }, [
+                h('div', {
+                    class: 'vxe-buttons--wrapper'
+                }, renderLeftBtns()),
+                h('div', {
+                    class: 'vxe-tools--wrapper'
+                }, renderRightTools()),
+                h('div', {
+                    class: 'vxe-tools--operate'
+                }, [
+                    props.import ? renderToolImport() : createCommentVNode(),
+                    props.export ? renderToolExport() : createCommentVNode(),
+                    props.print ? renderToolPrint() : createCommentVNode(),
+                    refresh ? renderToolRefresh() : createCommentVNode(),
+                    zoom && $xeGGWrapper ? renderToolZoom() : createCommentVNode(),
+                    custom ? renderToolCustom() : createCommentVNode()
+                ])
+            ]);
+        };
+        $xeToolbar.renderVN = renderVN;
+        nextTick(() => {
+            const refreshOpts = computeRefreshOpts.value;
+            const queryMethod = refreshOpts.queryMethod || refreshOpts.query;
+            if (props.refresh && !$xeGGWrapper && !queryMethod) {
+                warnLog('vxe.error.notFunc', ['[toolbar] queryMethod']);
+            }
+            if (XEUtils.isPlainObject(props.custom)) {
+                warnLog('vxe.error.delProp', ['[toolbar] custom={...}', 'custom=boolean & custom-options={...}']);
+            }
+            if (XEUtils.isPlainObject(props.print)) {
+                warnLog('vxe.error.delProp', ['[toolbar] print={...}', 'print=boolean & print-options={...}']);
+            }
+            if (XEUtils.isPlainObject(props.export)) {
+                warnLog('vxe.error.delProp', ['[toolbar] export={...}', 'export=boolean & export-options={...}']);
+            }
+            if (XEUtils.isPlainObject(props.import)) {
+                warnLog('vxe.error.delProp', ['[toolbar] import={...}', 'import=boolean & import-options={...}']);
+            }
+            if (XEUtils.isPlainObject(props.refresh)) {
+                warnLog('vxe.error.delProp', ['[toolbar] refresh={...}', 'refresh=boolean & refresh-options={...}']);
+            }
+            if (XEUtils.isPlainObject(props.refresh)) {
+                warnLog('vxe.error.delProp', ['[toolbar] zoom={...}', 'zoom=boolean & zoom-options={...}']);
+            }
+            const customOpts = computeCustomOpts.value;
+            if (customOpts.isFooter) {
+                warnLog('vxe.error.delProp', ['[toolbar] toolbar.custom.isFooter', 'table.custom-config.showFooter']);
+            }
+            if (customOpts.showFooter) {
+                warnLog('vxe.error.delProp', ['[toolbar] toolbar.custom.showFooter', 'table.custom-config.showFooter']);
+            }
+            if (customOpts.immediate) {
+                warnLog('vxe.error.delProp', ['[toolbar] toolbar.custom.immediate', 'table.custom-config.immediate']);
+            }
+            if (customOpts.trigger) {
+                warnLog('vxe.error.delProp', ['[toolbar] toolbar.custom.trigger', 'table.custom-config.trigger']);
+            }
+            if (props.refresh || props.import || props.export || props.print || props.zoom) {
+                if (!VxeUIButtonComponent) {
+                    errLog('vxe.error.reqComp', ['vxe-button']);
+                }
+            }
+        });
+        onBeforeUnmount(() => {
+            XEUtils.assign(reactData, createReactData());
+            XEUtils.assign(internalData, createInternalData());
+        });
+        return $xeToolbar;
+    },
+    render() {
+        return this.renderVN();
+    }
+});

@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:!0}),exports.warnLog=exports.errLog=void 0;var _core=require("@vxe-ui/core");let version="ui v4.13.21",warnLog=exports.warnLog=_core.log.create("warn",version),errLog=exports.errLog=_core.log.create("error",version);

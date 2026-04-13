@@ -1,0 +1,185 @@
+@use '../helpers/baseMixin.scss';
+
+.vxe-carousel {
+  position: relative;
+  font-size: var(--vxe-ui-font-size-default);
+  color: var(--vxe-ui-font-color);
+  font-family: var(--vxe-ui-font-family);
+  background-color: var(--vxe-ui-layout-background-color);
+  overflow: hidden;
+  &:hover {
+    .vxe-carousel--indicators {
+      opacity: 1;
+    }
+    .vxe-carousel--previous-btn,
+    .vxe-carousel--next-btn {
+      opacity: 1;
+    }
+    &.is--horizontal {
+      .vxe-carousel--previous-btn,
+      .vxe-carousel--next-btn {
+        transform: translate(0, -50%);
+      }
+    }
+    &.is--vertical {
+      .vxe-carousel--previous-btn,
+      .vxe-carousel--next-btn {
+        transform: translate(-50%, 0);
+      }
+    }
+  }
+  &.is--horizontal {
+    .vxe-carousel--list {
+      height: 100%;
+      flex-direction: row;
+    }
+    .vxe-carousel--indicators {
+      flex-direction: row;
+      bottom: 0.3em;
+      left: 50%;
+      padding: 0.15em 0.3em;
+      transform: translateX(-50%);
+      &:hover {
+        transform: translateX(-50%) scale(1.1);
+      }
+    }
+    .vxe-carousel--indicators-item {
+      margin: 0.2em 0.25em;
+    }
+    .vxe-carousel--previous-btn,
+    .vxe-carousel--next-btn {
+      top: 50%;
+      transform: translate(0, -50%);
+      &:hover {
+        transform: translate(0, -50%) scale(1.1);
+      }
+      &:active {
+        transform: translate(0, -50%) scale(0.8);
+      }
+    }
+    .vxe-carousel--previous-btn {
+      left: 0.3em;
+      transform: translate(-0.8em, -50%);
+    }
+    .vxe-carousel--next-btn {
+      right: 0.3em;
+      transform: translate(0.8em, -50%);
+    }
+  }
+  &.is--vertical {
+    .vxe-carousel--list {
+      width: 100%;
+      flex-direction: column;
+    }
+    .vxe-carousel--indicators {
+      display: flex;
+      flex-direction: column;
+      padding: 0.3em 0.15em;
+      top: 50%;
+      right: 0.3em;
+      transform: translateY(-50%);
+      &:hover {
+        transform: translateY(-50%) scale(1.1);
+      }
+    }
+    .vxe-carousel--indicators-item {
+      margin: 0.25em 0.2em;
+    }
+    .vxe-carousel--previous-btn,
+    .vxe-carousel--next-btn {
+      left: 50%;
+      &:hover {
+        transform: translate(-50%, 0) scale(1.1);
+      }
+      &:active {
+        transform: translate(-50%, 0) scale(0.8);
+      }
+    }
+    .vxe-carousel--previous-btn {
+      top: 0.3em;
+      transform: translate(-50%, -0.8em);
+    }
+    .vxe-carousel--next-btn {
+      bottom: 0.3em;
+      transform: translate(-50%, 0.8em);
+    }
+  }
+}
+.vxe-carousel--slots {
+  display: none;
+}
+.vxe-carousel--item-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+.vxe-carousel--list {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  outline: 0;
+  @include baseMixin.createAnimationTransition(transform, .2s);
+}
+.vxe-carousel--item-inner {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  flex-grow: 1;
+}
+.vxe-carousel--item-img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.vxe-carousel--indicators {
+  position: absolute;
+  display: inline-flex;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 0.6em;
+  opacity: 0;
+  @include baseMixin.createAnimationTransition(all, .3s);
+}
+.vxe-carousel--indicators-item {
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  @include baseMixin.createAnimationTransition(all, .2s);
+  &.is--active {
+    background-color: rgba(255, 255, 255, 1);
+  }
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+  &:active {
+    background-color: var(--vxe-ui-font-primary-color);
+    transform: scale(0.8);
+  }
+}
+
+.vxe-carousel--previous-btn,
+.vxe-carousel--next-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 1.8em;
+  height: 1.8em;
+  border-radius: 50%;
+  font-size: 1.4em;
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  @include baseMixin.createAnimationTransition(all, .2s);
+  &:hover {
+    color: rgba(255, 255, 255, 1);
+  }
+  &:active {
+    color: var(--vxe-ui-font-primary-color);
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+}

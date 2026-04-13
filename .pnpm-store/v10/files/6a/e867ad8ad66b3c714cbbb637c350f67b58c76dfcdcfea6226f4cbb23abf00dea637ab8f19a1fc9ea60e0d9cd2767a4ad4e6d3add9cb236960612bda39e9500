@@ -1,0 +1,14 @@
+.vxe-layout-footer {
+  flex-shrink: 0;
+  background-color: var(--vxe-ui-layout-background-color);
+  outline: 0;
+  &.is--fixed {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    z-index: 9;
+  }
+  &.align--center {
+    text-align: center;
+  }
+}

@@ -1,0 +1,371 @@
+import { useComponentBaseConfig } from "../config-provider/context.js";
+import { useSize } from "../config-provider/hooks/useSize.js";
+import { useCompactItemContext } from "../space/Compact.js";
+import { useMergeSemantic, useToArr, useToProps } from "../_util/hooks/useMergeSemantic.js";
+import { getSlotPropsFnRun, toPropsRefs as toPropsRefs$1 } from "../_util/tools.js";
+import { useDisabledContext } from "../config-provider/DisabledContext.js";
+import wave_default from "../_util/wave/index.js";
+import { isTwoCNChar, isUnBorderedButtonVariant, spaceChildren } from "./buttonHelper.js";
+import IconWrapper_default from "./IconWrapper.js";
+import DefaultLoadingIcon_default from "./DefaultLoadingIcon.js";
+import style_default from "./style/index.js";
+import compact_default from "./style/compact.js";
+import { computed, createVNode, defineComponent, isVNode, mergeDefaults, mergeProps, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vue";
+import { classNames } from "@v-c/util";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+import { omit } from "es-toolkit";
+import { toArray } from "es-toolkit/compat";
+
+//#region src/button/Button.tsx
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+function convertLegacyProps(type) {
+	if (type === "danger") return { danger: true };
+	if (type) return { type };
+	return {};
+}
+function getLoadingConfig(loading) {
+	if (typeof loading === "object" && loading) {
+		let delay = loading?.delay;
+		delay = !Number.isNaN(delay) && typeof delay === "number" ? delay : 0;
+		return {
+			loading: delay <= 0,
+			delay
+		};
+	}
+	return {
+		loading: !!loading,
+		delay: 0
+	};
+}
+const ButtonTypeMap = {
+	default: ["default", "outlined"],
+	primary: ["primary", "solid"],
+	dashed: ["default", "dashed"],
+	link: ["link", "link"],
+	text: ["default", "text"]
+};
+const InternalCompoundedButton = /* @__PURE__ */ defineComponent((props, { slots, attrs, emit }) => {
+	const mergedType = computed(() => props.type || "default");
+	const { prefixCls, direction, class: contextClassName, style: contextStyle, classes: contextClassNames, styles: contextStyles, loadingIcon: contextLoadingIcon, shape: contextShape, color: contextColor, variant: contextVariant, autoInsertSpace: contextAutoInsertSpace } = useComponentBaseConfig("button", props, [
+		"autoInsertSpace",
+		"variant",
+		"shape",
+		"color",
+		"loadingIcon"
+	], "btn");
+	const { classes, styles } = toPropsRefs$1(props, "classes", "styles");
+	const mergedShape = computed(() => props.shape || contextShape.value || "default");
+	const parsedColorVariant = computed(() => {
+		const { color, variant, type, danger } = props;
+		if (color && variant) return [color, variant];
+		if (type || danger) {
+			const colorVariantPair = ButtonTypeMap[mergedType.value] || [];
+			if (danger) return ["danger", colorVariantPair[1]];
+			return colorVariantPair;
+		}
+		if (contextColor?.value && contextVariant?.value) return [contextColor.value, contextVariant.value];
+		return ["default", "outlined"];
+	});
+	const mergedColorVariant = computed(() => {
+		const [parsedColor, parsedVariant] = parsedColorVariant.value;
+		if (props.ghost && parsedVariant === "solid") return [parsedColor, "outlined"];
+		return [parsedColor, parsedVariant];
+	});
+	const mergedColor = computed(() => mergedColorVariant.value[0]);
+	const mergedVariant = computed(() => mergedColorVariant.value[1]);
+	const isDanger = computed(() => mergedColor.value === "danger");
+	const mergedColorText = computed(() => isDanger.value ? "dangerous" : mergedColor.value);
+	const mergedInsertSpace = computed(() => {
+		return props?.autoInsertSpace ?? contextAutoInsertSpace?.value ?? true;
+	});
+	const [hashId, cssVarCls] = style_default(prefixCls);
+	const disabled = useDisabledContext();
+	const mergedDisabled = computed(() => {
+		return props?.disabled ?? disabled.value;
+	});
+	const loadingOrDelay = computed(() => {
+		return getLoadingConfig(props.loading);
+	});
+	const innerLoading = shallowRef(loadingOrDelay.value.loading);
+	const hasTwoCNChar = shallowRef(false);
+	const buttonRef = shallowRef();
+	const isMountRef = shallowRef(true);
+	onMounted(() => {
+		isMountRef.value = false;
+		if (props.autoFocus && buttonRef.value) buttonRef.value?.focus?.();
+	});
+	onBeforeUnmount(() => {
+		isMountRef.value = true;
+	});
+	let delayTimer = null;
+	watch([() => loadingOrDelay.value.delay, () => loadingOrDelay.value.loading], async (_new, _old, onCleanup) => {
+		if (loadingOrDelay.value.delay > 0) delayTimer = setTimeout(() => {
+			delayTimer = null;
+			innerLoading.value = true;
+		}, loadingOrDelay.value.delay);
+		else innerLoading.value = loadingOrDelay.value.loading;
+		onCleanup(() => {
+			if (delayTimer) {
+				clearTimeout(delayTimer);
+				delayTimer = null;
+			}
+		});
+	}, { immediate: true });
+	watch([
+		mergedInsertSpace,
+		buttonRef,
+		mergedVariant
+	], async () => {
+		await nextTick();
+		if (!buttonRef.value || !mergedInsertSpace.value) return;
+		const buttonText = buttonRef.value.textContent || "";
+		const children = filterEmpty(slots?.default?.());
+		const iconChildren = toArray(getSlotPropsFnRun(slots, props, "icon"));
+		if (children.length === 1 && iconChildren.length === 0 && !isUnBorderedButtonVariant(mergedVariant.value) && isTwoCNChar(buttonText.trim())) {
+			if (!hasTwoCNChar.value) hasTwoCNChar.value = true;
+		} else if (hasTwoCNChar.value) hasTwoCNChar.value = false;
+	}, { immediate: true });
+	const handleClick = (e) => {
+		if (innerLoading.value || mergedDisabled.value) {
+			e.preventDefault();
+			return;
+		}
+		emit("click", e);
+	};
+	const { compactSize, compactItemClassnames } = useCompactItemContext(prefixCls, direction);
+	const sizeClassNameMap = {
+		large: "lg",
+		small: "sm",
+		middle: void 0,
+		medium: void 0
+	};
+	const sizeFullName = useSize((ctxSize) => props?.size ?? compactSize.value ?? ctxSize);
+	const mergedIconPlacement = computed(() => props?.iconPlacement ?? "start");
+	const mergedProps = computed(() => {
+		return {
+			...props,
+			type: mergedType.value,
+			color: mergedColor.value,
+			danger: isDanger.value,
+			shape: mergedShape.value,
+			size: sizeFullName.value,
+			disabled: mergedDisabled.value,
+			loading: innerLoading.value,
+			iconPlacement: mergedIconPlacement.value
+		};
+	});
+	const [mergedClassNames, mergedStyles] = useMergeSemantic(useToArr(...props._skipSemantic ? [ref(), classes] : [contextClassNames, classes]), useToArr(...props._skipSemantic ? [ref(), styles] : [contextStyles, styles]), useToProps(mergedProps));
+	return () => {
+		const { loading } = props;
+		const sizeCls = sizeFullName.value ? sizeClassNameMap?.[sizeFullName.value] ?? "" : "";
+		const iconChildren = getSlotPropsFnRun(slots, props, "icon");
+		const hasIcon = !!iconChildren;
+		const iconType = innerLoading.value ? "loading" : hasIcon;
+		const children = filterEmpty(slots?.default?.());
+		const needInserted = children.length === 1 && !hasIcon && !isUnBorderedButtonVariant(mergedVariant.value);
+		const kids = children.length ? spaceChildren(children, needInserted && mergedInsertSpace.value, mergedStyles.value.content, mergedClassNames.value.content) : null;
+		const cls = classNames(prefixCls.value, hashId.value, cssVarCls.value, {
+			[`${prefixCls.value}-${mergedShape.value}`]: mergedShape.value !== "default" && mergedShape.value,
+			[`${prefixCls.value}-${mergedType.value}`]: mergedType.value,
+			[`${prefixCls.value}-dangerous`]: props.danger,
+			[`${prefixCls.value}-color-${mergedColorText.value}`]: mergedColorText.value,
+			[`${prefixCls.value}-variant-${mergedVariant.value}`]: mergedVariant.value,
+			[`${prefixCls.value}-${sizeCls}`]: sizeCls,
+			[`${prefixCls.value}-icon-only`]: !children.length && !!iconType,
+			[`${prefixCls.value}-background-ghost`]: props.ghost && !isUnBorderedButtonVariant(mergedVariant.value),
+			[`${prefixCls.value}-loading`]: innerLoading.value,
+			[`${prefixCls.value}-two-chinese-chars`]: hasTwoCNChar.value && mergedInsertSpace.value && !innerLoading.value,
+			[`${prefixCls.value}-block`]: props.block,
+			[`${prefixCls.value}-rtl`]: direction.value === "rtl",
+			[`${prefixCls.value}-icon-end`]: mergedIconPlacement.value === "end"
+		}, compactItemClassnames.value, attrs.class, props.rootClass, contextClassName.value, mergedClassNames.value.root);
+		const fullStyle = [
+			mergedStyles.value.root,
+			contextStyle.value,
+			attrs.style
+		];
+		const iconSharedProps = {
+			class: mergedClassNames.value.icon,
+			style: mergedStyles.value.icon
+		};
+		/**
+		* Extract icon node.
+		* If there is a custom icon and not in loading state: show custom icon
+		*/
+		const iconWrapperElement = (child) => createVNode(IconWrapper_default, mergeProps({ "prefixCls": prefixCls.value }, iconSharedProps), _isSlot(child) ? child : { default: () => [child] });
+		const defaultLoadingIconElement = createVNode(DefaultLoadingIcon_default, mergeProps({
+			"existIcon": hasIcon,
+			"prefixCls": prefixCls.value,
+			"loading": innerLoading.value,
+			"mount": isMountRef.value
+		}, iconSharedProps), null);
+		const slotLoadingIcon = getSlotPropsFnRun(slots, {}, "loadingIcon");
+		const propLoadingIcon = loading && typeof loading === "object" && loading.icon ? typeof loading.icon === "function" ? loading.icon() : loading.icon : null;
+		const contextLoadingIconNode = getSlotPropsFnRun({}, { loadingIcon: contextLoadingIcon.value }, "loadingIcon");
+		const mergedLoadingIcon = slotLoadingIcon || propLoadingIcon || contextLoadingIconNode;
+		/**
+		* Using if-else statements can improve code readability without affecting future expansion.
+		*/
+		let iconNode;
+		if (hasIcon && !innerLoading.value) iconNode = iconWrapperElement(iconChildren);
+		else if (innerLoading.value && mergedLoadingIcon) iconNode = iconWrapperElement(mergedLoadingIcon);
+		else iconNode = defaultLoadingIconElement;
+		const mergedHref = props.href;
+		const htmlType = props.htmlType ?? "button";
+		if (mergedHref !== void 0) return createVNode("a", mergeProps(omit(attrs, ["class", "style"]), {
+			"ref": buttonRef,
+			"class": [cls, { [`${prefixCls.value}-disabled`]: mergedDisabled.value }],
+			"style": fullStyle,
+			"href": mergedDisabled.value ? void 0 : mergedHref,
+			"onClick": handleClick,
+			"target": props.target,
+			"aria-disabled": mergedDisabled.value
+		}), [iconNode, kids]);
+		let buttonNodes = createVNode("button", mergeProps(omit(attrs, ["class", "style"]), {
+			"ref": buttonRef,
+			"type": htmlType,
+			"class": cls,
+			"style": fullStyle,
+			"onClick": handleClick,
+			"disabled": mergedDisabled.value
+		}), [
+			iconNode,
+			kids,
+			compactItemClassnames.value ? createVNode(compact_default, { "prefixCls": prefixCls.value }, null) : null
+		]);
+		if (!isUnBorderedButtonVariant(mergedVariant.value)) {
+			const _buttonNodes = function() {
+				return buttonNodes;
+			}();
+			buttonNodes = createVNode(wave_default, {
+				"component": "Button",
+				"disabled": innerLoading.value
+			}, _isSlot(buttonNodes) ? buttonNodes : { default: () => [_buttonNodes] });
+		}
+		return buttonNodes;
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		href: {
+			type: String,
+			required: false
+		},
+		htmlType: {
+			type: String,
+			required: false
+		},
+		target: {
+			type: String,
+			required: false
+		},
+		autoInsertSpace: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		type: {
+			type: String,
+			required: false
+		},
+		color: { required: false },
+		variant: {
+			type: String,
+			required: false
+		},
+		icon: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		iconPlacement: {
+			type: String,
+			required: false
+		},
+		shape: {
+			type: String,
+			required: false
+		},
+		size: {
+			type: [String, null],
+			required: false
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		loading: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		ghost: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		danger: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		block: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		},
+		autoFocus: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		_skipSemantic: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		rootClass: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		}
+	}, {
+		iconPlacement: "start",
+		htmlType: "button",
+		autoInsertSpace: void 0,
+		disabled: void 0,
+		size: void 0
+	}),
+	emits: ["click"],
+	name: "AButton",
+	inheritAttrs: false
+});
+const Button = InternalCompoundedButton;
+Button.__ANT_BUTTON = true;
+Button.install = (app) => {
+	app.component(InternalCompoundedButton.name, Button);
+};
+var Button_default = Button;
+
+//#endregion
+export { convertLegacyProps, Button_default as default };

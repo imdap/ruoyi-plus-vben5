@@ -1,0 +1,401 @@
+import assert from 'node:assert';
+import { opConcatMap, opFilter, pipe } from '@cspell/cspell-pipe/sync';
+import { defaultCSpellSettings, unknownWordsChoices } from '@cspell/cspell-types';
+import { createCachingDictionary } from 'cspell-dictionary';
+import * as RxPat from '../Settings/RegExpPatterns.js';
+import { mapRangeBackToOriginalPos } from '../Transform/index.js';
+import { autoResolve } from '../util/AutoResolve.js';
+import { extractPossibleWordsFromTextOffset, extractText, extractWordsFromTextOffset, splitWordWithOffset, } from '../util/text.js';
+import { regExpCamelCaseWordBreaksWithEnglishSuffix } from '../util/textRegex.js';
+import { split } from '../util/wordSplitter.js';
+import { defaultMinWordLength } from './defaultConstants.js';
+import { extractHexSequences, isRandomString } from './isRandomString.js';
+import { isWordValidWithEscapeRetry } from './isWordValid.js';
+const MIN_HEX_SEQUENCE_LENGTH = 8;
+export function lineValidatorFactory(sDict, options) {
+    const { minWordLength = defaultMinWordLength, flagWords = [], allowCompoundWords = false, ignoreCase = true, ignoreRandomStrings = defaultCSpellSettings.ignoreRandomStrings, minRandomLength = defaultCSpellSettings.minRandomLength, unknownWords = unknownWordsChoices.ReportAll, numSuggestions, } = options;
+    const hasWordOptions = {
+        ignoreCase,
+        useCompounds: allowCompoundWords || undefined, // let the dictionaries decide on useCompounds if allow is false
+    };
+    const dictCol = createCachingDictionary(sDict, hasWordOptions);
+    const knownWords = new Map();
+    const setOfFlagWords = new Set(flagWords);
+    const setOfKnownIssues = new Map();
+    const setOfKnownSuccessfulWords = new Set();
+    const rememberFilter = (fn) => (v) => {
+        const keep = fn(v);
+        if (!keep) {
+            setOfKnownSuccessfulWords.add(v.text);
+        }
+        return keep;
+    };
+    const filterAlreadyChecked = (wo) => {
+        return !setOfKnownSuccessfulWords.has(wo.text);
+    };
+    const hasDict = {
+        has(word) {
+            const info = getWordInfo(word);
+            if (info.isFound !== undefined)
+                return info.isFound;
+            if (info.isFlagged)
+                return true;
+            if (info.isFlagged)
+                return false;
+            info.isFound = dictCol.has(word);
+            return info.isFound;
+        },
+    };
+    function calcIgnored(info) {
+        info.isIgnored ??= dictCol.isNoSuggestWord(info.word);
+        return info.isIgnored;
+    }
+    function calcFlagged(info) {
+        if (info.isFlagged !== undefined)
+            return info.isFlagged;
+        const word = info.word;
+        info.isFlagged =
+            (setOfFlagWords.has(word) || setOfFlagWords.has(word.toLowerCase()) || dictCol.isForbidden(word)) &&
+                !calcIgnored(info);
+        return info.isFlagged;
+    }
+    function isWordIgnored(word) {
+        return calcIgnored(getWordInfo(word));
+    }
+    const cacheGetPreferredSuggestions = new Map();
+    function getPreferredSuggestions(word) {
+        return autoResolve(cacheGetPreferredSuggestions, word, () => dictCol.getPreferredSuggestions(word));
+    }
+    const cacheHasSimpleSuggestions = new Map();
+    function getSimpleSuggestions(word) {
+        const numSug = numSuggestions ?? 5;
+        return autoResolve(cacheHasSimpleSuggestions, word, () => {
+            const sugs = dictCol.suggest(word, {
+                numSuggestions: 1,
+                compoundMethod: 0,
+                includeTies: true, // We want the top suggestions even if there are ties
+                ignoreCase,
+                timeout: 100,
+                numChanges: 1.8, // Only consider very simple changes (1 edit distance plus case changes)
+            });
+            if (sugs.length > numSug) {
+                sugs.length = numSug;
+            }
+            return sugs;
+        });
+    }
+    function isWordFlagged(wo) {
+        return calcFlagged(getWordInfo(wo.text));
+    }
+    function annotateIsFlagged(word) {
+        word.isFlagged = isWordFlagged(word);
+        return word;
+    }
+    function annotateIssue(issue) {
+        const sugs = getPreferredSuggestions(issue.text);
+        if (!sugs?.length) {
+            issue.hasPreferredSuggestions = sugs !== undefined ? false : undefined;
+            if (unknownWords === unknownWordsChoices.ReportSimple) {
+                const sug = getSimpleSuggestions(issue.text);
+                issue.hasSimpleSuggestions = !!sug.length;
+                if (sug.length) {
+                    issue.suggestionsEx = sug.map((s) => ({ ...s, isPreferred: !!s.isPreferred }));
+                }
+            }
+            return issue;
+        }
+        issue.suggestionsEx = sugs;
+        issue.hasPreferredSuggestions = true;
+        issue.hasSimpleSuggestions = true;
+        return issue;
+    }
+    const isFlaggedOrMinLength = (wo) => wo.text.length >= minWordLength || !!wo.isFlagged;
+    const isFlaggedOrNotFound = rememberFilter((wo) => wo.isFlagged || !wo.isFound);
+    const isNotRepeatingChar = rememberFilter((wo) => !RxPat.regExRepeatedChar.test(wo.text));
+    function checkWord(issue) {
+        const info = getWordInfo(issue.text);
+        if (info.fin) {
+            const { isFlagged: isForbidden, isFound, isIgnored } = info;
+            const isFlagged = issue.isFlagged ?? (!isIgnored && isForbidden);
+            issue.isFlagged = isFlagged;
+            issue.isFound = isFlagged ? undefined : isFound;
+            return issue;
+        }
+        const isIgnored = calcIgnored(info);
+        const isFlagged = issue.isFlagged ?? calcFlagged(info);
+        info.isFound ??= isFlagged ? false : isIgnored || isWordValidWithEscapeRetry(hasDict, issue, issue.line);
+        info.isFlagged = !!isFlagged;
+        info.fin = true;
+        issue.isFlagged = isFlagged;
+        issue.isFound = isFlagged ? undefined : info.isFound;
+        return issue;
+    }
+    const regExUpperCaseWithTrailingCommonEnglishSuffix = /^([\p{Lu}\p{M}]{2,})['’]?(?:s|ing|ies|es|ings|ize|ed|ning)$/u; // cspell:disable-line
+    const regExpIsLetter = /\p{L}/u;
+    const fn = (lineSegment) => {
+        const line = lineSegment.line;
+        function isWordTooShort(word, ignoreSuffix = false) {
+            if (word.text.length >= minWordLength * 2 || [...word.text].length >= minWordLength)
+                return false;
+            const offset = word.offset - line.offset;
+            assert.equal(line.text.slice(offset, offset + word.text.length), word.text);
+            const prefix = [...line.text.slice(Math.max(0, offset - 2), offset)];
+            const hasLetterPrefix = !!prefix.length && regExpIsLetter.test(prefix[prefix.length - 1]);
+            if (hasLetterPrefix)
+                return false;
+            if (ignoreSuffix)
+                return true;
+            const suffix = [...line.text.slice(offset + word.text.length, offset + word.text.length + 2)];
+            const hasLetterSuffix = !!suffix.length && regExpIsLetter.test(suffix[0]);
+            return !hasLetterSuffix;
+        }
+        function splitterIsValid(word) {
+            if (setOfKnownSuccessfulWords.has(word.text))
+                return true;
+            if (isWordFlagged(word))
+                return false;
+            if (isWordValidWithEscapeRetry(hasDict, word, lineSegment.line))
+                return true;
+            if (isWordTooShort(word))
+                return true;
+            return isAllCapsWithTrailingCommonEnglishSuffixOk(word);
+        }
+        function isAllCapsWithTrailingCommonEnglishSuffixOk(tWord) {
+            if (!regExUpperCaseWithTrailingCommonEnglishSuffix.test(tWord.text))
+                return false;
+            const m = tWord.text.match(regExUpperCaseWithTrailingCommonEnglishSuffix);
+            if (!m)
+                return false;
+            const offset = tWord.offset;
+            const v = { offset, text: m[1], line };
+            const check = checkWord(v);
+            if (check.isFlagged)
+                return false;
+            if (check.isFound)
+                return true;
+            if (isWordTooShort(v, true))
+                return true;
+            return false;
+        }
+        function checkFullWord(vr) {
+            if (vr.isFlagged) {
+                return [vr];
+            }
+            // English exceptions :-(
+            if (isAllCapsWithTrailingCommonEnglishSuffixOk(vr))
+                return [];
+            if (isWordIgnored(vr.text) || checkWord(vr).isFound) {
+                rememberFilter((_) => false)(vr);
+                return [];
+            }
+            if (vr.isFlagged)
+                return [vr];
+            const codeWordResults = checkCamelCaseWord(vr);
+            if (!codeWordResults.length) {
+                rememberFilter((_) => false)(vr);
+                return [];
+            }
+            return codeWordResults;
+        }
+        /**
+         * Break a camel case word into its parts and check each part.
+         *
+         * There are two word break patterns:
+         * - `regExpCamelCaseWordBreaks`
+         * - `regExpCamelCaseWordBreaksWithEnglishSuffix` is the default pattern with English suffixes on ALL CAPS words.
+         *
+         * Note: See [#6066](https://github.com/streetsidesoftware/cspell/pull/6066)
+         * Using just `regExpCamelCaseWordBreaks` misses unknown 4-letter words.
+         *
+         * The code below was tried, but it missed words.
+         * - `LSTM` was caught. // cspell:disable-line
+         * - `LSTMs` was missed because it becomes `LST` and `Ms`. // cspell:disable-line
+         *
+         * ```ts
+         * const results = _checkCamelCaseWord(vr, regExpCamelCaseWordBreaks);
+         * if (!results.length) return results;
+         * const resultsEnglishBreaks = _checkCamelCaseWord(vr, regExpCamelCaseWordBreaksWithEnglishSuffix);
+         * return results.length < resultsEnglishBreaks.length ? results : resultsEnglishBreaks;
+         * ```
+         */
+        function checkCamelCaseWord(vr) {
+            return _checkCamelCaseWord(vr, regExpCamelCaseWordBreaksWithEnglishSuffix);
+        }
+        function _checkCamelCaseWord(vr, regExpWordBreaks) {
+            const codeWordResults = [];
+            for (const wo of splitWordWithOffset(vr, regExpWordBreaks)) {
+                if (setOfKnownSuccessfulWords.has(wo.text))
+                    continue;
+                const issue = wo;
+                issue.line = vr.line;
+                issue.isFlagged = undefined;
+                issue.isFound = undefined;
+                annotateIsFlagged(issue);
+                if (!isFlaggedOrMinLength(issue))
+                    continue;
+                checkWord(issue);
+                if (!isFlaggedOrNotFound(issue) || !isNotRepeatingChar(issue))
+                    continue;
+                issue.text = extractText(lineSegment.segment, issue.offset, issue.offset + issue.text.length);
+                codeWordResults.push(issue);
+            }
+            return codeWordResults;
+        }
+        function rebaseKnownIssues(possibleWord, known) {
+            const { issues } = known;
+            const adjOffset = possibleWord.offset - known.possibleWord.offset;
+            return issues.map((issue) => {
+                issue = { ...issue };
+                issue.offset += adjOffset;
+                issue.line = lineSegment.line;
+                return issue;
+            });
+        }
+        function checkForFlaggedWord(possibleWord) {
+            if (isWordFlagged(possibleWord)) {
+                const vr = {
+                    ...possibleWord,
+                    line: lineSegment.line,
+                    isFlagged: true,
+                };
+                return vr;
+            }
+            if (possibleWord.text.endsWith('.') && possibleWord.text.length > 1) {
+                const pw = { ...possibleWord, text: possibleWord.text.slice(0, -1) };
+                if (isWordFlagged(pw)) {
+                    const vr = {
+                        ...pw,
+                        line: lineSegment.line,
+                        isFlagged: true,
+                    };
+                    return vr;
+                }
+            }
+            return undefined;
+        }
+        function checkPossibleWords(possibleWord) {
+            const known = setOfKnownIssues.get(possibleWord.text);
+            if (known) {
+                if (!known.issues.length)
+                    return known.issues;
+                const adjusted = rebaseKnownIssues(possibleWord, known);
+                return adjusted;
+            }
+            const issues = _checkPossibleWords(possibleWord).map(annotateIssue);
+            setOfKnownIssues.set(possibleWord.text, { possibleWord, issues });
+            return issues;
+        }
+        function _checkPossibleWords(possibleWord) {
+            const flagged = checkForFlaggedWord(possibleWord);
+            if (flagged)
+                return [flagged];
+            let mismatches = [];
+            for (const wo of extractWordsFromTextOffset(possibleWord)) {
+                if (setOfKnownSuccessfulWords.has(wo.text))
+                    continue;
+                const issue = wo;
+                issue.line = lineSegment.line;
+                annotateIsFlagged(issue);
+                if (!isFlaggedOrMinLength(issue))
+                    continue;
+                for (const w of checkFullWord(issue)) {
+                    mismatches.push(w);
+                }
+            }
+            if (!mismatches.length)
+                return mismatches;
+            const hexSequences = !ignoreRandomStrings
+                ? undefined
+                : extractHexSequences(possibleWord.text, MIN_HEX_SEQUENCE_LENGTH)
+                    .filter(
+                // Only consider hex sequences that are all upper case or all lower case and contain a `-` or a digit.
+                (w) => (w.text === w.text.toLowerCase() || w.text === w.text.toUpperCase()) &&
+                    /[\d-]/.test(w.text))
+                    .map((w) => ((w.offset += possibleWord.offset), w));
+            if (hexSequences?.length) {
+                mismatches = filterExcludedTextOffsets(mismatches, hexSequences);
+            }
+            if (mismatches.length) {
+                // Try the more expensive word splitter
+                const splitResult = split(lineSegment.segment, possibleWord.offset, splitterIsValid);
+                const nonMatching = splitResult.words
+                    .filter((w) => !w.isFound)
+                    .filter((w) => {
+                    const m = w.text.match(regExUpperCaseWithTrailingCommonEnglishSuffix);
+                    if (!m)
+                        return true;
+                    const v = checkWord({ ...w, text: m[1], line: lineSegment.line });
+                    return v.isFlagged || !v.isFound;
+                });
+                const filtered = filterExcludedTextOffsets(nonMatching.map((w) => ({ ...w, line: lineSegment.line })).map(annotateIsFlagged), hexSequences);
+                if (filtered.length < mismatches.length) {
+                    return filtered;
+                }
+            }
+            return mismatches;
+        }
+        function isNotRandom(textOff) {
+            if (textOff.text.length < minRandomLength || !ignoreRandomStrings)
+                return true;
+            return !isRandomString(textOff.text);
+        }
+        const checkedPossibleWords = pipe(extractPossibleWordsFromTextOffset(lineSegment.segment), opFilter(isNotRandom), opFilter(filterAlreadyChecked), opConcatMap(checkPossibleWords));
+        return checkedPossibleWords;
+    };
+    function getWordInfo(word) {
+        const info = knownWords.get(word);
+        if (info)
+            return info;
+        const result = { word, isFound: undefined, isFlagged: undefined, isIgnored: undefined, fin: false };
+        knownWords.set(word, result);
+        return result;
+    }
+    return { fn, dict: dictCol };
+}
+export function textValidatorFactory(dict, options) {
+    const lineValidator = lineValidatorFactory(dict, options);
+    const lineValidatorFn = lineValidator.fn;
+    const transformer = options.transformer;
+    function validate(pText) {
+        const transformedText = transformer?.transform(pText) || pText;
+        const { text, range: srcRange, map } = transformedText;
+        const srcOffset = srcRange[0];
+        const segment = { text, offset: 0 };
+        const lineSegment = { line: segment, segment };
+        function mapBackToOriginSimple(vr) {
+            const { text, offset, isFlagged, isFound, suggestionsEx, hasPreferredSuggestions, hasSimpleSuggestions } = vr;
+            const r = mapRangeBackToOriginalPos([offset, offset + text.length], map);
+            const range = [r[0] + srcOffset, r[1] + srcOffset];
+            return { text, range, isFlagged, isFound, suggestionsEx, hasPreferredSuggestions, hasSimpleSuggestions };
+        }
+        return [...lineValidatorFn(lineSegment)].map(mapBackToOriginSimple);
+    }
+    return {
+        validate,
+        lineValidator,
+    };
+}
+function filterExcludedTextOffsets(issues, excluded) {
+    if (!excluded?.length)
+        return issues;
+    const keep = [];
+    let i = 0;
+    let j = 0;
+    for (; i < issues.length && j < excluded.length; i++) {
+        const issue = issues[i];
+        while (j < excluded.length && excluded[j].offset + excluded[j].text.length <= issue.offset) {
+            j++;
+        }
+        if (j >= excluded.length) {
+            break;
+        }
+        if (issue.isFlagged || issue.offset < excluded[j].offset) {
+            keep.push(issue);
+        }
+    }
+    if (i < issues.length) {
+        keep.push(...issues.slice(i));
+    }
+    return keep;
+}
+//# sourceMappingURL=lineValidatorFactory.js.map

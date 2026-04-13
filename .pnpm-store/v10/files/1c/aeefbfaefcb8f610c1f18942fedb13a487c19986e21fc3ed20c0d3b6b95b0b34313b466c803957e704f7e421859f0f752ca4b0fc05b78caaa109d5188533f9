@@ -1,0 +1,10 @@
+import { SizeType } from "../SizeContext.js";
+import * as vue861 from "vue";
+
+//#region src/config-provider/hooks/useConfig.d.ts
+declare function useExportConfig(): {
+  componentDisabled: vue861.Ref<boolean, boolean>;
+  componentSize: vue861.Ref<SizeType, SizeType>;
+};
+//#endregion
+export { useExportConfig };

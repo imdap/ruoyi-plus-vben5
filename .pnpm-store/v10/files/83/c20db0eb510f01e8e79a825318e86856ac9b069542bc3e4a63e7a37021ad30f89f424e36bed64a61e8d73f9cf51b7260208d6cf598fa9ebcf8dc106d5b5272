@@ -1,0 +1,24 @@
+import type { Rule } from "eslint";
+import type { Node as ESNode } from "estree";
+import type { AttributeMatchers, AttributeName, Attributes } from "../options/schemas/attributes.js";
+import type { CalleeMatchers, CalleeName, Callees } from "../options/schemas/callees.js";
+import type { TagMatchers, TagName, Tags } from "../options/schemas/tags.js";
+import type { VariableMatchers, VariableName, Variables } from "../options/schemas/variables.js";
+import type { WithParent } from "../types/estree.js";
+import type { MatcherFunctions } from "../types/rule.js";
+export declare function getLiteralNodesByMatchers<Node>(ctx: Rule.RuleContext, node: unknown, matcherFunctions: MatcherFunctions): Node[];
+export declare function matchesPathPattern(path: string, pattern: string): boolean;
+export declare function isCalleeName(callee: Callees[number]): callee is CalleeName;
+export declare function isCalleeMatchers(callee: Callees[number]): callee is CalleeMatchers;
+export declare function isVariableName(variable: Variables[number]): variable is VariableName;
+export declare function isVariableMatchers(variable: Variables[number]): variable is VariableMatchers;
+export declare function isTagName(tag: Tags[number]): tag is TagName;
+export declare function isTagMatchers(tag: Tags[number]): tag is TagMatchers;
+export declare function isAttributesName(attributes: Attributes[number]): attributes is AttributeName;
+export declare function isAttributesMatchers(attributes: Attributes[number]): attributes is AttributeMatchers;
+export declare function isInsideConditionalExpressionTest(node: WithParent<ESNode>): boolean;
+export declare function isInsideDisallowedBinaryExpression(node: WithParent<ESNode>): boolean;
+export declare function isInsideLogicalExpressionLeft(node: WithParent<ESNode>): boolean;
+export declare function isInsideMemberExpression(node: WithParent<ESNode>): boolean;
+export declare function isIndexedAccessLiteral(node: WithParent<ESNode>): boolean;
+//# sourceMappingURL=matchers.d.ts.map

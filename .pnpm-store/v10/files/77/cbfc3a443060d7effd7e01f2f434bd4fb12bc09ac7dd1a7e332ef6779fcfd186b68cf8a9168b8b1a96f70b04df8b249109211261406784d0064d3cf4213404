@@ -1,0 +1,3 @@
+export { dictionaryCacheClearLog, dictionaryCacheEnableLogging, dictionaryCacheGetLog, } from './SpellingDictionary/CachingDictionary.js';
+export { createCachingDictionary, createCollection, createFailedToLoadDictionary, createFlagWordsDictionary, createForbiddenWordsDictionary, createIgnoreWordsDictionary, createInlineSpellingDictionary, createSpellingDictionary, createSpellingDictionaryFromTrieFile, createSuggestDictionary, createSuggestOptions, } from './SpellingDictionary/index.js';
+//# sourceMappingURL=index.js.map

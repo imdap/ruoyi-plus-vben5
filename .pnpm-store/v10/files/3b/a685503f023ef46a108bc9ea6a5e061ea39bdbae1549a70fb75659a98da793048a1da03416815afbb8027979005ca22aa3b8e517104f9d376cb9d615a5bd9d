@@ -1,0 +1,33 @@
+import { DatePickerEmits, DatePickerSlots, InternalPickerProps } from "./generatePicker/generateSinglePicker.js";
+import generatePicker from "./generatePicker/index.js";
+import { PickerLocale, PickerPropsWithMultiple } from "./generatePicker/interface.js";
+import { InternalRangePickerProps, RangePickerEmits, RangePickerSlots } from "./generatePicker/generateRangePicker.js";
+import * as vue77 from "vue";
+import { Dayjs } from "dayjs";
+
+//#region src/date-picker/index.d.ts
+type DatePickerProps<ValueType = Dayjs, IsMultiple extends boolean = boolean> = PickerPropsWithMultiple<Dayjs, InternalPickerProps<Dayjs>, ValueType, IsMultiple>;
+type MonthPickerProps<ValueType = Dayjs | Dayjs> = Omit<DatePickerProps<ValueType>, 'picker'>;
+type WeekPickerProps<ValueType = Dayjs | Dayjs> = Omit<DatePickerProps<ValueType>, 'picker'>;
+type RangePickerProps = InternalRangePickerProps<Dayjs>;
+declare const DatePicker: vue77.DefineSetupFnComponent<InternalPickerProps<Dayjs>, DatePickerEmits<Dayjs>, vue77.SlotsType<DatePickerSlots>, InternalPickerProps<Dayjs>, vue77.PublicProps> & {
+  WeekPicker: vue77.DefineSetupFnComponent<InternalPickerProps<Dayjs>, DatePickerEmits<Dayjs>, vue77.SlotsType<DatePickerSlots>, InternalPickerProps<Dayjs>, vue77.PublicProps>;
+  MonthPicker: vue77.DefineSetupFnComponent<InternalPickerProps<Dayjs>, DatePickerEmits<Dayjs>, vue77.SlotsType<DatePickerSlots>, InternalPickerProps<Dayjs>, vue77.PublicProps>;
+  YearPicker: vue77.DefineSetupFnComponent<InternalPickerProps<Dayjs>, DatePickerEmits<Dayjs>, vue77.SlotsType<DatePickerSlots>, InternalPickerProps<Dayjs>, vue77.PublicProps>;
+  RangePicker: vue77.DefineSetupFnComponent<InternalRangePickerProps<Dayjs>, RangePickerEmits<Dayjs>, vue77.SlotsType<RangePickerSlots>, InternalRangePickerProps<Dayjs>, vue77.PublicProps>;
+  TimePicker: vue77.DefineSetupFnComponent<InternalPickerProps<Dayjs>, DatePickerEmits<Dayjs>, vue77.SlotsType<DatePickerSlots>, InternalPickerProps<Dayjs>, vue77.PublicProps>;
+  QuarterPicker: vue77.DefineSetupFnComponent<InternalPickerProps<Dayjs>, DatePickerEmits<Dayjs>, vue77.SlotsType<DatePickerSlots>, InternalPickerProps<Dayjs>, vue77.PublicProps>;
+};
+type DatePickerType = typeof DatePicker & {
+  generatePicker: typeof generatePicker;
+  _InternalPanelDoNotUseOrYouWillBeFired: any;
+  _InternalRangePanelDoNotUseOrYouWillBeFired: any;
+};
+declare const _default: DatePickerType;
+declare const DateRangePicker: vue77.DefineSetupFnComponent<InternalRangePickerProps<Dayjs>, RangePickerEmits<Dayjs>, vue77.SlotsType<RangePickerSlots>, InternalRangePickerProps<Dayjs>, vue77.PublicProps>;
+declare const DateWeekPicker: vue77.DefineSetupFnComponent<InternalPickerProps<Dayjs>, DatePickerEmits<Dayjs>, vue77.SlotsType<DatePickerSlots>, InternalPickerProps<Dayjs>, vue77.PublicProps>;
+declare const DateMonthPicker: vue77.DefineSetupFnComponent<InternalPickerProps<Dayjs>, DatePickerEmits<Dayjs>, vue77.SlotsType<DatePickerSlots>, InternalPickerProps<Dayjs>, vue77.PublicProps>;
+declare const DateYearPicker: vue77.DefineSetupFnComponent<InternalPickerProps<Dayjs>, DatePickerEmits<Dayjs>, vue77.SlotsType<DatePickerSlots>, InternalPickerProps<Dayjs>, vue77.PublicProps>;
+declare const DateQuarterPicker: vue77.DefineSetupFnComponent<InternalPickerProps<Dayjs>, DatePickerEmits<Dayjs>, vue77.SlotsType<DatePickerSlots>, InternalPickerProps<Dayjs>, vue77.PublicProps>;
+//#endregion
+export { DateMonthPicker, type DatePickerEmits, DatePickerProps, type DatePickerSlots, DatePickerType, DateQuarterPicker, DateRangePicker, DateWeekPicker, DateYearPicker, MonthPickerProps, type PickerLocale, RangePickerProps, WeekPickerProps, _default as default };

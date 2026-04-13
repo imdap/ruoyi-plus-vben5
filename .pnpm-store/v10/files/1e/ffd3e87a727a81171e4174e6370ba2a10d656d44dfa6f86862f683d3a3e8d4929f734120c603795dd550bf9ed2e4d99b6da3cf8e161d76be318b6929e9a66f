@@ -1,0 +1,272 @@
+import { mergeToken } from "../../theme/internal.js";
+import { unit } from "@antdv-next/cssinjs";
+
+//#region src/input/style/variants.ts
+const genHoverStyle = (token) => ({
+	borderColor: token.hoverBorderColor,
+	backgroundColor: token.hoverBg
+});
+const genDisabledStyle = (token) => ({
+	color: token.colorTextDisabled,
+	backgroundColor: token.colorBgContainerDisabled,
+	borderColor: token.colorBorder,
+	boxShadow: "none",
+	cursor: "not-allowed",
+	opacity: 1,
+	"input[disabled], textarea[disabled]": { cursor: "not-allowed" },
+	"&:hover:not([disabled])": { ...genHoverStyle(mergeToken(token, {
+		hoverBorderColor: token.colorBorder,
+		hoverBg: token.colorBgContainerDisabled
+	})) }
+});
+function genBaseOutlinedStyle(token, options) {
+	return {
+		background: token.colorBgContainer,
+		borderWidth: token.lineWidth,
+		borderStyle: token.lineType,
+		borderColor: options.borderColor,
+		"&:hover": {
+			borderColor: options.hoverBorderColor,
+			backgroundColor: token.hoverBg
+		},
+		"&:focus, &:focus-within": {
+			borderColor: options.activeBorderColor,
+			boxShadow: options.activeShadow,
+			outline: 0,
+			backgroundColor: token.activeBg
+		}
+	};
+}
+function genOutlinedStatusStyle(token, options) {
+	return {
+		[`&${token.componentCls}-status-${options.status}:not(${token.componentCls}-disabled)`]: {
+			...genBaseOutlinedStyle(token, options),
+			[`${token.componentCls}-prefix, ${token.componentCls}-suffix`]: { color: options.affixColor }
+		},
+		[`&${token.componentCls}-status-${options.status}${token.componentCls}-disabled`]: { borderColor: options.borderColor }
+	};
+}
+function genOutlinedStyle(token, extraStyles) {
+	return { "&-outlined": {
+		...genBaseOutlinedStyle(token, {
+			borderColor: token.colorBorder,
+			hoverBorderColor: token.hoverBorderColor,
+			activeBorderColor: token.activeBorderColor,
+			activeShadow: token.activeShadow
+		}),
+		[`&${token.componentCls}-disabled, &[disabled]`]: { ...genDisabledStyle(token) },
+		...genOutlinedStatusStyle(token, {
+			status: "error",
+			borderColor: token.colorError,
+			hoverBorderColor: token.colorErrorBorderHover,
+			activeBorderColor: token.colorError,
+			activeShadow: token.errorActiveShadow,
+			affixColor: token.colorError
+		}),
+		...genOutlinedStatusStyle(token, {
+			status: "warning",
+			borderColor: token.colorWarning,
+			hoverBorderColor: token.colorWarningBorderHover,
+			activeBorderColor: token.colorWarning,
+			activeShadow: token.warningActiveShadow,
+			affixColor: token.colorWarning
+		}),
+		...extraStyles
+	} };
+}
+function genOutlinedGroupStatusStyle(token, options) {
+	return { [`&${token.componentCls}-group-wrapper-status-${options.status}`]: { [`${token.componentCls}-group-addon`]: {
+		borderColor: options.addonBorderColor,
+		color: options.addonColor
+	} } };
+}
+const genOutlinedGroupStyle = (token) => ({ "&-outlined": {
+	[`${token.componentCls}-group`]: {
+		"&-addon": {
+			background: token.addonBg,
+			border: `${unit(token.lineWidth)} ${token.lineType} ${token.colorBorder}`
+		},
+		"&-addon:first-child": { borderInlineEnd: 0 },
+		"&-addon:last-child": { borderInlineStart: 0 }
+	},
+	...genOutlinedGroupStatusStyle(token, {
+		status: "error",
+		addonBorderColor: token.colorError,
+		addonColor: token.colorErrorText
+	}),
+	...genOutlinedGroupStatusStyle(token, {
+		status: "warning",
+		addonBorderColor: token.colorWarning,
+		addonColor: token.colorWarningText
+	}),
+	[`&${token.componentCls}-group-wrapper-disabled`]: { [`${token.componentCls}-group-addon`]: { ...genDisabledStyle(token) } }
+} });
+function genBorderlessStyle(token, extraStyles) {
+	const { componentCls } = token;
+	return { "&-borderless": {
+		background: "transparent",
+		border: "none",
+		paddingBlock: token.calc(token.paddingBlock).add(token.lineWidth).equal(),
+		[`&${componentCls}-sm, &${componentCls}-affix-wrapper-sm`]: { paddingBlock: token.calc(token.paddingBlockSM).add(token.lineWidth).equal() },
+		[`&${componentCls}-lg, &${componentCls}-affix-wrapper-lg`]: { paddingBlock: token.calc(token.paddingBlockLG).add(token.lineWidth).equal() },
+		"&:focus, &:focus-within": { outline: "none" },
+		[`&${componentCls}-disabled, &[disabled]`]: {
+			color: token.colorTextDisabled,
+			cursor: "not-allowed"
+		},
+		[`&${componentCls}-status-error`]: { "&, & input, & textarea": { color: token.colorError } },
+		[`&${componentCls}-status-warning`]: { "&, & input, & textarea": { color: token.colorWarning } },
+		...extraStyles
+	} };
+}
+function genBaseFilledStyle(token, options) {
+	return {
+		background: options.bg,
+		borderWidth: token.lineWidth,
+		borderStyle: token.lineType,
+		borderColor: "transparent",
+		"input&, & input, textarea&, & textarea": { color: options?.inputColor ?? "unset" },
+		"&:hover": { background: options.hoverBg },
+		"&:focus, &:focus-within": {
+			outline: 0,
+			borderColor: options.activeBorderColor,
+			backgroundColor: token.activeBg
+		}
+	};
+}
+function genFilledStatusStyle(token, options) {
+	return { [`&${token.componentCls}-status-${options.status}:not(${token.componentCls}-disabled)`]: {
+		...genBaseFilledStyle(token, options),
+		[`${token.componentCls}-prefix, ${token.componentCls}-suffix`]: { color: options.affixColor }
+	} };
+}
+function genFilledStyle(token, extraStyles) {
+	return { "&-filled": {
+		...genBaseFilledStyle(token, {
+			bg: token.colorFillTertiary,
+			hoverBg: token.colorFillSecondary,
+			activeBorderColor: token.activeBorderColor,
+			inputColor: token.colorText
+		}),
+		[`&${token.componentCls}-disabled, &[disabled]`]: { ...genDisabledStyle(token) },
+		...genFilledStatusStyle(token, {
+			status: "error",
+			bg: token.colorErrorBg,
+			hoverBg: token.colorErrorBgHover,
+			activeBorderColor: token.colorError,
+			inputColor: token.colorErrorText,
+			affixColor: token.colorError
+		}),
+		...genFilledStatusStyle(token, {
+			status: "warning",
+			bg: token.colorWarningBg,
+			hoverBg: token.colorWarningBgHover,
+			activeBorderColor: token.colorWarning,
+			inputColor: token.colorWarningText,
+			affixColor: token.colorWarning
+		}),
+		...extraStyles
+	} };
+}
+function genFilledGroupStatusStyle(token, options) {
+	return { [`&${token.componentCls}-group-wrapper-status-${options.status}`]: { [`${token.componentCls}-group-addon`]: {
+		background: options.addonBg,
+		color: options.addonColor
+	} } };
+}
+const genFilledGroupStyle = (token) => ({ "&-filled": {
+	[`${token.componentCls}-group-addon`]: {
+		background: token.colorFillTertiary,
+		"&:last-child": { position: "static" }
+	},
+	...genFilledGroupStatusStyle(token, {
+		status: "error",
+		addonBg: token.colorErrorBg,
+		addonColor: token.colorErrorText
+	}),
+	...genFilledGroupStatusStyle(token, {
+		status: "warning",
+		addonBg: token.colorWarningBg,
+		addonColor: token.colorWarningText
+	}),
+	[`&${token.componentCls}-group-wrapper-disabled`]: { [`${token.componentCls}-group`]: {
+		"&-addon": {
+			background: token.colorFillTertiary,
+			color: token.colorTextDisabled
+		},
+		"&-addon:first-child": {
+			borderInlineStart: `${unit(token.lineWidth)} ${token.lineType} ${token.colorBorder}`,
+			borderTop: `${unit(token.lineWidth)} ${token.lineType} ${token.colorBorder}`,
+			borderBottom: `${unit(token.lineWidth)} ${token.lineType} ${token.colorBorder}`
+		},
+		"&-addon:last-child": {
+			borderInlineEnd: `${unit(token.lineWidth)} ${token.lineType} ${token.colorBorder}`,
+			borderTop: `${unit(token.lineWidth)} ${token.lineType} ${token.colorBorder}`,
+			borderBottom: `${unit(token.lineWidth)} ${token.lineType} ${token.colorBorder}`
+		}
+	} }
+} });
+function genBaseUnderlinedStyle(token, options) {
+	return {
+		background: token.colorBgContainer,
+		borderWidth: `${unit(token.lineWidth)} 0`,
+		borderStyle: `${token.lineType} none`,
+		borderColor: `transparent transparent ${options.borderColor} transparent`,
+		borderRadius: 0,
+		"&:hover": {
+			borderColor: `transparent transparent ${options.hoverBorderColor} transparent`,
+			backgroundColor: token.hoverBg
+		},
+		"&:focus, &:focus-within": {
+			borderColor: `transparent transparent ${options.activeBorderColor} transparent`,
+			outline: 0,
+			backgroundColor: token.activeBg
+		}
+	};
+}
+function genUnderlinedStatusStyle(token, options) {
+	return {
+		[`&${token.componentCls}-status-${options.status}:not(${token.componentCls}-disabled)`]: {
+			...genBaseUnderlinedStyle(token, options),
+			[`${token.componentCls}-prefix, ${token.componentCls}-suffix`]: { color: options.affixColor }
+		},
+		[`&${token.componentCls}-status-${options.status}${token.componentCls}-disabled`]: { borderColor: `transparent transparent ${options.borderColor} transparent` }
+	};
+}
+function genUnderlinedStyle(token, extraStyles) {
+	return { "&-underlined": {
+		...genBaseUnderlinedStyle(token, {
+			borderColor: token.colorBorder,
+			hoverBorderColor: token.hoverBorderColor,
+			activeBorderColor: token.activeBorderColor,
+			activeShadow: token.activeShadow
+		}),
+		[`&${token.componentCls}-disabled, &[disabled]`]: {
+			color: token.colorTextDisabled,
+			boxShadow: "none",
+			cursor: "not-allowed",
+			"&:hover": { borderColor: `transparent transparent ${token.colorBorder} transparent` }
+		},
+		"input[disabled], textarea[disabled]": { cursor: "not-allowed" },
+		...genUnderlinedStatusStyle(token, {
+			status: "error",
+			borderColor: token.colorError,
+			hoverBorderColor: token.colorErrorBorderHover,
+			activeBorderColor: token.colorError,
+			activeShadow: token.errorActiveShadow,
+			affixColor: token.colorError
+		}),
+		...genUnderlinedStatusStyle(token, {
+			status: "warning",
+			borderColor: token.colorWarning,
+			hoverBorderColor: token.colorWarningBorderHover,
+			activeBorderColor: token.colorWarning,
+			activeShadow: token.warningActiveShadow,
+			affixColor: token.colorWarning
+		}),
+		...extraStyles
+	} };
+}
+
+//#endregion
+export { genBaseOutlinedStyle, genBaseUnderlinedStyle, genBorderlessStyle, genDisabledStyle, genFilledGroupStyle, genFilledStyle, genHoverStyle, genOutlinedGroupStyle, genOutlinedStyle, genUnderlinedStyle };

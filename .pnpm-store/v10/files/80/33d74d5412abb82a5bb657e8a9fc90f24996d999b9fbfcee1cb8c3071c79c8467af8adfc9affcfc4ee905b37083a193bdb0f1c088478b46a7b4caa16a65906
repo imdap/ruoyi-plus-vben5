@@ -1,0 +1,15 @@
+import { AnyObject } from "../_util/type.js";
+import { TableLocale } from "./interface.js";
+import * as vue_jsx_runtime0 from "vue/jsx-runtime";
+
+//#region src/table/ExpandIcon.d.ts
+interface DefaultExpandIconProps<RecordType = AnyObject> {
+  prefixCls: string;
+  record: RecordType;
+  expanded: boolean;
+  expandable: boolean;
+  onExpand: (record: RecordType, e: MouseEvent) => void;
+}
+declare function renderExpandIcon(locale: TableLocale): <RecordType extends AnyObject = AnyObject>(props: DefaultExpandIconProps<RecordType>) => vue_jsx_runtime0.JSX.Element;
+//#endregion
+export { renderExpandIcon as default };

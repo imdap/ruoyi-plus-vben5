@@ -1,0 +1,14 @@
+import { VueNode } from "../../_util/type.js";
+import { AggregationColor } from "../color.js";
+import { ColorPickerProps, ColorValueType, ModeType } from "../interface.js";
+import * as vue686 from "vue";
+import { Ref } from "vue";
+
+//#region src/color-picker/hooks/useModeColor.d.ts
+type ModeOptions = {
+  label: VueNode;
+  value: ModeType;
+}[];
+declare function useModeColor(value: Ref<ColorValueType>, mode: Ref<ColorPickerProps['mode']>, defaultValue?: ColorValueType): readonly [vue686.ComputedRef<AggregationColor>, (nextColor: AggregationColor) => void, vue686.ComputedRef<ModeType | undefined>, (nextMode: ModeType) => void, vue686.ComputedRef<ModeOptions>];
+//#endregion
+export { ModeOptions, useModeColor as default };

@@ -1,0 +1,54 @@
+{
+  "name": "@cspell/dict-en-gb-mit",
+  "version": "3.1.22",
+  "description": "British English dictionary for cspell with MIT License.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "en_GB",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/en_GB#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/en_GB-MIT"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "files": [
+    "en_GB.trie.gz",
+    "cspell-ext.json"
+  ],
+  "scripts": {
+    "build": "pnpm run compile && pnpm run prepare:dictionary",
+    "compile": "cspell-tools-cli build",
+    "conditional-build": "pnpm run compile --conditional",
+    "prepare:dictionary": "cspell-tools-cli gzip \"*.trie\"",
+    "prepublishOnly": "pnpm prepare:dictionary",
+    "test": "pnpm run test-dict && pnpm run test-text",
+    "test-dict": "shx head -n 1000 \"./src/legacy/wordsEnGb.txt\" | cspell -c ./cspell-ext.json --locale=en_gb --languageId=* stdin",
+    "test-text": "cspell -c ./cspell-ext.json --locale=en_gb --languageId=* tests"
+  },
+  "devDependencies": {
+    "@cspell/aoo-mozilla-en-dict": "workspace:^",
+    "@cspell/dict-en-shared": "workspace:^"
+  },
+  "gitHead": "21ed4457dbbeb5ed32a0aed70deb17354a6e3c0d"
+}

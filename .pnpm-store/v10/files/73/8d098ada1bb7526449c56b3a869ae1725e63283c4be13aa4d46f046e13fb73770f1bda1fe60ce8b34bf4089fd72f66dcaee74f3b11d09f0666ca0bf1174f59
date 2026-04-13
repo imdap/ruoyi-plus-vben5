@@ -1,0 +1,12 @@
+import { AggregationColor } from "../color.js";
+import * as vue689 from "vue";
+
+//#region src/color-picker/components/ColorAlphaInput.d.ts
+interface ColorAlphaInputProps {
+  prefixCls: string;
+  value?: AggregationColor;
+  onChange?: (value: AggregationColor) => void;
+}
+declare const _default: vue689.DefineSetupFnComponent<ColorAlphaInputProps, {}, {}, ColorAlphaInputProps & {}, vue689.PublicProps>;
+//#endregion
+export { ColorAlphaInputProps, _default as default };

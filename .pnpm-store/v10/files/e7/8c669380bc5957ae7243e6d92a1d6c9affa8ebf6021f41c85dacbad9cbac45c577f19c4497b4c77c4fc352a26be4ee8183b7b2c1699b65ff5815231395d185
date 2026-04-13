@@ -1,0 +1,37 @@
+{
+  "name": "@v-c/overflow",
+  "type": "module",
+  "version": "1.0.5",
+  "description": "overflow",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "dependencies": {
+    "@v-c/resize-observer": "^1.0.8",
+    "@v-c/util": "^1.0.19"
+  },
+  "scripts": {
+    "build": "vite build",
+    "prepublish": "pnpm build",
+    "test": "vitest run",
+    "bump": "bumpp",
+    "bump:patch": "bumpp --release patch"
+  }
+}

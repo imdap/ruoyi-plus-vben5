@@ -1,0 +1,13 @@
+import { QRCodeEmits, QRCodeProps as QRCodeProps$1, QRCodeSlots } from "./interface.js";
+import * as vue322 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/qrcode/index.d.ts
+interface InternalQRCodeProps extends QRCodeProps$1, QRCodeEmitsProps {}
+interface QRCodeEmitsProps {
+  onRefresh?: QRCodeEmits['refresh'];
+}
+declare const QRCode: vue322.DefineSetupFnComponent<InternalQRCodeProps, QRCodeEmits, SlotsType<QRCodeSlots>, InternalQRCodeProps, vue322.PublicProps>;
+type QRCodeProps = InternalQRCodeProps;
+//#endregion
+export { InternalQRCodeProps, type QRCodeEmits, QRCodeEmitsProps, QRCodeProps, QRCode as default };

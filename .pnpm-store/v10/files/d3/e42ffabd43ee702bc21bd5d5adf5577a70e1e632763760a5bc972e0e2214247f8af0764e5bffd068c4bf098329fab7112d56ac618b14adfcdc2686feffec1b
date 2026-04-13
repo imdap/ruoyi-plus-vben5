@@ -1,0 +1,8 @@
+import { Locale } from "./index.js";
+import * as vue119 from "vue";
+
+//#region src/locale/useLocale.d.ts
+type LocaleComponentName = Exclude<keyof Locale, 'locale'>;
+declare function useLocale<C extends LocaleComponentName = LocaleComponentName>(componentName: C, defaultLocale?: Locale[C] | (() => Locale[C])): vue119.ComputedRef<any>[];
+//#endregion
+export { LocaleComponentName, useLocale as default };

@@ -1,0 +1,24 @@
+import { PopoverProps } from "../popover/index.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import { AvatarSize } from "./AvatarContext.js";
+import * as vue14 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/avatar/AvatarGroup.d.ts
+interface AvatarGroupProps extends ComponentBaseProps {
+  prefixCls?: string;
+  max?: {
+    count?: number;
+    style?: CSSProperties;
+    popover?: PopoverProps;
+  };
+  /**
+   * Size of avatar, options: `large`, `medium`, `small`
+   * or a custom number size
+   */
+  size?: AvatarSize;
+  shape?: 'circle' | 'square';
+}
+declare const AvatarGroup: vue14.DefineSetupFnComponent<AvatarGroupProps, {}, {}, AvatarGroupProps & {}, vue14.PublicProps>;
+//#endregion
+export { AvatarGroupProps, AvatarGroup as default };

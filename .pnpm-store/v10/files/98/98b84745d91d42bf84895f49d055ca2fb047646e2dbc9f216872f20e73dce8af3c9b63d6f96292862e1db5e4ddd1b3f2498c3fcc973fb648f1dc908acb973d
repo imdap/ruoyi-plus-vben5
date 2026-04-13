@@ -1,0 +1,10 @@
+import { ThemeConfig } from "../context.js";
+import * as vue864 from "vue";
+import { Ref } from "vue";
+
+//#region src/config-provider/hooks/useTheme.d.ts
+declare function useTheme(theme?: Ref<ThemeConfig | undefined>, parentTheme?: Ref<ThemeConfig | undefined>, config?: Ref<{
+  prefixCls?: string;
+}>): vue864.ComputedRef<ThemeConfig | undefined>;
+//#endregion
+export { useTheme };

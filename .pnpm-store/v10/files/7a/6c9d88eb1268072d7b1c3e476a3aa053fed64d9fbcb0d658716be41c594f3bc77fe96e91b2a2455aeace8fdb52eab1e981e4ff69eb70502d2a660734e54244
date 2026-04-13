@@ -1,0 +1,2529 @@
+import { devUseWarning, isDev } from "../_util/warning.js";
+import { toPropsRefs } from "../_util/tools.js";
+import PurePanel_default from "../_util/PurePanel.js";
+import { useVariants } from "../form/hooks/useVariant.js";
+import useMergedPickerSemantic from "../date-picker/hooks/useMergedPickerSemantic.js";
+import date_picker_default from "../date-picker/index.js";
+import { computed, createVNode, defineComponent, mergeProps, shallowRef } from "vue";
+
+//#region src/time-picker/index.tsx
+const { TimePicker: InternalTimePicker, RangePicker: InternalRangePicker } = date_picker_default;
+const RangePicker = /* @__PURE__ */ defineComponent((props, { slots, emit, expose, attrs }) => {
+	const rangeRef = shallowRef();
+	const onChange = (dates, dateStrings) => {
+		emit("update:value", dates);
+		emit("change", dates, dateStrings);
+	};
+	const onCalendarChange = (dates, dateStrings, info) => {
+		emit("calendarChange", dates, dateStrings, info);
+	};
+	const onPanelChange = (dates, modes) => {
+		emit("panelChange", dates, modes);
+	};
+	const onOpenChange = (open) => {
+		emit("openChange", open);
+	};
+	const onOk = (dates) => {
+		emit("ok", dates);
+	};
+	const onFocus = (e, info) => {
+		emit("focus", e, info);
+	};
+	const onBlur = (e, info) => {
+		emit("blur", e, info);
+	};
+	const onKeyDown = (e, preventDefault) => {
+		emit("keydown", e, preventDefault);
+	};
+	expose({
+		focus: (options) => rangeRef.value?.focus?.(options),
+		blur: () => rangeRef.value?.blur?.(),
+		nativeElement: computed(() => rangeRef.value?.nativeElement)
+	});
+	return () => {
+		return createVNode(InternalRangePicker, mergeProps(attrs, props, {
+			"ref": rangeRef,
+			"picker": "time",
+			"mode": void 0,
+			"onChange": onChange,
+			"onCalendarChange": onCalendarChange,
+			"onPanelChange": onPanelChange,
+			"onOpenChange": onOpenChange,
+			"onOk": onOk,
+			"onFocus": onFocus,
+			"onBlur": onBlur,
+			"onKeydown": onKeyDown
+		}), slots);
+	};
+}, {
+	props: {
+		popupClassName: {
+			type: String,
+			required: false
+		},
+		popupStyle: {
+			type: Object,
+			required: false
+		},
+		locale: {
+			type: Object,
+			required: false
+		},
+		size: {
+			type: [String, null],
+			required: false
+		},
+		placement: {
+			type: String,
+			required: false
+		},
+		bordered: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		status: {
+			type: String,
+			required: false
+		},
+		variant: {
+			type: String,
+			required: false
+		},
+		dropdownClassName: {
+			type: String,
+			required: false
+		},
+		rootClass: {
+			type: String,
+			required: false
+		},
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		},
+		id: {
+			type: [String, Object],
+			required: false
+		},
+		separator: { required: false },
+		value: {
+			type: [Array, null],
+			required: false
+		},
+		defaultValue: {
+			type: Array,
+			required: false
+		},
+		placeholder: {
+			type: Array,
+			required: false
+		},
+		defaultPickerValue: {
+			type: [
+				Array,
+				Object,
+				String,
+				null
+			],
+			required: false
+		},
+		pickerValue: {
+			type: [
+				Array,
+				Object,
+				String,
+				null
+			],
+			required: false
+		},
+		onPickerValueChange: {
+			type: Function,
+			required: false
+		},
+		presets: {
+			type: Array,
+			required: false
+		},
+		ranges: {
+			type: Object,
+			required: false
+		},
+		disabled: {
+			type: [Boolean, Array],
+			required: false,
+			default: void 0
+		},
+		allowEmpty: {
+			type: [Boolean, Array],
+			required: false,
+			default: void 0
+		},
+		mode: {
+			type: Array,
+			required: false
+		},
+		direction: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		},
+		showWeek: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		format: {
+			type: [
+				String,
+				Function,
+				Array,
+				Object
+			],
+			required: false
+		},
+		valueFormat: {
+			type: String,
+			required: false
+		},
+		prefix: { required: false },
+		suffixIcon: { required: false },
+		allowClear: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		clearIcon: { required: false },
+		inputReadOnly: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		order: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		disabledDate: {
+			type: Function,
+			required: false
+		},
+		minDate: {
+			type: Object,
+			required: false
+		},
+		maxDate: {
+			type: Object,
+			required: false
+		},
+		defaultOpenValue: {
+			type: Object,
+			required: false
+		},
+		defaultOpen: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		open: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		popupAlign: { required: false },
+		getPopupContainer: {
+			type: Function,
+			required: false
+		},
+		builtinPlacements: { required: false },
+		needConfirm: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		changeOnBlur: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		preserveInvalidOnBlur: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		previewValue: {
+			type: [Boolean, String],
+			required: false,
+			default: void 0
+		},
+		transitionName: {
+			type: String,
+			required: false
+		},
+		components: {
+			type: Object,
+			required: false
+		},
+		inputRender: {
+			type: Function,
+			required: false
+		},
+		cellRender: {
+			type: Function,
+			required: false
+		},
+		dateRender: {
+			type: Function,
+			required: false
+		},
+		monthCellRender: {
+			type: Function,
+			required: false
+		},
+		showNow: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		showToday: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		panelRender: {
+			type: Function,
+			required: false
+		},
+		renderExtraFooter: {
+			type: Function,
+			required: false
+		},
+		innerHTML: {
+			type: [String, null],
+			required: false
+		},
+		class: {
+			type: [
+				Boolean,
+				null,
+				String,
+				Object,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		accesskey: {
+			type: [String, null],
+			required: false
+		},
+		contenteditable: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		contextmenu: {
+			type: [String, null],
+			required: false
+		},
+		dir: {
+			type: [String, null],
+			required: false
+		},
+		draggable: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		enterkeyhint: {
+			type: [String, null],
+			required: false
+		},
+		enterKeyHint: {
+			type: [String, null],
+			required: false
+		},
+		hidden: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		inert: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		lang: {
+			type: [String, null],
+			required: false
+		},
+		spellcheck: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		tabindex: {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		title: {
+			type: [String, null],
+			required: false
+		},
+		translate: {
+			type: [String, null],
+			required: false
+		},
+		radiogroup: {
+			type: [String, null],
+			required: false
+		},
+		role: {
+			type: [String, null],
+			required: false
+		},
+		about: {
+			type: [String, null],
+			required: false
+		},
+		datatype: {
+			type: [String, null],
+			required: false
+		},
+		inlist: { required: false },
+		property: {
+			type: [String, null],
+			required: false
+		},
+		resource: {
+			type: [String, null],
+			required: false
+		},
+		typeof: {
+			type: [String, null],
+			required: false
+		},
+		vocab: {
+			type: [String, null],
+			required: false
+		},
+		autocapitalize: {
+			type: [String, null],
+			required: false
+		},
+		autocorrect: {
+			type: [String, null],
+			required: false
+		},
+		autosave: {
+			type: [String, null],
+			required: false
+		},
+		color: {
+			type: [String, null],
+			required: false
+		},
+		itemprop: {
+			type: [String, null],
+			required: false
+		},
+		itemscope: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		itemtype: {
+			type: [String, null],
+			required: false
+		},
+		itemid: {
+			type: [String, null],
+			required: false
+		},
+		itemref: {
+			type: [String, null],
+			required: false
+		},
+		results: {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		security: {
+			type: [String, null],
+			required: false
+		},
+		unselectable: {
+			type: [String, null],
+			required: false
+		},
+		inputmode: {
+			type: [String, null],
+			required: false
+		},
+		is: {
+			type: [String, null],
+			required: false
+		},
+		exportparts: {
+			type: String,
+			required: false
+		},
+		part: {
+			type: String,
+			required: false
+		},
+		"aria-activedescendant": {
+			type: [String, null],
+			required: false
+		},
+		"aria-atomic": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-autocomplete": {
+			type: [String, null],
+			required: false
+		},
+		"aria-busy": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-checked": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-colcount": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-colindex": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-colspan": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-controls": {
+			type: [String, null],
+			required: false
+		},
+		"aria-current": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-describedby": {
+			type: [String, null],
+			required: false
+		},
+		"aria-details": {
+			type: [String, null],
+			required: false
+		},
+		"aria-disabled": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-dropeffect": {
+			type: [String, null],
+			required: false
+		},
+		"aria-errormessage": {
+			type: [String, null],
+			required: false
+		},
+		"aria-expanded": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-flowto": {
+			type: [String, null],
+			required: false
+		},
+		"aria-grabbed": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-haspopup": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-hidden": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-invalid": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-keyshortcuts": {
+			type: [String, null],
+			required: false
+		},
+		"aria-label": {
+			type: [String, null],
+			required: false
+		},
+		"aria-labelledby": {
+			type: [String, null],
+			required: false
+		},
+		"aria-level": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-live": {
+			type: [String, null],
+			required: false
+		},
+		"aria-modal": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-multiline": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-multiselectable": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-orientation": {
+			type: [String, null],
+			required: false
+		},
+		"aria-owns": {
+			type: [String, null],
+			required: false
+		},
+		"aria-placeholder": {
+			type: [String, null],
+			required: false
+		},
+		"aria-posinset": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-pressed": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-readonly": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-relevant": {
+			type: [String, null],
+			required: false
+		},
+		"aria-required": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-roledescription": {
+			type: [String, null],
+			required: false
+		},
+		"aria-rowcount": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-rowindex": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-rowspan": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-selected": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-setsize": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-sort": {
+			type: [String, null],
+			required: false
+		},
+		"aria-valuemax": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-valuemin": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-valuenow": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-valuetext": {
+			type: [String, null],
+			required: false
+		},
+		onCopy: {
+			type: Function,
+			required: false
+		},
+		onCut: {
+			type: Function,
+			required: false
+		},
+		onPaste: {
+			type: Function,
+			required: false
+		},
+		onCompositionend: {
+			type: Function,
+			required: false
+		},
+		onCompositionstart: {
+			type: Function,
+			required: false
+		},
+		onCompositionupdate: {
+			type: Function,
+			required: false
+		},
+		onDrag: {
+			type: Function,
+			required: false
+		},
+		onDragend: {
+			type: Function,
+			required: false
+		},
+		onDragenter: {
+			type: Function,
+			required: false
+		},
+		onDragexit: {
+			type: Function,
+			required: false
+		},
+		onDragleave: {
+			type: Function,
+			required: false
+		},
+		onDragover: {
+			type: Function,
+			required: false
+		},
+		onDragstart: {
+			type: Function,
+			required: false
+		},
+		onDrop: {
+			type: Function,
+			required: false
+		},
+		onFocusin: {
+			type: Function,
+			required: false
+		},
+		onFocusout: {
+			type: Function,
+			required: false
+		},
+		onBeforeinput: {
+			type: Function,
+			required: false
+		},
+		onFormdata: {
+			type: Function,
+			required: false
+		},
+		onInput: {
+			type: Function,
+			required: false
+		},
+		onReset: {
+			type: Function,
+			required: false
+		},
+		onSubmit: {
+			type: Function,
+			required: false
+		},
+		onFullscreenchange: {
+			type: Function,
+			required: false
+		},
+		onFullscreenerror: {
+			type: Function,
+			required: false
+		},
+		onLoad: {
+			type: Function,
+			required: false
+		},
+		onError: {
+			type: Function,
+			required: false
+		},
+		onKeydown: {
+			type: Function,
+			required: false
+		},
+		onKeypress: {
+			type: Function,
+			required: false
+		},
+		onKeyup: {
+			type: Function,
+			required: false
+		},
+		onDblclick: {
+			type: Function,
+			required: false
+		},
+		onMousedown: {
+			type: Function,
+			required: false
+		},
+		onMouseenter: {
+			type: Function,
+			required: false
+		},
+		onMouseleave: {
+			type: Function,
+			required: false
+		},
+		onMousemove: {
+			type: Function,
+			required: false
+		},
+		onMouseout: {
+			type: Function,
+			required: false
+		},
+		onMouseover: {
+			type: Function,
+			required: false
+		},
+		onMouseup: {
+			type: Function,
+			required: false
+		},
+		onAbort: {
+			type: Function,
+			required: false
+		},
+		onCanplay: {
+			type: Function,
+			required: false
+		},
+		onCanplaythrough: {
+			type: Function,
+			required: false
+		},
+		onDurationchange: {
+			type: Function,
+			required: false
+		},
+		onEmptied: {
+			type: Function,
+			required: false
+		},
+		onEncrypted: {
+			type: Function,
+			required: false
+		},
+		onEnded: {
+			type: Function,
+			required: false
+		},
+		onLoadeddata: {
+			type: Function,
+			required: false
+		},
+		onLoadedmetadata: {
+			type: Function,
+			required: false
+		},
+		onLoadstart: {
+			type: Function,
+			required: false
+		},
+		onPause: {
+			type: Function,
+			required: false
+		},
+		onPlay: {
+			type: Function,
+			required: false
+		},
+		onPlaying: {
+			type: Function,
+			required: false
+		},
+		onProgress: {
+			type: Function,
+			required: false
+		},
+		onRatechange: {
+			type: Function,
+			required: false
+		},
+		onSeeked: {
+			type: Function,
+			required: false
+		},
+		onSeeking: {
+			type: Function,
+			required: false
+		},
+		onStalled: {
+			type: Function,
+			required: false
+		},
+		onSuspend: {
+			type: Function,
+			required: false
+		},
+		onTimeupdate: {
+			type: Function,
+			required: false
+		},
+		onVolumechange: {
+			type: Function,
+			required: false
+		},
+		onWaiting: {
+			type: Function,
+			required: false
+		},
+		onScroll: {
+			type: Function,
+			required: false
+		},
+		onScrollend: {
+			type: Function,
+			required: false
+		},
+		onTouchcancel: {
+			type: Function,
+			required: false
+		},
+		onTouchend: {
+			type: Function,
+			required: false
+		},
+		onTouchmove: {
+			type: Function,
+			required: false
+		},
+		onTouchstart: {
+			type: Function,
+			required: false
+		},
+		onAuxclick: {
+			type: Function,
+			required: false
+		},
+		onContextmenu: {
+			type: Function,
+			required: false
+		},
+		onGotpointercapture: {
+			type: Function,
+			required: false
+		},
+		onLostpointercapture: {
+			type: Function,
+			required: false
+		},
+		onPointerdown: {
+			type: Function,
+			required: false
+		},
+		onPointermove: {
+			type: Function,
+			required: false
+		},
+		onPointerup: {
+			type: Function,
+			required: false
+		},
+		onPointercancel: {
+			type: Function,
+			required: false
+		},
+		onPointerenter: {
+			type: Function,
+			required: false
+		},
+		onPointerleave: {
+			type: Function,
+			required: false
+		},
+		onPointerover: {
+			type: Function,
+			required: false
+		},
+		onPointerout: {
+			type: Function,
+			required: false
+		},
+		onBeforetoggle: {
+			type: Function,
+			required: false
+		},
+		onToggle: {
+			type: Function,
+			required: false
+		},
+		onWheel: {
+			type: Function,
+			required: false
+		},
+		onAnimationcancel: {
+			type: Function,
+			required: false
+		},
+		onAnimationstart: {
+			type: Function,
+			required: false
+		},
+		onAnimationend: {
+			type: Function,
+			required: false
+		},
+		onAnimationiteration: {
+			type: Function,
+			required: false
+		},
+		onSecuritypolicyviolation: {
+			type: Function,
+			required: false
+		},
+		onTransitioncancel: {
+			type: Function,
+			required: false
+		},
+		onTransitionend: {
+			type: Function,
+			required: false
+		},
+		onTransitionrun: {
+			type: Function,
+			required: false
+		},
+		onTransitionstart: {
+			type: Function,
+			required: false
+		},
+		prevIcon: { required: false },
+		nextIcon: { required: false },
+		superPrevIcon: { required: false },
+		superNextIcon: { required: false },
+		showHour: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		showMinute: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		showSecond: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		showMillisecond: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		use12Hours: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		hourStep: { required: false },
+		minuteStep: { required: false },
+		secondStep: { required: false },
+		millisecondStep: { required: false },
+		hideDisabledOptions: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		disabledHours: {
+			type: Function,
+			required: false
+		},
+		disabledMinutes: {
+			type: Function,
+			required: false
+		},
+		disabledSeconds: {
+			type: Function,
+			required: false
+		},
+		changeOnScroll: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		disabledTime: {
+			type: Function,
+			required: false
+		}
+	},
+	emits: [
+		"change",
+		"update:value",
+		"calendarChange",
+		"panelChange",
+		"openChange",
+		"ok",
+		"focus",
+		"blur",
+		"keydown"
+	],
+	name: "ATimeRangePicker",
+	inheritAttrs: false
+});
+const TimePicker = /* @__PURE__ */ defineComponent((props, { slots, emit, expose, attrs }) => {
+	const { variant, bordered, classes, styles, popupClassName, popupStyle } = toPropsRefs(props, "variant", "bordered", "classes", "styles", "popupClassName", "popupStyle");
+	if (isDev) devUseWarning("TimePicker").deprecated(!props.addon, "addon", "renderExtraFooter");
+	const [mergedVariant] = useVariants("timePicker", variant, bordered);
+	const [mergedClassNames, mergedStyles] = useMergedPickerSemantic("timePicker", classes, styles, popupClassName, popupStyle, computed(() => ({
+		...props,
+		variant: mergedVariant.value
+	})));
+	const pickerRef = shallowRef();
+	const onChange = (date, dateString) => {
+		emit("update:value", date);
+		emit("change", date, dateString);
+	};
+	const onCalendarChange = (date, dateString, info) => {
+		emit("calendarChange", date, dateString, info);
+	};
+	const onPanelChange = (date, mode) => {
+		emit("panelChange", date, mode);
+	};
+	const onOpenChange = (open) => {
+		emit("openChange", open);
+	};
+	const onOk = (date) => {
+		emit("ok", date);
+	};
+	const onSelect = (date) => {
+		emit("select", date);
+	};
+	const onFocus = (e, info) => {
+		emit("focus", e, info);
+	};
+	const onBlur = (e, info) => {
+		emit("blur", e, info);
+	};
+	const onKeyDown = (e, preventDefault) => {
+		emit("keydown", e, preventDefault);
+	};
+	const internalRenderExtraFooter = (mode) => {
+		const renderSlot = slots.renderExtraFooter;
+		if (renderSlot) return renderSlot(mode);
+		const renderExtraFooter = props.renderExtraFooter;
+		if (renderExtraFooter) return renderExtraFooter(mode);
+		const addonSlot = slots.addon;
+		if (addonSlot) return addonSlot();
+		const addon = props.addon;
+		if (addon) return addon();
+	};
+	expose({
+		focus: (options) => pickerRef.value?.focus?.(options),
+		blur: () => pickerRef.value?.blur?.(),
+		nativeElement: computed(() => pickerRef.value?.nativeElement)
+	});
+	return () => {
+		const { addon, renderExtraFooter, classes, styles, popupClassName, popupStyle, variant, bordered, ...restProps } = props;
+		return createVNode(InternalTimePicker, mergeProps(attrs, restProps, {
+			"ref": pickerRef,
+			"mode": void 0,
+			"renderExtraFooter": internalRenderExtraFooter,
+			"variant": mergedVariant.value,
+			"classes": mergedClassNames.value,
+			"styles": mergedStyles.value
+		}, {
+			onChange,
+			onCalendarChange,
+			onPanelChange,
+			onOpenChange,
+			onOk,
+			onSelect,
+			onFocus,
+			onBlur,
+			onKeydown: onKeyDown
+		}), slots);
+	};
+}, {
+	props: {
+		addon: {
+			type: Function,
+			required: false
+		},
+		status: {
+			type: String,
+			required: false
+		},
+		popupClassName: {
+			type: String,
+			required: false
+		},
+		popupStyle: {
+			type: Object,
+			required: false
+		},
+		rootClass: {
+			type: String,
+			required: false
+		},
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		},
+		locale: {
+			type: Object,
+			required: false
+		},
+		size: {
+			type: [String, null],
+			required: false
+		},
+		placement: {
+			type: String,
+			required: false
+		},
+		bordered: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		variant: {
+			type: String,
+			required: false
+		},
+		dropdownClassName: {
+			type: String,
+			required: false
+		},
+		use12Hours: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		id: {
+			type: String,
+			required: false
+		},
+		multiple: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		removeIcon: { required: false },
+		maxTagCount: {
+			type: [Number, String],
+			required: false
+		},
+		value: { required: false },
+		defaultValue: { required: false },
+		placeholder: {
+			type: String,
+			required: false
+		},
+		defaultPickerValue: { required: false },
+		pickerValue: { required: false },
+		onPickerValueChange: {
+			type: Function,
+			required: false
+		},
+		presets: {
+			type: Array,
+			required: false
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		mode: {
+			type: String,
+			required: false
+		},
+		direction: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		},
+		showWeek: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		format: {
+			type: [
+				String,
+				Function,
+				Array,
+				Object
+			],
+			required: false
+		},
+		valueFormat: {
+			type: String,
+			required: false
+		},
+		prefix: { required: false },
+		suffixIcon: { required: false },
+		allowClear: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		clearIcon: { required: false },
+		inputReadOnly: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		order: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		disabledDate: {
+			type: Function,
+			required: false
+		},
+		minDate: { required: false },
+		maxDate: { required: false },
+		defaultOpenValue: { required: false },
+		defaultOpen: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		open: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		popupAlign: { required: false },
+		getPopupContainer: {
+			type: Function,
+			required: false
+		},
+		builtinPlacements: { required: false },
+		needConfirm: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		changeOnBlur: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		preserveInvalidOnBlur: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		previewValue: {
+			type: [Boolean, String],
+			required: false,
+			default: void 0
+		},
+		transitionName: {
+			type: String,
+			required: false
+		},
+		components: {
+			type: Object,
+			required: false
+		},
+		inputRender: {
+			type: Function,
+			required: false
+		},
+		cellRender: {
+			type: Function,
+			required: false
+		},
+		dateRender: {
+			type: Function,
+			required: false
+		},
+		monthCellRender: {
+			type: Function,
+			required: false
+		},
+		showNow: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		showToday: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		panelRender: {
+			type: Function,
+			required: false
+		},
+		renderExtraFooter: {
+			type: Function,
+			required: false
+		},
+		innerHTML: {
+			type: [String, null],
+			required: false
+		},
+		class: {
+			type: [
+				Boolean,
+				null,
+				String,
+				Object,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		accesskey: {
+			type: [String, null],
+			required: false
+		},
+		contenteditable: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		contextmenu: {
+			type: [String, null],
+			required: false
+		},
+		dir: {
+			type: [String, null],
+			required: false
+		},
+		draggable: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		enterkeyhint: {
+			type: [String, null],
+			required: false
+		},
+		enterKeyHint: {
+			type: [String, null],
+			required: false
+		},
+		hidden: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		inert: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		lang: {
+			type: [String, null],
+			required: false
+		},
+		spellcheck: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		tabindex: {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		title: {
+			type: [String, null],
+			required: false
+		},
+		translate: {
+			type: [String, null],
+			required: false
+		},
+		radiogroup: {
+			type: [String, null],
+			required: false
+		},
+		role: {
+			type: [String, null],
+			required: false
+		},
+		about: {
+			type: [String, null],
+			required: false
+		},
+		datatype: {
+			type: [String, null],
+			required: false
+		},
+		inlist: { required: false },
+		property: {
+			type: [String, null],
+			required: false
+		},
+		resource: {
+			type: [String, null],
+			required: false
+		},
+		typeof: {
+			type: [String, null],
+			required: false
+		},
+		vocab: {
+			type: [String, null],
+			required: false
+		},
+		autocapitalize: {
+			type: [String, null],
+			required: false
+		},
+		autocorrect: {
+			type: [String, null],
+			required: false
+		},
+		autosave: {
+			type: [String, null],
+			required: false
+		},
+		color: {
+			type: [String, null],
+			required: false
+		},
+		itemprop: {
+			type: [String, null],
+			required: false
+		},
+		itemscope: {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		itemtype: {
+			type: [String, null],
+			required: false
+		},
+		itemid: {
+			type: [String, null],
+			required: false
+		},
+		itemref: {
+			type: [String, null],
+			required: false
+		},
+		results: {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		security: {
+			type: [String, null],
+			required: false
+		},
+		unselectable: {
+			type: [String, null],
+			required: false
+		},
+		inputmode: {
+			type: [String, null],
+			required: false
+		},
+		is: {
+			type: [String, null],
+			required: false
+		},
+		exportparts: {
+			type: String,
+			required: false
+		},
+		part: {
+			type: String,
+			required: false
+		},
+		"aria-activedescendant": {
+			type: [String, null],
+			required: false
+		},
+		"aria-atomic": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-autocomplete": {
+			type: [String, null],
+			required: false
+		},
+		"aria-busy": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-checked": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-colcount": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-colindex": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-colspan": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-controls": {
+			type: [String, null],
+			required: false
+		},
+		"aria-current": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-describedby": {
+			type: [String, null],
+			required: false
+		},
+		"aria-details": {
+			type: [String, null],
+			required: false
+		},
+		"aria-disabled": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-dropeffect": {
+			type: [String, null],
+			required: false
+		},
+		"aria-errormessage": {
+			type: [String, null],
+			required: false
+		},
+		"aria-expanded": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-flowto": {
+			type: [String, null],
+			required: false
+		},
+		"aria-grabbed": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-haspopup": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-hidden": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-invalid": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-keyshortcuts": {
+			type: [String, null],
+			required: false
+		},
+		"aria-label": {
+			type: [String, null],
+			required: false
+		},
+		"aria-labelledby": {
+			type: [String, null],
+			required: false
+		},
+		"aria-level": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-live": {
+			type: [String, null],
+			required: false
+		},
+		"aria-modal": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-multiline": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-multiselectable": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-orientation": {
+			type: [String, null],
+			required: false
+		},
+		"aria-owns": {
+			type: [String, null],
+			required: false
+		},
+		"aria-placeholder": {
+			type: [String, null],
+			required: false
+		},
+		"aria-posinset": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-pressed": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-readonly": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-relevant": {
+			type: [String, null],
+			required: false
+		},
+		"aria-required": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-roledescription": {
+			type: [String, null],
+			required: false
+		},
+		"aria-rowcount": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-rowindex": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-rowspan": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-selected": {
+			type: [
+				Boolean,
+				String,
+				null
+			],
+			required: false,
+			default: void 0
+		},
+		"aria-setsize": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-sort": {
+			type: [String, null],
+			required: false
+		},
+		"aria-valuemax": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-valuemin": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-valuenow": {
+			type: [
+				Number,
+				String,
+				null
+			],
+			required: false
+		},
+		"aria-valuetext": {
+			type: [String, null],
+			required: false
+		},
+		onCopy: {
+			type: Function,
+			required: false
+		},
+		onCut: {
+			type: Function,
+			required: false
+		},
+		onPaste: {
+			type: Function,
+			required: false
+		},
+		onCompositionend: {
+			type: Function,
+			required: false
+		},
+		onCompositionstart: {
+			type: Function,
+			required: false
+		},
+		onCompositionupdate: {
+			type: Function,
+			required: false
+		},
+		onDrag: {
+			type: Function,
+			required: false
+		},
+		onDragend: {
+			type: Function,
+			required: false
+		},
+		onDragenter: {
+			type: Function,
+			required: false
+		},
+		onDragexit: {
+			type: Function,
+			required: false
+		},
+		onDragleave: {
+			type: Function,
+			required: false
+		},
+		onDragover: {
+			type: Function,
+			required: false
+		},
+		onDragstart: {
+			type: Function,
+			required: false
+		},
+		onDrop: {
+			type: Function,
+			required: false
+		},
+		onFocusin: {
+			type: Function,
+			required: false
+		},
+		onFocusout: {
+			type: Function,
+			required: false
+		},
+		onBeforeinput: {
+			type: Function,
+			required: false
+		},
+		onFormdata: {
+			type: Function,
+			required: false
+		},
+		onInput: {
+			type: Function,
+			required: false
+		},
+		onReset: {
+			type: Function,
+			required: false
+		},
+		onSubmit: {
+			type: Function,
+			required: false
+		},
+		onFullscreenchange: {
+			type: Function,
+			required: false
+		},
+		onFullscreenerror: {
+			type: Function,
+			required: false
+		},
+		onLoad: {
+			type: Function,
+			required: false
+		},
+		onError: {
+			type: Function,
+			required: false
+		},
+		onKeydown: {
+			type: Function,
+			required: false
+		},
+		onKeypress: {
+			type: Function,
+			required: false
+		},
+		onKeyup: {
+			type: Function,
+			required: false
+		},
+		onDblclick: {
+			type: Function,
+			required: false
+		},
+		onMousedown: {
+			type: Function,
+			required: false
+		},
+		onMouseenter: {
+			type: Function,
+			required: false
+		},
+		onMouseleave: {
+			type: Function,
+			required: false
+		},
+		onMousemove: {
+			type: Function,
+			required: false
+		},
+		onMouseout: {
+			type: Function,
+			required: false
+		},
+		onMouseover: {
+			type: Function,
+			required: false
+		},
+		onMouseup: {
+			type: Function,
+			required: false
+		},
+		onAbort: {
+			type: Function,
+			required: false
+		},
+		onCanplay: {
+			type: Function,
+			required: false
+		},
+		onCanplaythrough: {
+			type: Function,
+			required: false
+		},
+		onDurationchange: {
+			type: Function,
+			required: false
+		},
+		onEmptied: {
+			type: Function,
+			required: false
+		},
+		onEncrypted: {
+			type: Function,
+			required: false
+		},
+		onEnded: {
+			type: Function,
+			required: false
+		},
+		onLoadeddata: {
+			type: Function,
+			required: false
+		},
+		onLoadedmetadata: {
+			type: Function,
+			required: false
+		},
+		onLoadstart: {
+			type: Function,
+			required: false
+		},
+		onPause: {
+			type: Function,
+			required: false
+		},
+		onPlay: {
+			type: Function,
+			required: false
+		},
+		onPlaying: {
+			type: Function,
+			required: false
+		},
+		onProgress: {
+			type: Function,
+			required: false
+		},
+		onRatechange: {
+			type: Function,
+			required: false
+		},
+		onSeeked: {
+			type: Function,
+			required: false
+		},
+		onSeeking: {
+			type: Function,
+			required: false
+		},
+		onStalled: {
+			type: Function,
+			required: false
+		},
+		onSuspend: {
+			type: Function,
+			required: false
+		},
+		onTimeupdate: {
+			type: Function,
+			required: false
+		},
+		onVolumechange: {
+			type: Function,
+			required: false
+		},
+		onWaiting: {
+			type: Function,
+			required: false
+		},
+		onScroll: {
+			type: Function,
+			required: false
+		},
+		onScrollend: {
+			type: Function,
+			required: false
+		},
+		onTouchcancel: {
+			type: Function,
+			required: false
+		},
+		onTouchend: {
+			type: Function,
+			required: false
+		},
+		onTouchmove: {
+			type: Function,
+			required: false
+		},
+		onTouchstart: {
+			type: Function,
+			required: false
+		},
+		onAuxclick: {
+			type: Function,
+			required: false
+		},
+		onContextmenu: {
+			type: Function,
+			required: false
+		},
+		onGotpointercapture: {
+			type: Function,
+			required: false
+		},
+		onLostpointercapture: {
+			type: Function,
+			required: false
+		},
+		onPointerdown: {
+			type: Function,
+			required: false
+		},
+		onPointermove: {
+			type: Function,
+			required: false
+		},
+		onPointerup: {
+			type: Function,
+			required: false
+		},
+		onPointercancel: {
+			type: Function,
+			required: false
+		},
+		onPointerenter: {
+			type: Function,
+			required: false
+		},
+		onPointerleave: {
+			type: Function,
+			required: false
+		},
+		onPointerover: {
+			type: Function,
+			required: false
+		},
+		onPointerout: {
+			type: Function,
+			required: false
+		},
+		onBeforetoggle: {
+			type: Function,
+			required: false
+		},
+		onToggle: {
+			type: Function,
+			required: false
+		},
+		onWheel: {
+			type: Function,
+			required: false
+		},
+		onAnimationcancel: {
+			type: Function,
+			required: false
+		},
+		onAnimationstart: {
+			type: Function,
+			required: false
+		},
+		onAnimationend: {
+			type: Function,
+			required: false
+		},
+		onAnimationiteration: {
+			type: Function,
+			required: false
+		},
+		onSecuritypolicyviolation: {
+			type: Function,
+			required: false
+		},
+		onTransitioncancel: {
+			type: Function,
+			required: false
+		},
+		onTransitionend: {
+			type: Function,
+			required: false
+		},
+		onTransitionrun: {
+			type: Function,
+			required: false
+		},
+		onTransitionstart: {
+			type: Function,
+			required: false
+		},
+		prevIcon: { required: false },
+		nextIcon: { required: false },
+		superPrevIcon: { required: false },
+		superNextIcon: { required: false },
+		showHour: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		showMinute: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		showSecond: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		showMillisecond: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		hourStep: { required: false },
+		minuteStep: { required: false },
+		secondStep: { required: false },
+		millisecondStep: { required: false },
+		hideDisabledOptions: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		disabledHours: {
+			type: Function,
+			required: false
+		},
+		disabledMinutes: {
+			type: Function,
+			required: false
+		},
+		disabledSeconds: {
+			type: Function,
+			required: false
+		},
+		disabledTime: {
+			type: Function,
+			required: false
+		},
+		changeOnScroll: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		}
+	},
+	emits: [
+		"change",
+		"update:value",
+		"calendarChange",
+		"panelChange",
+		"openChange",
+		"ok",
+		"select",
+		"focus",
+		"blur",
+		"keydown"
+	],
+	name: "ATimePicker",
+	inheritAttrs: false
+});
+TimePicker._InternalPanelDoNotUseOrYouWillBeFired = PurePanel_default(TimePicker, "popupAlign", void 0, "picker");
+TimePicker.RangePicker = RangePicker;
+TimePicker.install = (app) => {
+	app.component(TimePicker.name, TimePicker);
+	app.component(RangePicker.name, RangePicker);
+};
+var time_picker_default = TimePicker;
+const TimeRangePicker = RangePicker;
+
+//#endregion
+export { TimeRangePicker, time_picker_default as default };

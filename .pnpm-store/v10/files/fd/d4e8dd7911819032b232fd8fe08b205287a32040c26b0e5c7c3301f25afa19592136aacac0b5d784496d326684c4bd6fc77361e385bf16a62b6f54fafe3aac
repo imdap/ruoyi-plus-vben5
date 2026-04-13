@@ -1,0 +1,16 @@
+import * as vue889 from "vue";
+
+//#region src/typography/hooks/useCopyClick.d.ts
+declare function useCopyClick({
+  copyConfig,
+  getText
+}: {
+  copyConfig: any;
+  getText?: () => any;
+}): {
+  copied: vue889.ShallowRef<boolean, boolean>;
+  copyLoading: vue889.ShallowRef<boolean, boolean>;
+  onClick: (e?: MouseEvent) => Promise<void>;
+};
+//#endregion
+export { useCopyClick as default };

@@ -1,0 +1,67 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { TooltipProps } from "../tooltip/index.js";
+import { BadgeProps } from "../badge/index.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import { ButtonHTMLType } from "../button/buttonHelper.js";
+import { ButtonSemanticClassNames, ButtonSemanticName, ButtonSemanticStyles } from "../button/Button.js";
+import "../button/index.js";
+import * as vue949 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/float-button/FloatButton.d.ts
+type FloatButtonElement = HTMLAnchorElement | HTMLButtonElement;
+interface FloatButtonRef {
+  nativeElement: FloatButtonElement | null;
+}
+type FloatButtonType = 'default' | 'primary';
+type FloatButtonShape = 'circle' | 'square';
+type FloatButtonGroupTrigger = 'click' | 'hover';
+type FloatButtonBadgeProps = Omit<BadgeProps, 'status' | 'text' | 'title'>;
+type FloatButtonSemanticName = ButtonSemanticName;
+type FloatButtonClassNamesType = SemanticClassNamesType<FloatButtonProps, ButtonSemanticClassNames>;
+type FloatButtonStylesType = SemanticStylesType<FloatButtonProps, ButtonSemanticStyles>;
+interface FloatButtonProps extends ComponentBaseProps, FloatButtonEmitsProps {
+  icon?: VueNode;
+  /** @deprecated Use `content` instead */
+  description?: VueNode;
+  content?: VueNode;
+  type?: FloatButtonType;
+  shape?: FloatButtonShape;
+  tooltip?: VueNode | TooltipProps;
+  href?: string;
+  target?: '_self' | '_blank' | '_parent' | '_top' | string;
+  badge?: FloatButtonBadgeProps & {
+    class?: string;
+  };
+  htmlType?: ButtonHTMLType;
+  ariaLabel?: string;
+  style?: CSSProperties;
+  classes?: FloatButtonClassNamesType;
+  styles?: FloatButtonStylesType;
+}
+interface FloatButtonSlots {
+  default?: () => any;
+  icon?: () => any;
+  tooltip?: () => any;
+}
+interface FloatButtonEmits {
+  click: (e: MouseEvent) => void;
+  mouseenter: (e: MouseEvent) => void;
+  mouseleave: (e: MouseEvent) => void;
+  focus: (e: FocusEvent) => void;
+  blur: (e: FocusEvent) => void;
+}
+interface FloatButtonEmitsProps {
+  onClick?: FloatButtonEmits['click'];
+  onMouseenter?: FloatButtonEmits['mouseenter'];
+  onMouseleave?: FloatButtonEmits['mouseleave'];
+  onFocus?: FloatButtonEmits['focus'];
+  onBlur?: FloatButtonEmits['blur'];
+}
+declare const floatButtonPrefixCls = "float-btn";
+declare const InternalFloatButton: vue949.DefineSetupFnComponent<FloatButtonProps, FloatButtonEmits, SlotsType<FloatButtonSlots>, FloatButtonProps, vue949.PublicProps>;
+declare const FloatButton: typeof InternalFloatButton;
+//#endregion
+export { FloatButtonBadgeProps, FloatButtonClassNamesType, FloatButtonElement, FloatButtonEmits, FloatButtonEmitsProps, FloatButtonGroupTrigger, FloatButtonProps, FloatButtonRef, FloatButtonSemanticName, FloatButtonShape, FloatButtonSlots, FloatButtonStylesType, FloatButtonType, FloatButton as default, floatButtonPrefixCls };

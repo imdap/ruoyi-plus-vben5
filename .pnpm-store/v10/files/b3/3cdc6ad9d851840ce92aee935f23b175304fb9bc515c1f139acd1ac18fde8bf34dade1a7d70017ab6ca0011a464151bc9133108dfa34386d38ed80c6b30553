@@ -1,0 +1,245 @@
+import { useBaseConfig } from "../config-provider/context.js";
+import config_provider_default, { globalConfig } from "../config-provider/index.js";
+import { useAppConfig } from "../app/context.js";
+import PurePanel_default from "./PurePanel.js";
+import { wrapPromiseFn } from "./util.js";
+import useMessage, { useInternalMessage } from "./useMessage.js";
+import { createVNode, defineComponent, getCurrentInstance, isVNode, onMounted, render, shallowRef, watch } from "vue";
+
+//#region src/message/index.tsx
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+let message = null;
+let taskQueue = [];
+let defaultGlobalConfig = {};
+let act = (callback) => callback();
+function getGlobalContext() {
+	const { getContainer, duration, rtl, maxCount, top, pauseOnHover } = defaultGlobalConfig;
+	const mergedContainer = getContainer?.() || document.body;
+	let appContext = defaultGlobalConfig.appContext;
+	const instance = getCurrentInstance();
+	if (instance && !appContext) appContext = instance.appContext;
+	else if (!appContext) appContext = globalConfig().appContext;
+	return {
+		getContainer: () => mergedContainer,
+		duration,
+		rtl,
+		maxCount,
+		top,
+		pauseOnHover,
+		appContext
+	};
+}
+const GlobalHolder = /* @__PURE__ */ defineComponent((props, { expose }) => {
+	const { messageConfig, sync } = props;
+	const { getPrefixCls } = useBaseConfig();
+	const prefixCls = defaultGlobalConfig.prefixCls || getPrefixCls("message");
+	const appConfig = useAppConfig();
+	const [api, holder] = useInternalMessage({
+		...messageConfig,
+		prefixCls,
+		...appConfig.message || {}
+	});
+	onMounted(() => {
+		sync?.();
+	});
+	const instance = { ...api };
+	Object.keys(instance).forEach((method) => {
+		instance[method] = (...args) => {
+			sync();
+			return api[method](...args);
+		};
+	});
+	expose({
+		instance,
+		sync
+	});
+	return () => {
+		if (typeof holder === "function") return holder?.();
+		return holder;
+	};
+}, { props: {
+	messageConfig: { required: true },
+	sync: {
+		type: Function,
+		required: true
+	}
+} });
+const GlobalHolderWrapper = /* @__PURE__ */ defineComponent((props) => {
+	const messageConfig = shallowRef(getGlobalContext());
+	const holderRef = shallowRef();
+	const sync = () => {
+		messageConfig.value = getGlobalContext();
+	};
+	onMounted(sync);
+	let filled = false;
+	watch(() => holderRef.value, (holder) => {
+		if (holder && !filled) {
+			filled = true;
+			props.onReady?.({
+				instance: holder.instance,
+				sync
+			});
+		}
+	}, { immediate: true });
+	const global = globalConfig();
+	return () => {
+		const holderNode = createVNode(GlobalHolder, {
+			"ref": holderRef,
+			"sync": sync,
+			"messageConfig": messageConfig.value
+		}, null);
+		const dom = global.holderRender ? global.holderRender(holderNode) : holderNode;
+		return createVNode(config_provider_default, {
+			"prefixCls": global.getRootPrefixCls(),
+			"iconPrefixCls": global.getIconPrefixCls(),
+			"theme": global.theme.value
+		}, _isSlot(dom) ? dom : { default: () => [dom] });
+	};
+}, { props: { onReady: {
+	type: Function,
+	required: false
+} } });
+function flushMessageQueue() {
+	if (!message) {
+		const holderFragment = document.createDocumentFragment();
+		const newMessage = { fragment: holderFragment };
+		message = newMessage;
+		act(() => {
+			const vnode = createVNode(GlobalHolderWrapper, { onReady: (node) => {
+				Promise.resolve().then(() => {
+					if (!newMessage.instance && node?.instance) {
+						newMessage.instance = node.instance;
+						newMessage.sync = node.sync;
+						flushMessageQueue();
+					}
+				});
+			} });
+			const globalContext = getGlobalContext();
+			if (globalContext.appContext) vnode.appContext = globalContext.appContext;
+			render(vnode, holderFragment);
+		});
+		return;
+	}
+	if (!message.instance) return;
+	taskQueue.forEach((task) => {
+		const { type, skipped } = task;
+		if (skipped) return;
+		switch (type) {
+			case "open":
+				act(() => {
+					const closeFn = message.instance.open({
+						...defaultGlobalConfig,
+						...task.config
+					});
+					closeFn?.then(task.resolve);
+					task.setCloseFn(closeFn);
+				});
+				break;
+			case "destroy":
+				act(() => {
+					message?.instance.destroy(task.key);
+				});
+				break;
+			default: act(() => {
+				const closeFn = message.instance[type](...task.args);
+				closeFn?.then(task.resolve);
+				task.setCloseFn(closeFn);
+			});
+		}
+	});
+	taskQueue = [];
+}
+function setMessageGlobalConfig(config) {
+	defaultGlobalConfig = {
+		...defaultGlobalConfig,
+		...config
+	};
+	act(() => {
+		message?.sync?.();
+	});
+}
+function open(config) {
+	const result = wrapPromiseFn((resolve) => {
+		let closeFn;
+		const task = {
+			type: "open",
+			config,
+			resolve,
+			setCloseFn: (fn) => {
+				closeFn = fn;
+			}
+		};
+		taskQueue.push(task);
+		return () => {
+			if (closeFn) act(() => {
+				closeFn?.();
+			});
+			else task.skipped = true;
+		};
+	});
+	flushMessageQueue();
+	return result;
+}
+function typeOpen(type, args) {
+	const result = wrapPromiseFn((resolve) => {
+		let closeFn;
+		const task = {
+			type,
+			args,
+			resolve,
+			setCloseFn: (fn) => {
+				closeFn = fn;
+			}
+		};
+		taskQueue.push(task);
+		return () => {
+			if (closeFn) act(() => {
+				closeFn?.();
+			});
+			else task.skipped = true;
+		};
+	});
+	flushMessageQueue();
+	return result;
+}
+function destroy(key) {
+	taskQueue.push({
+		type: "destroy",
+		key
+	});
+	flushMessageQueue();
+}
+const methods = [
+	"success",
+	"info",
+	"warning",
+	"error",
+	"loading"
+];
+const staticMethods = {
+	open,
+	destroy,
+	config: setMessageGlobalConfig,
+	useMessage,
+	_InternalPanelDoNotUseOrYouWillBeFired: PurePanel_default
+};
+methods.forEach((type) => {
+	staticMethods[type] = (...args) => typeOpen(type, args);
+});
+function noop() {}
+let _actWrapper = noop;
+if (process.env.NODE_ENV === "test") _actWrapper = (wrapper) => {
+	act = wrapper;
+};
+const actWrapper = _actWrapper;
+let _actDestroy = noop;
+if (process.env.NODE_ENV === "test") _actDestroy = () => {
+	message = null;
+};
+const actDestroy = _actDestroy;
+var message_default = staticMethods;
+
+//#endregion
+export { actDestroy, actWrapper, message_default as default, useMessage };

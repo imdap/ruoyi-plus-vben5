@@ -1,0 +1,23 @@
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue807 from "vue";
+
+//#region src/typography/style/index.d.ts
+/** Component only token. Which will handle additional calculation of alias token */
+interface ComponentToken {
+  /**
+   * @desc 标题上间距
+   * @descEN Margin top of title
+   */
+  titleMarginTop: number | string;
+  /**
+   * @desc 标题下间距
+   * @descEN Margin bottom of title
+   */
+  titleMarginBottom: number | string;
+}
+type TypographyToken = FullToken<'Typography'>;
+declare const prepareComponentToken: GetDefaultToken<'Typography'>;
+declare const _default: (prefixCls: vue807.Ref<string>, rootCls?: vue807.Ref<string | undefined>) => readonly [vue807.Ref<string, string>, vue807.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, TypographyToken, _default as default, prepareComponentToken };

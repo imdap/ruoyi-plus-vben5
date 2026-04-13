@@ -1,0 +1,12 @@
+import * as vue308 from "vue";
+import { Ref } from "vue";
+
+//#region src/config-provider/DisabledContext.d.ts
+interface DisabledContextProps {
+  disabled?: boolean;
+}
+declare function useDisabledContextProvider(props: Ref<boolean>): void;
+declare function useDisabledContext(): Ref<boolean, boolean>;
+declare const DisabledContextProvider: vue308.DefineSetupFnComponent<DisabledContextProps, {}, {}, DisabledContextProps & {}, vue308.PublicProps>;
+//#endregion
+export { DisabledContextProps, DisabledContextProvider, useDisabledContext, useDisabledContextProvider };

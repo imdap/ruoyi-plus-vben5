@@ -1,0 +1,21 @@
+import { RadioEmits, RadioProps, RadioSlots } from "./interface.js";
+import * as vue451 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/radio/radio.d.ts
+interface InternalRadioProps extends RadioProps, RadioEmitsProps {}
+interface RadioEmitsProps {
+  onChange?: RadioEmits['change'];
+  'onUpdate:checked'?: RadioEmits['update:checked'];
+  'onUpdate:value'?: RadioEmits['update:value'];
+  onMouseenter?: RadioEmits['mouseenter'];
+  onMouseleave?: RadioEmits['mouseleave'];
+  onKeypress?: RadioEmits['keypress'];
+  onKeydown?: RadioEmits['keydown'];
+  onFocus?: RadioEmits['focus'];
+  onBlur?: RadioEmits['blur'];
+  onClick?: RadioEmits['click'];
+}
+declare const InternalRadio: vue451.DefineSetupFnComponent<InternalRadioProps, RadioEmits, SlotsType<RadioSlots>, InternalRadioProps, vue451.PublicProps>;
+//#endregion
+export { InternalRadioProps, RadioEmitsProps, InternalRadio as default };

@@ -1,0 +1,10 @@
+import { SplitterEmits, SplitterProps, SplitterSlots } from "./interface.js";
+import * as vue730 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/splitter/Splitter.d.ts
+interface InternalSplitterProps extends SplitterProps, SplitterEmitsProps {}
+interface SplitterEmitsProps {}
+declare const Splitter: vue730.DefineSetupFnComponent<InternalSplitterProps, SplitterEmits, SlotsType<SplitterSlots>, InternalSplitterProps, vue730.PublicProps>;
+//#endregion
+export { InternalSplitterProps, SplitterEmitsProps, Splitter as default };

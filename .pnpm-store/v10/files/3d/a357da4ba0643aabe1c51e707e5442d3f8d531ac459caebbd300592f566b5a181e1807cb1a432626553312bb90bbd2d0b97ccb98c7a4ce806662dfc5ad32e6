@@ -1,0 +1,46 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue292 from "vue";
+
+//#region src/breadcrumb/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 面包屑项文字颜色
+   * @descEN Text color of Breadcrumb item
+   */
+  itemColor: string;
+  /**
+   * @desc 图标大小
+   * @descEN Icon size
+   */
+  iconFontSize: number;
+  /**
+   * @desc 链接文字颜色
+   * @descEN Text color of link
+   */
+  linkColor: string;
+  /**
+   * @desc 链接文字悬浮颜色
+   * @descEN Color of hovered link
+   */
+  linkHoverColor: string;
+  /**
+   * @desc 最后一项文字颜色
+   * @descEN Text color of the last item
+   */
+  lastItemColor: string;
+  /**
+   * @desc 分隔符外间距
+   * @descEN Margin of separator
+   */
+  separatorMargin: number;
+  /**
+   * @desc 分隔符颜色
+   * @descEN Color of separator
+   */
+  separatorColor: string;
+}
+declare const prepareComponentToken: GetDefaultToken<'Breadcrumb'>;
+declare const _default: (prefixCls: vue292.Ref<string>, rootCls?: vue292.Ref<string | undefined>) => readonly [vue292.Ref<string, string>, vue292.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

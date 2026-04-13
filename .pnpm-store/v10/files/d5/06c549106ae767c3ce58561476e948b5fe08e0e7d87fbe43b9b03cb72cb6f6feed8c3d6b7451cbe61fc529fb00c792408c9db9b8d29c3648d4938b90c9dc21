@@ -1,0 +1,12 @@
+import * as vue612 from "vue";
+
+//#region src/pagination/style/bordered.d.ts
+declare const _default: vue612.DefineComponent<vue612.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>, () => null, {}, {}, {}, vue612.ComponentOptionsMixin, vue612.ComponentOptionsMixin, {}, string, vue612.PublicProps, Readonly<vue612.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>> & Readonly<{}>, {}, {}, {}, {}, string, vue612.ComponentProvideOptions, true, {}, any>;
+//#endregion
+export { _default as default };

@@ -1,0 +1,117 @@
+import { useMenuContext } from "./context/MenuContext.js";
+import { useFullPath, useMeasure } from "./context/PathContext.js";
+import { parseChildren } from "./utils/commonUtil.js";
+import { computed, createVNode, defineComponent, isVNode, mergeProps } from "vue";
+import { clsx } from "@v-c/util";
+import omit from "@v-c/util/dist/omit";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+var InternalMenuItemGroup = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	const context = useMenuContext();
+	return () => {
+		const { class: className, title, eventKey, ...restProps } = props;
+		const { prefixCls, classes: menuClassNames, styles } = context?.value ?? {};
+		const groupPrefixCls = `${prefixCls}-item-group`;
+		return createVNode("li", mergeProps({ "role": "presentation" }, restProps, {
+			"onClick": (e) => e.stopPropagation(),
+			"class": clsx(groupPrefixCls, className)
+		}), [createVNode("div", {
+			"role": "presentation",
+			"class": clsx(`${groupPrefixCls}-title`, menuClassNames?.listTitle),
+			"style": styles?.listTitle,
+			"title": typeof title === "string" ? title : void 0
+		}, [title]), createVNode("ul", {
+			"role": "group",
+			"class": clsx(`${groupPrefixCls}-list`, menuClassNames?.list),
+			"style": styles?.list
+		}, [slots?.default ? slots.default() : null])]);
+	};
+}, {
+	props: {
+		title: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		eventKey: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		warnKey: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		style: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		class: {
+			type: String,
+			required: false,
+			default: void 0
+		}
+	},
+	name: "InternalMenuItemGroup"
+});
+var MenuItemGroup_default = /* @__PURE__ */ defineComponent((props, ctx) => {
+	const connectedKeyPath = useFullPath(computed(() => props.eventKey));
+	const measure = useMeasure();
+	return () => {
+		const slots = ctx.slots;
+		const childList = parseChildren(filterEmpty(slots.default ? slots.default() : []), connectedKeyPath.value);
+		if (measure) return childList;
+		return createVNode(InternalMenuItemGroup, omit(props, ["warnKey"]), _isSlot(childList) ? childList : { default: () => [childList] });
+	};
+}, {
+	props: {
+		title: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		eventKey: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		warnKey: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		style: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		class: {
+			type: String,
+			required: false,
+			default: void 0
+		}
+	},
+	name: "MenuItemGroup",
+	inheritAttrs: false
+});
+export { MenuItemGroup_default as default };

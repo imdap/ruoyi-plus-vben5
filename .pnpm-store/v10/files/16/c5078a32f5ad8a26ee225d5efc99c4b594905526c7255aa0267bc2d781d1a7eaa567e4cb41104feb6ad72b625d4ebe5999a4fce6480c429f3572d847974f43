@@ -1,0 +1,147 @@
+import getEntity from "./utils/keyUtil.js";
+import warning from "@v-c/util/dist/warning";
+function arrDel(list, value) {
+	if (!list) return [];
+	const clone = list.slice();
+	const index = clone.indexOf(value);
+	if (index >= 0) clone.splice(index, 1);
+	return clone;
+}
+function arrAdd(list, value) {
+	const clone = (list || []).slice();
+	if (!clone.includes(value)) clone.push(value);
+	return clone;
+}
+function posToArr(pos) {
+	return pos.split("-");
+}
+function getDragChildrenKeys(dragNodeKey, keyEntities) {
+	const dragChildrenKeys = [];
+	const entity = getEntity(keyEntities, dragNodeKey);
+	function dig(list = []) {
+		list.forEach(({ key, children }) => {
+			dragChildrenKeys.push(key);
+			dig(children);
+		});
+	}
+	dig(entity?.children);
+	return dragChildrenKeys;
+}
+function isLastChild(treeNodeEntity) {
+	if (treeNodeEntity.parent) {
+		const posArr = posToArr(treeNodeEntity.pos);
+		return Number(posArr[posArr.length - 1]) === (treeNodeEntity.parent.children || []).length - 1;
+	}
+	return false;
+}
+function isFirstChild(treeNodeEntity) {
+	const posArr = posToArr(treeNodeEntity.pos);
+	return Number(posArr[posArr.length - 1]) === 0;
+}
+function calcDropPosition(event, dragNodeProps, targetNodeProps, indent, startMousePosition, allowDrop, flattenedNodes, keyEntities, expandKeys, direction) {
+	const { clientX, clientY } = event;
+	const { top, height } = event.target.getBoundingClientRect();
+	const rawDropLevelOffset = ((direction === "rtl" ? -1 : 1) * ((startMousePosition?.x || 0) - clientX) - 12) / indent;
+	const filteredExpandKeys = expandKeys.filter((key) => (getEntity(keyEntities, key)?.children || []).length);
+	let abstractDropNodeEntity = getEntity(keyEntities, targetNodeProps.eventKey);
+	if (clientY < top + height / 2) {
+		const nodeIndex = flattenedNodes.findIndex(({ key }) => key === abstractDropNodeEntity.key);
+		const prevNodeKey = flattenedNodes[nodeIndex <= 0 ? 0 : nodeIndex - 1].key;
+		abstractDropNodeEntity = getEntity(keyEntities, prevNodeKey);
+	}
+	const initialAbstractDropNodeKey = abstractDropNodeEntity.key;
+	const abstractDragOverEntity = abstractDropNodeEntity;
+	const dragOverNodeKey = abstractDropNodeEntity.key;
+	let dropPosition = 0;
+	let dropLevelOffset = 0;
+	if (!filteredExpandKeys.includes(initialAbstractDropNodeKey)) for (let i = 0; i < rawDropLevelOffset; i += 1) if (isLastChild(abstractDropNodeEntity)) {
+		abstractDropNodeEntity = abstractDropNodeEntity.parent;
+		dropLevelOffset += 1;
+	} else break;
+	const abstractDragDataNode = dragNodeProps.data;
+	const abstractDropDataNode = abstractDropNodeEntity.node;
+	let dropAllowed = true;
+	if (isFirstChild(abstractDropNodeEntity) && abstractDropNodeEntity.level === 0 && clientY < top + height / 2 && allowDrop({
+		dragNode: abstractDragDataNode,
+		dropNode: abstractDropDataNode,
+		dropPosition: -1
+	}) && abstractDropNodeEntity.key === targetNodeProps.eventKey) dropPosition = -1;
+	else if ((abstractDragOverEntity.children || []).length && filteredExpandKeys.includes(dragOverNodeKey)) if (allowDrop({
+		dragNode: abstractDragDataNode,
+		dropNode: abstractDropDataNode,
+		dropPosition: 0
+	})) dropPosition = 0;
+	else dropAllowed = false;
+	else if (dropLevelOffset === 0) if (rawDropLevelOffset > -1.5) if (allowDrop({
+		dragNode: abstractDragDataNode,
+		dropNode: abstractDropDataNode,
+		dropPosition: 1
+	})) dropPosition = 1;
+	else dropAllowed = false;
+	else if (allowDrop({
+		dragNode: abstractDragDataNode,
+		dropNode: abstractDropDataNode,
+		dropPosition: 0
+	})) dropPosition = 0;
+	else if (allowDrop({
+		dragNode: abstractDragDataNode,
+		dropNode: abstractDropDataNode,
+		dropPosition: 1
+	})) dropPosition = 1;
+	else dropAllowed = false;
+	else if (allowDrop({
+		dragNode: abstractDragDataNode,
+		dropNode: abstractDropDataNode,
+		dropPosition: 1
+	})) dropPosition = 1;
+	else dropAllowed = false;
+	return {
+		dropPosition,
+		dropLevelOffset,
+		dropTargetKey: abstractDropNodeEntity.key,
+		dropTargetPos: abstractDropNodeEntity.pos,
+		dragOverNodeKey,
+		dropContainerKey: dropPosition === 0 ? null : abstractDropNodeEntity.parent?.key || null,
+		dropAllowed
+	};
+}
+function calcSelectedKeys(selectedKeys, { multiple }) {
+	if (!selectedKeys) return void 0;
+	if (multiple) return selectedKeys.slice();
+	if (selectedKeys.length) return [selectedKeys[0]];
+	return selectedKeys;
+}
+function parseCheckedKeys(keys) {
+	if (!keys) return null;
+	let keyProps;
+	if (Array.isArray(keys)) keyProps = {
+		checkedKeys: keys,
+		halfCheckedKeys: void 0
+	};
+	else if (typeof keys === "object") keyProps = {
+		checkedKeys: keys.checked || void 0,
+		halfCheckedKeys: keys.halfChecked || void 0
+	};
+	else {
+		warning(false, "`checkedKeys` is not an array or an object");
+		return null;
+	}
+	return keyProps;
+}
+function conductExpandParent(keyList, keyEntities) {
+	const expandedKeys = /* @__PURE__ */ new Set();
+	function conductUp(key) {
+		if (expandedKeys.has(key)) return;
+		const entity = getEntity(keyEntities, key);
+		if (!entity) return;
+		expandedKeys.add(key);
+		const { parent, node } = entity;
+		if (node.disabled) return;
+		if (parent) conductUp(parent.key);
+	}
+	(keyList || []).forEach((key) => {
+		conductUp(key);
+	});
+	return [...expandedKeys];
+}
+export { arrAdd, arrDel, calcDropPosition, calcSelectedKeys, conductExpandParent, getDragChildrenKeys, isFirstChild, isLastChild, parseCheckedKeys, posToArr };

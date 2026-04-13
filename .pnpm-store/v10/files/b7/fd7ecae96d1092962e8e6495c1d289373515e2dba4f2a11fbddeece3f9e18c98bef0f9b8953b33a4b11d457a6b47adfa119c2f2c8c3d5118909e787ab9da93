@@ -1,0 +1,77 @@
+import type { Request as NodeFetchRequestType } from 'node-fetch';
+import { FormData } from 'formdata-node';
+import { calculateCacheKey } from './helpers/cache_keys.js';
+import type { CacheStrategy, FetchInit, FetchResource, INodeFetchCacheCache, ISynchronizationStrategy } from './types.js';
+import { getNodeFetch } from './helpers/node_fetch_imports.js';
+type CacheKeyCalculator = typeof calculateCacheKey;
+type NFCCustomizations = {
+    cache: INodeFetchCacheCache;
+    synchronizationStrategy: ISynchronizationStrategy;
+    calculateCacheKey: CacheKeyCalculator;
+    shouldCacheResponse: CacheStrategy;
+};
+type NFCOptions = Partial<NFCCustomizations>;
+declare function create(creationOptions: NFCOptions): {
+    (resource: FetchResource, init?: FetchInit, perRequestOptions?: NFCOptions): Promise<{
+        readonly ejectFromCache: () => Promise<unknown>;
+        readonly returnedFromCache: boolean;
+        readonly isCacheMiss: boolean;
+        readonly headers: import("node-fetch").Headers;
+        readonly ok: boolean;
+        readonly redirected: boolean;
+        readonly status: number;
+        readonly statusText: string;
+        readonly type: "default" | "error" | "basic" | "cors" | "opaque" | "opaqueredirect";
+        readonly url: string;
+        clone(): import("node-fetch").Response;
+        readonly body: NodeJS.ReadableStream | null;
+        readonly bodyUsed: boolean;
+        readonly size: number;
+        buffer(): Promise<Buffer>;
+        arrayBuffer(): Promise<ArrayBuffer>;
+        formData(): Promise<globalThis.FormData>;
+        blob(): Promise<Blob>;
+        json(): Promise<unknown>;
+        text(): Promise<string>;
+    }>;
+    create: typeof create;
+    options: NFCCustomizations;
+};
+declare const defaultFetch: {
+    (resource: FetchResource, init?: FetchInit, perRequestOptions?: NFCOptions): Promise<{
+        readonly ejectFromCache: () => Promise<unknown>;
+        readonly returnedFromCache: boolean;
+        readonly isCacheMiss: boolean;
+        readonly headers: import("node-fetch").Headers;
+        readonly ok: boolean;
+        readonly redirected: boolean;
+        readonly status: number;
+        readonly statusText: string;
+        readonly type: "default" | "error" | "basic" | "cors" | "opaque" | "opaqueredirect";
+        readonly url: string;
+        clone(): import("node-fetch").Response;
+        readonly body: NodeJS.ReadableStream | null;
+        readonly bodyUsed: boolean;
+        readonly size: number;
+        buffer(): Promise<Buffer>;
+        arrayBuffer(): Promise<ArrayBuffer>;
+        formData(): Promise<globalThis.FormData>;
+        blob(): Promise<Blob>;
+        json(): Promise<unknown>;
+        text(): Promise<string>;
+    }>;
+    create: typeof create;
+    options: NFCCustomizations;
+};
+declare const cacheStrategies: {
+    cacheOkayOnly: CacheStrategy;
+    cacheNon5xxOnly: CacheStrategy;
+};
+export default defaultFetch;
+export { MemoryCache } from './classes/caching/memory_cache.js';
+export { FileSystemCache } from './classes/caching/file_system_cache.js';
+export { CACHE_VERSION } from './helpers/cache_keys.js';
+export { getNodeFetch };
+export type { NFCResponse } from './classes/response.js';
+export type { NFCResponseMetadata } from './types.js';
+export { defaultFetch as NodeFetchCache, cacheStrategies, calculateCacheKey as getCacheKey, calculateCacheKey, FormData, type NodeFetchRequestType as NodeFetchRequest, type NFCOptions, type CacheKeyCalculator, type INodeFetchCacheCache, type FetchResource, type FetchInit, type ISynchronizationStrategy, };

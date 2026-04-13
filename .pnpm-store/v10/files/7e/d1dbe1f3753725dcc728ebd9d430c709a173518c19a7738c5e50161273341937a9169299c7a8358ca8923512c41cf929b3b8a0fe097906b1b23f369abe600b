@@ -1,0 +1,12 @@
+import * as vue489 from "vue";
+
+//#region src/modal/style/confirm.d.ts
+declare const _default: vue489.DefineComponent<vue489.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>, () => null, {}, {}, {}, vue489.ComponentOptionsMixin, vue489.ComponentOptionsMixin, {}, string, vue489.PublicProps, Readonly<vue489.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>> & Readonly<{}>, {}, {}, {}, {}, string, vue489.ComponentProvideOptions, true, {}, any>;
+//#endregion
+export { _default as default };

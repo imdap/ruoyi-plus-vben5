@@ -1,0 +1,34 @@
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue438 from "vue";
+
+//#region src/flex/style/index.d.ts
+/** Component only token. Which will handle additional calculation of alias token */
+interface ComponentToken {}
+interface FlexToken extends FullToken<'Flex'> {
+  /**
+   * @nameZH 小间隙
+   * @nameEN Small Gap
+   * @desc 控制元素的小间隙。
+   * @descEN Control the small gap of the element.
+   */
+  flexGapSM: number;
+  /**
+   * @nameZH 间隙
+   * @nameEN Gap
+   * @desc 控制元素的间隙。
+   * @descEN Control the gap of the element.
+   */
+  flexGap: number;
+  /**
+   * @nameZH 大间隙
+   * @nameEN Large Gap
+   * @desc 控制元素的大间隙。
+   * @descEN Control the large gap of the element.
+   */
+  flexGapLG: number;
+}
+declare const prepareComponentToken: GetDefaultToken<'Flex'>;
+declare const _default: (prefixCls: vue438.Ref<string>, rootCls?: vue438.Ref<string | undefined>) => readonly [vue438.Ref<string, string>, vue438.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, FlexToken, _default as default, prepareComponentToken };

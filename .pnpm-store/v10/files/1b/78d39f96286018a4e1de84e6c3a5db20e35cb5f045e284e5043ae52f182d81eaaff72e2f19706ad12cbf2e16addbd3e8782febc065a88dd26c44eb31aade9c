@@ -1,0 +1,77 @@
+{
+  "name": "circular-dependency-scanner",
+  "type": "module",
+  "version": "3.0.1",
+  "description": "Out-of-box and zero configuration circular dependencies detector, with both JavaScript API and Command Line Tool.",
+  "author": "情绪羊 <emosheep@qq.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/emosheeep/circular-dependency-scanner"
+  },
+  "keywords": [
+    "circular",
+    "scanner",
+    "detector",
+    "circles",
+    "cyclic",
+    "ast",
+    "javascript",
+    "ecmascript",
+    "circular-dependency",
+    "cli",
+    "napi-rs",
+    "rust",
+    "wasm"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "ds": "dist/cli.js"
+  },
+  "files": [
+    "CHANGELOG.md",
+    "README.md",
+    "README.zh_CN.md",
+    "dist",
+    "rust",
+    "types"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@ast-grep/napi": "^0.40.1",
+    "@vue/compiler-sfc": "^3.5.25",
+    "commander": "^14.0.2",
+    "get-tsconfig": "^4.13.0",
+    "listr2": "^9.0.5",
+    "minimatch": "^9.0.5",
+    "node-cleanup": "^2.1.2",
+    "typescript": "^5.9.3",
+    "update-notifier": "^7.3.1",
+    "zx": "^8.8.5"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^6.6.1",
+    "@changesets/cli": "^2.29.8",
+    "@commitlint/cli": "^20.2.0",
+    "@commitlint/config-conventional": "^20.2.0",
+    "@rslib/core": "^0.18.4",
+    "@types/node": "^25.0.1",
+    "eslint": "^9.39.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "vitest": "^4.0.15"
+  },
+  "scripts": {
+    "lint": "eslint . --fix --ext .js,.ts",
+    "build": "rslib build",
+    "build:wasm": "wasm-pack build --release -t bundler -d wasm",
+    "watch": "rslib build --watch",
+    "changeset": "changeset",
+    "versions": "changeset version",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  }
+}

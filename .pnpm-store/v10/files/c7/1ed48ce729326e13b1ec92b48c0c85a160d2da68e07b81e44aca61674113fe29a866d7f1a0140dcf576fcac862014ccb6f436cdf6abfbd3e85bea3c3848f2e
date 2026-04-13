@@ -1,0 +1,1 @@
+{"version":3,"file":"IFetchRequestHeaders.d.ts","sourceRoot":"","sources":["../../../src/fetch/types/IFetchRequestHeaders.ts"],"names":[],"mappings":"AAAA;;GAEG;AACH,MAAM,CAAC,OAAO,WAAW,oBAAoB;IAC5C,GAAG,CAAC,EAAE,MAAM,GAAG,MAAM,GAAG,IAAI,CAAC;IAC7B,OAAO,EAAE;QACR,CAAC,GAAG,EAAE,MAAM,GAAG,MAAM,CAAC;KACtB,CAAC;CACF"}

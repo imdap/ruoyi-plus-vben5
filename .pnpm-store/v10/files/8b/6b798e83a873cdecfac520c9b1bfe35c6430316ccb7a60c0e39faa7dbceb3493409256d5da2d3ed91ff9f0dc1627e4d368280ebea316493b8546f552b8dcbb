@@ -1,0 +1,47 @@
+{
+  "name": "@cspell/dict-rust",
+  "version": "4.1.2",
+  "description": "Rust dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "cspell-tools-cli build",
+    "test": "cspell samples",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/rust"
+  },
+  "keywords": [
+    "cspell",
+    "rust",
+    "Rust",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "contributors": [
+    "Alexander Andreev"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/rust#readme",
+  "files": [
+    "dict/rust.txt.gz",
+    "dict/crates.txt.gz",
+    "cspell-ext.json"
+  ],
+  "gitHead": "a25b3ba911ef8bdc9c54326481b4c86dc8d2d687"
+}

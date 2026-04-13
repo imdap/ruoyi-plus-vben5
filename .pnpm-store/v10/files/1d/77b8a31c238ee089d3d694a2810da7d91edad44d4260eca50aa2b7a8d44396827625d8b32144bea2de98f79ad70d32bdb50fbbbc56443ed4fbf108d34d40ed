@@ -1,0 +1,75 @@
+import { PackageConfig, ExportsTarget } from '../install/package.js';
+import type { PackageTarget } from '../generator.js';
+import { ProviderManager } from '../providers/index.js';
+import { Installer } from '../install/installer.js';
+export declare function setPathFns(_realpath: any, _pathToFileURL: any): void;
+export declare function isBuiltinScheme(specifier: string): specifier is `${string}:${string}`;
+export declare function isMappableScheme(specifier: string): specifier is `${string}:${string}`;
+export interface TraceEntry {
+    deps: string[];
+    dynamicDeps: string[];
+    hasStaticParent: boolean;
+    size: number;
+    integrity: string;
+    wasCjs: boolean;
+    usesCjs: boolean;
+    cjsLazyDeps: string[];
+    format: 'esm' | 'commonjs' | 'system' | 'json' | 'css' | 'typescript' | 'wasm';
+    parseError: Error;
+}
+export declare class Resolver {
+    pcfgPromises: Record<string, Promise<PackageConfig | null>>;
+    analysisPromises: Record<string, Promise<void>>;
+    pcfgs: Record<string, PackageConfig | null>;
+    packageBaseCache: Record<string, `${string}/` | Promise<`${string}/`>>;
+    fileLists: Record<string, Set<string> | undefined>;
+    fetchOpts: any;
+    preserveSymlinks: any;
+    pm: ProviderManager;
+    traceEntries: Record<string, TraceEntry | null>;
+    traceEntryPromises: Record<string, Promise<void>>;
+    env: string[];
+    cjsEnv: string[];
+    traceCjs: boolean;
+    traceTs: boolean;
+    traceSystem: boolean;
+    installer: Installer;
+    visitedUrls: Set<string>;
+    touchedPackageConfigUrls: Set<string>;
+    touchedAnalysisUrls: Set<string>;
+    immutableUrls: Set<string>;
+    restoredAnalysis: Record<string, any>;
+    constructor({ env, fetchOpts, providerManager, packageConfigs, preserveSymlinks, traceCjs, traceTs, traceSystem }: {
+        env: string[];
+        fetchOpts?: any;
+        preserveSymlinks?: boolean;
+        packageConfigs?: Record<`${string}/`, PackageConfig>;
+        traceCjs?: boolean;
+        traceTs?: boolean;
+        traceSystem: boolean;
+        providerManager: ProviderManager;
+    });
+    resolveBuiltin(specifier: string): string | {
+        target: PackageTarget;
+        subpath: '.' | `./${string}`;
+    } | undefined;
+    getPackageBase(url: string): `${string}/` | Promise<`${string}/`>;
+    getPackageConfig(pkgUrl: string): PackageConfig | null | Promise<PackageConfig | null>;
+    getFileList(pkgUrl: string): Promise<Set<string> | undefined>;
+    getPackageBaseCached(url: string): `${string}/` | undefined;
+    getWildcardPrefixes(pkgUrl: string): Set<string>;
+    getDepList(pkgUrl: string, dev?: boolean): Promise<string[]>;
+    checkPjson(url: string): boolean | Promise<boolean>;
+    exists(resolvedUrl: string): Promise<boolean>;
+    wasCommonJS(url: string): Promise<boolean>;
+    realPath(url: string): Promise<string>;
+    finalizeResolve(url: string, parentIsCjs: boolean, exportsResolution: boolean, pkgUrl: `${string}/`): Promise<string>;
+    getExportResolution(pkgUrl: `${string}/`, subpath: '.' | `./${string}`, originalSpecifier: string): Promise<'.' | `./${string}` | null>;
+    resolveEmpty(cjsEnv: boolean, originalSpecifier: string, parentUrl: string): Promise<string>;
+    resolveExport(pkgUrl: `${string}/`, subpath: `.${string}`, cjsEnv: boolean, parentIsCjs: boolean, originalSpecifier: string, parentUrl?: string): Promise<string>;
+    getAnalysis(resolvedUrl: string): TraceEntry | null | undefined;
+    analyze(resolvedUrl: string): TraceEntry | null | Promise<TraceEntry | null>;
+    private _analyzeAsync;
+    resolvePackageTarget(target: ExportsTarget, packageUrl: string, cjsEnv: boolean, subpath: string, isImport: boolean): string | null;
+}
+export declare function enumeratePackageTargets(target: ExportsTarget, targets?: Set<"." | `./${string}`>): Set<`./${string}` | '.'>;

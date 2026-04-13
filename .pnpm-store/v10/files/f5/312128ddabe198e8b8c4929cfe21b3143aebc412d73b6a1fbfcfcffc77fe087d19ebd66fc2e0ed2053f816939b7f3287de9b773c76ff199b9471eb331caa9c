@@ -1,0 +1,46 @@
+import { createVNode, defineComponent } from "vue";
+import { clsx } from "@v-c/util";
+var Indent_default = /* @__PURE__ */ defineComponent((props) => {
+	return () => {
+		const { prefixCls, level, isStart, isEnd } = props;
+		const baseClassName = `${prefixCls}-indent-unit`;
+		const list = [];
+		for (let i = 0; i < level; i += 1) list.push(createVNode("span", {
+			"key": i,
+			"class": clsx(baseClassName, {
+				[`${baseClassName}-start`]: isStart?.[i],
+				[`${baseClassName}-end`]: isEnd?.[i]
+			})
+		}, null));
+		return createVNode("span", {
+			"aria-hidden": "true",
+			"class": `${props.prefixCls}-indent`
+		}, [list]);
+	};
+}, {
+	props: {
+		prefixCls: {
+			type: String,
+			required: true,
+			default: void 0
+		},
+		level: {
+			type: Number,
+			required: true,
+			default: void 0
+		},
+		isStart: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		isEnd: {
+			type: Array,
+			required: false,
+			default: void 0
+		}
+	},
+	name: "Indent",
+	inheritAttrs: false
+});
+export { Indent_default as default };

@@ -1,0 +1,335 @@
+import { readFileSync } from "node:fs";
+import { dirname } from "node:path";
+import { toJsonSchema } from "@valibot/to-json-schema";
+import { getDefaults, strictObject } from "valibot";
+import { COMMON_OPTIONS } from "../options/descriptions.js";
+import { migrateLegacySelectorsToFlatSelectors } from "../options/migrate.js";
+import { getAttributesByAngularElement, getLiteralsByAngularAttribute } from "../parsers/angular.js";
+import { getLiteralsByCSSAtRule } from "../parsers/css.js";
+import { getLiteralsByESBareTemplateLiteral, getLiteralsByESCallExpression, getLiteralsByESExportDefaultDeclaration, getLiteralsByESVariableDeclarator, getLiteralsByTaggedTemplateExpression } from "../parsers/es.js";
+import { getAttributesByHTMLTag, getLiteralsByHTMLAttribute } from "../parsers/html.js";
+import { getAttributesByJSXElement, getLiteralsByJSXAttribute } from "../parsers/jsx.js";
+import { getAttributesBySvelteTag, getDirectivesBySvelteTag, getLiteralsBySvelteAttribute, getLiteralsBySvelteDirective } from "../parsers/svelte.js";
+import { getAttributesByVueStartTag, getLiteralsByVueAttribute } from "../parsers/vue.js";
+import { SelectorKind } from "../types/rule.js";
+import { getLocByRange } from "./ast.js";
+import { findProjectRoot } from "./project.js";
+import { resolveJson } from "../async-utils/resolvers.js";
+import { augmentMessageWithWarnings, escapeMessage } from "./utils.js";
+import { removeDefaults } from "./valibot.js";
+import { parseSemanticVersion } from "./version.js";
+import { warnOnce } from "./warn.js";
+export function createRule(options) {
+    const { autofix, category, description, docs, initialize, lintLiterals, messages, name, recommended, schema } = options;
+    let eslintContext;
+    const propertiesSchema = strictObject({
+        // eslint injects the defaults from the settings to options, if not specified in the options
+        // because we want to have a specific order of precedence, we need to remove the defaults here and merge them
+        // manually in getOptions. The order of precedence is:
+        // 1. defaults from settings
+        // 2. defaults from option
+        // 3. configs from settings
+        // 4. configs from option
+        ...removeDefaults(COMMON_OPTIONS.entries),
+        ...schema?.entries
+    });
+    const jsonSchema = toJsonSchema(propertiesSchema).properties;
+    const getOptions = () => {
+        const defaultSettings = getDefaults(COMMON_OPTIONS);
+        const defaultOptions = schema ? getDefaults(schema) : {};
+        const settings = eslintContext?.settings?.["eslint-plugin-better-tailwindcss"] ?? eslintContext?.settings?.["better-tailwindcss"] ?? {};
+        const options = eslintContext?.options[0] ?? {};
+        const mergedOptions = {
+            ...defaultSettings,
+            ...defaultOptions,
+            ...settings,
+            ...options
+        };
+        const migratedSelectors = migrateLegacySelectorsToFlatSelectors({
+            attributes: mergedOptions.attributes,
+            callees: mergedOptions.callees,
+            tags: mergedOptions.tags,
+            variables: mergedOptions.variables
+        });
+        const hasAttributeOverride = mergedOptions.attributes !== undefined;
+        const hasCalleeOverride = mergedOptions.callees !== undefined;
+        const hasTagOverride = mergedOptions.tags !== undefined;
+        const hasVariableOverride = mergedOptions.variables !== undefined;
+        const preservedSelectors = (mergedOptions.selectors ?? []).filter(selector => {
+            if (hasAttributeOverride && selector.kind === SelectorKind.Attribute) {
+                return false;
+            }
+            if (hasCalleeOverride && selector.kind === SelectorKind.Callee) {
+                return false;
+            }
+            if (hasTagOverride && selector.kind === SelectorKind.Tag) {
+                return false;
+            }
+            if (hasVariableOverride && selector.kind === SelectorKind.Variable) {
+                return false;
+            }
+            return true;
+        });
+        const selectors = [
+            ...migratedSelectors,
+            ...preservedSelectors
+        ];
+        return {
+            ...mergedOptions,
+            selectors
+        };
+    };
+    return {
+        category,
+        messages,
+        name,
+        get options() { return getOptions(); },
+        recommended,
+        rule: {
+            create: ctx => {
+                eslintContext = ctx;
+                const options = getOptions();
+                const { messageStyle } = options;
+                const cwd = options.cwd ?? findProjectRoot(ctx, options) ?? ctx.cwd;
+                const packageJsonPath = resolveJson("tailwindcss/package.json", cwd);
+                if (!packageJsonPath) {
+                    warnOnce(`Tailwind CSS is not installed. Disabling rule ${ctx.id}.`);
+                    return {};
+                }
+                const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+                const version = parseSemanticVersion(packageJson.version);
+                const installation = dirname(packageJsonPath);
+                const context = {
+                    cwd,
+                    docs,
+                    installation,
+                    options,
+                    report: ({ fix, range, warnings, ...rest }) => {
+                        const loc = getLocByRange(ctx, range);
+                        if ("id" in rest && rest.id && messages && rest.id in messages) {
+                            return void ctx.report({
+                                data: rest.data,
+                                loc,
+                                ...fix !== undefined && {
+                                    fix: fixer => fixer.replaceTextRange(range, fix)
+                                },
+                                message: escapeMessage(messageStyle, augmentMessageWithWarnings(messages[rest.id], docs, warnings))
+                            });
+                        }
+                        if ("message" in rest && rest.message) {
+                            return void ctx.report({
+                                loc,
+                                ...fix !== undefined && {
+                                    fix: fixer => fixer.replaceTextRange(range, fix)
+                                },
+                                message: escapeMessage(messageStyle, augmentMessageWithWarnings(rest.message, docs, warnings))
+                            });
+                        }
+                    },
+                    version
+                };
+                initialize?.(context);
+                return createRuleListener(eslintContext, context, lintLiterals);
+            },
+            meta: {
+                docs: {
+                    description,
+                    recommended,
+                    url: docs
+                },
+                fixable: autofix ? "code" : undefined,
+                schema: [
+                    {
+                        additionalProperties: false,
+                        properties: jsonSchema,
+                        type: "object"
+                    }
+                ],
+                type: category === "correctness" ? "problem" : "layout",
+                ...messages && { messages }
+            }
+        }
+    };
+}
+export function createRuleListener(ctx, context, lintLiterals) {
+    const selectors = context.options.selectors;
+    const attributes = [];
+    const callees = [];
+    const tags = [];
+    const variables = [];
+    for (const selector of selectors) {
+        switch (selector.kind) {
+            case SelectorKind.Attribute:
+                attributes.push(selector);
+                break;
+            case SelectorKind.Callee:
+                callees.push(selector);
+                break;
+            case SelectorKind.Tag:
+                tags.push(selector);
+                break;
+            case SelectorKind.Variable:
+                variables.push(selector);
+                break;
+        }
+    }
+    const callExpression = {
+        CallExpression(node) {
+            const callExpressionNode = node;
+            const literals = getLiteralsByESCallExpression(ctx, callExpressionNode, callees);
+            if (literals.length > 0) {
+                lintLiterals(context, literals);
+            }
+        }
+    };
+    const variableDeclarators = {
+        VariableDeclarator(node) {
+            const variableDeclaratorNode = node;
+            const literals = getLiteralsByESVariableDeclarator(ctx, variableDeclaratorNode, variables);
+            if (literals.length > 0) {
+                lintLiterals(context, literals);
+            }
+        }
+    };
+    const exportDefaultDeclarations = {
+        ExportDefaultDeclaration(node) {
+            const exportDefaultDeclarationNode = node;
+            const literals = getLiteralsByESExportDefaultDeclaration(ctx, exportDefaultDeclarationNode, variables);
+            if (literals.length > 0) {
+                lintLiterals(context, literals);
+            }
+        }
+    };
+    const taggedTemplateExpression = {
+        TaggedTemplateExpression(node) {
+            const taggedTemplateExpressionNode = node;
+            const literals = getLiteralsByTaggedTemplateExpression(ctx, taggedTemplateExpressionNode, tags);
+            if (literals.length > 0) {
+                lintLiterals(context, literals);
+            }
+        }
+    };
+    const bareTemplateLiteral = {
+        TemplateLiteral(node) {
+            const templateLiteralNode = node;
+            const literals = getLiteralsByESBareTemplateLiteral(ctx, templateLiteralNode, tags);
+            if (literals.length > 0) {
+                lintLiterals(context, literals);
+            }
+        }
+    };
+    const jsx = {
+        JSXOpeningElement(node) {
+            const jsxNode = node;
+            const jsxAttributes = getAttributesByJSXElement(ctx, jsxNode);
+            for (const jsxAttribute of jsxAttributes) {
+                const attributeValue = jsxAttribute.value;
+                if (!attributeValue) {
+                    continue;
+                }
+                const literals = getLiteralsByJSXAttribute(ctx, jsxAttribute, attributes);
+                if (literals.length > 0) {
+                    lintLiterals(context, literals);
+                }
+            }
+        }
+    };
+    const svelte = {
+        SvelteStartTag(node) {
+            const svelteNode = node;
+            const svelteAttributes = getAttributesBySvelteTag(ctx, svelteNode);
+            const svelteDirectives = getDirectivesBySvelteTag(ctx, svelteNode);
+            for (const svelteAttribute of svelteAttributes) {
+                const attributeName = svelteAttribute.key.name;
+                if (typeof attributeName !== "string") {
+                    continue;
+                }
+                const literals = getLiteralsBySvelteAttribute(ctx, svelteAttribute, attributes);
+                if (literals.length > 0) {
+                    lintLiterals(context, literals);
+                }
+            }
+            for (const svelteDirective of svelteDirectives) {
+                const literals = getLiteralsBySvelteDirective(ctx, svelteDirective, attributes);
+                if (literals.length > 0) {
+                    lintLiterals(context, literals);
+                }
+            }
+        }
+    };
+    const vue = {
+        VStartTag(node) {
+            const vueNode = node;
+            const vueAttributes = getAttributesByVueStartTag(ctx, vueNode);
+            for (const attribute of vueAttributes) {
+                const literals = getLiteralsByVueAttribute(ctx, attribute, attributes);
+                if (literals.length > 0) {
+                    lintLiterals(context, literals);
+                }
+            }
+        }
+    };
+    const html = {
+        Tag(node) {
+            const htmlTagNode = node;
+            const htmlAttributes = getAttributesByHTMLTag(ctx, htmlTagNode);
+            for (const htmlAttribute of htmlAttributes) {
+                const literals = getLiteralsByHTMLAttribute(ctx, htmlAttribute, attributes);
+                if (literals.length > 0) {
+                    lintLiterals(context, literals);
+                }
+            }
+        }
+    };
+    const angular = {
+        Element(node) {
+            const angularElementNode = node;
+            const angularAttributes = getAttributesByAngularElement(ctx, angularElementNode);
+            for (const angularAttribute of angularAttributes) {
+                const literals = getLiteralsByAngularAttribute(ctx, angularAttribute, attributes);
+                if (literals.length > 0) {
+                    lintLiterals(context, literals);
+                }
+            }
+        }
+    };
+    const css = {
+        Atrule(node) {
+            const atRuleNode = node;
+            const literals = getLiteralsByCSSAtRule(ctx, atRuleNode);
+            if (literals.length > 0) {
+                lintLiterals(context, literals);
+            }
+        }
+    };
+    // Vue
+    if (typeof ctx.sourceCode.parserServices?.defineTemplateBodyVisitor === "function") {
+        return {
+            // script tag
+            ...callExpression,
+            ...variableDeclarators,
+            ...bareTemplateLiteral,
+            ...exportDefaultDeclarations,
+            ...taggedTemplateExpression,
+            // bound classes
+            ...ctx.sourceCode.parserServices.defineTemplateBodyVisitor({
+                ...callExpression,
+                ...vue
+            })
+        };
+    }
+    return {
+        ...callExpression,
+        ...variableDeclarators,
+        ...bareTemplateLiteral,
+        ...exportDefaultDeclarations,
+        ...taggedTemplateExpression,
+        ...jsx,
+        ...svelte,
+        ...vue,
+        ...html,
+        ...angular,
+        ...css
+    };
+}
+//# sourceMappingURL=rule.js.map

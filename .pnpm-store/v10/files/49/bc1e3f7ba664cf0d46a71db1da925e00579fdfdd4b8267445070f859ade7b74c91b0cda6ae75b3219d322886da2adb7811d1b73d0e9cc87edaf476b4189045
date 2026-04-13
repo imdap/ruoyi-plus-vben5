@@ -1,0 +1,120 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { InputStatus } from "../_util/statusUtils.js";
+import { SelectCommonPlacement } from "../_util/motion.js";
+import { SelectPopupSemanticClassNames, SelectPopupSemanticStyles } from "../select/index.js";
+import CascaderPanel from "./Panel.js";
+import { Variant } from "../config-provider/context.js";
+import * as vue149 from "vue";
+import { App, CSSProperties, SlotsType } from "vue";
+import { CascaderProps as CascaderProps$1, DefaultOptionType, FieldNames, SHOW_CHILD, SHOW_PARENT } from "@v-c/cascader";
+
+//#region src/cascader/index.d.ts
+type FieldNamesType = FieldNames;
+type FilledFieldNamesType = Required<FieldNamesType>;
+type CascaderSemanticName = keyof CascaderSemanticClassNames & keyof CascaderSemanticStyles;
+interface CascaderSemanticClassNames {
+  root?: string;
+  prefix?: string;
+  suffix?: string;
+  input?: string;
+  placeholder?: string;
+  content?: string;
+  item?: string;
+  itemContent?: string;
+  itemRemove?: string;
+}
+interface CascaderSemanticStyles {
+  root?: CSSProperties;
+  prefix?: CSSProperties;
+  suffix?: CSSProperties;
+  input?: CSSProperties;
+  placeholder?: CSSProperties;
+  content?: CSSProperties;
+  item?: CSSProperties;
+  itemContent?: CSSProperties;
+  itemRemove?: CSSProperties;
+}
+type CascaderClassNamesType = SemanticClassNamesType<CascaderProps, CascaderSemanticClassNames, {
+  popup?: SelectPopupSemanticClassNames;
+}>;
+type CascaderStylesType = SemanticStylesType<CascaderProps, CascaderSemanticStyles, {
+  popup?: SelectPopupSemanticStyles;
+}>;
+interface CascaderProps<OptionType extends DefaultOptionType = DefaultOptionType, ValueField extends keyof OptionType = keyof OptionType, Multiple extends boolean = boolean> extends Omit<CascaderProps$1<OptionType, ValueField, Multiple>, 'checkable' | 'className' | 'style' | 'classNames' | 'styles' | 'onChange' | 'onSearch' | 'onPopupVisibleChange' | 'multiple' | 'value'>, CascaderEmitsProps {
+  value?: any;
+  multiple?: boolean;
+  size?: SizeType;
+  /**
+   * @deprecated `showArrow` is deprecated which will be removed in next major version. It will be a
+   *   default behavior, you can hide it by setting `suffixIcon` to null.
+   */
+  showArrow?: boolean;
+  disabled?: boolean;
+  /** @deprecated Use `variant` instead. */
+  bordered?: boolean;
+  placement?: SelectCommonPlacement;
+  suffixIcon?: VueNode;
+  options?: OptionType[];
+  status?: InputStatus;
+  rootClass?: string;
+  /** @deprecated Please use `classNames.popup.root` instead */
+  popupClassName?: string;
+  /** @deprecated Please use `classNames.popup.root` instead */
+  dropdownClassName?: string;
+  /** @deprecated Please use `styles.popup.root` instead */
+  dropdownStyle?: CSSProperties;
+  /** @deprecated Please use `popupRender` instead */
+  dropdownRender?: (menu: any) => any;
+  popupRender?: (menu: any) => any;
+  /** @deprecated Please use `popupMenuColumnStyle` instead */
+  dropdownMenuColumnStyle?: CSSProperties;
+  popupMenuColumnStyle?: CSSProperties;
+  /**
+   * @since 5.13.0
+   * @default "outlined"
+   */
+  variant?: Variant;
+  classes?: CascaderClassNamesType;
+  styles?: CascaderStylesType;
+}
+interface CascaderSlots {
+  suffixIcon?: () => any;
+  notFoundContent?: () => any;
+  popupRender?: (menu: any) => any;
+  displayRender?: (data: {
+    labels: string[];
+    selectedOptions?: DefaultOptionType[];
+  }) => any;
+  optionRender?: (option: DefaultOptionType) => any;
+  expandIcon?: () => any;
+  default?: () => any;
+}
+interface CascaderEmits {
+  'openChange': (visible: boolean) => void;
+  'dropdownVisibleChange': (visible: boolean) => void;
+  'popupVisibleChange': (visible: boolean) => void;
+  'change': NonNullable<CascaderProps$1['onChange']>;
+  'update:value': (value: any) => void;
+  'search': NonNullable<CascaderProps$1['onSearch']>;
+}
+interface CascaderEmitsProps {
+  onOpenChange?: CascaderEmits['openChange'];
+  onDropdownVisibleChange?: CascaderEmits['dropdownVisibleChange'];
+  onPopupVisibleChange?: CascaderEmits['popupVisibleChange'];
+  onChange?: CascaderEmits['change'];
+  'onUpdate:value'?: CascaderEmits['update:value'];
+  onSearch?: CascaderEmits['search'];
+}
+declare const InternalCascader: vue149.DefineSetupFnComponent<CascaderProps<DefaultOptionType, string, boolean>, CascaderEmits, SlotsType<CascaderSlots>, CascaderProps<DefaultOptionType, string, boolean>, vue149.PublicProps>;
+declare const Cascader: typeof InternalCascader & {
+  install: (app: App) => void;
+  Panel: typeof CascaderPanel;
+  SHOW_PARENT: typeof SHOW_PARENT;
+  SHOW_CHILD: typeof SHOW_CHILD;
+  _InternalPanelDoNotUseOrYouWillBeFired: any;
+};
+//#endregion
+export { CascaderClassNamesType, CascaderEmits, CascaderEmitsProps, CascaderPanel, CascaderProps, CascaderSemanticClassNames, CascaderSemanticName, CascaderSemanticStyles, CascaderSlots, CascaderStylesType, FieldNamesType, FilledFieldNamesType, SHOW_CHILD, SHOW_PARENT, Cascader as default };

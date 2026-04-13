@@ -1,0 +1,28 @@
+import { EmptyEmit } from "../_util/type.js";
+import InternalInput, { InputEmits, InputProps, InputRef, InputSlots } from "./Input.js";
+import OTP, { OTPEmits, OTPProps, OTPSlots } from "./OTP/index.js";
+import InternalSearch, { InputSearchRef, SearchEmits, SearchProps, SearchSlots } from "./Search.js";
+import InternalTextArea, { InputTextAreaRef, TextAreaProps, TextAreaRef } from "./TextArea.js";
+import InputGroup$1, { InputGroupProps } from "./Group.js";
+import InternalPassword, { InputPasswordRef, PasswordEmits, PasswordProps, PasswordSlots } from "./Password.js";
+import * as vue1018 from "vue";
+import { App } from "vue";
+
+//#region src/input/index.d.ts
+type CompoundedInputType = typeof InternalInput & {
+  Search: typeof InternalSearch;
+  TextArea: typeof InternalTextArea;
+  Password: typeof InternalPassword;
+  OTP: typeof OTP;
+  Group: typeof InputGroup$1;
+  install: (app: App) => App;
+};
+declare const CompoundedInput: CompoundedInputType;
+declare const InputGroup: vue1018.DefineSetupFnComponent<InputGroupProps, EmptyEmit, vue1018.SlotsType<{
+  default?: () => any;
+}>, InputGroupProps, vue1018.PublicProps>;
+declare const InputOTP: vue1018.DefineSetupFnComponent<OTPProps, OTPEmits, vue1018.SlotsType<OTPSlots>, OTPProps, vue1018.PublicProps>;
+declare const InputPassword: vue1018.DefineSetupFnComponent<PasswordProps, PasswordEmits, vue1018.SlotsType<PasswordSlots>, PasswordProps, vue1018.PublicProps>;
+declare const InputSearch: vue1018.DefineSetupFnComponent<SearchProps, SearchEmits, vue1018.SlotsType<SearchSlots>, SearchProps, vue1018.PublicProps>;
+//#endregion
+export { type InputEmits, InputGroup, type InputGroupProps, InputOTP, InputPassword, type InputPasswordRef, type InputProps, type InputRef, InputSearch, type InputSearchRef, type InputSlots, type InputTextAreaRef, type OTPEmits, type OTPProps, type OTPSlots, type PasswordProps, type SearchProps, InternalTextArea as TextArea, type TextAreaProps, type TextAreaRef, CompoundedInput as default };

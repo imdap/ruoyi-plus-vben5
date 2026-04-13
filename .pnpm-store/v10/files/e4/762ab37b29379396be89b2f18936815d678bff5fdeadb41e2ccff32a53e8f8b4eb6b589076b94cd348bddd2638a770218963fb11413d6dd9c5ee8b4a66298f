@@ -1,0 +1,32 @@
+{
+    "id": "al",
+    "version": "0.2",
+    "name": "AL",
+    "description": "AL (Microsoft Business Central) Dictionary",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "al",
+            "path": "./dict/al.txt",
+            "description": "AL Keywords Dictionary"
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "languageId": "al",
+            "locale": "*",
+            "includeRegExpList": [],
+            "ignoreRegExpList": [],
+            "patterns": [],
+            "dictionaries": ["al"],
+            "dictionaryDefinitions": []
+        }
+    ],
+    "overrides": [
+        {
+            "filename": "**/*.al",
+            "languageId": "al"
+        }
+    ]
+}

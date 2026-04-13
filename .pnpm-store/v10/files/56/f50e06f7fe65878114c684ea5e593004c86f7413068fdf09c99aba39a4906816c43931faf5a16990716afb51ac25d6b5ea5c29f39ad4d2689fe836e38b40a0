@@ -1,0 +1,18 @@
+// cSpell Settings
+{
+    "id": "filetypes",
+    "name": "File Types",
+    "readonly": true,
+    "description": "File types dictionary.",
+    // List of dictionary files to add to the global list of dictionaries
+    "dictionaryDefinitions": [
+        {
+            "name": "filetypes",
+            "path": "./filetypes.txt.gz",
+            "description": "File types dictionary."
+        }
+    ],
+    // Dictionaries to always be used.
+    // Enable `filetypes` by default if this extension is imported.
+    "dictionaries": ["filetypes"]
+}

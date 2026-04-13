@@ -1,0 +1,54 @@
+{
+  "name": "@cspell/dict-markdown",
+  "version": "2.0.16",
+  "description": "Markdown dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "markdown",
+    "Markdown",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/markdown#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/markdown"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "files": [
+    "markdown.txt.gz",
+    "cspell-ext.json",
+    "cspell-ext.yaml",
+    "*.js",
+    "*.d.ts"
+  ],
+  "scripts": {
+    "build": "cspell-tools-cli build",
+    "prepare:dictionary": "pnpm run build",
+    "prepublishOnly": "echo pre-publish",
+    "test": "pnpm run test-check",
+    "test-check": "ava"
+  },
+  "peerDependencies": {
+    "@cspell/dict-css": "^4.1.1",
+    "@cspell/dict-html": "^4.0.15",
+    "@cspell/dict-html-symbol-entities": "^4.0.5",
+    "@cspell/dict-typescript": "^3.2.3"
+  },
+  "gitHead": "86d6d1fc5212a9b9ec281cc238176989e3980f65"
+}

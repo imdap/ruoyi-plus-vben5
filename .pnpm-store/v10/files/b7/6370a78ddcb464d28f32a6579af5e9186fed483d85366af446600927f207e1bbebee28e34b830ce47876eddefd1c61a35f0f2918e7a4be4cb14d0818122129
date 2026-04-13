@@ -1,0 +1,55 @@
+{
+    "id": "typescript",
+    "name": "TypeScript/JavaScript",
+    "description": "TypeScript and JavaScript dictionary.",
+    "readonly": true,
+    // List of dictionary files to add to the global list of dictionaries
+    "dictionaryDefinitions": [
+        {
+            "name": "typescript",
+            "path": "./dict/typescript.txt",
+            "description": "TypeScript and JavaScript dictionary."
+        }
+    ],
+    // Patterns
+    "patterns": [
+        {
+            "name": "js-hex-number",
+            "pattern": "/\\b0[xX][a-fA-F0-9]+n?\\b/g",
+            "description": "JavaScript Hexadecimal Number including BigInt."
+        },
+        {
+            "name": "js-hex-escape",
+            "pattern": "/\\\\x[a-f0-9]{2}/gi",
+            "description": "JavaScript String Hexadecimal Escape sequence."
+        },
+        {
+            "name": "js-unicode-escape",
+            "pattern": "/\\\\u[a-f0-9]{4}/gi",
+            "description": "JavaScript String Unicode Escape sequence."
+        },
+        {
+            "name": "js-regexp-flags",
+            "pattern": "/\\/[dgimsuy]{1,7}\\b(?=(?:\\.flags\\b)|\\s*$|[;),])/g", // cspell:ignore dgimsuy
+            "description": "JavaScript Match Regular Expression Flags"
+        }
+    ],
+    "languageSettings": [
+        {
+            "languageId": "typescript,javascript,typescriptreact,javascriptreact,mdx,astro",
+            "locale": "*",
+            "ignoreRegExpList": ["js-hex-escape", "js-unicode-escape", "js-regexp-flags", "js-hex-number"],
+            "dictionaries": ["typescript"]
+        },
+        {
+            "languageId": "astro",
+            "dictionaries": ["html", "html-symbol-entities"]
+        }
+    ],
+    "overrides": [
+        {
+            "filename": "**/*.astro",
+            "languageId": "astro" // set the file type to be Astro
+        }
+    ]
+}

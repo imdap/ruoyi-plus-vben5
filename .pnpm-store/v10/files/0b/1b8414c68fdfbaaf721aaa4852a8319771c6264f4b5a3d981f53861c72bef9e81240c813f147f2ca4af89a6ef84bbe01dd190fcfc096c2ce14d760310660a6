@@ -1,0 +1,58 @@
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import { GenerateStyle } from "../../theme/interface/index.js";
+import "../../theme/internal.js";
+import * as vue769 from "vue";
+import { CSSObject } from "@antdv-next/cssinjs";
+
+//#region src/image/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 预览浮层 z-index
+   * @descEN z-index of preview popup
+   */
+  zIndexPopup: number;
+  /**
+   * @desc 预览操作图标大小
+   * @descEN Size of preview operation icon
+   */
+  previewOperationSize: number;
+  /**
+   * @desc 预览操作图标颜色
+   * @descEN Color of preview operation icon
+   */
+  previewOperationColor: string;
+  /**
+   * @desc 预览操作图标悬浮颜色
+   * @descEN Color of hovered preview operation icon
+   */
+  previewOperationHoverColor: string;
+  /**
+   * @desc 预览操作图标禁用颜色
+   * @descEN Disabled color of preview operation icon
+   */
+  previewOperationColorDisabled: string;
+}
+/**
+ * @desc Image 组件的 Token
+ * @descEN Token for Image component
+ */
+interface ImageToken extends FullToken<'Image'> {
+  /**
+   * @desc 预览类名
+   * @descEN Preview class name
+   */
+  previewCls: string;
+  /**
+   * @desc 预览切换按钮尺寸
+   * @descEN Size of preview switch button
+   */
+  imagePreviewSwitchSize: number;
+}
+type PositionType = 'static' | 'relative' | 'fixed' | 'absolute' | 'sticky' | undefined;
+declare function genBoxStyle(position?: PositionType): CSSObject;
+declare const genImageCoverStyle: GenerateStyle<ImageToken, CSSObject>;
+declare const genImagePreviewStyle: GenerateStyle<ImageToken, CSSObject>;
+declare const prepareComponentToken: GetDefaultToken<'Image'>;
+declare const _default: (prefixCls: vue769.Ref<string>, rootCls?: vue769.Ref<string | undefined>) => readonly [vue769.Ref<string, string>, vue769.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, ImageToken, PositionType, _default as default, genBoxStyle, genImageCoverStyle, genImagePreviewStyle, prepareComponentToken };

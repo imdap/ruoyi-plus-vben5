@@ -1,0 +1,137 @@
+import { useMenuContext } from "../context/MenuContext.js";
+import { getMotion } from "../utils/motionUtil.js";
+import placements_default, { placementsRtl } from "../placements.js";
+import { computed, createVNode, defineComponent, shallowRef, watch } from "vue";
+import { clsx } from "@v-c/util";
+import Trigger from "@v-c/trigger";
+import raf from "@v-c/util/dist/raf";
+var popupPlacementMap = {
+	"horizontal": "bottomLeft",
+	"vertical": "rightTop",
+	"vertical-left": "rightTop",
+	"vertical-right": "leftTop"
+};
+var PopupTrigger_default = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	const menuContext = useMenuContext();
+	const innerVisible = shallowRef(props.visible ?? false);
+	const placement = computed(() => {
+		const rtl = menuContext?.value?.rtl;
+		const builtinPlacements = menuContext?.value?.builtinPlacements;
+		return rtl ? {
+			...placementsRtl,
+			...builtinPlacements
+		} : {
+			...placements_default,
+			...builtinPlacements
+		};
+	});
+	const triggerMode = computed(() => props.mode);
+	const popupPlacement = computed(() => {
+		return popupPlacementMap[triggerMode.value];
+	});
+	const defaultMotions = computed(() => menuContext?.value?.defaultMotions);
+	const motion = computed(() => menuContext?.value?.motion);
+	const targetMotion = computed(() => {
+		return { ...getMotion(triggerMode.value, motion.value, defaultMotions.value) };
+	});
+	const targetMotionRef = shallowRef(targetMotion.value);
+	watch(triggerMode, (mode) => {
+		if (mode !== "inline") targetMotionRef.value = targetMotion.value;
+	}, { immediate: true });
+	watch([motion, defaultMotions], () => {
+		if (triggerMode.value !== "inline") targetMotionRef.value = targetMotion.value;
+	});
+	const mergedMotion = computed(() => {
+		return {
+			...targetMotionRef.value,
+			appear: true
+		};
+	});
+	const visibleRef = shallowRef();
+	watch(() => props.visible, (visible, _, onCleanup) => {
+		visibleRef.value = raf(() => {
+			innerVisible.value = visible;
+		});
+		onCleanup(() => {
+			if (visibleRef.value !== void 0) raf.cancel(visibleRef.value);
+		});
+	});
+	return () => {
+		const { popupClassName, popup, popupStyle, popupOffset, disabled, onVisibleChange, prefixCls } = props;
+		const { rtl, rootClass, mode, getPopupContainer, triggerSubMenuAction, subMenuCloseDelay, subMenuOpenDelay, forceSubMenuRender } = menuContext?.value ?? {};
+		return createVNode(Trigger, {
+			"prefixCls": prefixCls,
+			"popupClassName": clsx(`${prefixCls}-popup`, { [`${prefixCls}-rtl`]: rtl }, popupClassName, rootClass),
+			"stretch": mode === "horizontal" ? "minWidth" : void 0,
+			"getPopupContainer": getPopupContainer,
+			"builtinPlacements": placement.value,
+			"popupPlacement": popupPlacement.value,
+			"popupVisible": innerVisible.value,
+			"popup": popup,
+			"popupStyle": popupStyle,
+			"popupAlign": popupOffset && { offset: popupOffset },
+			"action": disabled ? [] : [triggerSubMenuAction],
+			"mouseEnterDelay": subMenuOpenDelay,
+			"mouseLeaveDelay": subMenuCloseDelay,
+			"onOpenChange": onVisibleChange,
+			"forceRender": forceSubMenuRender,
+			"popupMotion": mergedMotion.value,
+			"fresh": true
+		}, { default: () => [slots?.default?.()] });
+	};
+}, { props: {
+	prefixCls: {
+		type: String,
+		required: true,
+		default: void 0
+	},
+	mode: {
+		type: String,
+		required: true,
+		default: void 0
+	},
+	visible: {
+		type: Boolean,
+		required: true,
+		default: void 0
+	},
+	popup: {
+		type: [
+			Object,
+			Function,
+			String,
+			Number,
+			null,
+			Boolean,
+			Array
+		],
+		required: true,
+		default: void 0
+	},
+	popupStyle: {
+		type: Object,
+		required: false,
+		default: void 0
+	},
+	popupClassName: {
+		type: String,
+		required: false,
+		default: void 0
+	},
+	popupOffset: {
+		type: Array,
+		required: false,
+		default: void 0
+	},
+	disabled: {
+		type: Boolean,
+		required: true,
+		default: void 0
+	},
+	onVisibleChange: {
+		type: Function,
+		required: true,
+		default: void 0
+	}
+} });
+export { PopupTrigger_default as default };

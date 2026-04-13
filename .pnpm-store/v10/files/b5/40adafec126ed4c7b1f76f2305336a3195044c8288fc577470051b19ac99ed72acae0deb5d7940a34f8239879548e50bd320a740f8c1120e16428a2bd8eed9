@@ -1,0 +1,10 @@
+import { UploadListEmits, UploadListProps, UploadListSlots } from "../interface.js";
+import * as vue817 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/upload/UploadList/index.d.ts
+interface InternalUploadListProps extends UploadListProps, UploadListEmitsProps {}
+interface UploadListEmitsProps {}
+declare const UploadList: vue817.DefineSetupFnComponent<InternalUploadListProps, UploadListEmits, SlotsType<UploadListSlots<any>>, InternalUploadListProps, vue817.PublicProps>;
+//#endregion
+export { InternalUploadListProps, UploadListEmitsProps, UploadList as default };

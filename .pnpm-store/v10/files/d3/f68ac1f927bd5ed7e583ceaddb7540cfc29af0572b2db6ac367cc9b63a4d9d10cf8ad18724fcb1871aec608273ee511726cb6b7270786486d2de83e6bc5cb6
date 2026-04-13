@@ -1,0 +1,79 @@
+import { FullToken, GenStyleFn, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue589 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/form/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 必填项标记颜色
+   * @descEN Required mark color
+   */
+  labelRequiredMarkColor: string;
+  /**
+   * @desc 标签颜色
+   * @descEN Label color
+   */
+  labelColor: string;
+  /**
+   * @desc 标签字体大小
+   * @descEN Label font size
+   */
+  labelFontSize: number;
+  /**
+   * @desc 标签高度
+   * @descEN Label height
+   */
+  labelHeight: number | string;
+  /**
+   * @desc 标签冒号前间距
+   * @descEN Label colon margin-inline-start
+   */
+  labelColonMarginInlineStart: number;
+  /**
+   * @desc 标签冒号后间距
+   * @descEN Label colon margin-inline-end
+   */
+  labelColonMarginInlineEnd: number;
+  /**
+   * @desc 表单项间距
+   * @descEN Form item margin bottom
+   */
+  itemMarginBottom: number;
+  /**
+   * @desc 行内布局表单项间距
+   * @descEN Inline layout form item margin bottom
+   */
+  inlineItemMarginBottom: number;
+  /**
+   * @desc 垂直布局标签内边距
+   * @descEN Vertical layout label padding
+   */
+  verticalLabelPadding: CSSProperties['padding'];
+  /**
+   * @desc 垂直布局标签外边距
+   * @descEN Vertical layout label margin
+   */
+  verticalLabelMargin: CSSProperties['margin'];
+}
+/**
+ * @desc Form 组件的 Token
+ * @descEN Token for Form component
+ */
+interface FormToken extends FullToken<'Form'> {
+  /**
+   * @desc 表单项类名
+   * @descEN Form item class name
+   */
+  formItemCls: string;
+  /**
+   * @desc 根前缀类名
+   * @descEN Root prefix class name
+   */
+  rootPrefixCls: string;
+}
+declare const prepareComponentToken: GetDefaultToken<'Form'>;
+declare function prepareToken(token: Parameters<GenStyleFn<'Form'>>[0], rootPrefixCls: string): FormToken;
+declare const _default: (prefixCls: vue589.Ref<string>, rootCls?: vue589.Ref<string | undefined>) => readonly [vue589.Ref<string, string>, vue589.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, FormToken, _default as default, prepareComponentToken, prepareToken };

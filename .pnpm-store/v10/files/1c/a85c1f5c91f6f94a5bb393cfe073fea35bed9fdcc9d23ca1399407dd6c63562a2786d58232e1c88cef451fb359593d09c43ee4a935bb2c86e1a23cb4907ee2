@@ -1,0 +1,6 @@
+import * as vue855 from "vue";
+
+//#region src/color-picker/components/PanelPresets.d.ts
+declare const _default: vue855.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue855.PublicProps>;
+//#endregion
+export { _default as default };

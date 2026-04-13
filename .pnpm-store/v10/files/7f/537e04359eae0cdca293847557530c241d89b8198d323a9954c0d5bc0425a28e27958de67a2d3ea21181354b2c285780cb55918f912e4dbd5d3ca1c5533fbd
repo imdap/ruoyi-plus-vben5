@@ -1,0 +1,73 @@
+{
+  "name": "@tsdown/css",
+  "type": "module",
+  "version": "0.21.7",
+  "description": "Advanced CSS pipeline for tsdown powered by Lightning CSS",
+  "author": "Kevin Deng <sxzz@sxzz.moe>",
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/sxzz",
+  "homepage": "http://tsdown.dev/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rolldown/tsdown.git",
+    "directory": "packages/css"
+  },
+  "bugs": {
+    "url": "https://github.com/rolldown/tsdown/issues"
+  },
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.mts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*.d.mts",
+        "./*"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "peerDependencies": {
+    "postcss": "^8.4.0",
+    "postcss-import": "^16.0.0",
+    "postcss-modules": "^6.0.0",
+    "sass": "*",
+    "sass-embedded": "*",
+    "tsdown": "0.21.7"
+  },
+  "peerDependenciesMeta": {
+    "postcss": {
+      "optional": true
+    },
+    "postcss-import": {
+      "optional": true
+    },
+    "postcss-modules": {
+      "optional": true
+    },
+    "sass": {
+      "optional": true
+    },
+    "sass-embedded": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "lightningcss": "^1.32.0",
+    "postcss-load-config": "^6.0.1",
+    "rolldown": "1.0.0-rc.12"
+  },
+  "scripts": {
+    "build": "node -C dev ../../src/run.ts -c ../../tsdown.config.ts -F ."
+  }
+}

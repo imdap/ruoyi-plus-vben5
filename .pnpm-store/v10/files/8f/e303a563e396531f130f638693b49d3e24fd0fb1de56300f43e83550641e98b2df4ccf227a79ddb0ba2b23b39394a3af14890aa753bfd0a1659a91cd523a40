@@ -1,0 +1,15 @@
+import { $Transition, AsTag, Options, VariantType } from '../types';
+export declare function resolveVariant(definition?: Options['animate'], variants?: Options['variants'], custom?: Options['custom']): VariantType | undefined;
+export declare function hasChanged(a: any, b: any): boolean;
+export declare function shallowCompare(next: any[], prev: any[]): boolean;
+export declare function addUniqueItem<T>(array: T[], item: T): void;
+export declare function removeItem<T>(array: T[], item: T): void;
+export declare function getOptions(options: $Transition, key: string): $Transition;
+export declare function isCssVar(name: string): boolean;
+export declare const noopReturn: <V>(v: V) => V;
+export declare function isNumber(value: any): boolean;
+export declare const svgElements: readonly ["animate", "circle", "defs", "desc", "ellipse", "g", "image", "line", "filter", "marker", "mask", "metadata", "path", "pattern", "polygon", "polyline", "rect", "stop", "svg", "switch", "symbol", "text", "tspan", "use", "view", "clipPath", "feBlend", "feColorMatrix", "feComponentTransfer", "feComposite", "feConvolveMatrix", "feDiffuseLighting", "feDisplacementMap", "feDistantLight", "feDropShadow", "feFlood", "feFuncA", "feFuncB", "feFuncG", "feFuncR", "feGaussianBlur", "feImage", "feMerge", "feMergeNode", "feMorphology", "feOffset", "fePointLight", "feSpecularLighting", "feSpotLight", "feTile", "feTurbulence", "foreignObject", "linearGradient", "radialGradient", "textPath"];
+type UnionStringArray<T extends Readonly<string[]>> = T[number];
+export type SVGElements = UnionStringArray<typeof svgElements>;
+export declare function isSVGElement(as: AsTag): as is SVGElements;
+export {};

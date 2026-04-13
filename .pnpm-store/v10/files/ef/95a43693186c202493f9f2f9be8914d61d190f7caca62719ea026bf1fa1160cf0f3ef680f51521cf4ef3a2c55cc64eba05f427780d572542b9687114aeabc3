@@ -1,0 +1,57 @@
+@use '../helpers/baseMixin.scss';
+
+.vxe-collapse {
+  font-size: var(--vxe-ui-font-size-default);
+  color: var(--vxe-ui-font-color);
+  font-family: var(--vxe-ui-font-family);
+  &.is--padding {
+    .vxe-collapse--item-inner {
+      padding: var(--vxe-ui-layout-padding-default);
+    }
+  }
+}
+.vxe-collapse-slots {
+  display: none;
+}
+.vxe-collapse--item-content {
+  &.is--visible {
+    .vxe-collapse--item-inner {
+      display: block;
+    }
+  }
+}
+.vxe-collapse--item-inner {
+  display: none;
+}
+.vxe-collapse--item-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 1.8em;
+  cursor: pointer;
+}
+.vxe-collapse--item-switch,
+.vxe-collapse--item-icon {
+  user-select: none;
+  padding-right: var(--vxe-ui-layout-padding-half);
+}
+.vxe-collapse--item-switch {
+  flex-shrink: 0;
+  cursor: pointer;
+  & > i {
+    display: inline-block;
+    @include baseMixin.createAnimationTransition(transform, .2s);
+  }
+}
+
+.vxe-collapse {
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}

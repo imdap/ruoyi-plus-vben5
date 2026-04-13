@@ -1,0 +1,79 @@
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue166 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { CheckboxChangeEvent } from "@v-c/checkbox";
+
+//#region src/checkbox/Checkbox.d.ts
+type CheckedValueType = string | number | boolean | object;
+interface AbstractCheckboxProps extends ComponentBaseProps {
+  defaultChecked?: CheckedValueType;
+  checked?: CheckedValueType;
+  disabled?: boolean;
+  title?: string;
+  value?: any;
+  tabIndex?: number;
+  name?: string;
+  id?: string;
+  autoFocus?: boolean;
+  type?: string;
+  skipGroup?: boolean;
+  required?: boolean;
+  /**
+   * 选中时的值
+   */
+  checkedValue?: CheckedValueType;
+  /**
+   * 非选中时的值
+   */
+  unCheckedValue?: CheckedValueType;
+}
+interface CheckboxEmits {
+  'change': (checked: CheckboxChangeEvent) => void;
+  'update:checked': (checked: any) => void;
+  'update:value': (value: any) => void;
+  'mouseenter': (event: MouseEvent) => void;
+  'mouseleave': (event: MouseEvent) => void;
+  'keypress': (event: KeyboardEvent) => void;
+  'keydown': (event: KeyboardEvent) => void;
+  'focus': (event: FocusEvent) => void;
+  'blur': (event: FocusEvent) => void;
+  'click': (event: MouseEvent) => void;
+}
+interface CheckboxEmitsProps {
+  onChange?: CheckboxEmits['change'];
+  'onUpdate:checked'?: CheckboxEmits['update:checked'];
+  'onUpdate:value'?: CheckboxEmits['update:value'];
+  onMouseenter?: CheckboxEmits['mouseenter'];
+  onMouseleave?: CheckboxEmits['mouseleave'];
+  onKeypress?: CheckboxEmits['keypress'];
+  onKeydown?: CheckboxEmits['keydown'];
+  onFocus?: CheckboxEmits['focus'];
+  onBlur?: CheckboxEmits['blur'];
+  onClick?: CheckboxEmits['click'];
+}
+interface CheckboxSlots {
+  default?: () => any;
+}
+type CheckboxSemanticName = keyof CheckboxSemanticClassNames & keyof CheckboxSemanticStyles;
+interface CheckboxSemanticClassNames {
+  root?: string;
+  icon?: string;
+  label?: string;
+}
+interface CheckboxSemanticStyles {
+  root?: CSSProperties;
+  icon?: CSSProperties;
+  label?: CSSProperties;
+}
+type CheckboxClassNamesType = SemanticClassNamesType<CheckboxProps, CheckboxSemanticClassNames>;
+type CheckboxStylesType = SemanticStylesType<CheckboxProps, CheckboxSemanticStyles>;
+interface CheckboxProps extends AbstractCheckboxProps, CheckboxEmitsProps {
+  indeterminate?: boolean;
+  classes?: CheckboxClassNamesType;
+  styles?: CheckboxStylesType;
+}
+declare const InternalCheckbox: vue166.DefineSetupFnComponent<CheckboxProps, CheckboxEmits, SlotsType<CheckboxSlots>, CheckboxProps, vue166.PublicProps>;
+//#endregion
+export { AbstractCheckboxProps, CheckboxClassNamesType, CheckboxEmits, CheckboxEmitsProps, CheckboxProps, CheckboxSemanticClassNames, CheckboxSemanticName, CheckboxSemanticStyles, CheckboxSlots, CheckboxStylesType, CheckedValueType, InternalCheckbox as default };

@@ -1,0 +1,213 @@
+import throttleByAnimationFrame_default from "../_util/throttleByAnimationFrame.js";
+import { useConfig } from "../config-provider/context.js";
+import style_default from "./style/index.js";
+import { getFixedBottom, getFixedTop, getTargetRect } from "./utils.js";
+import { computed, createVNode, defineComponent, isVNode, mergeDefaults, mergeProps, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from "vue";
+import { classNames } from "@v-c/util";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+import { unrefElement, useResizeObserver } from "@vueuse/core";
+
+//#region src/affix/index.tsx
+const TRIGGER_EVENTS = [
+	"resize",
+	"scroll",
+	"touchstart",
+	"touchmove",
+	"touchend",
+	"pageshow",
+	"load"
+];
+function getDefaultTarget() {
+	return typeof window !== "undefined" ? window : null;
+}
+const AFFIX_STATUS_NONE = 0;
+const AFFIX_STATUS_PREPARE = 1;
+const affixDefaultProps = {};
+const Affix = /* @__PURE__ */ defineComponent((props, { slots, attrs, expose, emit }) => {
+	const configContext = useConfig();
+	const affixPrefixCls = computed(() => configContext.value.getPrefixCls("affix", props.prefixCls));
+	const lastAffix = shallowRef(false);
+	const affixStyle = shallowRef();
+	const placeholderStyle = shallowRef();
+	const status = shallowRef(AFFIX_STATUS_NONE);
+	const prevTarget = shallowRef(null);
+	const prevListener = shallowRef(null);
+	const placeholderNodeRef = shallowRef();
+	const fixedNodeRef = shallowRef();
+	const contextRef = shallowRef();
+	const timer = shallowRef(null);
+	const targetFunc = computed(() => props.target ?? configContext.value.getTargetContainer ?? getDefaultTarget);
+	const internalOffsetTop = computed(() => {
+		const { offsetTop, offsetBottom } = props;
+		return offsetBottom === void 0 && offsetTop === void 0 ? 0 : offsetTop;
+	});
+	const measure = () => {
+		if (status.value !== AFFIX_STATUS_PREPARE || !fixedNodeRef.value || !placeholderNodeRef.value || !targetFunc.value) return;
+		const targetNode = targetFunc.value();
+		if (targetNode) {
+			const newState = { status: AFFIX_STATUS_NONE };
+			const placeholderRect = getTargetRect(placeholderNodeRef.value);
+			if (placeholderRect.top === 0 && placeholderRect.left === 0 && placeholderRect.width === 0 && placeholderRect.height === 0) return;
+			const targetRect = getTargetRect(targetNode);
+			const fixedTop = getFixedTop(placeholderRect, targetRect, internalOffsetTop.value);
+			const fixedBottom = getFixedBottom(placeholderRect, targetRect, props.offsetBottom);
+			if (fixedTop !== void 0) {
+				newState.affixStyle = {
+					position: "fixed",
+					top: `${fixedTop}px`,
+					width: `${placeholderRect.width}px`,
+					height: `${placeholderRect.height}px`
+				};
+				newState.placeholderStyle = {
+					width: `${placeholderRect.width}px`,
+					height: `${placeholderRect.height}px`
+				};
+			} else if (fixedBottom !== void 0) {
+				newState.affixStyle = {
+					position: "fixed",
+					bottom: `${fixedBottom}px`,
+					width: `${placeholderRect.width}px`,
+					height: `${placeholderRect.height}px`
+				};
+				newState.placeholderStyle = {
+					width: `${placeholderRect.width}px`,
+					height: `${placeholderRect.height}px`
+				};
+			}
+			newState.lastAffix = !!newState.affixStyle;
+			if (lastAffix.value !== newState.lastAffix) emit("change", newState.lastAffix);
+			status.value = newState.status;
+			affixStyle.value = newState.affixStyle;
+			placeholderStyle.value = newState.placeholderStyle;
+			lastAffix.value = newState.lastAffix;
+		}
+	};
+	const prepareMeasure = () => {
+		status.value = AFFIX_STATUS_PREPARE;
+		measure();
+	};
+	const updatePosition = throttleByAnimationFrame_default(() => {
+		prepareMeasure();
+	});
+	const lazyUpdatePosition = throttleByAnimationFrame_default(() => {
+		if (targetFunc.value && affixStyle.value) {
+			const targetNode = targetFunc.value();
+			if (targetNode && placeholderNodeRef.value) {
+				const targetRect = getTargetRect(targetNode);
+				const placeholderRect = getTargetRect(placeholderNodeRef.value);
+				const fixedTop = getFixedTop(placeholderRect, targetRect, internalOffsetTop.value);
+				const fixedBottom = getFixedBottom(placeholderRect, targetRect, props.offsetBottom);
+				if (fixedTop !== void 0 && affixStyle.value.top === fixedTop || fixedBottom !== void 0 && affixStyle.value.bottom === fixedBottom) return;
+			}
+		}
+		prepareMeasure();
+	});
+	const addListeners = () => {
+		const listenerTarget = targetFunc.value?.();
+		if (!listenerTarget) return;
+		TRIGGER_EVENTS.forEach((eventName) => {
+			if (prevListener.value) prevTarget.value?.removeEventListener(eventName, prevListener.value);
+			listenerTarget?.addEventListener(eventName, lazyUpdatePosition);
+		});
+		prevTarget.value = listenerTarget;
+		prevListener.value = lazyUpdatePosition;
+	};
+	const removeListeners = () => {
+		const newTarget = targetFunc.value?.();
+		TRIGGER_EVENTS.forEach((eventName) => {
+			newTarget?.removeEventListener(eventName, lazyUpdatePosition);
+			if (prevListener.value) prevTarget.value?.removeEventListener(eventName, prevListener.value);
+		});
+		updatePosition.cancel();
+		lazyUpdatePosition.cancel();
+	};
+	expose({ updatePosition });
+	onMounted(() => {
+		timer.value = setTimeout(addListeners);
+	});
+	onBeforeUnmount(() => {
+		if (timer.value) {
+			clearTimeout(timer.value);
+			timer.value = null;
+		}
+		removeListeners();
+	});
+	watch([
+		() => props.target,
+		affixStyle,
+		lastAffix,
+		() => props.offsetTop,
+		() => props.offsetBottom
+	], async (_new, _old, onCleanup) => {
+		await nextTick();
+		addListeners();
+		onCleanup(removeListeners);
+	});
+	watch([
+		() => props.target,
+		() => props.offsetTop,
+		() => props.offsetBottom
+	], async () => {
+		await nextTick();
+		updatePosition();
+	});
+	const [hashId, cssVarCls] = style_default(affixPrefixCls);
+	useResizeObserver(placeholderNodeRef, () => {
+		updatePosition();
+	});
+	useResizeObserver(contextRef, () => {
+		updatePosition();
+	});
+	return () => {
+		const { rootClass } = props;
+		const mergedCls = classNames({ [classNames(rootClass, hashId.value, affixPrefixCls.value, cssVarCls.value)]: affixStyle.value });
+		const node = filterEmpty(slots?.default?.() ?? [])?.[0];
+		let childNode = null;
+		if (isVNode(node)) childNode = createVNode(node, { ref: (el) => {
+			const _el = unrefElement(el);
+			if (_el) contextRef.value = _el;
+		} });
+		return createVNode("div", mergeProps(attrs, { "ref": placeholderNodeRef }), [affixStyle.value && createVNode("div", {
+			"style": placeholderStyle.value,
+			"aria-hidden": "true"
+		}, null), createVNode("div", {
+			"class": mergedCls,
+			"ref": fixedNodeRef,
+			"style": affixStyle.value
+		}, [childNode])]);
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		offsetTop: {
+			type: Number,
+			required: false
+		},
+		offsetBottom: {
+			type: Number,
+			required: false
+		},
+		target: {
+			type: Function,
+			required: false
+		},
+		rootClass: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		},
+		onTestUpdatePosition: { required: false }
+	}, affixDefaultProps),
+	emits: ["change"],
+	name: "AAffix",
+	inheritAttrs: false
+});
+Affix.install = (app) => {
+	app.component(Affix.name, Affix);
+};
+var affix_default = Affix;
+
+//#endregion
+export { Affix, affix_default as default };

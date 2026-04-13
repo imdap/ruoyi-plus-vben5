@@ -1,0 +1,46 @@
+{
+  "name": "@cspell/dict-en-common-misspellings",
+  "version": "2.1.12",
+  "description": "Common English misspellings dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "node ./scripts/transform-crate-ci-typos.mts && node ./scripts/build.mts",
+    "test": "cspell .",
+    "sync": "sync-github-files crate-ci/typos crates/typos-dict/assets/words.csv LICENSE-MIT --tag=v1.33.1 -o src/crate-ci/typos",
+    "sync:manual": "GITHUB_TOKEN=$(gh auth token) pnpm sync",
+    "prepublishOnly": "echo OK",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/en-common-misspellings"
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "en-common-misspellings",
+    "Common English Misspellings",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "CC BY-SA 4.0",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/en-common-misspellings#readme",
+  "files": [
+    "cspell-ext.json",
+    "dict/dict-*.json"
+  ],
+  "gitHead": "24021b85ce2b05998a07b901abfd5011fc45dd10"
+}

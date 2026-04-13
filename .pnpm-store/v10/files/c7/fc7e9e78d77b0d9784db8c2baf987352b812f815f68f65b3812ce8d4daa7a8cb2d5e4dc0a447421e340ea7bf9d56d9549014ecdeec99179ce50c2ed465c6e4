@@ -1,0 +1,49 @@
+import { VueNode } from "../_util/type.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue147 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { CheckboxChangeEvent } from "@v-c/checkbox";
+
+//#region src/checkbox/Group.d.ts
+interface CheckboxOptionType {
+  label: VueNode;
+  value: any;
+  style?: CSSProperties;
+  class?: string;
+  disabled?: boolean;
+  title?: string;
+  id?: string;
+  onChange?: (e: CheckboxChangeEvent) => void;
+  required?: boolean;
+}
+interface AbstractCheckboxGroupProps extends ComponentBaseProps {
+  options?: (CheckboxOptionType | string | number)[];
+  disabled?: boolean;
+}
+interface CheckboxGroupProps extends AbstractCheckboxGroupProps, CheckboxGroupEmitsProps {
+  name?: string;
+  defaultValue?: any[];
+  value?: any[];
+  labelRender?: (params: {
+    item: CheckboxOptionType;
+    index: number;
+  }) => any;
+  role?: string;
+  'onUpdate:value'?: (value: any[]) => void;
+}
+interface CheckboxGroupEmits {
+  'change': (checkedValue: any[]) => void;
+}
+interface CheckboxGroupEmitsProps {
+  onChange?: CheckboxGroupEmits['change'];
+}
+interface CheckboxGroupSlots {
+  default: () => any;
+  labelRender: (params: {
+    item: CheckboxOptionType;
+    index: number;
+  }) => any;
+}
+declare const CheckboxGroup: vue147.DefineSetupFnComponent<CheckboxGroupProps, CheckboxGroupEmits, SlotsType<CheckboxGroupSlots>, CheckboxGroupProps, vue147.PublicProps>;
+//#endregion
+export { AbstractCheckboxGroupProps, CheckboxGroupEmits, CheckboxGroupEmitsProps, CheckboxGroupProps, CheckboxGroupSlots, CheckboxOptionType, CheckboxGroup as default };

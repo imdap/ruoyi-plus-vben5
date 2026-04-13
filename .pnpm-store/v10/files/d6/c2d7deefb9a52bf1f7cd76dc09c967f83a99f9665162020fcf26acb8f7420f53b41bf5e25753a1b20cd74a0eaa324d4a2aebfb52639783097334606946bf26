@@ -1,0 +1,24 @@
+import Col, { ColProps, ColSize } from "./col.js";
+import Row, { RowProps } from "./row.js";
+import * as vue967 from "vue";
+
+//#region src/grid/index.d.ts
+declare function useBreakpoint(): vue967.Ref<{
+  xxxl?: boolean | undefined;
+  xxl?: boolean | undefined;
+  xl?: boolean | undefined;
+  lg?: boolean | undefined;
+  md?: boolean | undefined;
+  sm?: boolean | undefined;
+  xs?: boolean | undefined;
+} | null, Partial<Record<"xxxl" | "xxl" | "xl" | "lg" | "md" | "sm" | "xs", boolean>> | {
+  xxxl?: boolean | undefined;
+  xxl?: boolean | undefined;
+  xl?: boolean | undefined;
+  lg?: boolean | undefined;
+  md?: boolean | undefined;
+  sm?: boolean | undefined;
+  xs?: boolean | undefined;
+} | null>;
+//#endregion
+export { Col, type ColProps, type ColSize, Row, type RowProps, useBreakpoint };

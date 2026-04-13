@@ -1,0 +1,3 @@
+import Timeline, { TimelineItemType, TimelineProps, TimelineSemanticClassNames, TimelineSemanticName, TimelineSemanticStyles } from "./Timeline.js";
+import { TimelineItem, TimelineItemProps, TimelineItemSlots } from "./TimelineItem.js";
+export { TimelineItem, type TimelineItemProps, type TimelineItemSlots, type TimelineItemType, type TimelineProps, type TimelineSemanticClassNames, type TimelineSemanticName, type TimelineSemanticStyles, Timeline as default };

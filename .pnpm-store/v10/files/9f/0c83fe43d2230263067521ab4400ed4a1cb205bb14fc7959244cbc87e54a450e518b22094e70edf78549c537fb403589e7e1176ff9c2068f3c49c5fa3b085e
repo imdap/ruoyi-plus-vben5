@@ -1,0 +1,48 @@
+{
+  "name": "@v-c/image",
+  "type": "module",
+  "version": "1.0.10",
+  "description": "image component",
+  "author": "",
+  "license": "MIT",
+  "keywords": [
+    "image",
+    "vue-image",
+    "img"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "dependencies": {
+    "@v-c/portal": "^1.0.8",
+    "@v-c/util": "^1.0.19"
+  },
+  "devDependencies": {
+    "@ant-design/icons-vue": "^7.0.1"
+  },
+  "scripts": {
+    "build": "vite build",
+    "prepublish": "pnpm build",
+    "test": "vitest run",
+    "patch": "bumpp --release patch",
+    "bump": "bumpp"
+  }
+}

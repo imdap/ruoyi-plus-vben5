@@ -1,0 +1,61 @@
+import { defaultPrefixCls } from "../config-provider/context.js";
+import { addClass, removeClass } from "@v-c/util/dist/Dom/class";
+
+//#region src/_util/motion.ts
+function getTransitionProps(name, options) {
+	return {
+		name,
+		appear: true,
+		...options
+	};
+}
+function getCollapsedHeight(_el, name) {
+	const el = _el;
+	if (el) {
+		el.style.height = "0px";
+		el.style.opacity = "0";
+		if (name) addClass(el, name);
+	}
+}
+function getRealHeight(_el) {
+	const el = _el;
+	if (el) {
+		const scrollHeight = el.scrollHeight;
+		el.style.height = `${scrollHeight}px`;
+		el.style.opacity = "1";
+	}
+}
+function getCurrentHeight(_el, name) {
+	const el = _el;
+	if (el) {
+		if (name) addClass(el, name);
+		const offsetHeight = el.offsetHeight;
+		el.style.height = `${offsetHeight}px`;
+	}
+}
+function skipOpacityTransition(_el, name) {
+	const el = _el;
+	if (el) {
+		if (name) removeClass(el, name);
+		el.style.opacity = null;
+		el.style.height = null;
+	}
+}
+function initCollapseMotion(rootCls = defaultPrefixCls, appear = true) {
+	const name = `${rootCls}-motion-collapse`;
+	return {
+		name,
+		appear,
+		css: true,
+		onBeforeEnter: (el) => getCollapsedHeight(el, name),
+		onEnter: getRealHeight,
+		onBeforeLeave: (el) => getCurrentHeight(el, name),
+		onLeave: (el) => getCollapsedHeight(el, name),
+		onAfterEnter: (el) => skipOpacityTransition(el, name),
+		onAfterLeave: (el) => skipOpacityTransition(el, name)
+	};
+}
+var motion_default = initCollapseMotion;
+
+//#endregion
+export { motion_default as default, getTransitionProps };

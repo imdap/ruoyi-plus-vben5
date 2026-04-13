@@ -1,0 +1,61 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { FloatButtonGroupTrigger, FloatButtonProps } from "./FloatButton.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue965 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/float-button/FloatButtonGroup.d.ts
+type FloatButtonGroupSemanticName = keyof FloatButtonGroupSemanticClassNames & keyof FloatButtonGroupSemanticStyles;
+interface FloatButtonGroupSemanticClassNames {
+  root?: string;
+  list?: string;
+  item?: string;
+  itemIcon?: string;
+  itemContent?: string;
+  trigger?: string;
+  triggerIcon?: string;
+  triggerContent?: string;
+}
+interface FloatButtonGroupSemanticStyles {
+  root?: CSSProperties;
+  list?: CSSProperties;
+  item?: CSSProperties;
+  itemIcon?: CSSProperties;
+  itemContent?: CSSProperties;
+  trigger?: CSSProperties;
+  triggerIcon?: CSSProperties;
+  triggerContent?: CSSProperties;
+}
+type FloatButtonGroupClassNamesType = SemanticClassNamesType<FloatButtonGroupProps, FloatButtonGroupSemanticClassNames>;
+type FloatButtonGroupStylesType = SemanticStylesType<FloatButtonGroupProps, FloatButtonGroupSemanticStyles>;
+interface FloatButtonGroupProps extends Omit<FloatButtonProps, 'classes' | 'styles'>, ComponentBaseProps, FloatButtonGroupEmitsProps {
+  classes?: FloatButtonGroupClassNamesType;
+  styles?: FloatButtonGroupStylesType;
+  trigger?: FloatButtonGroupTrigger;
+  open?: boolean;
+  defaultOpen?: boolean;
+  closeIcon?: VueNode;
+  placement?: 'top' | 'left' | 'right' | 'bottom';
+  style?: CSSProperties;
+}
+interface FloatButtonGroupSlots {
+  default?: () => any;
+  closeIcon?: () => any;
+  icon?: () => any;
+}
+interface FloatButtonGroupEmits {
+  'openChange': (open: boolean) => void;
+  'update:open': (open: boolean) => void;
+  'click': (e: MouseEvent) => void;
+}
+interface FloatButtonGroupEmitsProps {
+  onOpenChange?: FloatButtonGroupEmits['openChange'];
+  'onUpdate:open'?: FloatButtonGroupEmits['update:open'];
+  onClick?: FloatButtonGroupEmits['click'];
+}
+declare const InternalFloatButtonGroup: vue965.DefineSetupFnComponent<FloatButtonGroupProps, FloatButtonGroupEmits, SlotsType<FloatButtonGroupSlots>, FloatButtonGroupProps, vue965.PublicProps>;
+declare const FloatButtonGroup: typeof InternalFloatButtonGroup;
+//#endregion
+export { FloatButtonGroupClassNamesType, FloatButtonGroupEmits, FloatButtonGroupEmitsProps, FloatButtonGroupProps, FloatButtonGroupSemanticClassNames, FloatButtonGroupSemanticName, FloatButtonGroupSemanticStyles, FloatButtonGroupSlots, FloatButtonGroupStylesType, FloatButtonGroup as default };

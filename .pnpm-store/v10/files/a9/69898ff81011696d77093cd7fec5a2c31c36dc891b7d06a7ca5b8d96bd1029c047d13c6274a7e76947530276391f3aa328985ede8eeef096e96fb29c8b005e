@@ -1,0 +1,53 @@
+import { FullToken, GlobalToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue377 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/cascader/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 选择器宽度
+   * @descEN Width of Cascader
+   */
+  controlWidth: number | string;
+  /**
+   * @desc 选项宽度
+   * @descEN Width of item
+   */
+  controlItemWidth: number | string;
+  /**
+   * @desc 下拉菜单高度
+   * @descEN Height of dropdown
+   */
+  dropdownHeight: number | string;
+  /**
+   * @desc 选项选中时背景色
+   * @descEN Background color of selected item
+   */
+  optionSelectedBg: string;
+  /**
+   * @desc 选项选中时文本颜色
+   * @descEN Text color when option is selected
+   */
+  optionSelectedColor: string;
+  /**
+   * @desc 选项选中时字重
+   * @descEN Font weight of selected item
+   */
+  optionSelectedFontWeight: CSSProperties['fontWeight'];
+  /**
+   * @desc 选项内间距
+   * @descEN Padding of menu item
+   */
+  optionPadding: CSSProperties['padding'];
+  /**
+   * @desc 选项菜单（单列）内间距
+   * @descEN Padding of menu item (single column)
+   */
+  menuPadding: CSSProperties['padding'];
+}
+type CascaderToken = FullToken<'Cascader'>;
+declare function prepareComponentToken(token: GlobalToken): ComponentToken;
+declare const _default: (prefixCls: vue377.Ref<string>, rootCls?: vue377.Ref<string | undefined>) => readonly [vue377.Ref<string, string>, vue377.ComputedRef<string | undefined>];
+//#endregion
+export { CascaderToken, ComponentToken, _default as default, prepareComponentToken };

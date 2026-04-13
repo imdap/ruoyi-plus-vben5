@@ -1,0 +1,6 @@
+import * as vue_jsx_runtime7 from "vue/jsx-runtime";
+
+//#region src/result/serverError.d.ts
+declare function ServerError(): vue_jsx_runtime7.JSX.Element;
+//#endregion
+export { ServerError as default };

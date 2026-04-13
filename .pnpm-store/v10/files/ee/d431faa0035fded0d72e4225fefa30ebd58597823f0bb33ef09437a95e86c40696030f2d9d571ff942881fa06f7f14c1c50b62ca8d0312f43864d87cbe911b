@@ -1,0 +1,1 @@
+{"version":3,"file":"BrowserFrameURL.d.ts","sourceRoot":"","sources":["../../../src/browser/utilities/BrowserFrameURL.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,aAAa,MAAM,2BAA2B,CAAC;AAC3D,OAAO,EAAE,GAAG,EAAE,MAAM,KAAK,CAAC;AAG1B;;GAEG;AACH,MAAM,CAAC,OAAO,OAAO,eAAe;IACnC;;;;;;OAMG;WACW,cAAc,CAAC,KAAK,EAAE,aAAa,EAAE,GAAG,CAAC,EAAE,MAAM,GAAG,GAAG,GAAG,IAAI,GAAG,GAAG;CAclF"}

@@ -1,0 +1,58 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { PresetColorType, PresetStatusColorType } from "../_util/colors.js";
+import { ClosableType } from "../_util/hooks/useClosable.js";
+import CheckableTag, { CheckableTagProps } from "./CheckableTag.js";
+import CheckableTagGroup from "./CheckableTagGroup.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue128 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { LiteralUnion } from "@v-c/util/dist/type";
+
+//#region src/tag/index.d.ts
+type TagSemanticName = keyof TagSemanticClassNames & keyof TagSemanticStyles;
+interface TagSemanticClassNames {
+  root?: string;
+  icon?: string;
+  content?: string;
+}
+interface TagSemanticStyles {
+  root?: CSSProperties;
+  icon?: CSSProperties;
+  content?: CSSProperties;
+}
+type TagClassNamesType = SemanticClassNamesType<TagProps, TagSemanticClassNames>;
+type TagStylesType = SemanticStylesType<TagProps, TagSemanticStyles>;
+interface TagProps extends ComponentBaseProps, TagEmitsProps {
+  color?: LiteralUnion<PresetColorType | PresetStatusColorType>;
+  /** Advised to use closeIcon instead. */
+  closable?: ClosableType;
+  closeIcon?: VueNode;
+  icon?: VueNode;
+  onClick?: (e: MouseEvent) => void;
+  href?: string;
+  target?: string;
+  disabled?: boolean;
+  bordered?: boolean;
+  styles?: TagStylesType;
+  classes?: TagClassNamesType;
+  variant?: 'filled' | 'solid' | 'outlined';
+}
+interface TagSlots {
+  default?: () => any;
+  icon?: () => any;
+  closeIcon?: () => any;
+}
+interface TagEmits {
+  close: (ev: MouseEvent) => void;
+}
+interface TagEmitsProps {
+  onClose?: TagEmits['close'];
+}
+declare const InternalTag: vue128.DefineSetupFnComponent<TagProps, TagEmits, SlotsType<TagSlots>, TagProps, vue128.PublicProps>;
+declare const Tag: typeof InternalTag & {
+  CheckableTag: typeof CheckableTag;
+};
+//#endregion
+export { CheckableTag, CheckableTagGroup, type CheckableTagProps, TagClassNamesType, TagEmits, TagEmitsProps, TagProps, TagSemanticClassNames, TagSemanticName, TagSemanticStyles, TagSlots, TagStylesType, Tag as default };

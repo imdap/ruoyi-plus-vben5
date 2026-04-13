@@ -1,0 +1,439 @@
+import Filler_default from "./Filler.js";
+import useChildren from "./hooks/useChildren.js";
+import useDiffItem from "./hooks/useDiffItem.js";
+import useFrameWheel from "./hooks/useFrameWheel.js";
+import { useGetSize } from "./hooks/useGetSize.js";
+import useHeights from "./hooks/useHeights.js";
+import useMobileTouchMove from "./hooks/useMobileTouchMove.js";
+import useScrollDrag from "./hooks/useScrollDrag.js";
+import useScrollTo from "./hooks/useScrollTo.js";
+import ScrollBar_default from "./ScrollBar.js";
+import { getSpinSize } from "./utils/scrollbarUtil.js";
+import { computed, createVNode, defineComponent, mergeProps, ref, shallowRef, toRaw, unref, watch } from "vue";
+import ResizeObserver from "@v-c/resize-observer";
+import { pureAttrs } from "@v-c/util/dist/props-util";
+var EMPTY_DATA = [];
+var ScrollStyle = {
+	overflowY: "auto",
+	overflowAnchor: "none"
+};
+var List_default = /* @__PURE__ */ defineComponent({
+	name: "VirtualList",
+	props: {
+		prefixCls: {
+			type: String,
+			default: "vc-virtual-list"
+		},
+		data: { type: Array },
+		height: Number,
+		itemHeight: Number,
+		fullHeight: {
+			type: Boolean,
+			default: true
+		},
+		itemKey: {
+			type: [
+				String,
+				Number,
+				Function
+			],
+			required: true
+		},
+		component: {
+			type: String,
+			default: "div"
+		},
+		direction: { type: String },
+		scrollWidth: Number,
+		styles: Object,
+		showScrollBar: {
+			type: [Boolean, String],
+			default: "optional"
+		},
+		virtual: {
+			type: Boolean,
+			default: true
+		},
+		onScroll: Function,
+		onVirtualScroll: Function,
+		onVisibleChange: Function,
+		innerProps: Object,
+		extraRender: Function
+	},
+	inheritAttrs: false,
+	setup(props, { expose, attrs, slots }) {
+		const itemHeight = computed(() => props.itemHeight);
+		let itemKeyProp = props.itemKey;
+		watch(() => props.itemKey, (val) => {
+			itemKeyProp = val;
+		});
+		const getKey = (item) => {
+			const _itemKey = itemKeyProp;
+			if (typeof _itemKey === "function") return _itemKey(item);
+			return item?.[_itemKey];
+		};
+		const [setInstanceRef, collectHeight, heights, heightUpdatedMark] = useHeights(getKey, void 0, void 0);
+		const mergedData = shallowRef(props?.data || EMPTY_DATA);
+		watch(() => props.data, () => {
+			mergedData.value = props?.data || EMPTY_DATA;
+		});
+		const useVirtual = computed(() => !!(props.virtual !== false && props.height && props.itemHeight));
+		const inVirtual = computed(() => {
+			const data = mergedData.value;
+			return useVirtual.value && data && (props.itemHeight * data.length > props.height || !!props.scrollWidth);
+		});
+		const componentRef = ref();
+		const fillerInnerRef = ref();
+		const containerRef = ref();
+		const verticalScrollBarRef = shallowRef();
+		const horizontalScrollBarRef = shallowRef();
+		const offsetTop = ref(0);
+		const offsetLeft = ref(0);
+		const scrollMoving = ref(false);
+		const verticalScrollBarSpinSize = ref(0);
+		const horizontalScrollBarSpinSize = ref(0);
+		const contentScrollWidth = ref(props.scrollWidth || 0);
+		const scrollHeight = ref(0);
+		const start = ref(0);
+		const end = ref(0);
+		const fillerOffset = ref(void 0);
+		function syncScrollTop(newTop) {
+			let value;
+			if (typeof newTop === "function") value = newTop(offsetTop.value);
+			else value = newTop;
+			const maxScrollHeight = scrollHeight.value - props.height;
+			const alignedTop = Math.max(0, Math.min(value, maxScrollHeight || 0));
+			if (componentRef.value) componentRef.value.scrollTop = alignedTop;
+			offsetTop.value = alignedTop;
+		}
+		watch([
+			inVirtual,
+			useVirtual,
+			offsetTop,
+			mergedData,
+			heightUpdatedMark,
+			() => props.height
+		], () => {
+			if (!useVirtual.value) {
+				scrollHeight.value = 0;
+				start.value = 0;
+				end.value = mergedData.value.length - 1;
+				fillerOffset.value = void 0;
+				return;
+			}
+			if (!inVirtual.value) {
+				scrollHeight.value = fillerInnerRef.value?.offsetHeight || 0;
+				start.value = 0;
+				end.value = mergedData.value.length - 1;
+				fillerOffset.value = void 0;
+				return;
+			}
+			const { itemHeight: itemHeight$1, height } = props;
+			const dataLen = mergedData.value.length;
+			if (!dataLen) {
+				scrollHeight.value = 0;
+				start.value = 0;
+				end.value = -1;
+				fillerOffset.value = 0;
+				return;
+			}
+			if (unref(heights.id) === 0) {
+				const safeItemHeight = itemHeight$1;
+				const safeListHeight = height;
+				const startIndex$1 = Math.max(0, Math.floor(offsetTop.value / safeItemHeight));
+				const startOffset$1 = startIndex$1 * safeItemHeight;
+				let endIndex$1 = startIndex$1 + Math.ceil(safeListHeight / safeItemHeight);
+				endIndex$1 = Math.min(endIndex$1 + 1, dataLen - 1);
+				scrollHeight.value = dataLen * safeItemHeight;
+				start.value = startIndex$1;
+				end.value = endIndex$1;
+				fillerOffset.value = startOffset$1;
+				return;
+			}
+			let itemTop = 0;
+			let startIndex;
+			let startOffset;
+			let endIndex;
+			const data = toRaw(mergedData.value);
+			const _offsetTop = offsetTop.value;
+			for (let i = 0; i < dataLen; i += 1) {
+				const item = data[i];
+				const key = getKey(item);
+				const cacheHeight = heights.get(key);
+				const currentItemBottom = itemTop + (cacheHeight === void 0 ? itemHeight$1 : cacheHeight);
+				if (currentItemBottom >= _offsetTop && startIndex === void 0) {
+					startIndex = i;
+					startOffset = itemTop;
+				}
+				if (currentItemBottom > _offsetTop + height && endIndex === void 0) endIndex = i;
+				itemTop = currentItemBottom;
+			}
+			if (startIndex === void 0) {
+				startIndex = 0;
+				startOffset = 0;
+				endIndex = Math.ceil(height / itemHeight$1);
+			}
+			if (endIndex === void 0) endIndex = data.length - 1;
+			endIndex = Math.min(endIndex + 1, data.length - 1);
+			scrollHeight.value = itemTop;
+			start.value = startIndex;
+			end.value = endIndex;
+			fillerOffset.value = startOffset;
+		}, { immediate: true });
+		watch(scrollHeight, () => {
+			const changedRecord = heights.getRecord();
+			if (changedRecord.size === 1) {
+				const recordKey = Array.from(changedRecord.keys())[0];
+				const prevCacheHeight = changedRecord.get(recordKey);
+				const startItem = mergedData.value[start.value];
+				if (startItem && prevCacheHeight === void 0) {
+					if (getKey(startItem) === recordKey) {
+						const diffHeight = heights.get(recordKey) - props.itemHeight;
+						syncScrollTop((ori) => ori + diffHeight);
+					}
+				}
+			}
+			if (useVirtual.value && props.height) {
+				const maxScrollTop = Math.max(0, scrollHeight.value - props.height);
+				if (offsetTop.value > maxScrollTop) syncScrollTop(maxScrollTop);
+			}
+			heights.resetRecord();
+		});
+		const size = ref({
+			width: 0,
+			height: props.height || 0
+		});
+		const onHolderResize = (sizeInfo) => {
+			size.value = {
+				width: sizeInfo.offsetWidth,
+				height: sizeInfo.offsetHeight
+			};
+			contentScrollWidth.value = props.scrollWidth ?? sizeInfo.offsetWidth;
+		};
+		const isRTL = computed(() => props.direction === "rtl");
+		const getVirtualScrollInfo = () => ({
+			x: isRTL.value ? -offsetLeft.value : offsetLeft.value,
+			y: offsetTop.value
+		});
+		const lastVirtualScrollInfo = ref(getVirtualScrollInfo());
+		const triggerScroll = (params) => {
+			if (props.onVirtualScroll) {
+				const nextInfo = {
+					...getVirtualScrollInfo(),
+					...params
+				};
+				if (lastVirtualScrollInfo.value.x !== nextInfo.x || lastVirtualScrollInfo.value.y !== nextInfo.y) {
+					props.onVirtualScroll(nextInfo);
+					lastVirtualScrollInfo.value = nextInfo;
+				}
+			}
+		};
+		const horizontalRange = computed(() => Math.max(0, (contentScrollWidth.value || 0) - size.value.width));
+		const isScrollAtTop = computed(() => offsetTop.value === 0);
+		const isScrollAtBottom = computed(() => offsetTop.value + props.height >= scrollHeight.value);
+		const isScrollAtLeft = computed(() => offsetLeft.value === 0);
+		const isScrollAtRight = computed(() => offsetLeft.value >= horizontalRange.value);
+		const keepInHorizontalRange = (nextOffsetLeft) => {
+			const max = horizontalRange.value;
+			return Math.max(0, Math.min(nextOffsetLeft, max));
+		};
+		const delayHideScrollBar = () => {
+			verticalScrollBarRef.value?.delayHidden();
+			horizontalScrollBarRef.value?.delayHidden();
+		};
+		const [onWheel] = useFrameWheel(inVirtual, isScrollAtTop, isScrollAtBottom, isScrollAtLeft, isScrollAtRight, horizontalRange.value > 0, (offsetY, isHorizontal) => {
+			if (isHorizontal) {
+				const aligned = keepInHorizontalRange(isRTL.value ? offsetLeft.value - offsetY : offsetLeft.value + offsetY);
+				offsetLeft.value = aligned;
+				triggerScroll({ x: isRTL.value ? -aligned : aligned });
+			} else syncScrollTop((top) => top + offsetY);
+		});
+		useMobileTouchMove(inVirtual, componentRef, (isHorizontal, offset, _smoothOffset, _e) => {
+			if (isHorizontal) {
+				const aligned = keepInHorizontalRange(isRTL.value ? offsetLeft.value - offset : offsetLeft.value + offset);
+				offsetLeft.value = aligned;
+				triggerScroll({ x: isRTL.value ? -aligned : aligned });
+				return true;
+			} else {
+				syncScrollTop((top) => top + offset);
+				return true;
+			}
+		});
+		useScrollDrag(inVirtual, componentRef, (offset) => {
+			syncScrollTop((top) => top + offset);
+		});
+		const onScrollBar = (newScrollOffset, horizontal) => {
+			const newOffset = newScrollOffset;
+			if (horizontal) {
+				offsetLeft.value = newOffset;
+				triggerScroll({ x: isRTL.value ? -newOffset : newOffset });
+			} else syncScrollTop(newOffset);
+		};
+		const onScrollbarStartMove = () => {
+			scrollMoving.value = true;
+		};
+		const onScrollbarStopMove = () => {
+			scrollMoving.value = false;
+		};
+		useDiffItem(mergedData, getKey);
+		watch([
+			() => props.height,
+			scrollHeight,
+			inVirtual,
+			() => size.value.height
+		], () => {
+			if (inVirtual.value && props.height && scrollHeight.value) verticalScrollBarSpinSize.value = getSpinSize(size.value.height, scrollHeight.value);
+		}, { immediate: true });
+		watch([() => size.value.width, contentScrollWidth], () => {
+			if (inVirtual.value && contentScrollWidth.value) horizontalScrollBarSpinSize.value = getSpinSize(size.value.width, contentScrollWidth.value);
+		}, { immediate: true });
+		watch(() => props.scrollWidth, (val) => {
+			contentScrollWidth.value = val ?? size.value.width;
+			offsetLeft.value = keepInHorizontalRange(offsetLeft.value);
+		}, { immediate: true });
+		function onFallbackScroll(e) {
+			const newScrollTop = e.currentTarget.scrollTop;
+			if (!useVirtual.value || !inVirtual.value) offsetTop.value = newScrollTop;
+			else if (newScrollTop !== offsetTop.value) syncScrollTop(newScrollTop);
+			props.onScroll?.(e);
+			triggerScroll();
+		}
+		const [scrollTo, getTotalHeight] = useScrollTo(componentRef, mergedData, heights, itemHeight, getKey, () => collectHeight(true), (newTop) => {
+			const totalHeight = getTotalHeight();
+			const maxScrollHeight = Math.max(scrollHeight.value, totalHeight) - props.height;
+			const alignedTop = Math.max(0, Math.min(newTop, maxScrollHeight || 0));
+			if (componentRef.value) componentRef.value.scrollTop = alignedTop;
+			offsetTop.value = alignedTop;
+		}, delayHideScrollBar);
+		expose({
+			nativeElement: containerRef,
+			getScrollInfo: getVirtualScrollInfo,
+			scrollTo: (config) => {
+				function isPosScroll(arg) {
+					return arg && typeof arg === "object" && ("left" in arg || "top" in arg);
+				}
+				if (isPosScroll(config)) {
+					if (config.left !== void 0) offsetLeft.value = keepInHorizontalRange(config.left);
+					scrollTo(config.top);
+				} else scrollTo(config);
+			}
+		});
+		watch([
+			start,
+			end,
+			mergedData
+		], () => {
+			if (props.onVisibleChange) {
+				const renderList = mergedData.value.slice(start.value, end.value + 1);
+				props.onVisibleChange(renderList, mergedData.value);
+			}
+		}, { flush: "post" });
+		const getSize = useGetSize(mergedData, getKey, heights, itemHeight);
+		const listChildren = useChildren(mergedData, start, end, contentScrollWidth, offsetLeft, setInstanceRef, (item, index, props$1) => slots.default?.({
+			item,
+			index,
+			...props$1
+		}), { getKey });
+		return () => {
+			const componentStyle = {};
+			const getHolderSizeStyle = (style) => {
+				if (!style) return {};
+				if (Array.isArray(style)) return style.reduce((acc, item) => Object.assign(acc, getHolderSizeStyle(item)), {});
+				if (typeof style === "object") {
+					const { height, maxHeight } = style;
+					const sizeStyle = {};
+					if (height !== void 0) sizeStyle.height = height;
+					if (maxHeight !== void 0) sizeStyle.maxHeight = maxHeight;
+					return sizeStyle;
+				}
+				return {};
+			};
+			if (props.height) {
+				componentStyle[props.fullHeight ? "height" : "maxHeight"] = `${props.height}px`;
+				Object.assign(componentStyle, ScrollStyle);
+				if (inVirtual.value) {
+					componentStyle.overflowY = "hidden";
+					if (horizontalRange.value > 0) componentStyle.overflowX = "hidden";
+					if (scrollMoving.value) componentStyle.pointerEvents = "none";
+				}
+			} else {
+				const holderSizeStyle = getHolderSizeStyle(attrs.style);
+				if (holderSizeStyle.height !== void 0 || holderSizeStyle.maxHeight !== void 0) Object.assign(componentStyle, holderSizeStyle, ScrollStyle);
+			}
+			const extraContent = props.extraRender?.({
+				start: start.value,
+				end: end.value,
+				virtual: inVirtual.value,
+				offsetX: offsetLeft.value,
+				offsetY: fillerOffset.value || 0,
+				rtl: isRTL.value,
+				getSize
+			});
+			const Component = props.component;
+			return createVNode("div", mergeProps({ "ref": containerRef }, pureAttrs(attrs), {
+				"style": {
+					position: "relative",
+					...attrs.style
+				},
+				"dir": isRTL.value ? "rtl" : void 0,
+				"class": [
+					props.prefixCls,
+					{ [`${props.prefixCls}-rtl`]: isRTL.value },
+					attrs.class
+				]
+			}), [
+				createVNode(ResizeObserver, { "onResize": onHolderResize }, { default: () => [createVNode(Component, {
+					"class": `${props.prefixCls}-holder`,
+					"style": componentStyle,
+					"ref": componentRef,
+					"onScroll": onFallbackScroll,
+					"onWheel": onWheel,
+					"onMouseenter": delayHideScrollBar
+				}, { default: () => [createVNode(Filler_default, {
+					"prefixCls": props.prefixCls,
+					"height": scrollHeight.value,
+					"offsetX": offsetLeft.value,
+					"offsetY": fillerOffset.value,
+					"scrollWidth": contentScrollWidth.value,
+					"onInnerResize": collectHeight,
+					"ref": fillerInnerRef,
+					"innerProps": props.innerProps,
+					"rtl": isRTL.value,
+					"extra": extraContent
+				}, { default: () => [listChildren.value] })] })] }),
+				inVirtual.value && scrollHeight.value > (props.height || 0) && createVNode(ScrollBar_default, {
+					"ref": verticalScrollBarRef,
+					"prefixCls": props.prefixCls,
+					"scrollOffset": offsetTop.value,
+					"scrollRange": scrollHeight.value,
+					"rtl": isRTL.value,
+					"onScroll": onScrollBar,
+					"onStartMove": onScrollbarStartMove,
+					"onStopMove": onScrollbarStopMove,
+					"spinSize": verticalScrollBarSpinSize.value,
+					"containerSize": size.value.height,
+					"showScrollBar": props.showScrollBar,
+					"style": props.styles?.verticalScrollBar,
+					"thumbStyle": props.styles?.verticalScrollBarThumb
+				}, null),
+				inVirtual.value && contentScrollWidth.value > size.value.width && createVNode(ScrollBar_default, {
+					"ref": horizontalScrollBarRef,
+					"prefixCls": props.prefixCls,
+					"scrollOffset": offsetLeft.value,
+					"scrollRange": contentScrollWidth.value,
+					"rtl": isRTL.value,
+					"onScroll": onScrollBar,
+					"onStartMove": onScrollbarStartMove,
+					"onStopMove": onScrollbarStopMove,
+					"spinSize": horizontalScrollBarSpinSize.value,
+					"containerSize": size.value.width,
+					"horizontal": true,
+					"showScrollBar": props.showScrollBar,
+					"style": props.styles?.horizontalScrollBar,
+					"thumbStyle": props.styles?.horizontalScrollBarThumb
+				}, null)
+			]);
+		};
+	}
+});
+export { List_default as default };

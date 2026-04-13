@@ -1,0 +1,17 @@
+import { EmptyEmit } from "../../_util/type.js";
+import { ModalFuncProps } from "../interface.js";
+import * as vue503 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/modal/useModal/HookModal.d.ts
+interface HookModalProps {
+  afterClose: () => void;
+  config: ModalFuncProps;
+  onConfirm?: (confirmed: boolean) => void;
+  isSilent?: () => boolean;
+}
+declare const HookModal: vue503.DefineSetupFnComponent<HookModalProps, EmptyEmit, SlotsType<{
+  default?: () => any;
+}>, HookModalProps, vue503.PublicProps>;
+//#endregion
+export { HookModalProps, HookModal as default };

@@ -1,0 +1,48 @@
+{
+    "id": "zig",
+    "version": "0.2",
+    "name": "Zig",
+    "description": "Zig dictionary for cspell.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "zig",
+            "path": "./dict/zig.txt",
+            "description": "Zig dictionary"
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "languageId": "zig",
+            "locale": "*",
+            "includeRegExpList": [],
+            "ignoreRegExpList": [],
+            "patterns": [],
+            "dictionaries": ["zig"],
+            "dictionaryDefinitions": []
+        },
+        {
+            "languageId": "zon",
+            "locale": "*",
+            "patterns": [
+                {
+                    "name": "zig-hash",
+                    "pattern": "/\\.hash\\s=.*/g"
+                }
+            ],
+            "ignoreRegExpList": ["zig-hash"],
+            "dictionaries": ["zig"]
+        }
+    ],
+    "overrides": [
+        {
+            "filename": "**/*.zig",
+            "languageId": "zig"
+        },
+        {
+            "filename": "**/*.zon",
+            "languageId": "zon"
+        }
+    ]
+}

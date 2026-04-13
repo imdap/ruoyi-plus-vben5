@@ -1,0 +1,289 @@
+import { useComponentBaseConfig } from "../config-provider/context.js";
+import useToken from "../theme/useToken.js";
+import { ContextIsolator } from "../_util/ContextIsolator.js";
+import { useMergeSemantic, useToArr, useToProps } from "../_util/hooks/useMergeSemantic.js";
+import { ZIndexProvider } from "../_util/zindexContext.js";
+import { useZIndex } from "../_util/hooks/useZIndex.js";
+import getPlacements from "../_util/placements.js";
+import { getSlotPropsFnRun, toPropsRefs as toPropsRefs$1 } from "../_util/tools.js";
+import useCSSVarCls_default from "../config-provider/hooks/useCSSVarCls.js";
+import { useTableMeasureRowContext } from "../table/TableMeasureRowContext.js";
+import useMergedArrow_default from "./hooks/useMergedArrow.js";
+import style_default from "./style/index.js";
+import { parseColor } from "./util.js";
+import PurePanel_default from "./PurePanel.js";
+import UniqueProvider_default from "./UniqueProvider/index.js";
+import { computed, createVNode, defineComponent, isVNode, mergeDefaults, mergeProps, shallowRef, watch } from "vue";
+import { clsx } from "@v-c/util";
+import { filterEmpty, removeUndefined } from "@v-c/util/dist/props-util";
+import VcTooltip from "@v-c/tooltip";
+import { getTransitionName } from "@v-c/util/dist/utils/transition";
+
+//#region src/tooltip/index.tsx
+/**
+* @internal
+* Internal props type with hidden properties
+*/
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+const InternalTooltip = /* @__PURE__ */ defineComponent((props, { slots, attrs, expose, emit }) => {
+	const [, token] = useToken();
+	const { prefixCls, rootPrefixCls, direction, arrow: contextArrow, class: contextClassName, style: contextStyle, classes: contextClassNames, styles: contextStyles, trigger: contextTrigger, getPopupContainer: getContextPopupContainer } = useComponentBaseConfig("tooltip", props, ["arrow", "trigger"]);
+	const { arrow: tooltipArrow, builtinPlacements, autoAdjustOverflow, classes, styles } = toPropsRefs$1(props, "arrow", "builtinPlacements", "autoAdjustOverflow", "classes", "styles");
+	const mergedArrow = useMergedArrow_default(tooltipArrow, contextArrow);
+	const mergedTrigger = computed(() => props?.trigger ?? contextTrigger.value ?? "hover");
+	const mergedShowArrow = computed(() => mergedArrow.value?.show);
+	const tooltipRef = shallowRef();
+	const forceAlign = () => {
+		tooltipRef.value?.forceAlign?.();
+	};
+	expose({
+		forceAlign,
+		nativeElement: computed(() => tooltipRef.value?.nativeElement),
+		popupElement: computed(() => tooltipRef.value?.popupElement)
+	});
+	const open = shallowRef(props?.defaultOpen ?? false);
+	watch(() => props.open, (val, prevVal) => {
+		if (val !== void 0) open.value = val;
+		else if (prevVal !== void 0) open.value = false;
+	}, { immediate: true });
+	let noTitle = false;
+	const onInternalOpenChange = (vis) => {
+		if (props.open === void 0) open.value = noTitle ? false : vis;
+		if (!noTitle) {
+			emit("openChange", vis);
+			emit("update:open", vis);
+		}
+	};
+	const tooltipPlacements = computed(() => {
+		return builtinPlacements.value || getPlacements({
+			arrowPointAtCenter: mergedArrow?.value?.pointAtCenter ?? false,
+			autoAdjustOverflow: autoAdjustOverflow.value,
+			arrowWidth: mergedShowArrow.value ? token.value.sizePopupArrow : 0,
+			borderRadius: token.value.borderRadius,
+			offset: token.value.marginXXS,
+			visibleFirst: true
+		});
+	});
+	const mergedProps = computed(() => {
+		return {
+			...props,
+			trigger: mergedTrigger.value
+		};
+	});
+	const [mergedClassNames, mergedStyles] = useMergeSemantic(useToArr(contextClassNames, classes), useToArr(contextStyles, styles), useToProps(mergedProps));
+	const injectFromPopover = props.dataPopoverInject;
+	const inTableMeasureRow = useTableMeasureRowContext();
+	const rootCls = useCSSVarCls_default(prefixCls);
+	const [hashId, cssVarCls] = style_default(prefixCls, rootCls, !injectFromPopover);
+	const [zIndex, contextZIndex] = useZIndex("Tooltip", computed(() => props.zIndex));
+	return () => {
+		const { color, rootClass, placement, mouseLeaveDelay, mouseEnterDelay, getPopupContainer, getTooltipContainer, afterOpenChange, motion, destroyOnHidden, openClass, arrow: _arrow, ...restProps } = props;
+		const title = getSlotPropsFnRun(slots, props, "title");
+		const overlay = getSlotPropsFnRun(slots, props, "overlay");
+		noTitle = !title && !overlay && title !== 0;
+		const memoOverlay = title === 0 ? title : overlay || title || "";
+		const memoOverlayWrapper = createVNode(ContextIsolator, {
+			"space": true,
+			"form": true
+		}, _isSlot(memoOverlay) ? memoOverlay : { default: () => [memoOverlay] });
+		let child = filterEmpty(slots.default?.())?.[0];
+		child = isVNode(child) ? child : createVNode("span", null, [child]);
+		const childProps = child?.props ?? {};
+		const childCls = !childProps?.class || typeof childProps?.class === "string" ? clsx(childProps.class, openClass || `${prefixCls.value}-open`) : childProps.class;
+		const colorInfo = parseColor(rootPrefixCls.value, prefixCls.value, color);
+		const arrowContentStyle = colorInfo.arrowStyle;
+		const themeCls = clsx(rootCls.value, hashId.value, cssVarCls.value);
+		const rootClassNames = clsx({ [`${prefixCls.value}-rtl`]: direction.value === "rtl" }, colorInfo.className, rootClass, themeCls, contextClassName.value, mergedClassNames.value.root);
+		const containerStyle = {
+			...mergedStyles.value.container,
+			...colorInfo.overlayStyle
+		};
+		let tempOpen = open.value;
+		if (!(props.open !== void 0) && noTitle || inTableMeasureRow.value) tempOpen = false;
+		const content = createVNode(VcTooltip, mergeProps({ "unique": true }, removeUndefined(restProps), attrs, {
+			"trigger": mergedTrigger.value,
+			"zIndex": zIndex.value,
+			"showArrow": mergedShowArrow.value,
+			"placement": placement,
+			"mouseLeaveDelay": mouseLeaveDelay,
+			"mouseEnterDelay": mouseEnterDelay,
+			"prefixCls": prefixCls.value,
+			"classNames": {
+				root: rootClassNames,
+				container: mergedClassNames.value.container,
+				arrow: mergedClassNames.value.arrow,
+				uniqueContainer: clsx(themeCls, mergedClassNames.value.container)
+			},
+			"styles": {
+				root: {
+					...arrowContentStyle,
+					...mergedStyles.value?.root,
+					...contextStyle.value
+				},
+				container: containerStyle,
+				uniqueContainer: containerStyle,
+				arrow: mergedStyles.value.arrow
+			},
+			"getTooltipContainer": getPopupContainer || getTooltipContainer || getContextPopupContainer,
+			"ref": tooltipRef,
+			"builtinPlacements": tooltipPlacements.value,
+			"overlay": memoOverlayWrapper,
+			"visible": tempOpen,
+			"onVisibleChange": onInternalOpenChange,
+			"afterVisibleChange": afterOpenChange,
+			"arrowContent": createVNode("span", { "class": `${prefixCls.value}-arrow-content` }, null),
+			"motion": {
+				name: getTransitionName(rootPrefixCls.value, "zoom-big-fast", typeof motion?.name === "string" ? motion?.name : void 0),
+				duration: 1e3
+			},
+			"destroyOnHidden": destroyOnHidden
+		}), { default: () => [tempOpen ? createVNode(child, { class: childCls }) : child] });
+		return createVNode(ZIndexProvider, { "value": contextZIndex.value }, _isSlot(content) ? content : { default: () => [content] });
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		dataPopoverInject: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		afterOpenChange: {
+			type: Function,
+			required: false
+		},
+		builtinPlacements: { required: false },
+		title: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		overlay: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		openClass: {
+			type: String,
+			required: false
+		},
+		unique: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		align: {
+			type: Object,
+			required: false
+		},
+		arrow: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		autoAdjustOverflow: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		color: { required: false },
+		open: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		defaultOpen: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		getPopupContainer: {
+			type: Function,
+			required: false
+		},
+		destroyOnHidden: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		zIndex: {
+			type: Number,
+			required: false
+		},
+		placement: {
+			type: String,
+			required: false
+		},
+		trigger: {
+			type: [String, Array],
+			required: false
+		},
+		fresh: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		mouseEnterDelay: {
+			type: Number,
+			required: false
+		},
+		mouseLeaveDelay: {
+			type: Number,
+			required: false
+		},
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		},
+		getTooltipContainer: {
+			type: Function,
+			required: false
+		},
+		motion: { required: false },
+		rootClass: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		}
+	}, {
+		autoAdjustOverflow: true,
+		placement: "top",
+		mouseEnterDelay: .1,
+		mouseLeaveDelay: .1
+	}),
+	emits: ["openChange", "update:open"],
+	name: "ATooltip",
+	inheritAttrs: false
+});
+InternalTooltip.install = (app) => {
+	app.component(InternalTooltip.name, InternalTooltip);
+	app.component("AUniqueProvider", UniqueProvider_default);
+};
+InternalTooltip.UniqueProvider = UniqueProvider_default;
+InternalTooltip._InternalPanelDoNotUseOrYouWillBeFired = PurePanel_default;
+var tooltip_default = InternalTooltip;
+
+//#endregion
+export { UniqueProvider_default as UniqueProvider, tooltip_default as default };

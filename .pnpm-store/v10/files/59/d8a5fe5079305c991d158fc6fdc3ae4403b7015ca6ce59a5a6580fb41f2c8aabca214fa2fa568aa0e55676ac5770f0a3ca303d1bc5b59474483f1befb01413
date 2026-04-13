@@ -1,0 +1,1 @@
+{"version":3,"file":"TNodeFilter.d.ts","sourceRoot":"","sources":["../../src/tree-walker/TNodeFilter.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,IAAI,MAAM,uBAAuB,CAAC;AAE9C,MAAM,MAAM,WAAW,GAAG,CAAC,CAAC,IAAI,EAAE,IAAI,KAAK,MAAM,CAAC,GAAG;IAAE,UAAU,CAAC,IAAI,EAAE,IAAI,GAAG,MAAM,CAAA;CAAE,CAAC"}

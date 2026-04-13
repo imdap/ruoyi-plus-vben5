@@ -1,0 +1,134 @@
+import { defineComponent, h } from 'vue';
+import { getCurrComponent } from '../util/comp';
+export function createWidgetATextarea(VxeUI) {
+    const getWidgetATextareaConfig = (params) => {
+        return {
+            title: '文本域',
+            icon: 'vxe-icon-textarea',
+            options: {
+                placeholder: '请输入'
+            }
+        };
+    };
+    const WidgetATextareaFormComponent = defineComponent({
+        props: {
+            renderOpts: {
+                type: Object,
+                default: () => ({})
+            },
+            renderParams: {
+                type: Object,
+                default: () => ({})
+            }
+        },
+        emits: [],
+        setup(props) {
+            const VxeUIFormComponent = VxeUI.getComponent('VxeForm');
+            const VxeUIFormItemComponent = VxeUI.getComponent('VxeFormItem');
+            const VxeUISwitchComponent = VxeUI.getComponent('VxeSwitch');
+            const VxeUIInputComponent = VxeUI.getComponent('VxeInput');
+            return () => {
+                const { renderParams } = props;
+                const { widget } = renderParams;
+                return h(VxeUIFormComponent, {
+                    class: 'vxe-form-design--widget-render-form-wrapper',
+                    vertical: true,
+                    span: 24,
+                    titleBold: true,
+                    titleOverflow: true,
+                    data: widget.options
+                }, {
+                    default() {
+                        return [
+                            h(VxeUIFormItemComponent, {
+                                title: VxeUI.getI18n('vxe.formDesign.widgetProp.name')
+                            }, {
+                                default() {
+                                    return h(VxeUIInputComponent, {
+                                        modelValue: widget.title,
+                                        'onUpdate:modelValue'(val) {
+                                            widget.title = val;
+                                        }
+                                    });
+                                }
+                            }),
+                            h(VxeUIFormItemComponent, {
+                                title: VxeUI.getI18n('vxe.formDesign.widgetProp.placeholder'),
+                                field: 'placeholder',
+                                itemRender: { name: 'ElInput' }
+                            }),
+                            h(VxeUIFormItemComponent, {
+                                title: VxeUI.getI18n('vxe.formDesign.widgetProp.required')
+                            }, {
+                                default() {
+                                    return h(VxeUISwitchComponent, {
+                                        modelValue: widget.required,
+                                        'onUpdate:modelValue'(val) {
+                                            widget.required = val;
+                                        }
+                                    });
+                                }
+                            })
+                        ];
+                    }
+                });
+            };
+        }
+    });
+    const WidgetATextareaViewComponent = defineComponent({
+        props: {
+            renderOpts: {
+                type: Object,
+                default: () => ({})
+            },
+            renderParams: {
+                type: Object,
+                default: () => ({})
+            }
+        },
+        emits: [],
+        setup(props) {
+            const VxeUIFormItemComponent = VxeUI.getComponent('VxeFormItem');
+            const changeEvent = () => {
+                const { renderParams } = props;
+                const { widget, $formView } = renderParams;
+                if ($formView) {
+                    const itemValue = $formView ? $formView.getItemValue(widget) : null;
+                    $formView.updateWidgetStatus(widget, itemValue);
+                }
+            };
+            return () => {
+                const { renderParams } = props;
+                const { widget, $formView } = renderParams;
+                const { options } = widget;
+                return h(VxeUIFormItemComponent, {
+                    class: ['vxe-form-design--widget-render-form-item'],
+                    field: widget.field,
+                    title: widget.title
+                }, {
+                    default() {
+                        return h(getCurrComponent('a-textarea'), {
+                            value: $formView ? $formView.getItemValue(widget) : null,
+                            placeholder: options.placeholder,
+                            autoSize: {
+                                minRows: 2,
+                                maxRows: 4
+                            },
+                            onChange: changeEvent,
+                            'onUpdate:value'(val) {
+                                if ($formView) {
+                                    $formView.setItemValue(widget, val);
+                                }
+                            }
+                        });
+                    }
+                });
+            };
+        }
+    });
+    return {
+        getWidgetATextareaConfig,
+        WidgetATextareaFormComponent,
+        WidgetATextareaViewComponent
+    };
+}

@@ -1,0 +1,43 @@
+{
+  "name": "@v-c/slider",
+  "type": "module",
+  "version": "1.0.10",
+  "description": "",
+  "author": "",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "slider"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "dependencies": {
+    "@v-c/util": "^1.0.9"
+  },
+  "devDependencies": {
+    "@v-c/tooltip": "^1.0.2"
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "prepublish": "pnpm build",
+    "bump": "bumpp --release patch"
+  }
+}

@@ -1,0 +1,17 @@
+import { TreeEmits, TreeProps as TreeProps$1, TreeSlots } from "./Tree.js";
+import * as vue242 from "vue";
+import { SlotsType } from "vue";
+import { BasicDataNode, DataNode } from "@v-c/tree";
+
+//#region src/tree/DirectoryTree.d.ts
+type ExpandAction = false | 'click' | 'doubleClick';
+interface DirectoryTreeProps<T extends BasicDataNode = DataNode> extends TreeProps$1<T>, DirectoryTreeEmitsProps {
+  expandAction?: ExpandAction;
+}
+interface DirectoryTreeEmits extends TreeEmits {}
+type DirectoryTreeEmitsProps = { [K in keyof DirectoryTreeEmits as `on${Capitalize<string & K>}`]?: DirectoryTreeEmits[K] };
+type DirectoryTreeEmitsType = DirectoryTreeEmitsProps;
+interface DirectoryTreeSlots extends TreeSlots {}
+declare const DirectoryTree: vue242.DefineSetupFnComponent<DirectoryTreeProps<BasicDataNode>, DirectoryTreeEmits, SlotsType<DirectoryTreeSlots>, DirectoryTreeProps<BasicDataNode>, vue242.PublicProps>;
+//#endregion
+export { DirectoryTreeEmits, DirectoryTreeEmitsProps, DirectoryTreeEmitsType, DirectoryTreeProps, DirectoryTreeSlots, ExpandAction, DirectoryTree as default };

@@ -1,0 +1,21 @@
+import { EmptyEmit } from "../_util/type.js";
+import { ProgressProps, ProgressSemanticClassNames, ProgressSemanticStyles } from "./progress.js";
+import * as vue300 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/progress/Steps.d.ts
+interface ProgressStepsProps extends Omit<ProgressProps, 'classes' | 'styles'> {
+  steps: number;
+  strokeColor?: string | string[];
+  railColor?: string;
+  /** @deprecated Please use `railColor` instead */
+  trailColor?: string;
+  classes: ProgressSemanticClassNames;
+  styles: ProgressSemanticStyles;
+}
+interface ProgressStepsSlots {
+  default?: () => any;
+}
+declare const Steps: vue300.DefineSetupFnComponent<ProgressStepsProps, EmptyEmit, SlotsType<ProgressStepsSlots>, ProgressStepsProps, vue300.PublicProps>;
+//#endregion
+export { ProgressStepsProps, ProgressStepsSlots, Steps as default };

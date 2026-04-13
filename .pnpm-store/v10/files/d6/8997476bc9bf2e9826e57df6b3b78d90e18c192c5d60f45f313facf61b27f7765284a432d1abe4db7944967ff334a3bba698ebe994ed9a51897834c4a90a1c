@@ -1,0 +1,313 @@
+import { devUseWarning, isDev } from "../_util/warning.js";
+import { useComponentBaseConfig } from "../config-provider/context.js";
+import { useSize } from "../config-provider/hooks/useSize.js";
+import { getAttrStyleAndClass as getAttrStyleAndClass$1, useMergeSemantic, useToArr, useToProps } from "../_util/hooks/useMergeSemantic.js";
+import { getSlotPropsFnRun, toPropsRefs as toPropsRefs$1 } from "../_util/tools.js";
+import skeleton_default from "../skeleton/index.js";
+import useVariant from "../form/hooks/useVariant.js";
+import tabs_default from "../tabs/index.js";
+import style_default from "./style/index.js";
+import { computed, createVNode, defineComponent, isVNode, mergeProps } from "vue";
+import { clsx } from "@v-c/util";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+
+//#region src/card/Card.tsx
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+const ActionNode = /* @__PURE__ */ defineComponent((props) => {
+	return () => {
+		const { actionClasses, actions = [], actionStyle } = props;
+		return createVNode("ul", {
+			"class": actionClasses,
+			"style": actionStyle
+		}, [actions.map((action, index) => {
+			const key = `action-${index}`;
+			return createVNode("li", {
+				"style": { width: `${100 / actions.length}%` },
+				"key": key
+			}, [createVNode("span", null, [action])]);
+		})]);
+	};
+}, { props: {
+	actionClasses: {
+		type: String,
+		required: true
+	},
+	actions: {
+		type: Array,
+		required: true
+	},
+	actionStyle: {
+		type: Object,
+		required: false
+	}
+} });
+const Card = /* @__PURE__ */ defineComponent((props, { slots, emit, attrs }) => {
+	const { prefixCls, direction, class: contextClassName, style: contextStyle, classes: contextClassNames, styles: contextStyles } = useComponentBaseConfig("card", props);
+	const { styles, classes, size: customizeSize, variant: customVariant, bordered } = toPropsRefs$1(props, "bordered", "variant", "classes", "styles", "size");
+	const [variant] = useVariant("card", customVariant, bordered);
+	const mergedSize = useSize(customizeSize);
+	const mergedProps = computed(() => {
+		return {
+			...props,
+			size: mergedSize.value,
+			variant: customVariant.value
+		};
+	});
+	const [mergedClassNames, mergedStyles] = useMergeSemantic(useToArr(contextClassNames, classes), useToArr(contextStyles, styles), useToProps(mergedProps));
+	if (isDev) {
+		const warning = devUseWarning("Card");
+		warning.deprecated(props.size !== "default", "size=\"default\"", "size=\"medium\"");
+		[
+			["headStyle", "styles.header"],
+			["bodyStyle", "styles.body"],
+			["bordered", "variant"]
+		].forEach(([deprecatedName, newName]) => {
+			warning.deprecated(!(props[deprecatedName] !== void 0), deprecatedName, newName);
+		});
+	}
+	const onTabChange = (key) => {
+		emit("tabChange", key);
+		emit("update:activeTabKey", key);
+	};
+	const [hashId, cssVarCls] = style_default(prefixCls);
+	return () => {
+		const { activeTabKey, tabProps, defaultActiveTabKey, tabBarExtraContent, tabList, headStyle, bodyStyle, loading, rootClass, hoverable, type } = props;
+		const { style, className, restAttrs } = getAttrStyleAndClass$1(attrs);
+		const children = filterEmpty(slots?.default?.() ?? []);
+		const title = getSlotPropsFnRun(slots, props, "title");
+		const extra = getSlotPropsFnRun(slots, props, "extra");
+		let actions = getSlotPropsFnRun(slots, props, "actions");
+		if (actions) actions = filterEmpty(Array.isArray(actions) ? actions : [actions]);
+		const cover = getSlotPropsFnRun(slots, props, "cover");
+		const isContainGrid = children.some((child) => isVNode(child) && child.type?.name === "ACardGrid");
+		const loadingBlock = createVNode(skeleton_default, {
+			"loading": true,
+			"active": true,
+			"paragraph": { rows: 4 },
+			"title": false
+		}, _isSlot(children) ? children : { default: () => [children] });
+		const hasActiveTabKey = activeTabKey !== void 0;
+		const tabBarExtraContentSlot = typeof tabBarExtraContent === "object" && tabBarExtraContent ? tabBarExtraContent : getSlotPropsFnRun(slots, props, "tabBarExtraContent");
+		const extraProps = {
+			...tabProps,
+			[hasActiveTabKey ? "activeKey" : "defaultActiveKey"]: hasActiveTabKey ? activeTabKey : defaultActiveTabKey,
+			tabBarExtraContent: tabBarExtraContentSlot
+		};
+		let head;
+		const tabSize = mergedSize.value === "small" ? mergedSize.value : "large";
+		const tabsSlots = {
+			contentRender: slots?.tabContentRender,
+			labelRender: slots?.tabLabelRender
+		};
+		const tabs = tabList ? createVNode(tabs_default, mergeProps({ "size": tabSize }, extraProps, { "class": `${prefixCls.value}-head-size` }, { "onUpdate:activeKey": (key) => {
+			onTabChange(key);
+		} }, { "items": tabList.map(({ tab, ...item }) => {
+			return {
+				label: tab,
+				...item
+			};
+		}) }), tabsSlots) : null;
+		if (title || extra || tabs) {
+			const headClasses = clsx(`${prefixCls.value}-head`, mergedClassNames.value.header);
+			const titleClasses = clsx(`${prefixCls.value}-head-title`, mergedClassNames.value.title);
+			const extraClasses = clsx(`${prefixCls.value}-extra`, mergedClassNames.value.extra);
+			const mergedHeadStyle = {
+				...headStyle,
+				...mergedStyles.value.header
+			};
+			head = createVNode("div", {
+				"class": headClasses,
+				"style": mergedHeadStyle
+			}, [createVNode("div", { "class": `${prefixCls.value}-head-wrapper` }, [!!title && createVNode("div", {
+				"class": titleClasses,
+				"style": mergedStyles.value.title
+			}, [title]), !!extra && createVNode("div", {
+				"class": extraClasses,
+				"style": mergedStyles.value.extra
+			}, [extra])]), tabs]);
+		}
+		const coverClasses = clsx(`${prefixCls.value}-cover`, mergedClassNames.value.cover);
+		const coverDom = cover ? createVNode("div", {
+			"class": coverClasses,
+			"style": mergedStyles.value.cover
+		}, [cover]) : null;
+		const bodyClasses = clsx(`${prefixCls.value}-body`, mergedClassNames.value.body);
+		const mergedBodyStyle = {
+			...bodyStyle,
+			...mergedStyles.value.body
+		};
+		const body = createVNode("div", {
+			"class": bodyClasses,
+			"style": mergedBodyStyle
+		}, [loading ? loadingBlock : children]);
+		const actionClasses = clsx(`${prefixCls.value}-actions`, mergedClassNames.value.actions);
+		const actionDom = actions?.length ? createVNode(ActionNode, {
+			"actionClasses": actionClasses,
+			"actionStyle": mergedStyles.value.actions,
+			"actions": actions
+		}, null) : null;
+		const divProps = {
+			...restAttrs,
+			id: props.id
+		};
+		const classString = clsx(prefixCls.value, contextClassName.value, {
+			[`${prefixCls.value}-loading`]: loading,
+			[`${prefixCls.value}-bordered`]: variant.value !== "borderless",
+			[`${prefixCls.value}-hoverable`]: hoverable,
+			[`${prefixCls.value}-contain-grid`]: isContainGrid,
+			[`${prefixCls.value}-contain-tabs`]: tabList?.length,
+			[`${prefixCls.value}-small`]: mergedSize.value === "small",
+			[`${prefixCls.value}-type-${type}`]: !!type,
+			[`${prefixCls.value}-rtl`]: direction.value === "rtl"
+		}, className, rootClass, hashId.value, cssVarCls.value, mergedClassNames.value.root);
+		const mergedStyle = {
+			...mergedStyles.value.root,
+			...contextStyle.value,
+			...style
+		};
+		return createVNode("div", mergeProps(divProps, {
+			"class": classString,
+			"style": mergedStyle
+		}), [
+			head,
+			coverDom,
+			body,
+			actionDom
+		]);
+	};
+}, {
+	props: {
+		title: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		extra: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		bordered: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		headStyle: {
+			type: Object,
+			required: false
+		},
+		bodyStyle: {
+			type: Object,
+			required: false
+		},
+		loading: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		hoverable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		id: {
+			type: String,
+			required: false
+		},
+		size: {
+			type: String,
+			required: false
+		},
+		type: {
+			type: String,
+			required: false
+		},
+		cover: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		actions: {
+			type: Array,
+			required: false
+		},
+		tabList: {
+			type: Array,
+			required: false
+		},
+		tabBarExtraContent: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		activeTabKey: {
+			type: String,
+			required: false
+		},
+		defaultActiveTabKey: {
+			type: String,
+			required: false
+		},
+		tabProps: {
+			type: Object,
+			required: false
+		},
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		},
+		variant: {
+			type: String,
+			required: false
+		},
+		rootClass: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		}
+	},
+	emits: ["tabChange", "update:activeTabKey"],
+	inheritAttrs: false,
+	name: "ACard"
+});
+var Card_default = Card;
+
+//#endregion
+export { Card_default as default };

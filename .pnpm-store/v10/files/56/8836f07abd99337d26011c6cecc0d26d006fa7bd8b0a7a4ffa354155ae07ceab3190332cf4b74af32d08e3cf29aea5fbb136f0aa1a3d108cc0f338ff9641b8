@@ -1,0 +1,518 @@
+function _define_property(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, {
+            value: value,
+            enumerable: true,
+            configurable: true,
+            writable: true
+        });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+import { importedFrom, isFetchProtocol, isPlain, isURL, resolveUrl } from '../common/url.js';
+import { Installer } from '../install/installer.js';
+import { JspmError, throwInternalError } from '../common/err.js';
+import { parsePkg } from '../install/package.js';
+// @ts-ignore
+import { ImportMap, getMapMatch, getScopeMatches } from '@jspm/import-map';
+import { isBuiltinScheme, isMappableScheme } from './resolver.js';
+import { mergeConstraints, mergeLocks, extractLockConstraintsAndMap } from '../install/lock.js';
+function combineSubpaths(traceSubpath) {
+    if (traceSubpath.endsWith('/')) throw new Error('Trailing slash subpaths unsupported');
+    return traceSubpath;
+}
+class TraceMap {
+    async addInputMap(map, mapUrl = this.mapUrl, rootUrl = this.rootUrl, preloads) {
+        // Note: integrity is currently ignored for inputMaps, instead integrity
+        // is always trusted at generation time.
+        return this.processInputMap = this.processInputMap.then(async ()=>{
+            const inMap = new ImportMap({
+                map,
+                mapUrl,
+                rootUrl
+            }).rebase(this.mapUrl, this.rootUrl);
+            if (this.pins) {
+                const pins = Object.keys(inMap.imports || []);
+                for (const pin of pins){
+                    if (!this.pins.includes(pin)) this.pins.push(pin);
+                }
+            }
+            const { maps, locks, constraints } = await extractLockConstraintsAndMap(this.log, inMap, preloads, mapUrl, rootUrl, this.installer.defaultRegistry, this.resolver, this.installer.defaultProvider);
+            this.inputMap.extend(maps);
+            mergeLocks(this.installer.installs, locks);
+            mergeConstraints(this.installer.constraints, constraints);
+        });
+    }
+    /**
+   * Resolves, analyses and recursively visits the given module specifier and all of its dependencies.
+   *
+   * @param {string} specifier Module specifier to visit.
+   * @param {VisitOpts} opts Visitor configuration.
+   * @param {} parentUrl URL of the parent context for the specifier.
+   * @param {} seen Cache for optimisation.
+   */ async visit(specifier, opts, parentUrl = this.baseUrl.href, seen = new Set()) {
+        const gen = this._visit(specifier, opts, parentUrl, seen);
+        let step = gen.next();
+        while(!step.done){
+            const req = step.value;
+            if (req.type === 'resolve') {
+                step = gen.next(await this.resolve(req.specifier, req.parentUrl, req.installMode, req.toplevel));
+            } else if (req.type === 'analyze') {
+                try {
+                    step = gen.next(await this.resolver.analyze(req.resolved));
+                } catch (e) {
+                    step = gen.throw(e);
+                }
+            } else if (req.type === 'visitor') {
+                step = gen.next(await req.visitor(req.specifier, req.parentUrl, req.resolved, req.toplevel, req.entry));
+            }
+        }
+        return step.value;
+    }
+    *_visit(specifier, opts, parentUrl, seen) {
+        var _this_opts_ignore, _this_log, _this;
+        if (!parentUrl) throw new Error('Internal error: expected parentUrl');
+        if ((_this_opts_ignore = this.opts.ignore) === null || _this_opts_ignore === void 0 ? void 0 : _this_opts_ignore.includes(specifier)) return;
+        const seenKey = `${specifier}##${parentUrl}`;
+        if (seen.has(seenKey)) return;
+        seen.add(seenKey);
+        (_this_log = (_this = this).log) === null || _this_log === void 0 ? void 0 : _this_log.call(_this, 'tracemap/visit', `Attempting to resolve ${specifier} to a module from ${parentUrl}, toplevel=${opts.toplevel}, mode=${opts.installMode}`);
+        // Try sync resolve for non-plain, non-CJS specifiers via analysis cache
+        let resolved;
+        const parentAnalysis = this.resolver.getAnalysis(parentUrl);
+        const parentIsCjs = (parentAnalysis === null || parentAnalysis === void 0 ? void 0 : parentAnalysis.format) === 'commonjs' || !parentAnalysis && this.opts.commonJS;
+        if (!parentIsCjs && (!isPlain(specifier) || specifier === '..') && !isMappableScheme(specifier)) {
+            try {
+                const url = new URL(specifier, parentUrl);
+                if (this.resolver.getAnalysis(url.href) !== undefined) {
+                    resolved = url.href;
+                }
+            } catch  {}
+        }
+        if (!resolved) {
+            resolved = yield {
+                type: 'resolve',
+                specifier,
+                parentUrl,
+                installMode: opts.installMode,
+                toplevel: opts.toplevel
+            };
+        }
+        if (isBuiltinScheme(resolved)) return null;
+        if (resolved.endsWith('/')) throw new JspmError(`Trailing "/" installs not supported installing ${resolved} for ${parentUrl}`);
+        // Try sync analysis, fall back to async
+        let entry;
+        const cachedEntry = this.resolver.getAnalysis(resolved);
+        if (cachedEntry !== undefined) {
+            entry = cachedEntry;
+        } else {
+            try {
+                entry = yield {
+                    type: 'analyze',
+                    resolved
+                };
+            } catch (e) {
+                if (e instanceof JspmError) throw new Error(`Unable to analyze ${resolved} imported from ${parentUrl}: ${e.message}`);
+                else throw new Error(`Unable to analyze ${resolved} imported from ${parentUrl}`, {
+                    cause: e
+                });
+            }
+        }
+        if (entry === null) {
+            throw new Error(`Module not found ${resolved} imported from ${parentUrl}`);
+        }
+        if ((entry === null || entry === void 0 ? void 0 : entry.format) === 'commonjs' && entry.usesCjs && !this.opts.commonJS) {
+            throw new JspmError(`Unable to trace ${resolved}, as it is a CommonJS module. Either enable CommonJS tracing explicitly by setting "GeneratorOptions.commonJS" to true, or use a provider that performs ESM transpiling like jspm.io via defaultProvider: 'jspm.io'.`);
+        }
+        // Record edge for reuse in extractMap
+        this.visitedEdges.set(seenKey, {
+            resolved,
+            entry
+        });
+        if (opts.visitor) {
+            const stop = yield {
+                type: 'visitor',
+                visitor: opts.visitor,
+                specifier,
+                parentUrl,
+                resolved,
+                toplevel: opts.toplevel,
+                entry
+            };
+            if (stop) return;
+        }
+        if (!entry) return;
+        let allDeps = [
+            ...entry.deps
+        ];
+        if (entry.dynamicDeps.length && !opts.static) {
+            for (const dep of entry.dynamicDeps){
+                if (!allDeps.includes(dep)) allDeps.push(dep);
+            }
+        }
+        if (entry.cjsLazyDeps && !opts.static) {
+            for (const dep of entry.cjsLazyDeps){
+                if (!allDeps.includes(dep)) allDeps.push(dep);
+            }
+        }
+        if (opts.toplevel && (isMappableScheme(specifier) || isPlain(specifier))) {
+            opts = {
+                ...opts,
+                toplevel: false
+            };
+        }
+        for (const dep of allDeps){
+            if (dep.indexOf('\x10') !== -1) {
+                var _this_log1, _this1;
+                (_this_log1 = (_this1 = this).log) === null || _this_log1 === void 0 ? void 0 : _this_log1.call(_this1, 'todo', 'Handle wildcard trace ' + dep + ' in ' + resolved);
+                continue;
+            }
+            yield* this._visit(dep, opts, resolved, seen);
+        }
+        return resolved;
+    }
+    async extractMap(modules, integrity, toplevel = true, parentUrl) {
+        var _this_log, _this;
+        (_this_log = (_this = this).log) === null || _this_log === void 0 ? void 0 : _this_log.call(_this, 'generator/extractMap', `Extracting map for ${modules.join(', ')}`);
+        const map = new ImportMap({
+            mapUrl: this.mapUrl,
+            rootUrl: this.rootUrl
+        });
+        if (this.pins) {
+            map.extend(this.inputMap);
+        }
+        // Clear visited URLs for cache pruning - will be populated during this extraction
+        this.resolver.visitedUrls.clear();
+        const staticList = new Set();
+        const dynamicList = new Set();
+        // Pinned mode: full async traversal (legacy path)
+        if (this.pins) {
+            return this._extractMapAsync(modules, map, integrity, toplevel, staticList, dynamicList, parentUrl);
+        }
+        // Fast path: synchronous graph walk replaying edges from visit()
+        const seen = new Set();
+        const baseUrl = parentUrl || this.baseUrl.href;
+        const walk = (specifier, parentUrl, isToplevel, isDynamic)=>{
+            const key = `${specifier}##${parentUrl}`;
+            if (seen.has(key)) return;
+            seen.add(key);
+            const edge = this.visitedEdges.get(key);
+            if (!edge) return;
+            const { resolved, entry } = edge;
+            if (isBuiltinScheme(resolved)) return;
+            if (!isDynamic) staticList.add(resolved);
+            else dynamicList.add(resolved);
+            // Track visited URLs for cache pruning
+            this.resolver.visitedUrls.add(resolved);
+            const pkgUrl = this.resolver.packageBaseCache[resolved];
+            if (typeof pkgUrl === 'string') this.resolver.visitedUrls.add(pkgUrl);
+            if (entry) {
+                if (integrity) map.setIntegrity(resolved, entry.integrity);
+                // Build map entries
+                if (isToplevel) {
+                    if (isPlain(specifier) || isMappableScheme(specifier)) {
+                        var _this_resolver_getAnalysis;
+                        const existing = map.imports[specifier];
+                        if (!existing || existing !== resolved && ((_this_resolver_getAnalysis = this.resolver.getAnalysis(parentUrl)) === null || _this_resolver_getAnalysis === void 0 ? void 0 : _this_resolver_getAnalysis.wasCjs)) {
+                            map.set(specifier, resolved);
+                        }
+                    }
+                } else {
+                    if (isPlain(specifier) || isMappableScheme(specifier)) {
+                        const cached = this.resolver.packageBaseCache[parentUrl];
+                        const scopeUrl = typeof cached === 'string' ? cached : this.resolver.getPackageBaseCached(parentUrl);
+                        if (scopeUrl) {
+                            var _map_scopes_scopeUrl, _map_scopes_parentUrl;
+                            const existing = (_map_scopes_scopeUrl = map.scopes[scopeUrl]) === null || _map_scopes_scopeUrl === void 0 ? void 0 : _map_scopes_scopeUrl[specifier];
+                            if (!existing) {
+                                map.set(specifier, resolved, scopeUrl);
+                            } else if (existing !== resolved && ((_map_scopes_parentUrl = map.scopes[parentUrl]) === null || _map_scopes_parentUrl === void 0 ? void 0 : _map_scopes_parentUrl[specifier]) !== resolved) {
+                                map.set(specifier, resolved, parentUrl);
+                            }
+                        }
+                    }
+                }
+                const nextToplevel = isToplevel && (isMappableScheme(specifier) || isPlain(specifier)) ? false : isToplevel;
+                // Walk static deps
+                for (const dep of entry.deps){
+                    if (dep.indexOf('\x10') !== -1) continue;
+                    walk(dep, resolved, nextToplevel, isDynamic);
+                }
+                // Walk dynamic deps
+                for (const dep of entry.dynamicDeps){
+                    if (dep.indexOf('\x10') !== -1) continue;
+                    walk(dep, resolved, false, true);
+                }
+            }
+        };
+        for (const module of modules){
+            const key = `${module}##${baseUrl}`;
+            if (!this.visitedEdges.has(key)) {
+                var // Edge was never visited — fall back to async path which will trace it
+                _this_log1, _this1;
+                (_this_log1 = (_this1 = this).log) === null || _this_log1 === void 0 ? void 0 : _this_log1.call(_this1, 'tracemap/extractMap', `Missing edge for ${module} from ${baseUrl}, falling back to async path`);
+                return this._extractMapAsync(modules, map, integrity, toplevel, staticList, dynamicList, parentUrl);
+            }
+            walk(module, baseUrl, toplevel, false);
+        }
+        return {
+            map,
+            staticDeps: [
+                ...staticList
+            ],
+            dynamicDeps: [
+                ...dynamicList
+            ]
+        };
+    }
+    async _extractMapAsync(modules, map, integrity, toplevel, staticList, dynamicList, parentUrl) {
+        const dynamics = [];
+        let list = staticList;
+        const visitor = async (specifier, parentUrl, resolved, toplevel, entry)=>{
+            if (!list.has(resolved)) list.add(resolved);
+            this.resolver.visitedUrls.add(resolved);
+            const pkgUrlOrPromise = this.resolver.getPackageBase(resolved);
+            const pkgUrl = typeof pkgUrlOrPromise === 'string' ? pkgUrlOrPromise : await pkgUrlOrPromise;
+            if (pkgUrl) this.resolver.visitedUrls.add(pkgUrl);
+            if (entry) {
+                if (integrity) map.setIntegrity(resolved, entry.integrity);
+                for (const dep of entry.dynamicDeps){
+                    dynamics.push([
+                        dep,
+                        resolved
+                    ]);
+                }
+            }
+            if (toplevel) {
+                if (isPlain(specifier) || isMappableScheme(specifier)) {
+                    var _this_resolver_getAnalysis;
+                    const existing = map.imports[specifier];
+                    if (!existing || existing !== resolved && ((_this_resolver_getAnalysis = this.resolver.getAnalysis(parentUrl)) === null || _this_resolver_getAnalysis === void 0 ? void 0 : _this_resolver_getAnalysis.wasCjs)) {
+                        map.set(specifier, resolved);
+                    }
+                }
+            } else {
+                if (isPlain(specifier) || isMappableScheme(specifier)) {
+                    var _map_scopes_scopeUrl, _map_scopes_parentUrl;
+                    const scopeOrPromise = this.resolver.getPackageBase(parentUrl);
+                    const scopeUrl = typeof scopeOrPromise === 'string' ? scopeOrPromise : await scopeOrPromise;
+                    const existing = (_map_scopes_scopeUrl = map.scopes[scopeUrl]) === null || _map_scopes_scopeUrl === void 0 ? void 0 : _map_scopes_scopeUrl[specifier];
+                    if (!existing) {
+                        map.set(specifier, resolved, scopeUrl);
+                    } else if (existing !== resolved && ((_map_scopes_parentUrl = map.scopes[parentUrl]) === null || _map_scopes_parentUrl === void 0 ? void 0 : _map_scopes_parentUrl[specifier]) !== resolved) {
+                        map.set(specifier, resolved, parentUrl);
+                    }
+                }
+            }
+        };
+        const seen = new Set();
+        await Promise.all(modules.map(async (module)=>{
+            await this.visit(module, {
+                static: true,
+                visitor,
+                installMode: 'freeze',
+                toplevel
+            }, parentUrl || this.baseUrl.href, seen);
+        }));
+        list = dynamicList;
+        await Promise.all(dynamics.map(async ([specifier, parent])=>{
+            await this.visit(specifier, {
+                visitor,
+                installMode: 'freeze',
+                toplevel: false
+            }, parent, seen);
+        }));
+        return {
+            map,
+            staticDeps: [
+                ...staticList
+            ],
+            dynamicDeps: [
+                ...dynamicList
+            ]
+        };
+    }
+    /**
+   * Synchronous graph walk for extractMap when all caches are warm.
+   * Returns true if successful, false if a cache miss requires async fallback.
+   */ async add(name, target, opts) {
+        return await this.installer.installTarget(name, target, opts, null, this.mapUrl.href);
+    }
+    async resolve(specifier, parentUrl, installOpts, toplevel) {
+        var _this_log, _this;
+        const parentAnalysis = this.resolver.getAnalysis(parentUrl);
+        const cjsEnv = parentAnalysis === null || parentAnalysis === void 0 ? void 0 : parentAnalysis.wasCjs;
+        const parentPkgUrl = await this.resolver.getPackageBase(parentUrl);
+        if (!parentPkgUrl) throwInternalError();
+        const parentIsCjs = (parentAnalysis === null || parentAnalysis === void 0 ? void 0 : parentAnalysis.format) === 'commonjs';
+        // Absolute URL fast path
+        if ((!isPlain(specifier) || specifier === '..') && !isMappableScheme(specifier)) {
+            const resolvedUrl = new URL(specifier, parentUrl);
+            const resolvedHref = resolvedUrl.href;
+            if (!parentIsCjs && specifier === resolvedHref && !resolvedHref.endsWith('/')) {
+                const urlResolved = this.inputMap.resolve(resolvedHref, parentUrl);
+                if (urlResolved === resolvedHref || urlResolved.startsWith('node:') || urlResolved.startsWith('deno:')) {
+                    var _this_log1, _this1;
+                    (_this_log1 = (_this1 = this).log) === null || _this_log1 === void 0 ? void 0 : _this_log1.call(_this1, 'tracemap/resolve', `${specifier} ${parentUrl} -> ${resolvedHref} (absolute URL fast path)`);
+                    return resolvedHref;
+                }
+            }
+        }
+        if (this.customResolver) {
+            try {
+                const customResolved = await this.customResolver(specifier, parentUrl, {
+                    parentPkgUrl,
+                    env: this.resolver.env,
+                    installMode: installOpts,
+                    toplevel
+                });
+                if (customResolved) {
+                    var _this_log2, _this2;
+                    // Resolve the custom mapping against the mapUrl
+                    // This allows for relative paths like "./local-file.js" to work
+                    const resolvedUrl = new URL(customResolved, this.mapUrl).href;
+                    // Store the custom mapping in the input map
+                    this.inputMap.set(specifier, resolvedUrl, toplevel ? undefined : parentPkgUrl);
+                    (_this_log2 = (_this2 = this).log) === null || _this_log2 === void 0 ? void 0 : _this_log2.call(_this2, 'tracemap/resolve', `${specifier} ${parentUrl} -> ${resolvedUrl} (custom resolver)`);
+                    return resolvedUrl;
+                }
+            } catch (error) {
+                // Re-throw custom resolver errors
+                throw new JspmError(`Custom resolver error for "${specifier}": ${error.message}${importedFrom(parentUrl)}`);
+            }
+        }
+        if ((!isPlain(specifier) || specifier === '..') && !isMappableScheme(specifier)) {
+            var _this_log3, _this3;
+            let resolvedUrl = new URL(specifier, parentUrl);
+            if (!isFetchProtocol(resolvedUrl.protocol)) throw new JspmError(`Found unexpected protocol ${resolvedUrl.protocol}${importedFrom(parentUrl)}`);
+            const resolvedHref = resolvedUrl.href;
+            let finalized = await this.resolver.realPath(await this.resolver.finalizeResolve(resolvedHref, parentIsCjs, false, parentPkgUrl));
+            // handle URL mappings
+            const urlResolved = this.inputMap.resolve(finalized, parentUrl);
+            // TODO: avoid this hack - perhaps solved by conditional maps
+            if (urlResolved !== finalized && !urlResolved.startsWith('node:') && !urlResolved.startsWith('deno:')) {
+                finalized = urlResolved;
+            }
+            if (finalized !== resolvedHref) {
+                // unless it is a package resolve operation
+                if (!finalized.endsWith('/')) this.inputMap.set(resolvedHref.endsWith('/') ? resolvedHref.slice(0, -1) : resolvedHref, finalized);
+                resolvedUrl = new URL(finalized);
+            }
+            (_this_log3 = (_this3 = this).log) === null || _this_log3 === void 0 ? void 0 : _this_log3.call(_this3, 'tracemap/resolve', `${specifier} ${parentUrl} -> ${resolvedUrl} (URL resolution)`);
+            return resolvedUrl.href;
+        }
+        // Subscope override
+        const scopeMatches = getScopeMatches(parentUrl, this.inputMap.scopes, this.inputMap.mapUrl);
+        const pkgSubscopes = scopeMatches.filter(([, url])=>url.startsWith(parentPkgUrl));
+        if (pkgSubscopes.length) {
+            for (const [scope] of pkgSubscopes){
+                const mapMatch = getMapMatch(specifier, this.inputMap.scopes[scope]);
+                if (mapMatch) {
+                    var _this_log4, _this4;
+                    const resolved = await this.resolver.realPath(resolveUrl(this.inputMap.scopes[scope][mapMatch] + specifier.slice(mapMatch.length), this.inputMap.mapUrl, this.inputMap.rootUrl));
+                    (_this_log4 = (_this4 = this).log) === null || _this_log4 === void 0 ? void 0 : _this_log4.call(_this4, 'tracemap/resolve', `${specifier} ${parentUrl} -> ${resolved} (subscope resolution)`);
+                    return resolved;
+                }
+            }
+        }
+        // Scope override
+        // TODO: isn't this subsumed by previous check?
+        const userScopeMatch = scopeMatches.find(([, url])=>url === parentPkgUrl);
+        if (userScopeMatch) {
+            const imports = this.inputMap.scopes[userScopeMatch[0]];
+            const userImportsMatch = getMapMatch(specifier, imports);
+            const userImportsResolved = userImportsMatch ? await this.resolver.realPath(resolveUrl(imports[userImportsMatch] + specifier.slice(userImportsMatch.length), this.inputMap.mapUrl, this.inputMap.rootUrl)) : null;
+            if (userImportsResolved) {
+                var _this_log5, _this5;
+                (_this_log5 = (_this5 = this).log) === null || _this_log5 === void 0 ? void 0 : _this_log5.call(_this5, 'tracemap/resolve', `${specifier} ${parentUrl} -> ${userImportsResolved} (scope resolution)`);
+                return userImportsResolved;
+            }
+        }
+        // User import overrides
+        const userImportsMatch = getMapMatch(specifier, this.inputMap.imports);
+        const userImportsResolved = userImportsMatch ? await this.resolver.realPath(resolveUrl(this.inputMap.imports[userImportsMatch] + specifier.slice(userImportsMatch.length), this.inputMap.mapUrl, this.inputMap.rootUrl)) : null;
+        if (userImportsResolved) {
+            var _this_log6, _this6;
+            (_this_log6 = (_this6 = this).log) === null || _this_log6 === void 0 ? void 0 : _this_log6.call(_this6, 'tracemap/resolve', `${specifier} ${parentUrl} -> ${userImportsResolved} (imports resolution)`);
+            return userImportsResolved;
+        }
+        const parsed = parsePkg(specifier);
+        if (!parsed) throw new JspmError(`Invalid package name ${specifier}`);
+        const { pkgName, subpath } = parsed;
+        // Own name import
+        const pcfg = await this.resolver.getPackageConfig(parentPkgUrl) || {};
+        if (pcfg.exports && pcfg.name === pkgName) {
+            var _this_log7, _this7;
+            const resolved = await this.resolver.realPath(await this.resolver.resolveExport(parentPkgUrl, subpath, cjsEnv, parentIsCjs, specifier, parentUrl));
+            (_this_log7 = (_this7 = this).log) === null || _this_log7 === void 0 ? void 0 : _this_log7.call(_this7, 'tracemap/resolve', `${specifier} ${parentUrl} -> ${resolved} (package own-name resolution)`);
+            return resolved;
+        }
+        // Imports
+        if (pcfg.imports && pkgName[0] === '#') {
+            var _this_log8, _this8;
+            const match = getMapMatch(specifier, pcfg.imports);
+            if (!match) throw new JspmError(`No '${specifier}' import defined in ${parentPkgUrl}${importedFrom(parentUrl)}.`);
+            const target = this.resolver.resolvePackageTarget(pcfg.imports[match], parentPkgUrl, cjsEnv, specifier.slice(match.length), true);
+            if (!isURL(target)) {
+                return await this.resolve(target, parentUrl, installOpts, toplevel);
+            }
+            const resolved = await this.resolver.realPath(target);
+            (_this_log8 = (_this8 = this).log) === null || _this_log8 === void 0 ? void 0 : _this_log8.call(_this8, 'tracemap/resolve', `${specifier} ${parentUrl} -> ${resolved} (package imports resolution)`);
+            return resolved;
+        }
+        // Builtins
+        const builtin = this.resolver.resolveBuiltin(specifier);
+        if (builtin) {
+            var _this_log9, _this9;
+            if (typeof builtin === 'string') return builtin;
+            const { installUrl } = await this.installer.installBuiltin(builtin.target, specifier, installOpts, parentUrl);
+            const resolved = await this.resolver.realPath(await this.resolver.resolveExport(installUrl, builtin.subpath + subpath.slice(1), cjsEnv, false, specifier, parentUrl));
+            (_this_log9 = (_this9 = this).log) === null || _this_log9 === void 0 ? void 0 : _this_log9.call(_this9, 'tracemap/resolve', `${specifier} ${parentUrl} -> ${resolved} (builtin)`);
+            return resolved;
+        }
+        // Normal package install
+        const { installUrl } = await this.installer.install(pkgName, installOpts, toplevel ? null : parentPkgUrl, subpath, parentUrl);
+        const resolved = await this.resolver.realPath(await this.resolver.resolveExport(installUrl, combineSubpaths(parentIsCjs && subpath.endsWith('/') ? subpath.slice(0, -1) : subpath), cjsEnv, parentIsCjs, specifier, parentUrl));
+        (_this_log = (_this = this).log) === null || _this_log === void 0 ? void 0 : _this_log.call(_this, 'tracemap/resolve', `${specifier} ${parentUrl} -> ${resolved} (installation resolution)`);
+        return resolved;
+    }
+    constructor(opts, log, resolver){
+        _define_property(this, "installer", void 0);
+        _define_property(this, "opts", void 0);
+        _define_property(this, "inputMap", void 0 // custom imports
+        );
+        _define_property(this, "mapUrl", void 0);
+        _define_property(this, "baseUrl", void 0);
+        _define_property(this, "rootUrl", void 0);
+        _define_property(this, "pins", void 0);
+        _define_property(this, "log", void 0);
+        _define_property(this, "resolver", void 0);
+        _define_property(this, "customResolver", void 0);
+        // Stores resolved edges from visit() for reuse in extractMap()
+        _define_property(this, "visitedEdges", new Map());
+        /**
+   * Lock to ensure no races against input map processing.
+   * @type {Promise<void>}
+   */ _define_property(this, "processInputMap", Promise.resolve());
+        this.pins = opts.noPins ? null : [];
+        this.log = log;
+        this.resolver = resolver;
+        this.mapUrl = opts.mapUrl;
+        this.baseUrl = opts.baseUrl;
+        this.rootUrl = opts.rootUrl || null;
+        this.opts = opts;
+        this.customResolver = opts.customResolver;
+        this.inputMap = new ImportMap({
+            mapUrl: this.mapUrl,
+            rootUrl: this.rootUrl
+        });
+        this.installer = new Installer(this.mapUrl.pathname.endsWith('/') ? this.mapUrl.href : `${this.mapUrl.href}/`, this.opts, log, this.resolver);
+    }
+}
+// The tracemap fully drives the installer
+export { TraceMap as default };
+
+
+//# sourceMappingURL=tracemap.js.map

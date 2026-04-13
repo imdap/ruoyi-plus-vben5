@@ -1,0 +1,42 @@
+{
+  "name": "@cspell/dict-vue",
+  "version": "3.0.5",
+  "description": "CSpell configuration for VUE files.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "echo skip",
+    "test": "echo skip",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/vue"
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "vue",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/vue#readme",
+  "files": [
+    "cspell-ext.json"
+  ],
+  "gitHead": "30c5c53b8e28152fc1d8a6cf0c872b068a64221a"
+}

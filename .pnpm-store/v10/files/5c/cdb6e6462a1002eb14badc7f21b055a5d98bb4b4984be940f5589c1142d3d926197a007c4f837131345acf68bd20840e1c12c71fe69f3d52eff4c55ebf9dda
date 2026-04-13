@@ -1,0 +1,1 @@
+{"version":3,"file":"IECMAScriptModuleInit.d.ts","sourceRoot":"","sources":["../../../src/module/types/IECMAScriptModuleInit.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,aAAa,MAAM,qBAAqB,CAAC;AACrD,OAAO,KAAK,WAAW,MAAM,kBAAkB,CAAC;AAEhD;;GAEG;AACH,MAAM,CAAC,OAAO,WAAW,qBAAsB,SAAQ,WAAW;IACjE,OAAO,EAAE,aAAa,CAAC;IACvB,SAAS,CAAC,EAAE,MAAM,GAAG,IAAI,CAAC;CAC1B"}

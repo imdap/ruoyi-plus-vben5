@@ -1,0 +1,215 @@
+:root {
+  /*font*/
+  --vxe-ui-font-family: -apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+  
+  /*font size*/
+  --vxe-ui-font-size-large: 15px;
+  --vxe-ui-font-size-default: 14px;
+  --vxe-ui-font-size-medium: 14px;
+  --vxe-ui-font-size-small: 13px;
+  --vxe-ui-font-size-mini: 12px;
+
+  /*font color*/
+  --vxe-ui-font-secondary-color: #909399; // 次要字体颜色
+  --vxe-ui-font-placeholder-color: #a8abb2; // 占位符字体颜色
+
+  /*base*/
+  --vxe-ui-base-border-radius: 4px;
+  --vxe-ui-base-margin-gap-default: 8px;
+  --vxe-ui-base-margin-gap-medium: 7px;
+  --vxe-ui-base-margin-gap-small: 6px;
+  --vxe-ui-base-margin-gap-mini: 5px;
+
+  /*layout*/
+  --vxe-ui-layout-padding-qtr: 2px;
+  --vxe-ui-layout-padding-half: 4px;
+  --vxe-ui-layout-padding-default: 8px;
+  --vxe-ui-layout-padding-double: 16px;
+  --vxe-ui-layout-padding-threefold: 24px;
+  --vxe-ui-layout-aside-default-width: 300px;
+  --vxe-ui-layout-aside-collapse-width: 60px;
+
+  /*menu*/
+  --vxe-ui-menu-item-height-default: 44px;
+  --vxe-ui-menu-item-height-medium: 40px;
+  --vxe-ui-menu-item-height-small: 36px;
+  --vxe-ui-menu-item-height-mini: 32px;
+  --vxe-ui-menu-icon-width: 1.5em;
+
+  /*button*/
+  --vxe-ui-button-max-width: 500px;
+  --vxe-ui-button-height-default: 34px;
+  --vxe-ui-button-height-medium: 32px;
+  --vxe-ui-button-height-small: 30px;
+  --vxe-ui-button-height-mini: 28px;
+  --vxe-ui-button-round-border-radius-default: 17px;
+  --vxe-ui-button-round-border-radius-medium: 16px;
+  --vxe-ui-button-round-border-radius-small: 15px;
+  --vxe-ui-button-round-border-radius-mini: 14px;
+
+  /*input*/
+  --vxe-ui-input-disabled-color: #dcdfe6;
+  --vxe-ui-input-number-disabled-color: #e4e7ed;
+  --vxe-ui-input-date-festival-color: #abaaaa;
+  --vxe-ui-input-date-festival-important-color: var(--vxe-ui-font-primary-color);
+  --vxe-ui-input-date-notice-background-color: #FF0000;
+  --vxe-ui-input-date-picker-hover-background-color: #f2f6fc;
+  --vxe-ui-input-date-picker-selected-color: #fff;
+  --vxe-ui-input-date-time-confirm-button-color: #fff;
+  --vxe-ui-input-date-picker-festival-selected-color: var(--vxe-ui-input-date-picker-selected-color);
+  --vxe-ui-input-date-picker-notice-selected-background-color: var(--vxe-ui-input-date-picker-selected-color);
+  --vxe-ui-input-date-extra-color: #67c23a;
+  --vxe-ui-input-date-extra-important-color: #fd2222;
+  --vxe-ui-input-date-title-height-default: 30px;
+  --vxe-ui-input-date-title-height-medium: 29px;
+  --vxe-ui-input-date-title-height-small: 28px;
+  --vxe-ui-input-date-title-height-mini: 26px;
+  --vxe-ui-input-date-time-week-row-height-default: 38px;
+  --vxe-ui-input-date-time-week-row-height-medium: 36px;
+  --vxe-ui-input-date-time-week-row-height-small: 34px;
+  --vxe-ui-input-date-time-week-row-height-mini: 32px;
+  --vxe-ui-input-date-month-year-row-height-default: 48px;
+  --vxe-ui-input-date-month-year-row-height-medium: 46px;
+  --vxe-ui-input-date-month-year-row-height-small: 44px;
+  --vxe-ui-input-date-month-year-row-height-mini: 42px;
+  --vxe-ui-input-date-quarter-row-height-default: 60px;
+  --vxe-ui-input-date-quarter-row-height-medium: 58px;
+  --vxe-ui-input-date-quarter-row-height-small: 56px;
+  --vxe-ui-input-date-quarter-row-height-mini: 54px;
+  --vxe-ui-input-height-default: var(--vxe-ui-button-height-default);
+  --vxe-ui-input-height-medium: var(--vxe-ui-button-height-medium);
+  --vxe-ui-input-height-small: var(--vxe-ui-button-height-small);
+  --vxe-ui-input-height-mini: var(--vxe-ui-button-height-mini);
+  --vxe-ui-input-count-color: #999;
+  --vxe-ui-input-count-error-color: var(--vxe-ui-status-error-color);
+
+  /*anchor*/
+  --vxe-ui-anchor-link-color: var(--vxe-ui-font-secondary-color);
+  --vxe-ui-anchor-link-active-color: var(--vxe-ui-font-primary-color);
+
+  /*breadcrumb*/
+  --vxe-ui-breadcrumb-color: var(--vxe-ui-font-secondary-color);
+  --vxe-ui-breadcrumb-current-item-color: var(--vxe-ui-font-color);
+
+  /*loading*/
+  --vxe-ui-loading-color: var(--vxe-ui-font-primary-color);
+
+  /*tooltip*/
+  --vxe-ui-tooltip-dark-color: #fff;
+  --vxe-ui-tooltip-dark-background-color: #303133;
+
+  /*form*/
+  --vxe-ui-form-item-min-height-default: 56px;
+  --vxe-ui-form-item-min-height-medium: 52px;
+  --vxe-ui-form-item-min-height-small: 48px;
+  --vxe-ui-form-item-min-height-mini: 44px;
+  --vxe-ui-form-validate-error-color: var(--vxe-ui-status-error-color);
+  --vxe-ui-form-item-padding-default: 8px;
+  --vxe-ui-form-item-padding-medium: 7px;
+  --vxe-ui-form-item-padding-small: 6px;
+  --vxe-ui-form-item-padding-mini: 5px;
+  --vxe-ui-form-validate-error-background-color: inherit;
+  --vxe-ui-form-validate-error-theme-normal-background-color: var(--vxe-ui-layout-background-color);
+  --vxe-ui-form-validate-error-item-background-color: rgba(245, 108,108, 0.1);
+
+  /*form-design*/
+  --vxe-ui-form-design-widget-item-font-size: 0.9em;
+
+  /*checkbox*/
+  --vxe-ui-checkbox-font-size-default: 15px;
+  --vxe-ui-checkbox-font-size-medium: 14px;
+  --vxe-ui-checkbox-font-size-small: 13px;
+  --vxe-ui-checkbox-font-size-mini: 12px;
+  --vxe-ui-checkbox-checked-width: 0.32em;
+  --vxe-ui-checkbox-checked-height: 0.64em;
+  --vxe-ui-checkbox-indeterminate-width: 0.6em;
+  --vxe-ui-checkbox-indeterminate-height: 2px;
+  --vxe-ui-checkbox-border-width: 2px; 
+  --vxe-ui-checkbox-border-radius: 2px;
+  --vxe-ui-checkbox-icon-background-color: #fff;
+  --vxe-ui-checkbox-checked-icon-border-color: #fff;
+  --vxe-ui-checkbox-indeterminate-icon-background-color: #fff;
+
+  /*radio*/
+  --vxe-ui-radio-font-size-default: 15px;
+  --vxe-ui-radio-font-size-medium: 14px;
+  --vxe-ui-radio-font-size-small: 13px;
+  --vxe-ui-radio-font-size-mini: 12px;
+  --vxe-ui-radio-border-width: 0.32em;
+  --vxe-ui-radio-icon-background-color: #fff;
+  --vxe-ui-radio-checked-icon-background-color: #fff;
+  --vxe-ui-radio-indeterminate-icon-background-color: #fff;
+
+  /*select*/
+  --vxe-ui-select-option-height-default: 30px;
+  --vxe-ui-select-option-height-medium: 28px;
+  --vxe-ui-select-option-height-small: 26px;
+  --vxe-ui-select-option-height-mini: 24px;
+  --vxe-ui-select-empty-color: #C0C4CC;
+  --vxe-ui-select-title-color: #909399;
+
+  /*pulldown*/
+  --vxe-ui-pulldown-option-height-default: var(--vxe-ui-select-option-height-default);
+  --vxe-ui-pulldown-option-height-medium: var(--vxe-ui-select-option-height-medium);
+  --vxe-ui-pulldown-option-height-small: var(--vxe-ui-select-option-height-small);
+  --vxe-ui-pulldown-option-height-mini: var(--vxe-ui-select-option-height-mini);
+
+  /*switch*/
+  --vxe-ui-switch-font-color: #fff;
+  --vxe-ui-switch-icon-background-color: #fff;
+  --vxe-ui-switch-open-background-color: var(--vxe-ui-font-primary-color);
+  --vxe-ui-switch-disabled-background-color: rgba(0,0,0,0.15);
+
+  /*upload*/
+  --vxe-ui-upload-file-button-border-style: dashed;
+  --vxe-ui-upload-image-button-border-style: dashed;
+  --vxe-ui-upload-image-wh-default: 120px;
+  --vxe-ui-upload-image-wh-medium: 104px;
+  --vxe-ui-upload-image-wh-small: 88px;
+  --vxe-ui-upload-image-wh-mini: 72px;
+
+  /*card*/
+  --vxe-ui-card-padding-default: 12px;
+  --vxe-ui-card-padding-medium: 10px;
+  --vxe-ui-card-padding-small: 8px;
+  --vxe-ui-card-padding-mini: 6px;
+
+  /*tree*/
+  --vxe-ui-tree-node-height: 2em;
+  --vxe-ui-tree-node-indent: 20px;
+  --vxe-ui-tree-node-root-indent: 0px;
+  --vxe-ui-tree-node-line-color:#909399;
+  --vxe-ui-tree-node-line-style: dotted;
+  --vxe-ui-tree-node-line-width: 1px;
+
+  /*tabs*/
+  --vxe-ui-tabs-header-height-default: 40px;
+  --vxe-ui-tabs-header-height-medium: 38px;
+  --vxe-ui-tabs-header-height-small: 36px;
+  --vxe-ui-tabs-header-height-mini: 32px;
+
+  /*tabs*/
+  --vxe-ui-calendar-hover-background-color: #f2f6fc;
+  --vxe-ui-calendar-selected-color: #fff;
+  --vxe-ui-calendar-festival-selected-color: var(--vxe-ui-calendar-selected-color);
+  --vxe-ui-calendar-notice-selected-background-color: var(--vxe-ui-calendar-selected-color);
+
+  /*split*/
+  --vxe-ui-splitter-handle-bar-horizontal-width: 0.68em;
+  --vxe-ui-splitter-handle-bar-horizontal-height: 3.2em;
+  --vxe-ui-splitter-handle-bar-vertical-width: var(--vxe-ui-splitter-handle-bar-horizontal-height);
+  --vxe-ui-splitter-handle-bar-vertical-height: var(--vxe-ui-splitter-handle-bar-horizontal-width);
+  --vxe-ui-splitter-resizable-line-color: #D9DDDF;
+  --vxe-ui-splitter-resizable-drag-line-color: var(--vxe-ui-font-primary-color);
+
+  /*segmented*/
+  --vxe-ui-segmented-item-background-color: rgba(0, 0, 0, 0.05);
+  --vxe-ui-segmented-item-hover-background-color: rgba(0, 0, 0, 0.06);
+
+  /*context-menu*/
+  --vxe-ui-context-menu-option-height: 2em;
+
+  /*backtop*/
+  --vxe-ui-backtop-right: 2em;
+  --vxe-ui-backtop-bottom: 2em;
+}

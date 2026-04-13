@@ -1,0 +1,16 @@
+import { EmptyEmit } from "../_util/type.js";
+import { TimelineItemType } from "./Timeline.js";
+import * as vue69 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/timeline/TimelineItem.d.ts
+declare const TIMELINE_ITEM_MARK = "_ANTDV_NEXT_TIMELINE_ITEM";
+interface TimelineItemProps extends Omit<TimelineItemType, 'className' | 'class' | 'style' | 'classes' | 'styles' | 'children' | 'key'> {}
+interface TimelineItemSlots {
+  title?: () => any;
+  content?: () => any;
+  icon?: () => any;
+}
+declare const TimelineItem: vue69.DefineSetupFnComponent<TimelineItemProps, EmptyEmit, SlotsType<TimelineItemSlots>, TimelineItemProps, vue69.PublicProps>;
+//#endregion
+export { TIMELINE_ITEM_MARK, TimelineItem, TimelineItemProps, TimelineItemSlots };

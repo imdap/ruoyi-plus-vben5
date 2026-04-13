@@ -1,0 +1,229 @@
+import XEUtils from 'xe-utils';
+const reClsMap = {};
+let tpImgEl;
+export function initTpImg() {
+    if (!tpImgEl) {
+        tpImgEl = new Image();
+        tpImgEl.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+    }
+    return tpImgEl;
+}
+export function getTpImg() {
+    if (!tpImgEl) {
+        return initTpImg();
+    }
+    return tpImgEl;
+}
+export function getPropClass(property, params) {
+    return property ? XEUtils.isFunction(property) ? property(params) : property : '';
+}
+function getClsRE(cls) {
+    if (!reClsMap[cls]) {
+        reClsMap[cls] = new RegExp(`(?:^|\\s)${cls}(?!\\S)`, 'g');
+    }
+    return reClsMap[cls];
+}
+function getNodeOffset(elem, container, rest) {
+    if (elem) {
+        const parentElem = elem.parentNode;
+        rest.top += elem.offsetTop;
+        rest.left += elem.offsetLeft;
+        if (parentElem && parentElem !== document.documentElement && parentElem !== document.body) {
+            rest.top -= parentElem.scrollTop;
+            rest.left -= parentElem.scrollLeft;
+        }
+        if (container && (elem === container || elem.offsetParent === container) ? 0 : elem.offsetParent) {
+            return getNodeOffset(elem.offsetParent, container, rest);
+        }
+    }
+    return rest;
+}
+export function isPx(val) {
+    return val && /^\d+(\.\d+)?(px)?$/.test(val);
+}
+export function isScale(val) {
+    return val && /^\d+(\.\d+)?%$/.test(val);
+}
+export function hasClass(elem, cls) {
+    return !!(elem && elem.className && elem.className.match && elem.className.match(getClsRE(cls)));
+}
+export function removeClass(elem, cls) {
+    if (elem && hasClass(elem, cls)) {
+        elem.className = elem.className.replace(getClsRE(cls), '');
+    }
+}
+export function addClass(elem, cls) {
+    if (elem && !hasClass(elem, cls)) {
+        removeClass(elem, cls);
+        elem.className = `${elem.className} ${cls}`;
+    }
+}
+export function hasControlKey(evnt) {
+    return evnt.ctrlKey || evnt.metaKey;
+}
+export function toCssUnit(val, unit = 'px') {
+    if (XEUtils.isNumber(val) || /^\d+$/.test(`${val}`)) {
+        return `${val}${unit}`;
+    }
+    return `${val || ''}`;
+}
+export function queryElement(elem, selector) {
+    if (elem) {
+        return elem.querySelector(selector);
+    }
+    return null;
+}
+export function getDomNode() {
+    const documentElement = document.documentElement;
+    const bodyElem = document.body;
+    return {
+        scrollTop: documentElement.scrollTop || bodyElem.scrollTop,
+        scrollLeft: documentElement.scrollLeft || bodyElem.scrollLeft,
+        visibleHeight: documentElement.clientHeight || bodyElem.clientHeight,
+        visibleWidth: documentElement.clientWidth || bodyElem.clientWidth
+    };
+}
+export function getOffsetHeight(elem) {
+    return elem ? elem.offsetHeight : 0;
+}
+export function getPaddingTopBottomSize(elem) {
+    if (elem) {
+        const computedStyle = getComputedStyle(elem);
+        const paddingTop = XEUtils.toNumber(computedStyle.paddingTop);
+        const paddingBottom = XEUtils.toNumber(computedStyle.paddingBottom);
+        return paddingTop + paddingBottom;
+    }
+    return 0;
+}
+export function setScrollTop(elem, scrollTop) {
+    if (elem) {
+        elem.scrollTop = scrollTop;
+    }
+}
+export function setScrollLeft(elem, scrollLeft) {
+    if (elem) {
+        elem.scrollLeft = scrollLeft;
+    }
+}
+// export function setScrollLeftAndTop (elem: HTMLElement | null, scrollLeft: number, scrollTop: number) {
+//   if (elem) {
+//     elem.scrollLeft = scrollLeft
+//     elem.scrollTop = scrollTop
+//   }
+// }
+export function updateCellTitle(overflowElem, column) {
+    const content = column.type === 'html' ? overflowElem.innerText : overflowElem.textContent;
+    if (overflowElem.getAttribute('title') !== content) {
+        overflowElem.setAttribute('title', content);
+    }
+}
+export function checkTargetElement(target, exEls, endEl) {
+    let targetEl = target;
+    if (!exEls || !exEls.length) {
+        return false;
+    }
+    const [exEl1, exEl2, exEl3] = exEls;
+    while (targetEl) {
+        if (exEl1 === targetEl || (exEl2 && targetEl === exEl2) || (exEl3 && targetEl === exEl3)) {
+            return true;
+        }
+        if (endEl && targetEl === endEl) {
+            return false;
+        }
+        targetEl = targetEl.parentElement;
+    }
+    return false;
+}
+/**
+ * 检查触发源是否属于目标节点
+ */
+export function getEventTargetNode(evnt, container, queryCls, queryMethod) {
+    let targetElem;
+    let target = (evnt.target.shadowRoot && evnt.composed) ? (evnt.composedPath()[0] || evnt.target) : evnt.target;
+    while (target && target.nodeType && target !== document) {
+        if (queryCls && hasClass(target, queryCls) && (!queryMethod || queryMethod(target))) {
+            targetElem = target;
+        }
+        else if (target === container) {
+            return { flag: queryCls ? !!targetElem : true, container, targetElem: targetElem };
+        }
+        target = target.parentNode;
+    }
+    return { flag: false };
+}
+/**
+ * 获取元素相对于 document 的位置
+ */
+export function getOffsetPos(elem, container) {
+    return getNodeOffset(elem, container, { left: 0, top: 0 });
+}
+export function getAbsolutePos(elem) {
+    const bounding = elem.getBoundingClientRect();
+    const boundingTop = bounding.top;
+    const boundingLeft = bounding.left;
+    const { scrollTop, scrollLeft, visibleHeight, visibleWidth } = getDomNode();
+    return { boundingTop, top: scrollTop + boundingTop, boundingLeft, left: scrollLeft + boundingLeft, visibleHeight, visibleWidth };
+}
+const scrollIntoViewIfNeeded = 'scrollIntoViewIfNeeded';
+const scrollIntoView = 'scrollIntoView';
+export function scrollToView(elem) {
+    if (elem) {
+        if (elem[scrollIntoViewIfNeeded]) {
+            elem[scrollIntoViewIfNeeded]();
+        }
+        else if (elem[scrollIntoView]) {
+            elem[scrollIntoView]();
+        }
+    }
+}
+export function triggerEvent(targetElem, type) {
+    if (targetElem) {
+        targetElem.dispatchEvent(new Event(type));
+    }
+}
+export function isNodeElement(elem) {
+    return elem && elem.nodeType === 1;
+}
+export function scrollTopTo(diffNum, cb) {
+    const duration = Math.abs(diffNum);
+    const startTime = performance.now();
+    let countTop = 0;
+    const step = (timestamp) => {
+        let progress = (timestamp - startTime) / duration;
+        if (progress < 0) {
+            progress = 0;
+        }
+        else if (progress > 1) {
+            progress = 1;
+        }
+        const easedProgress = Math.pow(progress, 2);
+        const offsetTop = Math.floor((diffNum * easedProgress)) - countTop;
+        countTop += offsetTop;
+        cb(offsetTop);
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        }
+    };
+    requestAnimationFrame(step);
+}
+let wtlFrame;
+export function wheelScrollLeftTo(scrollLeft, cb) {
+    if (wtlFrame) {
+        cancelAnimationFrame(wtlFrame);
+    }
+    wtlFrame = requestAnimationFrame(() => {
+        cb(scrollLeft);
+        wtlFrame = null;
+    });
+}
+let wtaFrame;
+export function wheelScrollTopTo(diffNum, cb) {
+    if (wtaFrame) {
+        cancelAnimationFrame(wtaFrame);
+    }
+    wtaFrame = requestAnimationFrame(() => {
+        const offsetTop = diffNum;
+        cb(offsetTop);
+        wtaFrame = null;
+    });
+}

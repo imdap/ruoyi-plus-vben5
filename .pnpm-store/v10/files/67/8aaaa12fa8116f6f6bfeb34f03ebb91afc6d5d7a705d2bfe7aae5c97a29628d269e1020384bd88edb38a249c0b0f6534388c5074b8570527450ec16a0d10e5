@@ -1,0 +1,38 @@
+{
+  "name": "@v-c/input-number",
+  "type": "module",
+  "version": "1.0.5",
+  "description": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "dependencies": {
+    "@v-c/mini-decimal": "^1.0.1",
+    "@v-c/input": "^1.0.2",
+    "@v-c/util": "^1.0.18"
+  },
+  "scripts": {
+    "build": "vite build",
+    "prepublish": "pnpm build",
+    "test": "vitest run",
+    "patch": "bumpp --release patch",
+    "bump": "bumpp"
+  }
+}

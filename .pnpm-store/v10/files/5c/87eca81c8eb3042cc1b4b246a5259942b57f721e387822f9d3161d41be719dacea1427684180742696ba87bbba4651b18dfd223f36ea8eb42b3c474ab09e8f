@@ -1,0 +1,14 @@
+import { InputStatus } from "../_util/statusUtils.js";
+import { Variant } from "../config-provider/context.js";
+import * as vue674 from "vue";
+
+//#region src/space/Addon.d.ts
+interface SpaceCompactCellProps {
+  prefixCls?: string;
+  variant?: Variant;
+  disabled?: boolean;
+  status?: InputStatus;
+}
+declare const SpaceAddon: vue674.DefineSetupFnComponent<SpaceCompactCellProps, {}, {}, SpaceCompactCellProps & {}, vue674.PublicProps>;
+//#endregion
+export { SpaceCompactCellProps, SpaceAddon as default };

@@ -1,0 +1,28 @@
+{
+  "name": "@v-c/resize-observer",
+  "type": "module",
+  "version": "1.0.8",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "main": "dist/index.js",
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "dependencies": {
+    "resize-observer-polyfill": "^1.5.1",
+    "@v-c/util": "^1.0.9"
+  },
+  "scripts": {
+    "build": "vite build",
+    "prepublish": "pnpm build",
+    "bump": "bumpp",
+    "bump:patch": "bumpp --release patch"
+  }
+}

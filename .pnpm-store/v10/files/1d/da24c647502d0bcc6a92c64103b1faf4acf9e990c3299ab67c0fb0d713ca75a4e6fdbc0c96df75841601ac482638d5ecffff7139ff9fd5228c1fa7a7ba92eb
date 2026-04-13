@@ -1,0 +1,35 @@
+import { FullToken, GenStyleFn, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue563 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/tag/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 默认背景色
+   * @descEN Default background color
+   */
+  defaultBg: string;
+  /**
+   * @desc 默认文字颜色
+   * @descEN Default text color
+   */
+  defaultColor: string;
+  /**
+   * @desc 默认实心标签的文本色
+   * @descEN Default text color for solid tag.
+   */
+  solidTextColor: string;
+}
+interface TagToken extends FullToken<'Tag'> {
+  tagFontSize: number;
+  tagLineHeight: CSSProperties['lineHeight'];
+  tagIconSize: number | string;
+  tagPaddingHorizontal: number;
+  tagBorderlessBg: string;
+}
+declare function prepareToken(token: Parameters<GenStyleFn<'Tag'>>[0]): TagToken;
+declare const prepareComponentToken: GetDefaultToken<'Tag'>;
+declare const _default: (prefixCls: vue563.Ref<string>, rootCls?: vue563.Ref<string | undefined>) => readonly [vue563.Ref<string, string>, vue563.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, TagToken, _default as default, prepareComponentToken, prepareToken };

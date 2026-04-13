@@ -1,0 +1,44 @@
+import { Breakpoint } from "../_util/responsiveObserver.js";
+import * as vue1043 from "vue";
+import { CSSProperties, Ref, SlotsType } from "vue";
+
+//#region src/layout/Sider.d.ts
+interface SiderContextProps {
+  siderCollapsed?: Ref<boolean>;
+}
+declare function useSiderCtx(): SiderContextProps;
+type CollapseType = 'clickTrigger' | 'responsive';
+type SiderTheme = 'light' | 'dark';
+interface SiderProps extends SiderEmitsProps {
+  prefixCls?: string;
+  collapsible?: boolean;
+  collapsed?: boolean;
+  defaultCollapsed?: boolean;
+  reverseArrow?: boolean;
+  zeroWidthTriggerStyle?: CSSProperties;
+  width?: number | string;
+  collapsedWidth?: number | string;
+  breakpoint?: Breakpoint;
+  theme?: SiderTheme;
+}
+interface SiderEmits {
+  'collapse': (collapsed: boolean, type: CollapseType) => void;
+  'update:collapsed': (collapsed: boolean) => void;
+  'breakpoint': (broken: boolean) => void;
+}
+interface SiderEmitsProps {
+  onCollapse?: SiderEmits['collapse'];
+  'onUpdate:collapsed'?: SiderEmits['update:collapsed'];
+  onBreakpoint?: SiderEmits['breakpoint'];
+}
+interface SiderSlots {
+  trigger: () => any;
+  default: () => any;
+}
+interface SiderState {
+  collapsed?: boolean;
+  below: boolean;
+}
+declare const Sider: vue1043.DefineSetupFnComponent<SiderProps, SiderEmits, SlotsType<SiderSlots>, SiderProps, vue1043.PublicProps>;
+//#endregion
+export { CollapseType, SiderContextProps, SiderEmits, SiderEmitsProps, SiderProps, SiderSlots, SiderState, SiderTheme, Sider as default, useSiderCtx };

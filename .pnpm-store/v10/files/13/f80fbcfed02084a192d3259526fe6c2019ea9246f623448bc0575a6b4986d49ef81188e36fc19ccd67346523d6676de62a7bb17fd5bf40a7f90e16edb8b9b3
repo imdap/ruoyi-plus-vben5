@@ -1,0 +1,514 @@
+import MenuContext_default, { useMenuContext } from "../context/MenuContext.js";
+import { PathTrackerContext, useFullPath, useMeasure, usePathUserContext } from "../context/PathContext.js";
+import Icon_default from "../Icon.js";
+import { useMenuId } from "../context/IdContext.js";
+import { usePrivateContext } from "../context/PrivateContext.js";
+import useMemoCallback from "../hooks/useMemoCallback.js";
+import useActive from "../hooks/useActive.js";
+import useDirectionStyle from "../hooks/useDirectionStyle.js";
+import { warnItemProp } from "../utils/warnUtil.js";
+import { parseChildren } from "../utils/commonUtil.js";
+import SubMenuList_default from "./SubMenuList.js";
+import InlineSubMenuList_default from "./InlineSubMenuList.js";
+import PopupTrigger_default from "./PopupTrigger.js";
+import { computed, createVNode, defineComponent, isVNode, mergeProps, ref, watch } from "vue";
+import { classNames } from "@v-c/util";
+import Overflow from "@v-c/overflow";
+import warning$1 from "@v-c/util/dist/warning";
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+var InternalSubMenu = /* @__PURE__ */ defineComponent((props, { slots, attrs }) => {
+	const domDataId = useMenuId(computed(() => props?.eventKey || ""));
+	const menuContext = useMenuContext();
+	const { _internalRenderSubMenuItem } = usePrivateContext();
+	const pathUserContext = usePathUserContext();
+	const connectedPath = useFullPath();
+	const validConnectedPath = computed(() => connectedPath.value.filter((k) => k !== void 0));
+	const prefixCls = computed(() => menuContext?.value?.prefixCls || "vc-menu");
+	const mode = computed(() => menuContext?.value?.mode || "vertical");
+	const openKeys = computed(() => menuContext?.value?.openKeys || []);
+	const contextDisabled = computed(() => menuContext?.value?.disabled);
+	const overflowDisabled = computed(() => menuContext?.value?.overflowDisabled);
+	const activeKey = computed(() => menuContext?.value?.activeKey);
+	const selectedKeys = computed(() => menuContext?.value?.selectedKeys || []);
+	const contextExpandIcon = computed(() => menuContext?.value?.expandIcon);
+	const contextPopupRender = computed(() => menuContext?.value?.popupRender);
+	const onOpenChange = (key, open$1) => {
+		menuContext?.value?.onOpenChange?.(key, open$1);
+	};
+	const onActive = (key) => {
+		menuContext?.value?.onActive?.(key);
+	};
+	const subMenuPrefixCls = computed(() => `${prefixCls.value}-submenu`);
+	const mergedDisabled = computed(() => !!(contextDisabled.value || props?.disabled));
+	if (process.env.NODE_ENV !== "production" && props?.warnKey) warning$1(false, "SubMenu should not leave undefined `key`.");
+	const mergedItemIcon = computed(() => props?.itemIcon ?? menuContext?.value?.itemIcon);
+	const mergedExpandIcon = computed(() => props?.expandIcon ?? contextExpandIcon.value);
+	const originOpen = computed(() => {
+		const key = props?.eventKey;
+		return key ? openKeys.value.includes(key) : false;
+	});
+	const open = computed(() => !overflowDisabled.value && originOpen.value);
+	const childrenSelected = computed(() => {
+		const key = props?.eventKey;
+		return key ? pathUserContext.isSubPathKey(selectedKeys.value, key) : false;
+	});
+	const { active, ...activeProps } = useActive(computed(() => props?.eventKey || ""), mergedDisabled, (e) => props?.onTitleMouseEnter?.(e), (e) => props?.onTitleMouseLeave?.(e));
+	const childrenActive = ref(false);
+	const triggerChildrenActive = (newActive) => {
+		if (!mergedDisabled.value) childrenActive.value = newActive;
+	};
+	const onInternalMouseEnter = (domEvent) => {
+		triggerChildrenActive(true);
+		props?.onMouseEnter?.({
+			key: props.eventKey,
+			domEvent
+		});
+	};
+	const onInternalMouseLeave = (domEvent) => {
+		triggerChildrenActive(false);
+		props?.onMouseLeave?.({
+			key: props.eventKey,
+			domEvent
+		});
+	};
+	const mergedActive = computed(() => {
+		if (active.value) return active.value;
+		if (mode.value !== "inline") {
+			const key = props?.eventKey;
+			const currentActiveKey = activeKey.value;
+			return childrenActive.value || (key && currentActiveKey ? pathUserContext.isSubPathKey([currentActiveKey], key) : false);
+		}
+		return false;
+	});
+	const directionStyle = useDirectionStyle(computed(() => connectedPath.value.length));
+	const onInternalTitleClick = (e) => {
+		if (mergedDisabled.value) return;
+		const key = props?.eventKey;
+		props?.onTitleClick?.({
+			key,
+			domEvent: e
+		});
+		if (mode.value === "inline" && key) onOpenChange(key, !originOpen.value);
+	};
+	const onMergedItemClick = useMemoCallback((info) => {
+		props?.onClick?.(warnItemProp(info));
+		menuContext?.value?.onItemClick?.(info);
+	});
+	const onPopupVisibleChange = (newVisible) => {
+		const key = props?.eventKey;
+		if (mode.value !== "inline" && key) onOpenChange(key, newVisible);
+	};
+	const onInternalFocus = () => {
+		const key = props?.eventKey;
+		if (key) onActive(key);
+	};
+	const triggerModeRef = ref(mode.value);
+	watch(mode, () => {
+		if (mode.value !== "inline" && validConnectedPath.value.length > 1) triggerModeRef.value = "vertical";
+		else triggerModeRef.value = mode.value;
+	}, { immediate: true });
+	return () => {
+		const { style, title, class: className, popupClassName, popupOffset, popupStyle, classes, styles, ...restProps } = props;
+		const children = slots.default?.();
+		const popupId = domDataId.value && `${domDataId.value}-popup`;
+		const expandIconProps = {
+			isOpen: open.value,
+			isSelected: childrenSelected.value,
+			isSubMenu: true,
+			disabled: mergedDisabled.value
+		};
+		const expandIconNode = createVNode(Icon_default, {
+			"icon": mode.value !== "horizontal" ? mergedExpandIcon.value : void 0,
+			"props": {
+				...props,
+				...expandIconProps
+			}
+		}, { default: () => [createVNode("i", { "class": `${subMenuPrefixCls.value}-arrow` }, null)] });
+		let titleNode = createVNode("div", mergeProps({
+			"role": "menuitem",
+			"style": directionStyle.value,
+			"class": `${subMenuPrefixCls.value}-title`,
+			"tabindex": mergedDisabled.value ? void 0 : -1,
+			"title": typeof title === "string" ? title : void 0,
+			"data-menu-id": overflowDisabled.value && domDataId.value ? void 0 : domDataId.value,
+			"aria-expanded": open.value,
+			"aria-haspopup": true,
+			"aria-controls": popupId,
+			"aria-disabled": mergedDisabled.value,
+			"onClick": onInternalTitleClick,
+			"onFocus": onInternalFocus
+		}, activeProps), [title, expandIconNode]);
+		const popupContentTriggerMode = triggerModeRef.value;
+		const renderPopupContent = () => {
+			const originNode = createVNode(MenuContext_default, {
+				"classes": classes,
+				"styles": styles,
+				"mode": popupContentTriggerMode === "horizontal" ? "vertical" : popupContentTriggerMode
+			}, { default: () => [createVNode(SubMenuList_default, { "id": popupId }, _isSlot(children) ? children : { default: () => [children] })] });
+			const mergedPopupRender = props?.popupRender || contextPopupRender.value;
+			if (mergedPopupRender) return mergedPopupRender(originNode, {
+				item: props,
+				keys: validConnectedPath.value
+			});
+			return originNode;
+		};
+		if (!overflowDisabled.value) {
+			const triggerMode = triggerModeRef.value;
+			const _titleNode = function() {
+				return titleNode;
+			}();
+			titleNode = createVNode(PopupTrigger_default, {
+				"mode": triggerMode,
+				"prefixCls": subMenuPrefixCls.value,
+				"visible": !props?.internalPopupClose && open.value && mode.value !== "inline",
+				"popupClassName": popupClassName,
+				"popupOffset": popupOffset,
+				"popupStyle": popupStyle,
+				"popup": renderPopupContent(),
+				"disabled": mergedDisabled.value,
+				"onVisibleChange": onPopupVisibleChange
+			}, _isSlot(titleNode) ? titleNode : { default: () => [_titleNode] });
+		}
+		let listNode = createVNode(Overflow.Item, mergeProps({ "role": "none" }, attrs, restProps, {
+			"component": "li",
+			"style": style,
+			"class": classNames(subMenuPrefixCls.value, `${subMenuPrefixCls.value}-${mode.value}`, className, {
+				[`${subMenuPrefixCls.value}-open`]: open.value,
+				[`${subMenuPrefixCls.value}-active`]: mergedActive.value,
+				[`${subMenuPrefixCls.value}-selected`]: childrenSelected.value,
+				[`${subMenuPrefixCls.value}-disabled`]: mergedDisabled.value
+			}),
+			"onMouseenter": onInternalMouseEnter,
+			"onMouseleave": onInternalMouseLeave
+		}), { default: () => [titleNode, !overflowDisabled.value && createVNode(InlineSubMenuList_default, {
+			"id": popupId,
+			"open": open.value,
+			"keyPath": validConnectedPath.value
+		}, _isSlot(children) ? children : { default: () => [children] })] });
+		if (_internalRenderSubMenuItem) listNode = _internalRenderSubMenuItem(listNode, props, {
+			selected: childrenSelected.value,
+			active: mergedActive.value,
+			open: open.value,
+			disabled: mergedDisabled.value
+		});
+		return createVNode(MenuContext_default, {
+			"classes": classes,
+			"styles": styles,
+			"onItemClick": onMergedItemClick,
+			"mode": mode.value === "horizontal" ? "vertical" : mode.value,
+			"itemIcon": mergedItemIcon.value,
+			"expandIcon": mergedExpandIcon.value
+		}, _isSlot(listNode) ? listNode : { default: () => [listNode] });
+	};
+}, {
+	props: {
+		classes: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		title: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		internalPopupClose: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		eventKey: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		warnKey: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		type: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		rootClass: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		itemIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		expandIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		onMouseEnter: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseLeave: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		popupClassName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		popupOffset: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		popupStyle: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		popupRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onTitleClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onTitleMouseEnter: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onTitleMouseLeave: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		style: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		class: {
+			type: String,
+			required: false,
+			default: void 0
+		}
+	},
+	name: "InternalSubMenu",
+	inheritAttrs: false
+});
+var SubMenu_default = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	const eventKey = computed(() => props?.eventKey);
+	const connectedKeyPath = useFullPath(eventKey);
+	const measure = useMeasure();
+	const validKeyPath = computed(() => connectedKeyPath.value.filter((k) => k !== void 0));
+	watch([connectedKeyPath], (_n, _o, onCleanup) => {
+		if (measure) measure.registerPath(eventKey.value, connectedKeyPath.value);
+		onCleanup(() => {
+			measure?.unregisterPath(eventKey.value, connectedKeyPath.value);
+		});
+	}, { immediate: true });
+	return () => {
+		const children = slots.default?.();
+		const childList = parseChildren(children, validKeyPath.value);
+		let renderNode;
+		if (measure) renderNode = childList;
+		else renderNode = createVNode(InternalSubMenu, props, _isSlot(childList) ? childList : { default: () => [childList] });
+		return createVNode(PathTrackerContext.Provider, { "value": connectedKeyPath.value }, _isSlot(renderNode) ? renderNode : { default: () => [renderNode] });
+	};
+}, {
+	props: {
+		classes: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		title: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		internalPopupClose: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		eventKey: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		warnKey: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		type: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		rootClass: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		itemIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		expandIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		onMouseEnter: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseLeave: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		popupClassName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		popupOffset: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		popupStyle: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		popupRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onTitleClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onTitleMouseEnter: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onTitleMouseLeave: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		style: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		class: {
+			type: String,
+			required: false,
+			default: void 0
+		}
+	},
+	name: "SubMenu",
+	inheritAttrs: false
+});
+export { SubMenu_default as default };

@@ -1,0 +1,46 @@
+{
+  "name": "@cspell/dict-data-science",
+  "version": "2.0.13",
+  "description": "Data Science dictionary for cspell. -- Private until verified",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "cspell-tools-cli build",
+    "test": "cspell -c ./cspell-ext.json samples",
+    "prepublishOnly": "echo OK",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/data-science"
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "data-science",
+    "Data Science",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/data-science#readme",
+  "files": [
+    "dict/data-science*.txt",
+    "cspell-ext.json",
+    "*.js",
+    "*.d.ts"
+  ],
+  "gitHead": "90140e96a0552dbb15c0e9e95a391b7a32401292"
+}

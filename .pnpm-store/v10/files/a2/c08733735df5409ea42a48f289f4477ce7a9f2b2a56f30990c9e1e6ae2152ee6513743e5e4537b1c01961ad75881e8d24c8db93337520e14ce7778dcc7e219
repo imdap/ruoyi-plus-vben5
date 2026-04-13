@@ -1,0 +1,7 @@
+import { ComponentToken, initComponentToken, initInputToken } from "./token.js";
+import * as vue517 from "vue";
+
+//#region src/input/style/textarea.d.ts
+declare const _default: (prefixCls: vue517.Ref<string>, rootCls?: vue517.Ref<string | undefined>) => readonly [vue517.Ref<string, string>, vue517.ComputedRef<string | undefined>];
+//#endregion
+export { type ComponentToken, _default as default, initComponentToken, initInputToken };

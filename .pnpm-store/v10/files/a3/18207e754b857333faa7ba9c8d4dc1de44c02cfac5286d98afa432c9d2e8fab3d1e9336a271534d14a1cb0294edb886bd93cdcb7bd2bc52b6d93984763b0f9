@@ -1,0 +1,323 @@
+import { TreeContextKey } from "./contextTypes.js";
+import { getTreeNodeProps } from "./utils/treeUtil.js";
+import TreeNode_default from "./TreeNode.js";
+import { Transition, computed, createVNode, defineComponent, inject, mergeProps, onBeforeUnmount, ref, watch } from "vue";
+import { clsx } from "@v-c/util";
+import omit from "@v-c/util/dist/omit";
+import { getTransitionProps } from "@v-c/util/dist/utils/transition";
+var MotionTreeNode_default = /* @__PURE__ */ defineComponent((props) => {
+	const context = inject(TreeContextKey, null);
+	const prefixCls = computed(() => context?.prefixCls);
+	let hideTimer = null;
+	const triggerMotionEndRef = ref(false);
+	const visible = ref(true);
+	const motionName = computed(() => props?.motion?.name);
+	const targetVisible = computed(() => !!props.motionNodes && props.motionType !== "hide");
+	const triggerMotionEnd = () => {
+		if (props.motionNodes && !triggerMotionEndRef.value) {
+			triggerMotionEndRef.value = true;
+			props.onMotionEnd?.();
+		}
+	};
+	const triggerMotionStart = () => {
+		if (props.motionNodes) props?.onMotionStart?.();
+	};
+	onBeforeUnmount(() => {
+		if (hideTimer) {
+			clearTimeout(hideTimer);
+			hideTimer = null;
+		}
+		triggerMotionEnd();
+	});
+	watch(() => props.motionNodes, (newMotionNodes, prevMotionNodes) => {
+		if (newMotionNodes) {
+			if (!prevMotionNodes) {
+				triggerMotionEndRef.value = false;
+				triggerMotionStart();
+			}
+			if (targetVisible.value !== visible.value) if (targetVisible.value) {
+				if (hideTimer) {
+					clearTimeout(hideTimer);
+					hideTimer = null;
+				}
+				visible.value = true;
+			} else {
+				visible.value = true;
+				if (hideTimer) clearTimeout(hideTimer);
+				hideTimer = setTimeout(() => {
+					visible.value = false;
+					hideTimer = null;
+				});
+			}
+		} else if (newMotionNodes === null) {
+			if (hideTimer) {
+				clearTimeout(hideTimer);
+				hideTimer = null;
+			}
+			visible.value = true;
+		}
+	}, {
+		immediate: true,
+		flush: "post"
+	});
+	const onVisibleChanged = (newVisible) => {
+		if (targetVisible.value === newVisible) triggerMotionEnd();
+	};
+	return () => {
+		const { motionNodes, treeNodeRequiredProps, active, motion, motionType, treeId } = props;
+		if (motionNodes) {
+			const _motionNodes = motionNodes ?? [];
+			const requiredProps = treeNodeRequiredProps;
+			return createVNode(Transition, mergeProps(getTransitionProps(motionName.value, {
+				...motion,
+				appear: motionType === "show"
+			}), {
+				"onAfterEnter": () => {
+					onVisibleChanged(true);
+				},
+				"onAfterLeave": () => {
+					onVisibleChanged(false);
+				}
+			}), { default: () => [visible.value && createVNode("div", { "class": clsx(`${prefixCls.value}-treenode-motion`) }, [_motionNodes.map((treeNode) => {
+				const { data: nodeData, title, key, isStart, isEnd } = treeNode;
+				const restProps = { ...nodeData || {} };
+				delete restProps.children;
+				delete restProps.key;
+				return createVNode(TreeNode_default, mergeProps(restProps, getTreeNodeProps(key, requiredProps), {
+					"title": title,
+					"active": active,
+					"data": nodeData,
+					"key": key,
+					"isStart": isStart,
+					"isEnd": isEnd,
+					"treeId": treeId
+				}), null);
+			})])] });
+		}
+		return createVNode(TreeNode_default, mergeProps(omit(props, [
+			"motion",
+			"motionNodes",
+			"motionType",
+			"onMotionStart",
+			"onMotionEnd",
+			"treeNodeRequiredProps"
+		]), { "active": active }), null);
+	};
+}, {
+	props: {
+		active: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		motion: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		motionNodes: {
+			type: [Array, null],
+			required: false,
+			default: void 0
+		},
+		motionType: {
+			type: [String, null],
+			required: false,
+			default: void 0
+		},
+		onMotionStart: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMotionEnd: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		treeNodeRequiredProps: {
+			type: Object,
+			required: true,
+			default: void 0
+		},
+		treeId: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		eventKey: {
+			type: [String, Number],
+			required: false,
+			default: void 0
+		},
+		prefixCls: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		className: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		style: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		id: {
+			type: [String, Number],
+			required: false,
+			default: void 0
+		},
+		expanded: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		selected: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		checked: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		loaded: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		loading: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		halfChecked: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		title: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		dragOver: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		dragOverGapTop: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		dragOverGapBottom: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		pos: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		data: {
+			required: false,
+			default: void 0
+		},
+		isStart: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		isEnd: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		onMouseMove: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		isLeaf: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		checkable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		selectable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		disableCheckbox: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		icon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		switcherIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		children: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		}
+	},
+	name: "MotionTreeNode",
+	inheritAttrs: false
+});
+export { MotionTreeNode_default as default };

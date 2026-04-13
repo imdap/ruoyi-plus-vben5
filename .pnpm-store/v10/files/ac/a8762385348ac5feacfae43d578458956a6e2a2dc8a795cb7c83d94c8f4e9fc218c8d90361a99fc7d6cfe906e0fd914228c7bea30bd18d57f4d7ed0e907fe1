@@ -1,0 +1,11 @@
+import * as vue676 from "vue";
+
+//#region src/skeleton/Title.d.ts
+interface SkeletonTitleProps {
+  prefixCls?: string;
+  rootClass?: string;
+  width?: number | string;
+}
+declare const Title: vue676.DefineSetupFnComponent<SkeletonTitleProps, {}, {}, SkeletonTitleProps & {}, vue676.PublicProps>;
+//#endregion
+export { SkeletonTitleProps, Title as default };

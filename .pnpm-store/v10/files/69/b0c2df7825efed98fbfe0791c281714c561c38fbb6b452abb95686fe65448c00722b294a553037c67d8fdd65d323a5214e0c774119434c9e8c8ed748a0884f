@@ -1,0 +1,65 @@
+{
+  "name": "cspell-gitignore",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "version": "9.8.0",
+  "description": "Gitignore Glob matcher for cspell",
+  "keywords": [
+    "cspell",
+    "gitignore",
+    "glob"
+  ],
+  "author": "Jason Dent <jason@streetsidesoftware.nl>",
+  "homepage": "https://github.com/streetsidesoftware/cspell/tree/main/packages/cspell-gitignore#readme",
+  "license": "MIT",
+  "bin": {
+    "cspell-gitignore": "bin.mjs"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "bin.mjs",
+    "dist",
+    "!**/*.tsbuildInfo",
+    "!**/__mocks__",
+    "!**/test/**",
+    "!**/*.test.*",
+    "!**/*.spec.*",
+    "!**/*.map"
+  ],
+  "scripts": {
+    "clean": "shx rm -rf dist temp coverage \"*.tsbuildInfo\"",
+    "build": "tsc -p .",
+    "clean-build": "pnpm run clean && pnpm run build",
+    "coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "test": "vitest run",
+    "watch": "tsc -p . -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell.git",
+    "directory": "packages/cspell-gitignore"
+  },
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell/labels/cspell-gitignore"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@cspell/url": "9.8.0",
+    "cspell-glob": "9.8.0",
+    "cspell-io": "9.8.0"
+  },
+  "gitHead": "c822013ce676dffb5fa5544567c25a3ae666718f"
+}

@@ -1,0 +1,96 @@
+{
+  "name": "eslint-json-compat-utils",
+  "version": "0.2.3",
+  "description": "A utility that converts rules made for checking the AST of `jsonc-eslint-parser` into rules compatible with `@eslint/json`.",
+  "engines": {
+    "node": ">=12"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prebuild": "npm run -s clean",
+    "build": "unbuild",
+    "clean": "rimraf .nyc_output dist coverage",
+    "lint": "npm-run-all \"lint:*\"",
+    "lint:js": "eslint .",
+    "eslint-fix": "eslint . --fix",
+    "lint:ts": "tsc --noEmit",
+    "test:cover": "nyc --reporter=lcov npm run test",
+    "test": "npm run mocha -- \"tests/src/**/*.ts\" --reporter dot --timeout 60000",
+    "ts": "node -r esbuild-register",
+    "mocha": "npm run ts -- ./node_modules/mocha/bin/mocha.js",
+    "prerelease": "npm run clean && npm run build",
+    "release": "changeset publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ota-meshi/eslint-json-compat-utils.git"
+  },
+  "keywords": [
+    "eslint"
+  ],
+  "author": "Yosuke Ota (https://github.com/ota-meshi)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ota-meshi/eslint-json-compat-utils/issues"
+  },
+  "homepage": "https://github.com/ota-meshi/eslint-json-compat-utils#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "esquery": "^1.6.0"
+  },
+  "peerDependenciesMeta": {
+    "@eslint/json": {
+      "optional": true
+    }
+  },
+  "peerDependencies": {
+    "eslint": "*",
+    "jsonc-eslint-parser": "^2.4.0 || ^3.0.0"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.26.2",
+    "@eslint/js": "^10.0.0",
+    "@eslint/json": "^1.0.0",
+    "@ota-meshi/eslint-plugin": "^0.20.0",
+    "@svitejs/changesets-changelog-github-compact": "^1.1.0",
+    "@types/eslint": "^9.0.0",
+    "@types/esquery": "^1.5.4",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^24.0.0",
+    "@types/semver": "^7.5.8",
+    "@typescript-eslint/eslint-plugin": "^8.13.0",
+    "@typescript-eslint/parser": "^8.13.0",
+    "esbuild-register": "^3.5.0",
+    "eslint": "^10.0.0",
+    "eslint-config-prettier": "^10.0.0",
+    "eslint-plugin-jsdoc": "^62.0.0",
+    "eslint-plugin-json-schema-validator": "^6.0.0",
+    "eslint-plugin-jsonc": "^3.0.0",
+    "eslint-plugin-n": "^17.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-yml": "^3.0.0",
+    "jsonc-eslint-parser": "^3.0.0",
+    "mocha": "^11.0.0",
+    "npm-run-all2": "^8.0.0",
+    "nyc": "^18.0.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.13.0",
+    "unbuild": "^3.0.0"
+  }
+}

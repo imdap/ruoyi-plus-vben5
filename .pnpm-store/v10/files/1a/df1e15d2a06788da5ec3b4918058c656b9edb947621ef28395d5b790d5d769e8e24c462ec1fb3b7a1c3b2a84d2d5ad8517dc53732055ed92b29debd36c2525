@@ -1,0 +1,16 @@
+import * as vue746 from "vue";
+
+//#region src/form/style/fallbackCmp.d.ts
+/**
+ * Fallback of IE.
+ * Safe to remove.
+ */
+declare const _default: vue746.DefineComponent<vue746.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>, () => null, {}, {}, {}, vue746.ComponentOptionsMixin, vue746.ComponentOptionsMixin, {}, string, vue746.PublicProps, Readonly<vue746.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>> & Readonly<{}>, {}, {}, {}, {}, string, vue746.ComponentProvideOptions, true, {}, any>;
+//#endregion
+export { _default as default };

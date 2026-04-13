@@ -1,0 +1,21 @@
+import { VueNode } from "../_util/type.js";
+import { DirectionType } from "../config-provider/context.js";
+import * as vue256 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/transfer/Actions.d.ts
+interface TransferOperationProps {
+  class?: string;
+  actions: VueNode[];
+  moveToLeft?: (event: MouseEvent) => void;
+  moveToRight?: (event: MouseEvent) => void;
+  leftActive?: boolean;
+  rightActive?: boolean;
+  style?: CSSProperties;
+  disabled?: boolean;
+  direction?: DirectionType;
+  oneWay?: boolean;
+}
+declare const Actions: vue256.DefineSetupFnComponent<TransferOperationProps, {}, {}, TransferOperationProps & {}, vue256.PublicProps>;
+//#endregion
+export { TransferOperationProps, Actions as default };

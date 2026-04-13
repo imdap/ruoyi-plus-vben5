@@ -1,0 +1,44 @@
+{
+  "id": "npm",
+  "name": "NPM",
+  "description": "Dictionary of Common Javascript Packages.",
+  "readonly": true,
+  "dictionaryDefinitions": [
+    {
+      "name": "npm",
+      "path": "./dict/npm.txt",
+      "description": "Dictionary of Common Javascript Packages."
+    }
+  ],
+  "languageSettings": [
+    {
+      "languageId": "javascript,typescript,javascriptreact,typescriptreact",
+      "locale": "*",
+      "dictionaries": ["npm"]
+    }
+  ],
+  "overrides": [
+    {
+      "filename": "**/package.json",
+      "dictionaries": ["npm"],
+      "ignoreRegExpList": ["npm-scripts"],
+      "patterns": [
+        {
+          "name": "npm-scripts",
+          "pattern": ["pre-npm-scripts", "post-npm-scripts"],
+          "description": "Matches any NPM pre and post scripts from NPM lifecycle."
+        },
+        {
+          "name": "pre-npm-scripts",
+          "pattern": "/^\\s*\"pre[^\"]+\":/gm",
+          "description": "Matches any NPM pre scripts from NPM lifecycle."
+        },
+        {
+          "name": "post-npm-scripts",
+          "pattern": "/^\\s*\"post[^\"]+\":/gm",
+          "description": "Matches any NPM post scripts from NPM lifecycle."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { ColProps } from "../grid/col.js";
+import "../grid/index.js";
+import { FormLabelAlign, ScrollFocusOptions } from "./interface.js";
+import { FormTooltipProps } from "./FormItemLabel.js";
+import { FieldData, InternalNamePath, NamePath, Rule, ValidateErrorEntity, ValidateMessages, ValidateOptions } from "./types.js";
+import { FeedbackIcons } from "./FormItem/index.js";
+import { ComponentBaseProps, Variant } from "../config-provider/context.js";
+import * as vue1004 from "vue";
+import { CSSProperties, HTMLAttributes, SlotsType } from "vue";
+
+//#region src/form/Form.d.ts
+type RequiredMark = boolean | 'optional' | ((labelNode: any, info: {
+  required: boolean;
+}) => any);
+type FormLayout = 'horizontal' | 'inline' | 'vertical';
+type FormItemLayout = 'horizontal' | 'vertical';
+type FormSemanticName = keyof FormSemanticClassNames & keyof FormSemanticStyles;
+interface FormSemanticClassNames {
+  root?: string;
+  label?: string;
+  content?: string;
+}
+interface FormSemanticStyles {
+  root?: CSSProperties;
+  label?: CSSProperties;
+  content?: CSSProperties;
+}
+type FormClassNamesType = SemanticClassNamesType<FormProps, FormSemanticClassNames>;
+type FormStylesType = SemanticStylesType<FormProps, FormSemanticStyles>;
+interface FormProps extends ComponentBaseProps, FormEmitsProps {
+  classes?: FormClassNamesType;
+  styles?: FormStylesType;
+  colon?: boolean;
+  name?: string;
+  layout?: FormLayout;
+  labelAlign?: FormLabelAlign;
+  labelWrap?: boolean;
+  labelCol?: ColProps & Partial<HTMLAttributes>;
+  wrapperCol?: ColProps & Partial<HTMLAttributes>;
+  feedbackIcons?: FeedbackIcons;
+  size?: SizeType;
+  disabled?: boolean;
+  scrollToFirstError?: ScrollFocusOptions | boolean;
+  requiredMark?: RequiredMark;
+  variant?: Variant;
+  validateMessages?: ValidateMessages;
+  model?: Record<string, any>;
+  rules?: Record<string, Rule[]>;
+  validateTrigger?: string | string[] | false;
+  preserve?: boolean;
+  clearOnDestroy?: boolean;
+  validateOnRuleChange?: boolean;
+  autoComplete?: string | undefined;
+  tooltip?: FormTooltipProps;
+}
+interface FormEmits {
+  finish: (values: Record<string, any>) => void;
+  finishFailed: (errorInfo: ValidateErrorEntity) => void;
+  submit: (e: Event) => void;
+  reset: (e: Event) => void;
+  validate: (name: InternalNamePath, status: boolean, errors: any[] | null) => void;
+  valuesChange: (changedValues: Record<string, any>, values: Record<string, any>) => void;
+  fieldsChange: (changedFields: FieldData[], allFields: FieldData[]) => void;
+}
+interface FormEmitsProps {
+  onFinish?: FormEmits['finish'];
+  onFinishFailed?: FormEmits['finishFailed'];
+  onSubmit?: FormEmits['submit'];
+  onReset?: FormEmits['reset'];
+  onValidate?: FormEmits['validate'];
+  onValuesChange?: FormEmits['valuesChange'];
+  onFieldsChange?: FormEmits['fieldsChange'];
+}
+interface FormSlots {
+  default: () => any;
+}
+interface FormInstance {
+  getFieldValue: (name: NamePath) => any;
+  getFieldsValue: (nameList?: NamePath[] | true) => Record<string, any>;
+  getFieldError: (name: NamePath) => string[];
+  getFieldsError: (nameList?: NamePath[]) => {
+    name: InternalNamePath;
+    errors: string[];
+    warnings: string[];
+  }[];
+  getFieldWarning: (name: NamePath) => string[];
+  isFieldsTouched: (nameList?: NamePath[] | boolean, allFieldsTouched?: boolean) => boolean;
+  isFieldTouched: (name: NamePath) => boolean;
+  isFieldsValidating: (nameList?: NamePath[]) => boolean;
+  isFieldValidating: (name: NamePath) => boolean;
+  resetFields: (nameList?: NamePath[] | InternalNamePath[]) => void;
+  clearValidate: (nameList?: NamePath[] | InternalNamePath[]) => void;
+  setFields: (data: FieldData[]) => void;
+  setFieldValue: (name: NamePath, value: any) => void;
+  setFieldsValue: (values: Record<string, any>) => void;
+  validateFields: (nameList?: NamePath[], options?: ValidateOptions) => Promise<Record<string, any>>;
+  validate: () => Promise<Record<string, any>>;
+  submit: () => void;
+  nativeElement: HTMLFormElement | undefined;
+  scrollToField: (fieldName: NamePath, options?: ScrollFocusOptions | boolean) => void;
+  focusField: (fieldName: NamePath) => void;
+  getFieldInstance: (name: NamePath) => any;
+}
+declare const InternalForm: vue1004.DefineSetupFnComponent<FormProps, FormEmits, SlotsType<FormSlots>, FormProps, vue1004.PublicProps>;
+//#endregion
+export { FormClassNamesType, FormEmits, FormEmitsProps, FormInstance, FormItemLayout, FormLayout, FormProps, FormSemanticClassNames, FormSemanticName, FormSemanticStyles, FormSlots, FormStylesType, RequiredMark, type ScrollFocusOptions, InternalForm as default };

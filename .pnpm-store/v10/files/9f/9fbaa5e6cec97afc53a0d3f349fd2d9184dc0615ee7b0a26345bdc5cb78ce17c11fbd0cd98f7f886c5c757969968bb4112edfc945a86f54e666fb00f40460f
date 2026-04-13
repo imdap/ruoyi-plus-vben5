@@ -1,0 +1,27 @@
+import { PopoverSemanticClassNames, PopoverSemanticStyles } from "../popover/index.js";
+import { PopconfirmProps } from "./index.js";
+import * as vue250 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/popconfirm/PurePanel.d.ts
+interface PopconfirmLocale {
+  okText: string;
+  cancelText: string;
+}
+interface OverlayProps extends Pick<PopconfirmProps, 'icon' | 'okButtonProps' | 'cancelButtonProps' | 'cancelText' | 'okText' | 'okType' | 'showCancel' | 'title' | 'description'> {
+  prefixCls: string;
+  close?: (...args: any[]) => void;
+  onConfirm?: (e?: MouseEvent) => void;
+  onCancel?: (e?: MouseEvent) => void;
+  onPopupClick?: (e: MouseEvent) => void;
+  classes?: PopoverSemanticClassNames;
+  styles?: PopoverSemanticStyles;
+}
+declare const Overlay: vue250.DefineSetupFnComponent<OverlayProps, {}, {}, OverlayProps & {}, vue250.PublicProps>;
+interface PurePanelProps extends Omit<OverlayProps, 'prefixCls'>, Pick<PopconfirmProps, 'placement'> {
+  class?: string;
+  style?: CSSProperties;
+}
+declare const PurePanel: vue250.DefineSetupFnComponent<PurePanelProps, {}, {}, PurePanelProps & {}, vue250.PublicProps>;
+//#endregion
+export { Overlay, OverlayProps, PopconfirmLocale, PurePanelProps, PurePanel as default };

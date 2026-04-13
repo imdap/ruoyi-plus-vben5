@@ -1,0 +1,33 @@
+{
+    "id": "docker",
+    "version": "0.2",
+    "name": "Docker",
+    "description": "Docker dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "docker",
+            "path": "./dict/docker-words.txt.gz",
+            "description": "Docker dictionary."
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "languageId": "dockerfile",
+            "locale": "*",
+            "includeRegExpList": [],
+            "ignoreRegExpList": [],
+            "patterns": [],
+            "dictionaries": ["docker"],
+            "dictionaryDefinitions": []
+        }
+    ],
+    "globRoot": "${cwd}",
+    "overrides": [
+        {
+            "filename": "**/Dockerfile",
+            "languageId": "dockerfile"
+        }
+    ]
+}

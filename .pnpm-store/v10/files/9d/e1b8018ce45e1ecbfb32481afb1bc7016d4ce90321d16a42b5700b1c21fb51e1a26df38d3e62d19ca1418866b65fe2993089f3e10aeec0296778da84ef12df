@@ -1,0 +1,26 @@
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue811 from "vue";
+
+//#region src/upload/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 操作按扭颜色
+   * @descEN Action button color
+   */
+  actionsColor: string;
+  /**
+   * @desc 卡片类型文件列表项的尺寸（对 picture-card 和 picture-circle 生效）
+   * @descEN Size of list items in card type (affects both picture-card and picture-circle)
+   */
+  pictureCardSize: number;
+}
+interface UploadToken extends FullToken<'Upload'> {
+  uploadThumbnailSize: number | string;
+  uploadProgressOffset: number | string;
+  uploadPicCardSize: number | string;
+}
+declare const prepareComponentToken: GetDefaultToken<'Upload'>;
+declare const _default: (prefixCls: vue811.Ref<string>, rootCls?: vue811.Ref<string | undefined>) => readonly [vue811.Ref<string, string>, vue811.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, UploadToken, _default as default, prepareComponentToken };

@@ -1,0 +1,63 @@
+{
+  "name": "stylelint-config-html",
+  "version": "1.1.0",
+  "description": "The shareable HTML config for Stylelint.",
+  "keywords": [
+    "stylelint",
+    "stylelint-config",
+    "html",
+    "vue",
+    "svelte",
+    "php",
+    "xml"
+  ],
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "html.js",
+    "vue.js",
+    "svelte.js",
+    "astro.js",
+    "php.js",
+    "xml.js"
+  ],
+  "engines": {
+    "node": "^12 || >=14"
+  },
+  "scripts": {
+    "test": "mocha \"tests/lib/**/*.js\" --reporter dot --timeout 60000",
+    "lint": "eslint .",
+    "eslint-fix": "eslint . --fix",
+    "preversion": "npm test && git add ."
+  },
+  "peerDependencies": {
+    "stylelint": ">=14.0.0",
+    "postcss-html": "^1.0.0"
+  },
+  "devDependencies": {
+    "@ota-meshi/eslint-plugin": "^0.11.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-json-schema-validator": "^3.0.0",
+    "eslint-plugin-jsonc": "^2.0.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-regexp": "^1.5.0",
+    "eslint-plugin-vue": "^9.0.0",
+    "eslint-plugin-yml": "^1.0.0",
+    "mocha": "^10.0.0",
+    "prettier": "^2.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ota-meshi/stylelint-config-html.git"
+  },
+  "author": "Yosuke Ota (https://github.com/ota-meshi)",
+  "funding": "https://github.com/sponsors/ota-meshi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ota-meshi/stylelint-config-html/issues"
+  },
+  "homepage": "https://github.com/ota-meshi/stylelint-config-html#readme"
+}

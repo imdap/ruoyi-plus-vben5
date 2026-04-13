@@ -1,0 +1,185 @@
+import { AnyObject, VueNode } from "../../../_util/type.js";
+import { devUseWarning } from "../../../_util/warning.js";
+import { Breakpoint } from "../../../_util/responsiveObserver.js";
+import { ColumnFilterItem, ColumnTitle, ColumnType, ColumnsType, CompareFn, CoverableDropdownProps, FilterDropdownProps, FilterKey, FilterSearchType, FilterValue, GetPopupContainer, Key, SortOrder, SorterTooltipProps, TableLocale, TransformColumns } from "../../interface.js";
+import { flattenKeys } from "./FilterDropdown.js";
+import { Ref } from "vue";
+import * as _v_c_util6 from "@v-c/util";
+import * as _v_c_table0 from "@v-c/table";
+import * as _v_c_table_dist_interface_js0 from "@v-c/table/dist/interface.js";
+
+//#region src/table/hooks/useFilter/index.d.ts
+interface FilterState<RecordType = AnyObject> {
+  column: ColumnType<RecordType>;
+  key: Key;
+  filteredKeys?: FilterKey;
+  forceFiltered?: boolean;
+}
+declare function collectFilterStates<RecordType extends AnyObject = AnyObject>(columns: ColumnsType<RecordType>, init: boolean, pos?: string): FilterState<RecordType>[];
+declare function generateFilterInfo<RecordType extends AnyObject = AnyObject>(filterStates: FilterState<RecordType>[]): Record<string, FilterValue | null>;
+declare function getFilterData<RecordType extends AnyObject = AnyObject>(data: RecordType[], filterStates: FilterState<RecordType>[], childrenColumnName: string): RecordType[];
+interface FilterConfig<RecordType = AnyObject> {
+  prefixCls: string;
+  dropdownPrefixCls: string;
+  mergedFilterStates: FilterState<RecordType>[];
+  filterStates: Ref<FilterState<RecordType>[]>;
+  locale: TableLocale;
+  filterDropdown?: (ctx: FilterDropdownProps & {
+    column: ColumnType<RecordType>;
+  }) => any;
+  filterIcon?: (ctx: {
+    column: ColumnType<RecordType>;
+    filtered: boolean;
+  }) => any;
+  onFilterChange: (filters: Record<string, FilterValue | null>, filterStates: FilterState<RecordType>[]) => void;
+  getPopupContainer?: GetPopupContainer;
+  rootClassName?: string;
+}
+declare function getMergedFilterStates<RecordType extends AnyObject = AnyObject>(rawMergedColumns: ColumnsType<RecordType>, filterStates: FilterState<RecordType>[], warning?: ReturnType<typeof devUseWarning>): FilterState<RecordType>[] | {
+  column: {
+    title?: ColumnTitle<RecordType_1>;
+    sorter?: boolean | CompareFn<RecordType> | {
+      compare?: CompareFn<RecordType> | undefined;
+      multiple?: number;
+    } | undefined;
+    sortOrder?: SortOrder;
+    defaultSortOrder?: SortOrder;
+    sortDirections?: SortOrder[];
+    sortIcon?: (props: {
+      sortOrder: SortOrder;
+    }) => VueNode;
+    showSorterTooltip?: boolean | SorterTooltipProps;
+    filtered?: boolean;
+    filters?: ColumnFilterItem[];
+    filterDropdown?: VueNode | ((props: FilterDropdownProps) => VueNode);
+    filterOnClose?: boolean;
+    filterMultiple?: boolean;
+    filteredValue?: FilterValue | null;
+    defaultFilteredValue?: FilterValue | null;
+    filterIcon?: VueNode | ((filtered: boolean) => VueNode);
+    filterMode?: "menu" | "tree";
+    filterSearch?: FilterSearchType<ColumnFilterItem>;
+    onFilter?: ((value: Key | boolean, record: RecordType) => boolean) | undefined;
+    filterDropdownProps?: CoverableDropdownProps;
+    filterResetToDefaultFilteredValue?: boolean;
+    responsive?: Breakpoint[];
+    filterDropdownOpen?: boolean;
+    onFilterDropdownOpenChange?: (visible: boolean) => void;
+    key?: _v_c_table_dist_interface_js0.Key | undefined;
+    className?: string | undefined;
+    width?: number | string | undefined;
+    hidden?: boolean | undefined;
+    colSpan?: number | undefined;
+    dataIndex?: _v_c_table0.DataIndex<RecordType> | undefined;
+    render?: ((value: any, record: RecordType, index: number) => _v_c_util6.VueNode | _v_c_table0.RenderedCell<RecordType>) | undefined;
+    shouldCellUpdate?: ((record: RecordType, prevRecord: RecordType) => boolean) | undefined;
+    rowSpan?: number | undefined;
+    minWidth?: number | undefined;
+    onCell?: ((data: RecordType, index?: number) => Partial<_v_c_table_dist_interface_js0.CellAttributes>) | undefined;
+    onCellClick?: ((record: RecordType, e: MouseEvent) => void) | undefined;
+    fixed?: _v_c_table0.FixedType | undefined;
+    onHeaderCell?: ((data: _v_c_table0.ColumnType<RecordType> | _v_c_table_dist_interface_js0.ColumnGroupType<RecordType>, index?: number) => Partial<_v_c_table_dist_interface_js0.CellAttributes>) | undefined;
+    ellipsis?: _v_c_table_dist_interface_js0.CellEllipsisType | undefined;
+    align?: _v_c_table_dist_interface_js0.AlignType | undefined;
+    rowScope?: _v_c_table_dist_interface_js0.RowScopeType | undefined;
+  } | {
+    children: ColumnsType<RecordType>;
+    title?: ColumnTitle<RecordType_1>;
+    key?: _v_c_table_dist_interface_js0.Key;
+    className?: string;
+    width?: number | string;
+    responsive?: Breakpoint[];
+    hidden?: boolean;
+    colSpan?: number;
+    render?: ((value: any, record: RecordType, index: number) => _v_c_util6.VueNode | _v_c_table0.RenderedCell<RecordType>) | undefined;
+    shouldCellUpdate?: ((record: RecordType, prevRecord: RecordType) => boolean) | undefined;
+    rowSpan?: number;
+    minWidth?: number;
+    onCell?: ((data: RecordType, index?: number) => Partial<_v_c_table_dist_interface_js0.CellAttributes>) | undefined;
+    onCellClick?: ((record: RecordType, e: MouseEvent) => void) | undefined;
+    fixed?: _v_c_table0.FixedType;
+    onHeaderCell?: ((data: _v_c_table0.ColumnType<RecordType> | _v_c_table_dist_interface_js0.ColumnGroupType<RecordType>, index?: number) => Partial<_v_c_table_dist_interface_js0.CellAttributes>) | undefined;
+    ellipsis?: _v_c_table_dist_interface_js0.CellEllipsisType;
+    align?: _v_c_table_dist_interface_js0.AlignType;
+    rowScope?: _v_c_table_dist_interface_js0.RowScopeType;
+    sorter?: boolean | CompareFn<RecordType> | {
+      compare?: CompareFn<RecordType> | undefined;
+      multiple?: number;
+    } | undefined;
+    sortOrder?: SortOrder;
+    defaultSortOrder?: SortOrder;
+    sortDirections?: SortOrder[];
+    sortIcon?: (props: {
+      sortOrder: SortOrder;
+    }) => VueNode;
+    showSorterTooltip?: boolean | SorterTooltipProps;
+    filtered?: boolean;
+    filters?: ColumnFilterItem[];
+    filterDropdown?: VueNode | ((props: FilterDropdownProps) => VueNode);
+    filterOnClose?: boolean;
+    filterMultiple?: boolean;
+    filteredValue?: FilterValue | null;
+    defaultFilteredValue?: FilterValue | null;
+    filterIcon?: VueNode | ((filtered: boolean) => VueNode);
+    filterMode?: "menu" | "tree";
+    filterSearch?: FilterSearchType<ColumnFilterItem>;
+    onFilter?: ((value: Key | boolean, record: RecordType) => boolean) | undefined;
+    filterDropdownProps?: CoverableDropdownProps;
+    filterResetToDefaultFilteredValue?: boolean;
+    filterDropdownOpen?: boolean;
+    onFilterDropdownOpenChange?: (visible: boolean) => void;
+    dataIndex?: _v_c_table0.DataIndex<RecordType> | undefined;
+  } | {
+    title?: ColumnTitle<RecordType_1>;
+    sorter?: boolean | CompareFn<RecordType> | {
+      compare?: CompareFn<RecordType> | undefined;
+      multiple?: number;
+    } | undefined;
+    sortOrder?: SortOrder;
+    defaultSortOrder?: SortOrder;
+    sortDirections?: SortOrder[];
+    sortIcon?: (props: {
+      sortOrder: SortOrder;
+    }) => VueNode;
+    showSorterTooltip?: boolean | SorterTooltipProps;
+    filtered?: boolean;
+    filters?: ColumnFilterItem[];
+    filterDropdown?: VueNode | ((props: FilterDropdownProps) => VueNode);
+    filterOnClose?: boolean;
+    filterMultiple?: boolean;
+    filteredValue?: FilterValue | null;
+    defaultFilteredValue?: FilterValue | null;
+    filterIcon?: VueNode | ((filtered: boolean) => VueNode);
+    filterMode?: "menu" | "tree";
+    filterSearch?: FilterSearchType<ColumnFilterItem>;
+    onFilter?: ((value: Key | boolean, record: RecordType) => boolean) | undefined;
+    filterDropdownProps?: CoverableDropdownProps;
+    filterResetToDefaultFilteredValue?: boolean;
+    responsive?: Breakpoint[];
+    filterDropdownOpen?: boolean;
+    onFilterDropdownOpenChange?: (visible: boolean) => void;
+    key?: _v_c_table_dist_interface_js0.Key;
+    className?: string;
+    width?: number | string;
+    hidden?: boolean;
+    colSpan?: number;
+    dataIndex?: _v_c_table0.DataIndex<RecordType> | undefined;
+    render?: ((value: any, record: RecordType, index: number) => _v_c_util6.VueNode | _v_c_table0.RenderedCell<RecordType>) | undefined;
+    shouldCellUpdate?: ((record: RecordType, prevRecord: RecordType) => boolean) | undefined;
+    rowSpan?: number;
+    minWidth?: number;
+    onCell?: ((data: RecordType, index?: number) => Partial<_v_c_table_dist_interface_js0.CellAttributes>) | undefined;
+    onCellClick?: ((record: RecordType, e: MouseEvent) => void) | undefined;
+    fixed?: _v_c_table0.FixedType;
+    onHeaderCell?: ((data: _v_c_table0.ColumnType<RecordType> | _v_c_table_dist_interface_js0.ColumnGroupType<RecordType>, index?: number) => Partial<_v_c_table_dist_interface_js0.CellAttributes>) | undefined;
+    ellipsis?: _v_c_table_dist_interface_js0.CellEllipsisType;
+    align?: _v_c_table_dist_interface_js0.AlignType;
+    rowScope?: _v_c_table_dist_interface_js0.RowScopeType;
+  };
+  forceFiltered: any;
+  key: Key;
+  filteredKeys?: FilterKey;
+}[];
+declare function useFilter<RecordType extends AnyObject = AnyObject>(props: FilterConfig<RecordType>): readonly [TransformColumns<RecordType>, FilterState<RecordType>[], Record<string, FilterValue | null>];
+//#endregion
+export { FilterConfig, FilterState, collectFilterStates, useFilter as default, flattenKeys, generateFilterInfo, getFilterData, getMergedFilterStates };

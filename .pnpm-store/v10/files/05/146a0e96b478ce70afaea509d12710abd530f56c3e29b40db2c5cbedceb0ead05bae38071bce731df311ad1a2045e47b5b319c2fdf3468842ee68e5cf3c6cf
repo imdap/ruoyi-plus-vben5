@@ -1,0 +1,92 @@
+import IconWrapper_default from "./IconWrapper.js";
+import { Transition, createVNode, defineComponent, mergeProps } from "vue";
+import { classNames } from "@v-c/util";
+import { LoadingOutlined } from "@antdv-next/icons";
+
+//#region src/button/DefaultLoadingIcon.tsx
+const InnerLoadingIcon = /* @__PURE__ */ defineComponent((props) => {
+	return () => {
+		const { prefixCls, iconClassName } = props;
+		const mergedIconCls = classNames(`${prefixCls}-loading-icon`);
+		return createVNode(IconWrapper_default, {
+			"prefixCls": prefixCls,
+			"class": mergedIconCls
+		}, { default: () => [createVNode(LoadingOutlined, { "class": iconClassName }, null)] });
+	};
+}, {
+	props: {
+		prefixCls: {
+			type: String,
+			required: true
+		},
+		iconClassName: {
+			type: String,
+			required: false
+		}
+	},
+	name: "InnerLoadingIcon"
+});
+const DefaultLoadingIcon = /* @__PURE__ */ defineComponent((props, { attrs }) => {
+	function onBeforeEnter(el) {
+		const element = el;
+		element.style.width = "0px";
+		element.style.opacity = "0";
+		element.style.transform = "scale(0)";
+	}
+	function onEnter(el, done) {
+		const element = el;
+		element.style.width = `${element.scrollWidth}px`;
+		element.style.opacity = "1";
+		element.style.transform = "scale(1)";
+		done();
+	}
+	function onBeforeLeave(el) {
+		const element = el;
+		element.style.width = `${element.scrollWidth}px`;
+		element.style.opacity = "1";
+		element.style.transform = "scale(1)";
+	}
+	function onLeave(el, done) {
+		const element = el;
+		element.offsetHeight;
+		element.style.width = "0px";
+		element.style.opacity = "0";
+		element.style.transform = "scale(0)";
+		done();
+	}
+	return () => {
+		const { prefixCls, loading, existIcon, mount } = props;
+		const visible = !!loading;
+		if (existIcon) return createVNode(InnerLoadingIcon, mergeProps({ "prefixCls": prefixCls }, attrs), null);
+		return createVNode(Transition, {
+			"name": `${prefixCls}-loading-icon-motion`,
+			"appear": !mount,
+			"onBeforeEnter": onBeforeEnter,
+			"onEnter": onEnter,
+			"onBeforeLeave": onBeforeLeave,
+			"onLeave": onLeave
+		}, { default: () => [visible ? createVNode(InnerLoadingIcon, mergeProps({ "prefixCls": prefixCls }, attrs), null) : null] });
+	};
+}, { props: {
+	prefixCls: {
+		type: String,
+		required: true
+	},
+	existIcon: {
+		type: Boolean,
+		required: true
+	},
+	loading: {
+		type: [Boolean, Object],
+		required: false,
+		default: void 0
+	},
+	mount: {
+		type: Boolean,
+		required: true
+	}
+} });
+var DefaultLoadingIcon_default = DefaultLoadingIcon;
+
+//#endregion
+export { DefaultLoadingIcon_default as default };

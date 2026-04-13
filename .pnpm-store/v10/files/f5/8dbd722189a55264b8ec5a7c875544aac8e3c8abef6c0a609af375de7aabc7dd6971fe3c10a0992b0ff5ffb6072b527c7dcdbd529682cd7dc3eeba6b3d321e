@@ -1,0 +1,27 @@
+import { AnyObject } from "../../_util/type.js";
+import { ColumnTitleProps, ColumnType, ColumnsType, Key, SortOrder, SorterResult, SorterTooltipProps, TableLocale, TransformColumns } from "../interface.js";
+import { Locale } from "../../locale/index.js";
+import * as vue442 from "vue";
+import { Ref } from "vue";
+
+//#region src/table/hooks/useSorter.d.ts
+interface SortState<RecordType = AnyObject> {
+  column: ColumnType<RecordType>;
+  key: Key;
+  sortOrder: SortOrder | null;
+  multiplePriority: number | false;
+}
+declare function getSortData<RecordType extends AnyObject = AnyObject>(data: readonly RecordType[], sortStates: SortState<RecordType>[], childrenColumnName: string): RecordType[];
+type MaybeRef<T> = T | Ref<T>;
+interface SorterConfig<RecordType = AnyObject> {
+  prefixCls: MaybeRef<string>;
+  mergedColumns: MaybeRef<ColumnsType<RecordType>>;
+  onSorterChange: (sorterResult: SorterResult<RecordType> | SorterResult<RecordType>[], sortStates: SortState<RecordType>[]) => void;
+  sortDirections: MaybeRef<SortOrder[]>;
+  tableLocale?: MaybeRef<TableLocale>;
+  showSorterTooltip?: MaybeRef<boolean | SorterTooltipProps>;
+  globalLocale?: MaybeRef<Locale['global']>;
+}
+declare function useSorter<RecordType extends AnyObject = AnyObject>(props: SorterConfig<RecordType>): readonly [TransformColumns<RecordType>, vue442.ComputedRef<SortState<RecordType>[]>, vue442.ComputedRef<ColumnTitleProps<RecordType>>, () => SorterResult<RecordType> | SorterResult<RecordType>[]];
+//#endregion
+export { SortState, useSorter as default, getSortData };

@@ -1,0 +1,12 @@
+import * as vue874 from "vue";
+
+//#region src/button/style/compact.d.ts
+declare const _default: vue874.DefineComponent<vue874.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>, () => null, {}, {}, {}, vue874.ComponentOptionsMixin, vue874.ComponentOptionsMixin, {}, string, vue874.PublicProps, Readonly<vue874.ExtractPropTypes<{
+  prefixCls: StringConstructor;
+  rootCls: StringConstructor;
+}>> & Readonly<{}>, {}, {}, {}, {}, string, vue874.ComponentProvideOptions, true, {}, any>;
+//#endregion
+export { _default as default };

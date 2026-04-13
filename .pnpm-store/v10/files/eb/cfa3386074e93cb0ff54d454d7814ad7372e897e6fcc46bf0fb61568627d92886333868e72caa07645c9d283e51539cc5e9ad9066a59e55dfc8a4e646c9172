@@ -1,0 +1,6 @@
+import * as vue918 from "vue";
+
+//#region src/empty/simple.d.ts
+declare const Simple: vue918.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue918.PublicProps>;
+//#endregion
+export { Simple as default };

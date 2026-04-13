@@ -1,0 +1,46 @@
+.vxe-badge {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  &.is--dot {
+    &::before {
+      content: "";
+      position: absolute;
+      top: -0.25em;
+      right: -0.25em;
+      text-align: center;
+      width: 0.5em;
+      height: 0.5em;
+      border-radius: 50%;
+      background-color: #ff4d4f;
+      z-index: 1;
+    }
+  }
+}
+
+.vxe-badge--count {
+  position: absolute;
+  top: -0.8em;
+  right: -0.8em;
+  text-align: center;
+  min-width: 1.5em;
+  height: 1.5em;
+  padding: 0 0.4em;
+  border-radius: 0.8em;
+  font-size: 0.8em;
+  background-color: #ff4d4f;
+  color: #fff;
+  z-index: 1;
+}
+
+.vxe-badge {
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}

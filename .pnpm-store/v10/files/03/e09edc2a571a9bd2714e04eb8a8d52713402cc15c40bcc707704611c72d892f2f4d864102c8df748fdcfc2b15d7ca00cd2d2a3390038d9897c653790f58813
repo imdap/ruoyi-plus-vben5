@@ -1,0 +1,1 @@
+.vxe-layout-body{position:relative;display:flex;flex-direction:column;flex-grow:1;overflow:hidden}.vxe-layout-body.is--padding{padding:var(--vxe-ui-layout-padding-double)}.vxe-layout-body--inner{flex-grow:1;overflow:auto;outline:0}

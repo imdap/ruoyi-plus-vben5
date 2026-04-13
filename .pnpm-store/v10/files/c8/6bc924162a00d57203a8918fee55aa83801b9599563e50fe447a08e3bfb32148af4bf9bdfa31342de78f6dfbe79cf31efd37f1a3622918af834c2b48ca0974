@@ -1,0 +1,31 @@
+import { escapeForRegex } from "../async-utils/escape.js";
+import { getCachedRegex } from "../async-utils/regex.js";
+import { getPrefix } from "./prefix.async.v4.js";
+export function getDissectedClasses(tailwindContext, classes) {
+    const prefix = getPrefix(tailwindContext);
+    const separator = ":";
+    return classes.reduce((acc, className) => {
+        const [parsed] = tailwindContext.parseCandidate(className);
+        const variants = parsed?.variants?.map(variant => tailwindContext.printVariant(variant)).reverse();
+        let base = className
+            .replace(getCachedRegex(`^${escapeForRegex(prefix + separator)}`), "")
+            .replace(getCachedRegex(`^${escapeForRegex((variants?.join(separator) ?? "") + separator)}`), "");
+        const isNegative = base.startsWith("-");
+        base = base.replace(getCachedRegex(/^-/), "");
+        const isImportantAtStart = base.startsWith("!");
+        base = base.replace(getCachedRegex(/^!/), "");
+        const isImportantAtEnd = base.endsWith("!");
+        base = base.replace(getCachedRegex(/!$/), "");
+        acc[className] = {
+            base,
+            className,
+            important: [isImportantAtStart, isImportantAtEnd],
+            negative: isNegative,
+            prefix,
+            separator,
+            variants
+        };
+        return acc;
+    }, {});
+}
+//# sourceMappingURL=dissect-classes.async.v4.js.map

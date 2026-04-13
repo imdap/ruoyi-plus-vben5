@@ -1,0 +1,24 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { DirectionType } from "../config-provider/context.js";
+import * as vue571 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/typography/Editable.d.ts
+interface EditableProps {
+  'prefixCls': string;
+  'value': string;
+  'aria-label'?: string;
+  'onSave': (value: string) => void;
+  'onCancel': () => void;
+  'onEnd'?: () => void;
+  'className'?: string;
+  'style'?: CSSProperties;
+  'direction'?: DirectionType;
+  'maxLength'?: number;
+  'autoSize'?: any;
+  'enterIcon'?: VueNode;
+  'component'?: string;
+}
+declare const Editable: vue571.DefineSetupFnComponent<EditableProps, EmptyEmit, SlotsType<Record<string, never>>, EditableProps, vue571.PublicProps>;
+//#endregion
+export { EditableProps, Editable as default };

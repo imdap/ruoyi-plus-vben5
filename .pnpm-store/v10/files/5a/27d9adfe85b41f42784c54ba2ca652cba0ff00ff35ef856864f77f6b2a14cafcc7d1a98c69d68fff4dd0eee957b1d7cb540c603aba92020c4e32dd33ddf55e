@@ -1,0 +1,22 @@
+import { ComponentToken, InputToken, initComponentToken, initInputToken } from "./token.js";
+import { GenerateStyle } from "../../theme/interface/index.js";
+import "../../theme/internal.js";
+import * as vue356 from "vue";
+import { CSSObject } from "@antdv-next/cssinjs";
+
+//#region src/input/style/index.d.ts
+declare function genPlaceholderStyle(color: string): CSSObject;
+declare const genActiveStyle: GenerateStyle<InputToken, CSSObject>;
+declare const genInputLargeStyle: GenerateStyle<InputToken, CSSObject>;
+declare const genInputSmallStyle: GenerateStyle<InputToken, CSSObject>;
+declare function genBasicInputStyle(token: InputToken, option?: {
+  largeStyle?: CSSObject;
+  smallStyle?: CSSObject;
+}): CSSObject;
+declare const genInputGroupStyle: GenerateStyle<InputToken, CSSObject>;
+declare const genInputStyle: GenerateStyle<InputToken, CSSObject>;
+declare const genAffixStyle: GenerateStyle<InputToken, CSSObject>;
+declare const useSharedStyle: (prefixCls: vue356.Ref<string>, rootCls?: vue356.Ref<string | undefined>) => readonly [vue356.Ref<string, string>, vue356.ComputedRef<string | undefined>];
+declare const _default: (prefixCls: vue356.Ref<string>, rootCls?: vue356.Ref<string | undefined>) => readonly [vue356.Ref<string, string>, vue356.ComputedRef<string | undefined>];
+//#endregion
+export { type ComponentToken, _default as default, genActiveStyle, genAffixStyle, genBasicInputStyle, genInputGroupStyle, genInputLargeStyle, genInputSmallStyle, genInputStyle, genPlaceholderStyle, initComponentToken, initInputToken, useSharedStyle };

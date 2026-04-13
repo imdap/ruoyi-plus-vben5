@@ -1,0 +1,15 @@
+import { AggregationColor } from "../color.js";
+import { PresetsItem } from "../interface.js";
+import * as vue839 from "vue";
+
+//#region src/color-picker/components/ColorPresets.d.ts
+interface ColorPresetsProps {
+  prefixCls: string;
+  presets: PresetsItem[];
+  value?: AggregationColor;
+  onChange?: (value: AggregationColor) => void;
+}
+declare function isBright(value: AggregationColor, bgColorToken: string): boolean;
+declare const _default: vue839.DefineSetupFnComponent<ColorPresetsProps, {}, {}, ColorPresetsProps & {}, vue839.PublicProps>;
+//#endregion
+export { ColorPresetsProps, _default as default, isBright };

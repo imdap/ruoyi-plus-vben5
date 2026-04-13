@@ -1,0 +1,21 @@
+import { computed, defineComponent, inject, provide, ref } from "vue";
+var IdContextKey = Symbol("IdContext");
+function useIdContextProvide(id) {
+	provide(IdContextKey, id);
+}
+const IdContextProvider = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	useIdContextProvide(computed(() => props.id));
+	return () => slots?.default?.();
+}, { props: { id: {
+	type: String,
+	required: true,
+	default: void 0
+} } });
+function getMenuId(uuid, eventKey) {
+	return `${uuid}-${eventKey}`;
+}
+function useMenuId(eventKey) {
+	const id = inject(IdContextKey, ref(""));
+	return computed(() => getMenuId(id.value, eventKey.value));
+}
+export { IdContextProvider, getMenuId, useIdContextProvide, useMenuId };

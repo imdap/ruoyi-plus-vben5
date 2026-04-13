@@ -1,0 +1,47 @@
+{
+  "name": "@cspell/dict-zig",
+  "version": "1.0.0",
+  "description": "Zig dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "cross-env NODE_OPTIONS=--max_old_space_size=8192 cspell-tools-cli build",
+    "test": "cspell samples",
+    "prepublishOnly": "echo OK",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/zig"
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "zig",
+    "Zig",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "contributors": [],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/zig#readme",
+  "files": [
+    "dict/zig.txt",
+    "cspell-ext.json",
+    "*.js",
+    "*.d.ts"
+  ],
+  "gitHead": "61455d9af045abb8379b0bd0147f35bd00558bb5"
+}

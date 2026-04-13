@@ -1,0 +1,58 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { FormatConfig, valueType } from "./utils.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue734 from "vue";
+import { CSSProperties, SlotsType, VNodeChild } from "vue";
+
+//#region src/statistic/Statistic.d.ts
+type StatisticSemanticName = keyof StatisticSemanticClassNames & keyof StatisticSemanticStyles;
+interface StatisticSemanticClassNames {
+  root?: string;
+  content?: string;
+  title?: string;
+  header?: string;
+  prefix?: string;
+  suffix?: string;
+}
+interface StatisticSemanticStyles {
+  root?: CSSProperties;
+  content?: CSSProperties;
+  title?: CSSProperties;
+  header?: CSSProperties;
+  prefix?: CSSProperties;
+  suffix?: CSSProperties;
+}
+type StatisticClassNamesType = SemanticClassNamesType<StatisticProps, StatisticSemanticClassNames>;
+type StatisticStylesType = SemanticStylesType<StatisticProps, StatisticSemanticStyles>;
+type StatisticRectProps = FormatConfig & ComponentBaseProps & {
+  value?: valueType;
+  valueStyle?: CSSProperties;
+  valueRender?: (node: any) => VNodeChild;
+  title?: VueNode;
+  prefix?: VueNode;
+  suffix?: VueNode;
+  loading?: boolean;
+  classes?: StatisticClassNamesType;
+  styles?: StatisticStylesType;
+};
+type StatisticProps = StatisticRectProps;
+interface StatisticEmits {
+  mouseenter: (e: MouseEvent) => void;
+  mouseleave: (e: MouseEvent) => void;
+}
+interface StatisticSlots {
+  default: () => any;
+  title: () => any;
+  prefix: () => any;
+  suffix: () => any;
+}
+interface InternalStatisticProps extends StatisticProps, StatisticEmitsProps {}
+interface StatisticEmitsProps {
+  onMouseenter?: StatisticEmits['mouseenter'];
+  onMouseleave?: StatisticEmits['mouseleave'];
+}
+declare const Statistic: vue734.DefineSetupFnComponent<InternalStatisticProps, StatisticEmits, SlotsType<StatisticSlots>, InternalStatisticProps, vue734.PublicProps>;
+//#endregion
+export { InternalStatisticProps, StatisticClassNamesType, StatisticEmits, StatisticEmitsProps, StatisticProps, StatisticSemanticClassNames, StatisticSemanticName, StatisticSemanticStyles, StatisticSlots, StatisticStylesType, Statistic as default };

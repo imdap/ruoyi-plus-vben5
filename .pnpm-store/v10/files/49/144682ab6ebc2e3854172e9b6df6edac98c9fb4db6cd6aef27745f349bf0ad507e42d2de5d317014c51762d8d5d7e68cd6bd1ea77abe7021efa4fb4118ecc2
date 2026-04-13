@@ -1,0 +1,10 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue288 from "vue";
+
+//#region src/app/style/index.d.ts
+interface ComponentToken {}
+declare const prepareComponentToken: GetDefaultToken<'App'>;
+declare const _default: (prefixCls: vue288.Ref<string>, rootCls?: vue288.Ref<string | undefined>) => readonly [vue288.Ref<string, string>, vue288.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

@@ -1,0 +1,116 @@
+@use 'sass:map';
+@use "sass:list";
+
+$avatarThemeList: (
+  (
+    name: "primary",
+    textColor: var(--vxe-ui-font-primary-color),
+    btnColor: #fff,
+  ),
+  (
+    name: "success",
+    textColor: var(--vxe-ui-status-success-color),
+    btnColor: #fff,
+  ),
+  (
+    name: "info",
+    textColor: var(--vxe-ui-status-info-color),
+    btnColor: #fff,
+  ),
+  (
+    name: "warning",
+    textColor: var(--vxe-ui-status-warning-color),
+    btnColor: #fff,
+  ),
+  (
+    name: "danger",
+    textColor: var(--vxe-ui-status-danger-color),
+    btnColor: #fff,
+  ),
+  (
+    name: "error",
+    textColor: var(--vxe-ui-status-error-color),
+    btnColor: #fff,
+  )
+);
+
+.vxe-avatar {
+  position: relative;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--vxe-ui-base-border-radius);
+  vertical-align: middle;
+  &.is--circle {
+    border-radius: 50%;
+    .vxe-avatar--img {
+      border-radius: 50%;
+    }
+  }
+  &.is--dot {
+    &::before {
+      content: "";
+      position: absolute;
+      top: -0.25em;
+      right: -0.25em;
+      text-align: center;
+      width: 0.5em;
+      height: 0.5em;
+      border-radius: 50%;
+      background-color: #ff4d4f;
+      z-index: 1;
+    }
+  }
+  @for $index from 0 to list.length($avatarThemeList) {
+    $item: list.nth($avatarThemeList, $index + 1);
+    $textColor: map.get($item, textColor);
+    $btnColor: map.get($item, btnColor);
+    &.theme--#{map.get($item, name)} {
+      color: $btnColor;
+      border-color: $textColor;
+      background-color: $textColor;
+    }
+  }
+}
+
+.vxe-avatar--img {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--vxe-ui-base-border-radius);
+}
+
+.vxe-avatar--count {
+  position: absolute;
+  top: -0.8em;
+  right: -0.8em;
+  text-align: center;
+  min-width: 1.5em;
+  height: 1.5em;
+  padding: 0 0.4em;
+  border-radius: 0.8em;
+  font-size: 0.8em;
+  background-color: #ff4d4f;
+  color: #fff;
+  z-index: 1;
+}
+
+.vxe-avatar {
+  width: 36px;
+  height: 36px;
+  &.size--medium {
+    width: 32px;
+    height: 32px;
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    width: 28px;
+    height: 28px;
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    width: 24px;
+    height: 24px;
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}

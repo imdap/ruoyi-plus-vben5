@@ -1,0 +1,22 @@
+import { NotificationConfig, NotificationInstance } from "../notification/interface.js";
+import { ConfigOptions, MessageInstance } from "../message/interface.js";
+import { HookAPI } from "../modal/useModal/types.js";
+import "../modal/useModal/index.js";
+import * as vue34 from "vue";
+
+//#region src/app/context.d.ts
+interface AppConfig {
+  message?: ConfigOptions;
+  notification?: NotificationConfig;
+}
+declare const AppConfigProvider: vue34.DefineSetupFnComponent<AppConfig, {}, {}, AppConfig & {}, vue34.PublicProps>;
+declare function useAppConfig(): AppConfig;
+interface useAppProps {
+  message: MessageInstance;
+  notification: NotificationInstance;
+  modal: HookAPI;
+}
+declare function useAppContext(): useAppProps;
+declare function useAppContextProvider(value: useAppProps): void;
+//#endregion
+export { AppConfig, AppConfigProvider, useAppConfig, useAppContext, useAppContextProvider, useAppProps };

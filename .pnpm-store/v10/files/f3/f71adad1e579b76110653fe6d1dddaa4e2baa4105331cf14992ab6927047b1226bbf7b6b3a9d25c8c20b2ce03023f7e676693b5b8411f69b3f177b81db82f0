@@ -1,0 +1,12 @@
+import Layout, { BasicProps } from "./layout.js";
+import { SiderEmits, SiderProps, SiderSlots, useSiderCtx } from "./Sider.js";
+import * as vue1047 from "vue";
+
+//#region src/layout/index.d.ts
+declare const useLayoutSider: typeof useSiderCtx;
+declare const LayoutHeader: vue1047.DefineSetupFnComponent<BasicProps, {}, {}, BasicProps & {}, vue1047.PublicProps>;
+declare const LayoutFooter: vue1047.DefineSetupFnComponent<BasicProps, {}, {}, BasicProps & {}, vue1047.PublicProps>;
+declare const LayoutContent: vue1047.DefineSetupFnComponent<BasicProps, {}, {}, BasicProps & {}, vue1047.PublicProps>;
+declare const LayoutSider: vue1047.DefineSetupFnComponent<SiderProps, SiderEmits, vue1047.SlotsType<SiderSlots>, SiderProps, vue1047.PublicProps>;
+//#endregion
+export { LayoutContent, LayoutFooter, LayoutHeader, type BasicProps as LayoutProps, LayoutSider, type SiderProps, Layout as default, useLayoutSider };

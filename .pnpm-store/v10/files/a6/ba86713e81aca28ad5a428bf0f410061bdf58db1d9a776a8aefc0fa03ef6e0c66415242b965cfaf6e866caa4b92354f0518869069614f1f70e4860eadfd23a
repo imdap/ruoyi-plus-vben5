@@ -1,0 +1,35 @@
+{
+    "id": "sql",
+    "version": "0.2",
+    "name": "SQL",
+    "description": "SQL dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "sql",
+            "path": "./sql.txt.gz",
+            "description": "SQL dictionary."
+        }
+    ],
+    "patterns": [
+        {
+            "name": "sql-hex-number",
+            "pattern": "/0x[a-f0-9]*/gi"
+        },
+        {
+            "name": "sql-unicode-string-prefix",
+            "pattern": "/\\bN'/g"
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "languageId": "sql",
+            "locale": "*",
+            "patterns": [],
+            "dictionaries": ["sql"],
+            "ignoreRegExpList": ["sql-hex-number", "sql-unicode-string-prefix"],
+            "dictionaryDefinitions": []
+        }
+    ]
+}

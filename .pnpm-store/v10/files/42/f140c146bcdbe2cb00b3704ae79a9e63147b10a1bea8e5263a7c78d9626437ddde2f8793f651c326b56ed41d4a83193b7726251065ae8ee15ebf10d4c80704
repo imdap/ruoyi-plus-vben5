@@ -1,0 +1,31 @@
+import { UploadEmits, UploadFile, UploadProps as UploadProps$1, UploadSlots, VcFile as VcFile$1 } from "./interface.js";
+import * as vue221 from "vue";
+import { SlotsType } from "vue";
+import { UploadProps } from "@v-c/upload";
+
+//#region src/upload/Upload.d.ts
+declare const LIST_IGNORE: string;
+interface UploadRef<T = any> {
+  onBatchStart: UploadProps['onBatchStart'];
+  onSuccess: (response: any, file: VcFile$1, xhr: any) => void;
+  onProgress: (e: {
+    percent: number;
+  }, file: VcFile$1) => void;
+  onError: (error: Error, response: any, file: VcFile$1) => void;
+  fileList: UploadFile<T>[];
+  upload: any | null;
+  /**
+   * Get native element for wrapping upload
+   * @since 5.17.0
+   */
+  nativeElement: HTMLSpanElement | null;
+}
+interface InternalUploadProps extends UploadProps$1, UploadEmitsProps {}
+interface UploadEmitsProps {
+  onChange?: UploadEmits['change'];
+  onDrop?: UploadEmits['drop'];
+  'onUpdate:fileList'?: UploadEmits['update:fileList'];
+}
+declare const InternalUpload: vue221.DefineSetupFnComponent<InternalUploadProps, UploadEmits<any>, SlotsType<UploadSlots<any>>, InternalUploadProps, vue221.PublicProps>;
+//#endregion
+export { InternalUploadProps, LIST_IGNORE, UploadEmitsProps, UploadRef, InternalUpload as default };

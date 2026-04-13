@@ -1,0 +1,53 @@
+import { AnyObject, VueNode } from "../../_util/type.js";
+import { RangePickerProps as RangePickerProps$1 } from "./interface.js";
+import * as vue951 from "vue";
+import { SlotsType } from "vue";
+import { PickerMode } from "@v-c/picker";
+import { GenerateConfig } from "@v-c/picker/generate";
+
+//#region src/date-picker/generatePicker/generateRangePicker.d.ts
+interface RangePickerEmits<DateType = AnyObject> {
+  'change': (dates: DateType[] | null, dateStrings: [string, string]) => void;
+  'update:value': (dates: DateType[] | null) => void;
+  'calendarChange': (dates: DateType[], dateStrings: [string, string], info: any) => void;
+  'panelChange': (dates: DateType[], modes: [PickerMode, PickerMode]) => void;
+  'openChange': (open: boolean) => void;
+  'ok': (dates: DateType[]) => void;
+  'focus': (e: FocusEvent, info: any) => void;
+  'blur': (e: FocusEvent, info: any) => void;
+  'keydown': (e: KeyboardEvent, preventDefault: VoidFunction) => void;
+}
+interface RangePickerSlots {
+  suffixIcon?: () => any;
+  renderExtraFooter?: (mode: PickerMode) => any;
+  panelRender?: (originPanel: VueNode) => any;
+  inputRender?: (props: Record<string, any>) => any;
+  cellRender?: (ctx: {
+    current: AnyObject;
+    info: any;
+  }) => any;
+  dateRender?: (ctx: {
+    date: AnyObject;
+    today: AnyObject;
+  }) => any;
+  monthCellRender?: (ctx: {
+    date: AnyObject;
+    locale: any;
+  }) => any;
+  [key: string]: any;
+}
+interface RangePickerEmitsProps<DateType = AnyObject> {
+  onChange?: RangePickerEmits<DateType>['change'];
+  'onUpdate:value'?: RangePickerEmits<DateType>['update:value'];
+  onCalendarChange?: RangePickerEmits<DateType>['calendarChange'];
+  onPanelChange?: RangePickerEmits<DateType>['panelChange'];
+  onOpenChange?: RangePickerEmits<DateType>['openChange'];
+  onOk?: RangePickerEmits<DateType>['ok'];
+  onFocus?: RangePickerEmits<DateType>['focus'];
+  onBlur?: RangePickerEmits<DateType>['blur'];
+  onKeydown?: RangePickerEmits<DateType>['keydown'];
+}
+interface InternalRangePickerProps<DateType extends AnyObject = AnyObject> extends RangePickerProps$1<DateType>, Omit<RangePickerEmitsProps<DateType>, keyof RangePickerProps$1<DateType>> {}
+declare function generateRangePicker<DateType extends AnyObject = AnyObject>(generateConfig: GenerateConfig<DateType>): vue951.DefineSetupFnComponent<InternalRangePickerProps<DateType>, RangePickerEmits<DateType>, SlotsType<RangePickerSlots>, InternalRangePickerProps<DateType>, vue951.PublicProps>;
+//#endregion
+export { InternalRangePickerProps, RangePickerEmits, RangePickerEmitsProps, RangePickerSlots, generateRangePicker as default };

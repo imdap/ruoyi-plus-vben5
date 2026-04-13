@@ -1,0 +1,12 @@
+import * as vue54 from "vue";
+
+//#region src/button/DefaultLoadingIcon.d.ts
+interface DefaultLoadingIconProps {
+  prefixCls: string;
+  existIcon: boolean;
+  loading?: boolean | object;
+  mount: boolean;
+}
+declare const DefaultLoadingIcon: vue54.DefineSetupFnComponent<DefaultLoadingIconProps, {}, {}, DefaultLoadingIconProps & {}, vue54.PublicProps>;
+//#endregion
+export { DefaultLoadingIconProps, DefaultLoadingIcon as default };

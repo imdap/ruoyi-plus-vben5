@@ -1,0 +1,14 @@
+import { VueNode } from "../../_util/type.js";
+import { ConfirmDialogProps } from "../ConfirmDialog.js";
+import * as vue594 from "vue";
+
+//#region src/modal/components/ConfirmCancelBtn.d.ts
+interface ConfirmCancelBtnProps extends Pick<ConfirmDialogProps, 'cancelButtonProps' | 'isSilent' | 'rootPrefixCls' | 'close' | 'onConfirm' | 'onCancel'> {
+  autoFocusButton?: false | 'ok' | 'cancel' | null;
+  cancelTextLocale?: VueNode;
+  mergedOkCancel?: boolean;
+  onClose?: () => void;
+}
+declare const ConfirmCancelBtn: vue594.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue594.PublicProps>;
+//#endregion
+export { ConfirmCancelBtnProps, ConfirmCancelBtn as default };

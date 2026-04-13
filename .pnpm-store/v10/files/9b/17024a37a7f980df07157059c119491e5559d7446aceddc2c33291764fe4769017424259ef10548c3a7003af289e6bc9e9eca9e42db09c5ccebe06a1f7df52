@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:!0}),exports.crossTreeDragNodeInfo=void 0,exports.getCrossTreeDragNodeInfo=getCrossTreeDragNodeInfo;var _vue=require("vue");let crossTreeDragNodeInfo=exports.crossTreeDragNodeInfo=(0,_vue.reactive)({node:null});function getCrossTreeDragNodeInfo(){return crossTreeDragNodeInfo}

@@ -1,0 +1,11 @@
+import { FormatConfig, valueType } from "./utils.js";
+import * as vue692 from "vue";
+
+//#region src/statistic/Number.d.ts
+interface NumberProps extends FormatConfig {
+  value: valueType;
+  prefixCls?: string;
+}
+declare const StatisticNumber: vue692.DefineSetupFnComponent<NumberProps, {}, {}, NumberProps & {}, vue692.PublicProps>;
+//#endregion
+export { StatisticNumber as default };

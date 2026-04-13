@@ -1,0 +1,12 @@
+import * as vue120 from "vue";
+
+//#region src/_util/ContextIsolator.d.ts
+declare const ContextIsolator: vue120.DefineSetupFnComponent<{
+  space?: boolean;
+  form?: boolean;
+}, {}, {}, {
+  space?: boolean;
+  form?: boolean;
+} & {}, vue120.PublicProps>;
+//#endregion
+export { ContextIsolator };

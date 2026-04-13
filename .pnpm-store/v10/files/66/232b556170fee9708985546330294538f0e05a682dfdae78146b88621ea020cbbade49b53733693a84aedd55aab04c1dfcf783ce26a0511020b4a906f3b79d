@@ -1,0 +1,10 @@
+import * as vue637 from "vue";
+
+//#region src/spin/Indicator/Progress.d.ts
+interface ProgressProps {
+  prefixCls: string;
+  percent: number;
+}
+declare const Progress: vue637.DefineSetupFnComponent<ProgressProps, {}, {}, ProgressProps & {}, vue637.PublicProps>;
+//#endregion
+export { ProgressProps, Progress as default };

@@ -1,0 +1,42 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue536 from "vue";
+
+//#region src/progress/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 进度条默认颜色
+   * @descEN Default color of progress bar
+   */
+  defaultColor: string;
+  /**
+   * @desc 进度条剩余部分颜色
+   * @descEN Color of remaining part of progress bar
+   */
+  remainingColor: string;
+  /**
+   * @desc 圆形进度条文字颜色
+   * @descEN Text color of circular progress bar
+   */
+  circleTextColor: string;
+  /**
+   * @desc 条状进度条圆角
+   * @descEN Border radius of line progress bar
+   */
+  lineBorderRadius: number;
+  /**
+   * @desc 圆形进度条文本大小
+   * @descEN Text size of circular progress bar
+   */
+  circleTextFontSize: string;
+  /**
+   * @desc 圆形进度条图标大小
+   * @descEN Icon size of circular progress bar
+   */
+  circleIconFontSize: string;
+}
+declare const LineStrokeColorVar = "--progress-line-stroke-color";
+declare const prepareComponentToken: GetDefaultToken<'Progress'>;
+declare const _default: (prefixCls: vue536.Ref<string>, rootCls?: vue536.Ref<string | undefined>) => readonly [vue536.Ref<string, string>, vue536.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, LineStrokeColorVar, _default as default, prepareComponentToken };

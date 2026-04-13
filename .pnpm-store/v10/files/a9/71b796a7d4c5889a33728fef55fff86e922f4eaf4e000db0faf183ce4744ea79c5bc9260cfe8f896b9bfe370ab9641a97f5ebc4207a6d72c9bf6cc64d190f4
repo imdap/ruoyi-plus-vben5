@@ -1,0 +1,10 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.warnLog = exports.errLog = void 0;
+var _core = require("@vxe-ui/core");
+const version = `ui v${"4.13.21"}`;
+const warnLog = exports.warnLog = _core.log.create('warn', version);
+const errLog = exports.errLog = _core.log.create('error', version);

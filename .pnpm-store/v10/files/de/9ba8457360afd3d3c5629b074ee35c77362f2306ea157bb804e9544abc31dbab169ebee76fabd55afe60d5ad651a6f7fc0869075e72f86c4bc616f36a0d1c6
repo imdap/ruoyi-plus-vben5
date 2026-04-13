@@ -1,0 +1,1 @@
+{"version":3,"file":"ast.d.ts","sourceRoot":"","sources":["../../src/utils/ast.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,QAAQ,CAAC;AACnC,OAAO,KAAK,EAAE,cAAc,EAAE,MAAM,QAAQ,CAAC;AAG7C,wBAAgB,aAAa,CAAC,GAAG,EAAE,IAAI,CAAC,WAAW,EAAE,KAAK,EAAE,CAAC,MAAM,EAAE,MAAM,CAAC,GAAG,cAAc,CAS5F"}

@@ -1,0 +1,51 @@
+{
+  "name": "@cspell/dict-python",
+  "version": "4.2.26",
+  "description": "Python dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "python",
+    "Python",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/python#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/python"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "files": [
+    "dict/python.txt",
+    "dict/python-common.txt",
+    "cspell-ext.json"
+  ],
+  "scripts": {
+    "build": "pnpm cspell-tools-cli build",
+    "prepare:dictionary": "pnpm run build",
+    "prepublishOnly": "echo pre-publish",
+    "test": "pnpm run test-dictionary && pnpm run test-samples",
+    "test-dictionary": "cspell -c ./cspell-ext.json --locale=en --languageId=python \"src/python/py*.txt\"",
+    "test-samples": "cspell -c ./cspell-ext.json \"samples/**/*{.py,.txt}\"",
+    "update-python-lib": "./scripts/fetch-python.sh"
+  },
+  "dependencies": {
+    "@cspell/dict-data-science": "^2.0.13"
+  },
+  "gitHead": "81587936e4538521cccf069cebdf03872f2a478c"
+}

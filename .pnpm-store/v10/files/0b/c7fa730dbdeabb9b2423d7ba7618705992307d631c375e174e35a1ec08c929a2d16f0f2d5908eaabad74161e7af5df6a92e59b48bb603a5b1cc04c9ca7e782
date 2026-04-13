@@ -1,0 +1,96 @@
+@mixin createAnimationTransition ($property, $duration: .1s, $func: ease-in-out) {
+  transition: $property $duration $func;
+}
+
+@mixin createCheckboxIcon {
+  .vxe-checkbox--icon {
+    font-size: 1.22em;
+  }
+  .vxe-checkbox--icon {
+    color: var(--vxe-ui-input-border-color);
+    vertical-align: middle;
+    font-weight: 700;
+    user-select: none;
+  }
+  &.is--checked,
+  &.is--indeterminate {
+    color: var(--vxe-ui-font-primary-color);
+    .vxe-checkbox--icon {
+      color: var(--vxe-ui-font-primary-color);
+    }
+  }
+  &:not(.is--disabled) {
+    cursor: pointer;
+    &:hover {
+      .vxe-checkbox--icon {
+        color: var(--vxe-ui-font-primary-color);
+      }
+    }
+  }
+  &.is--hidden {
+    cursor: default;
+  }
+  &.is--disabled {
+    color: var(--vxe-ui-font-disabled-color);
+    cursor: not-allowed;
+    .vxe-checkbox--icon {
+      color: var(--vxe-ui-input-disabled-color);
+    }
+  }
+  .vxe-checkbox--label {
+    padding-left: 0.5em;
+    vertical-align: middle;
+  }
+}
+
+@mixin createRadioIcon {
+  cursor: pointer;
+  .vxe-radio--icon {
+    font-size: 1.26em;
+  }
+  .vxe-radio--icon {
+    color: var(--vxe-ui-input-border-color);
+    border-radius: 50%;
+    vertical-align: middle;
+    font-weight: 700;
+    user-select: none;
+  }
+  &.is--checked {
+    color: var(--vxe-ui-font-primary-color);
+    .vxe-radio--icon {
+      color: var(--vxe-ui-font-primary-color);
+    }
+  }
+  &:not(.is--disabled) {
+    cursor: pointer;
+    &:hover {
+      .vxe-radio--icon {
+        color: var(--vxe-ui-font-primary-color);
+      }
+    }
+  }
+  &.is--disabled {
+    color: var(--vxe-ui-font-disabled-color);
+    cursor: not-allowed;
+    .vxe-radio--icon {
+      color: var(--vxe-ui-input-disabled-color);
+    }
+  }
+  .vxe-radio--label {
+    padding-left: 0.5em;
+    vertical-align: middle;
+  }
+}
+
+@mixin createEmptyMask {
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    user-select: none;
+  }
+}

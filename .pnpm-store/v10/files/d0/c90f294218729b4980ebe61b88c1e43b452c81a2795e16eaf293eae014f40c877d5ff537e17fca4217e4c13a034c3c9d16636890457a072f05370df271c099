@@ -1,0 +1,64 @@
+{
+  "name": "@iconify/vue",
+  "description": "Iconify icon component for Vue 3.",
+  "author": "Vjacheslav Trushkin",
+  "version": "5.0.0",
+  "license": "MIT",
+  "bugs": "https://github.com/iconify/iconify/issues",
+  "homepage": "https://iconify.design/",
+  "funding": "https://github.com/sponsors/cyberalien",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iconify/iconify.git",
+    "directory": "components/vue"
+  },
+  "main": "dist/iconify.js",
+  "module": "dist/iconify.mjs",
+  "types": "dist/iconify.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/iconify.mjs",
+      "types": "./dist/iconify.d.ts",
+      "default": "./dist/iconify.js"
+    },
+    "./offline": {
+      "import": "./dist/offline.mjs",
+      "types": "./dist/offline.d.ts",
+      "default": "./dist/offline.js"
+    },
+    "./dist/offline": {
+      "import": "./dist/offline.mjs",
+      "types": "./dist/offline.d.ts",
+      "default": "./dist/offline.js"
+    }
+  },
+  "dependencies": {
+    "@iconify/types": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.26.9",
+    "@microsoft/api-extractor": "^7.52.5",
+    "@rollup/plugin-node-resolve": "^15.3.1",
+    "@types/jest": "^29.5.14",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/test-utils": "^2.4.6",
+    "jsdom": "^25.0.1",
+    "rollup": "^4.40.1",
+    "typescript": "^5.8.3",
+    "vitest": "^2.1.9",
+    "vue": "^3.5.13",
+    "@iconify/core": "^4.0.0",
+    "@iconify/utils": "^2.3.0"
+  },
+  "peerDependencies": {
+    "vue": ">=3"
+  },
+  "scripts": {
+    "build": "node build",
+    "build:lib": "tsc -b",
+    "build:dist": "rollup -c rollup.config.mjs",
+    "prebuild:api": "api-extractor run --local --verbose --config api-extractor.offline.json",
+    "build:api": "api-extractor run --local --verbose --config api-extractor.iconify.json",
+    "test": "vitest"
+  }
+}

@@ -1,0 +1,14 @@
+import { ModalEmits, ModalProps, ModalSlots } from "./interface.js";
+import * as vue174 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/modal/Modal.d.ts
+interface InternalModalProps extends ModalProps, ModalEmitsProps {}
+interface ModalEmitsProps {
+  onOk?: ModalEmits['ok'];
+  onCancel?: ModalEmits['cancel'];
+  'onUpdate:open'?: ModalEmits['update:open'];
+}
+declare const Modal: vue174.DefineSetupFnComponent<InternalModalProps, ModalEmits, SlotsType<ModalSlots>, InternalModalProps, vue174.PublicProps>;
+//#endregion
+export { InternalModalProps, ModalEmitsProps, Modal as default };

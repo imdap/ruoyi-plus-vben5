@@ -1,0 +1,15 @@
+import { SizeType } from "../config-provider/SizeContext.js";
+import { SkeletonElementProps } from "./Element.js";
+import * as vue829 from "vue";
+
+//#region src/skeleton/Button.d.ts
+interface SkeletonButtonProps extends Omit<SkeletonElementProps, 'size'> {
+  /**
+   * Note: `default` is deprecated and will be removed in v7, please use `medium` instead.
+   */
+  size?: SizeType | 'default';
+  block?: boolean;
+}
+declare const SkeletonButton: vue829.DefineSetupFnComponent<SkeletonButtonProps, {}, {}, SkeletonButtonProps & {}, vue829.PublicProps>;
+//#endregion
+export { SkeletonButtonProps, SkeletonButton as default };

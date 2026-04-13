@@ -1,0 +1,122 @@
+import { MouseEventHandler } from '@v-c/util/dist/EventInterface';
+import { Key as VCKey, VueNode } from '@v-c/util/dist/type';
+import { CSSProperties, VNode } from 'vue';
+export type { ScrollTo } from '@v-c/virtual-list';
+export type Key = VCKey;
+/**
+ * Typescript not support `bigint` as index type yet.
+ * We use this to mark the `bigint` type is for `Key` usage.
+ * It's safe to remove this when typescript fix:
+ * https://github.com/microsoft/TypeScript/issues/50217
+ */
+export type SafeKey = Exclude<Key, bigint>;
+export interface TreeNodeProps<TreeDataType extends BasicDataNode = DataNode> {
+    eventKey?: Key;
+    prefixCls?: string;
+    className?: string;
+    style?: CSSProperties;
+    id?: Key;
+    treeId?: string;
+    expanded?: boolean;
+    selected?: boolean;
+    checked?: boolean;
+    loaded?: boolean;
+    loading?: boolean;
+    halfChecked?: boolean;
+    title?: VueNode | ((data: TreeDataType) => VueNode);
+    dragOver?: boolean;
+    dragOverGapTop?: boolean;
+    dragOverGapBottom?: boolean;
+    pos?: string;
+    domRef?: HTMLDivElement;
+    /** New added in Tree for easy data access */
+    data?: TreeDataType;
+    isStart?: boolean[];
+    isEnd?: boolean[];
+    active?: boolean;
+    onMouseMove?: MouseEventHandler;
+    isLeaf?: boolean;
+    checkable?: boolean;
+    selectable?: boolean;
+    disabled?: boolean;
+    disableCheckbox?: boolean;
+    icon?: IconType;
+    switcherIcon?: IconType;
+    children?: VueNode;
+}
+export type IconType = VueNode | ((props: TreeNodeProps) => VueNode);
+/** For fieldNames, we provides a abstract interface */
+export interface BasicDataNode {
+    checkable?: boolean;
+    disabled?: boolean;
+    disableCheckbox?: boolean;
+    icon?: IconType;
+    isLeaf?: boolean;
+    selectable?: boolean;
+    switcherIcon?: IconType;
+    /** Set style of TreeNode. This is not recommend if you don't have any force requirement */
+    className?: string;
+    style?: CSSProperties;
+    [key: string]: any;
+}
+/** Provide a wrap type define for developer to wrap with customize fieldNames data type */
+export type FieldDataNode<T, ChildFieldName extends string = 'children'> = BasicDataNode & T & Partial<Record<ChildFieldName, FieldDataNode<T, ChildFieldName>[]>>;
+export type DataNode = FieldDataNode<{
+    key: Key;
+    title?: VueNode | ((data: DataNode) => VueNode);
+}>;
+export type EventDataNode<TreeDataType> = {
+    key: Key;
+    expanded: boolean;
+    selected: boolean;
+    checked: boolean;
+    loaded: boolean;
+    loading: boolean;
+    halfChecked: boolean;
+    dragOver: boolean;
+    dragOverGapTop: boolean;
+    dragOverGapBottom: boolean;
+    pos: string;
+    active: boolean;
+} & TreeDataType & BasicDataNode;
+export type NodeElement = VNode & {
+    type: any & {
+        isTreeNode?: boolean;
+    };
+};
+export interface Entity {
+    node: NodeElement;
+    index: number;
+    key: Key;
+    pos: string;
+    parent?: Entity;
+    children?: Entity[];
+}
+export interface DataEntity<TreeDataType extends BasicDataNode = any> extends Omit<Entity, 'node' | 'parent' | 'children'> {
+    node: TreeDataType;
+    nodes: TreeDataType[];
+    parent?: DataEntity<TreeDataType>;
+    children?: DataEntity<TreeDataType>[];
+    level: number;
+}
+export type KeyEntities<DateType extends BasicDataNode = any> = Record<string, DataEntity<DateType>>;
+export interface FlattenNode<TreeDataType extends BasicDataNode = DataNode> {
+    parent: FlattenNode<TreeDataType> | null;
+    children: FlattenNode<TreeDataType>[];
+    pos: string;
+    data: TreeDataType;
+    title: VueNode;
+    key: Key;
+    isStart: boolean[];
+    isEnd: boolean[];
+}
+export type GetKey<RecordType> = (record: RecordType, index?: number) => Key;
+export type GetCheckDisabled<RecordType> = (record: RecordType) => boolean;
+export type Direction = 'ltr' | 'rtl' | undefined;
+export interface FieldNames {
+    title?: string;
+    /** @private Internal usage for `vc-tree-select`, safe to remove if no need */
+    _title?: string[];
+    key?: string;
+    children?: string;
+}

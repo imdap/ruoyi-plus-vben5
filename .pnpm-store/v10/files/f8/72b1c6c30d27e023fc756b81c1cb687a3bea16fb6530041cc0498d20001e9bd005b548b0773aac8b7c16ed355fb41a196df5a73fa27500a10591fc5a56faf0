@@ -1,0 +1,38 @@
+{
+  "name": "@oxfmt/binding-linux-x64-gnu",
+  "version": "0.41.0",
+  "cpu": [
+    "x64"
+  ],
+  "main": "oxfmt.linux-x64-gnu.node",
+  "files": [
+    "oxfmt.linux-x64-gnu.node"
+  ],
+  "description": "Formatter for the JavaScript Oxidation Compiler",
+  "keywords": [
+    "formatter",
+    "javascript",
+    "oxc",
+    "oxfmt",
+    "prettier",
+    "typescript"
+  ],
+  "author": "Boshen and oxc contributors",
+  "homepage": "https://oxc.rs/docs/guide/usage/formatter",
+  "license": "MIT",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oxc-project/oxc",
+    "directory": "npm/oxfmt"
+  },
+  "bugs": "https://github.com/oxc-project/oxc/issues",
+  "os": [
+    "linux"
+  ],
+  "libc": [
+    "glibc"
+  ]
+}

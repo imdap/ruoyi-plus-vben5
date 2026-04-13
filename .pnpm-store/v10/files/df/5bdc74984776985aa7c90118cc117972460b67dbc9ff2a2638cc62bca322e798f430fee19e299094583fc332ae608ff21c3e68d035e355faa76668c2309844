@@ -1,0 +1,9 @@
+import type { ExactPackage, LatestPackageTarget } from '../install/package.js';
+import type { ProviderContext } from './index.js';
+export declare function pkgToUrl(pkg: ExactPackage): `${string}/`;
+export declare function parseUrlPkg(url: string): {
+    registry: string;
+    name: string;
+    version: string;
+};
+export declare function resolveLatestTarget(this: ProviderContext, target: LatestPackageTarget, layer: string, parentUrl: string): Promise<ExactPackage | null>;

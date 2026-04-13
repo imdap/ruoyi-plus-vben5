@@ -1,0 +1,12 @@
+import * as vue115 from "vue";
+import { Ref } from "vue";
+
+//#region src/table/TableMeasureRowContext.d.ts
+declare function useTableMeasureRowContext(): Ref<boolean, boolean>;
+declare const TableMeasureRowContextProvider: vue115.DefineSetupFnComponent<{
+  value: boolean;
+}, {}, {}, {
+  value: boolean;
+} & {}, vue115.PublicProps>;
+//#endregion
+export { TableMeasureRowContextProvider, useTableMeasureRowContext };

@@ -1,0 +1,27 @@
+import { SizeType } from "../config-provider/SizeContext.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue678 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/skeleton/Element.d.ts
+interface ElementSemanticClassNames {
+  root?: string;
+  content?: string;
+}
+interface ElementSemanticStyles {
+  root?: CSSProperties;
+  content?: CSSProperties;
+}
+interface SkeletonElementProps extends ComponentBaseProps {
+  /**
+   * Note: `default` is deprecated and will be removed in v7, please use `medium` instead.
+   */
+  size?: SizeType | number | 'default';
+  shape?: 'circle' | 'square' | 'round' | 'default';
+  active?: boolean;
+  classes?: ElementSemanticClassNames;
+  styles?: ElementSemanticStyles;
+}
+declare const Element: vue678.DefineSetupFnComponent<SkeletonElementProps, {}, {}, SkeletonElementProps & {}, vue678.PublicProps>;
+//#endregion
+export { ElementSemanticClassNames, ElementSemanticStyles, SkeletonElementProps, Element as default };

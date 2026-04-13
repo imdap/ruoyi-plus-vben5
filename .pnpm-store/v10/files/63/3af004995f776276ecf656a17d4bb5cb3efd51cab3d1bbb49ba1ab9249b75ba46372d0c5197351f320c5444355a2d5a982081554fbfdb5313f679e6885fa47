@@ -1,0 +1,1 @@
+{"version":3,"file":"IResourceFetchResponse.d.ts","sourceRoot":"","sources":["../../../src/fetch/types/IResourceFetchResponse.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO,WAAW,sBAAsB;IAC9C,OAAO,EAAE,MAAM,CAAC;IAChB,iBAAiB,EAAE,MAAM,GAAG,IAAI,CAAC;CACjC"}

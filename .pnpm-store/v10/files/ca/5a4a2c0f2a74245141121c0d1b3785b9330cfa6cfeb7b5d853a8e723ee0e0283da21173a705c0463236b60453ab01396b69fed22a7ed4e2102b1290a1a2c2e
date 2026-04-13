@@ -1,0 +1,16 @@
+import { RadioGroupEmits, RadioGroupProps, RadioGroupSlots } from "./interface.js";
+import * as vue310 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/radio/group.d.ts
+interface InternalRadioGroupProps extends RadioGroupProps, RadioGroupEmitsProps {}
+interface RadioGroupEmitsProps {
+  onChange?: RadioGroupEmits['change'];
+  onMouseenter?: RadioGroupEmits['mouseenter'];
+  onMouseleave?: RadioGroupEmits['mouseleave'];
+  onFocus?: RadioGroupEmits['focus'];
+  onBlur?: RadioGroupEmits['blur'];
+}
+declare const RadioGroup: vue310.DefineSetupFnComponent<InternalRadioGroupProps, RadioGroupEmits, SlotsType<RadioGroupSlots>, InternalRadioGroupProps, vue310.PublicProps>;
+//#endregion
+export { InternalRadioGroupProps, RadioGroupEmitsProps, RadioGroup as default };

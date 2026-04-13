@@ -1,0 +1,28 @@
+{
+    "id": "svelte",
+    "version": "0.2",
+    "name": "Svelte",
+    "description": "Svelte dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "svelte",
+            "path": "./dict/svelte.txt",
+            "description": "Svelte dictionary."
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "description": "Load the Svelte and other necessary dictionaries for Svelte files.",
+            "languageId": "svelte",
+            "locale": "*",
+            "dictionaries": ["svelte", "typescript", "npm", "html", "html-symbol-entities", "css", "fonts"]
+        },
+        {
+            "languageId": ["typescript", "javascript"],
+            "dictionaries": ["svelte"]
+        }
+    ],
+    "overrides": [{ "filename": "**/*.svelte", "languageId": ["svelte", "css", "html", "typescript"] }]
+}

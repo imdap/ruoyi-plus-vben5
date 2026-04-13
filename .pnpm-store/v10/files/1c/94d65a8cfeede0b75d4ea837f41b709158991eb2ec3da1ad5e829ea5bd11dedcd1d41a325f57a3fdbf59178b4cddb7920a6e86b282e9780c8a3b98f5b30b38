@@ -1,0 +1,43 @@
+{
+  "name": "@cspell/dict-elixir",
+  "version": "4.0.8",
+  "description": "Elixir dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "cspell-tools-cli compile --keep-raw-case src/elixir.txt --no-compress -o ./dict",
+    "test": "shx head -n 100 src/elixir.txt | cspell -c ./cspell-ext.json --locale=* --languageId=elixir stdin",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/elixir"
+  },
+  "keywords": [
+    "cspell",
+    "elixir",
+    "elixir",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/elixir#readme",
+  "files": [
+    "dict/elixir.txt",
+    "cspell-ext.json"
+  ],
+  "gitHead": "30c5c53b8e28152fc1d8a6cf0c872b068a64221a"
+}

@@ -1,0 +1,462 @@
+import Indent_default from "./Indent.js";
+import { TreeContextKey, UnstableContextKey } from "./contextTypes.js";
+import getEntity from "./utils/keyUtil.js";
+import { convertNodePropsToEventData, isLeafNode } from "./utils/treeUtil.js";
+import { computed, createVNode, defineComponent, inject, mergeProps, ref, watchEffect } from "vue";
+import { clsx } from "@v-c/util";
+import { getId } from "@v-c/util/dist/hooks/useId";
+import pickAttrs from "@v-c/util/dist/pickAttrs";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+var ICON_OPEN = "open";
+var ICON_CLOSE = "close";
+var defaultTitle = "---";
+var TreeNode = /* @__PURE__ */ defineComponent((props, { attrs }) => {
+	const context = inject(TreeContextKey, null);
+	const unstableContext = inject(UnstableContextKey, {});
+	const nodeId = computed(() => getId(props.treeId || "", `${props.eventKey}`));
+	const dragNodeHighlight = ref(false);
+	const isDisabled = computed(() => {
+		return !!(context.disabled || props.disabled || unstableContext.nodeDisabled?.(props.data));
+	});
+	const isCheckable = computed(() => {
+		if (!context.checkable || props.checkable === false) return false;
+		return context.checkable;
+	});
+	const isSelectable = computed(() => {
+		if (typeof props.selectable === "boolean") return props.selectable;
+		return context.selectable;
+	});
+	const hasChildren = computed(() => {
+		const { children } = getEntity(context.keyEntities, props.eventKey) || {};
+		return Boolean((children || []).length);
+	});
+	const memoizedIsLeaf = computed(() => {
+		return isLeafNode(props.isLeaf, context.loadData, hasChildren.value, props.loaded);
+	});
+	watchEffect(() => {
+		if (props.loading) return;
+		if (typeof context.loadData === "function" && props.expanded && !memoizedIsLeaf.value && !props.loaded) context.onNodeLoad(convertNodePropsToEventData(props));
+	});
+	const nodeState = computed(() => {
+		if (memoizedIsLeaf.value) return null;
+		return props.expanded ? ICON_OPEN : ICON_CLOSE;
+	});
+	const onSelect = (e) => {
+		if (isDisabled.value) return;
+		context.onNodeSelect(e, convertNodePropsToEventData(props));
+	};
+	const onCheck = (e) => {
+		if (isDisabled.value) return;
+		if (!isCheckable.value || props.disableCheckbox) return;
+		context.onNodeCheck(e, convertNodePropsToEventData(props), !props.checked);
+	};
+	const onSelectorClick = (e) => {
+		context.onNodeClick(e, convertNodePropsToEventData(props));
+		if (isSelectable.value) onSelect(e);
+		else onCheck(e);
+	};
+	const onSelectorDoubleClick = (e) => {
+		context.onNodeDoubleClick(e, convertNodePropsToEventData(props));
+	};
+	const onMouseEnter = (e) => {
+		context.onNodeMouseEnter(e, convertNodePropsToEventData(props));
+	};
+	const onMouseLeave = (e) => {
+		context.onNodeMouseLeave(e, convertNodePropsToEventData(props));
+	};
+	const onContextMenu = (e) => {
+		context.onNodeContextMenu(e, convertNodePropsToEventData(props));
+	};
+	const isDraggable = computed(() => {
+		return !!(context.draggable && (!context.draggable.nodeDraggable || context.draggable.nodeDraggable(props.data)));
+	});
+	const onDragStart = (e) => {
+		e.stopPropagation();
+		dragNodeHighlight.value = true;
+		context.onNodeDragStart(e, props);
+		try {
+			e.dataTransfer?.setData("text/plain", "");
+		} catch {}
+	};
+	const onDragEnter = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		context.onNodeDragEnter(e, props);
+	};
+	const onDragOver = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		context.onNodeDragOver(e, props);
+	};
+	const onDragLeave = (e) => {
+		e.stopPropagation();
+		context.onNodeDragLeave(e, props);
+	};
+	const onDragEnd = (e) => {
+		e.stopPropagation();
+		dragNodeHighlight.value = false;
+		context.onNodeDragEnd(e, props);
+	};
+	const onDrop = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		dragNodeHighlight.value = false;
+		context.onNodeDrop(e, props);
+	};
+	const onExpand = (e) => {
+		if (props.loading) return;
+		context.onNodeExpand(e, convertNodePropsToEventData(props));
+	};
+	const renderSwitcherIconDom = (isInternalLeaf) => {
+		const switcherIcon = props.switcherIcon || context.switcherIcon;
+		if (typeof switcherIcon === "function") return switcherIcon({
+			...props,
+			isLeaf: isInternalLeaf
+		});
+		return switcherIcon;
+	};
+	const renderSwitcher = () => {
+		if (memoizedIsLeaf.value) {
+			const switcherIconDom$1 = renderSwitcherIconDom(true);
+			return switcherIconDom$1 !== false ? createVNode("span", {
+				"class": clsx(`${context.prefixCls}-switcher`, `${context.prefixCls}-switcher-noop`, context.classNames?.itemSwitcher),
+				"style": context.styles?.itemSwitcher
+			}, [switcherIconDom$1]) : null;
+		}
+		const switcherIconDom = renderSwitcherIconDom(false);
+		return switcherIconDom !== false ? createVNode("span", {
+			"onClick": onExpand,
+			"class": clsx(`${context.prefixCls}-switcher`, `${context.prefixCls}-switcher_${props.expanded ? ICON_OPEN : ICON_CLOSE}`, context.classNames?.itemSwitcher),
+			"style": context.styles?.itemSwitcher
+		}, [switcherIconDom]) : null;
+	};
+	const iconNode = computed(() => {
+		return createVNode("span", {
+			"class": clsx(context.classNames?.itemIcon, `${context.prefixCls}-iconEle`, `${context.prefixCls}-icon__${nodeState.value || "docu"}`, { [`${context.prefixCls}-icon_loading`]: props.loading }),
+			"style": context.styles?.itemIcon
+		}, null);
+	});
+	const dropIndicatorNode = computed(() => {
+		const rootDraggable = Boolean(context.draggable);
+		if (!(!props.disabled && rootDraggable && context.dragOverNodeKey === props.eventKey)) return null;
+		if (context.dropPosition === null || context.dropLevelOffset === null || context.indent === null) return null;
+		return context.dropIndicatorRender({
+			dropPosition: context.dropPosition,
+			dropLevelOffset: context.dropLevelOffset,
+			indent: context.indent,
+			prefixCls: context.prefixCls,
+			direction: context.direction
+		});
+	});
+	const checkboxNode = computed(() => {
+		if (!isCheckable.value) return null;
+		const { checked, halfChecked, disableCheckbox } = props;
+		const prefixCls = context.prefixCls;
+		const custom = typeof isCheckable.value !== "boolean" ? isCheckable.value : null;
+		return createVNode("span", {
+			"class": clsx(`${prefixCls}-checkbox`, {
+				[`${prefixCls}-checkbox-checked`]: checked,
+				[`${prefixCls}-checkbox-indeterminate`]: !checked && halfChecked,
+				[`${prefixCls}-checkbox-disabled`]: isDisabled.value || disableCheckbox
+			}),
+			"onClick": onCheck,
+			"role": "checkbox",
+			"aria-checked": halfChecked ? "mixed" : checked,
+			"aria-disabled": isDisabled.value || disableCheckbox,
+			"aria-labelledby": nodeId.value
+		}, [custom]);
+	});
+	const selectorNode = computed(() => {
+		const title = props.title ?? defaultTitle;
+		const wrapClass = `${context.prefixCls}-node-content-wrapper`;
+		let icon;
+		if (context.showIcon) {
+			const currentIcon = props.icon || context.icon;
+			icon = currentIcon ? createVNode("span", {
+				"class": clsx(context.classNames?.itemIcon, `${context.prefixCls}-iconEle`, `${context.prefixCls}-icon__customize`),
+				"style": context.styles?.itemIcon
+			}, [typeof currentIcon === "function" ? currentIcon(props) : currentIcon]) : iconNode.value;
+		} else if (context.loadData && props.loading) icon = iconNode.value;
+		let titleNode;
+		if (typeof title === "function") titleNode = title(props.data);
+		else if (context.titleRender) {
+			let _titleRender = context.titleRender(props.data);
+			_titleRender = Array.isArray(_titleRender) ? _titleRender : [_titleRender];
+			_titleRender = filterEmpty(_titleRender).filter(Boolean);
+			titleNode = _titleRender.length ? _titleRender : title;
+		} else titleNode = title;
+		return createVNode("span", {
+			"title": typeof title === "string" ? title : "",
+			"class": clsx(wrapClass, `${wrapClass}-${nodeState.value || "normal"}`, { [`${context.prefixCls}-node-selected`]: !isDisabled.value && (props.selected || dragNodeHighlight.value) }),
+			"onMouseenter": onMouseEnter,
+			"onMouseleave": onMouseLeave,
+			"onContextmenu": onContextMenu,
+			"onClick": onSelectorClick,
+			"onDblclick": onSelectorDoubleClick
+		}, [
+			icon,
+			createVNode("span", {
+				"class": clsx(`${context.prefixCls}-title`, context.classNames?.itemTitle),
+				"style": context.styles?.itemTitle
+			}, [titleNode]),
+			dropIndicatorNode.value
+		]);
+	});
+	const dragHandlerNode = computed(() => {
+		if (!context.draggable?.icon) return null;
+		return createVNode("span", { "class": `${context.prefixCls}-draggable-icon` }, [context.draggable.icon]);
+	});
+	const dataOrAriaAttributeProps = computed(() => pickAttrs(attrs, {
+		aria: true,
+		data: true
+	}));
+	const level = computed(() => (getEntity(context.keyEntities, props.eventKey) || {}).level || 0);
+	const isEndNode = computed(() => !!props.isEnd?.[props.isEnd.length - 1]);
+	const draggableWithoutDisabled = computed(() => !isDisabled.value && isDraggable.value);
+	return () => {
+		const filterNode = context.filterTreeNode?.(convertNodePropsToEventData(props));
+		return createVNode("div", mergeProps({
+			"role": "treeitem",
+			"id": nodeId.value,
+			"aria-expanded": memoizedIsLeaf.value ? void 0 : props.expanded,
+			"aria-selected": isSelectable.value && !isDisabled.value ? props.selected : void 0,
+			"aria-checked": isCheckable.value && !isDisabled.value ? props.halfChecked ? "mixed" : props.checked : void 0,
+			"aria-disabled": isDisabled.value,
+			"class": clsx(props.className, `${context.prefixCls}-treenode`, context.classNames?.item, {
+				[`${context.prefixCls}-treenode-disabled`]: isDisabled.value,
+				[`${context.prefixCls}-treenode-switcher-${props.expanded ? "open" : "close"}`]: !memoizedIsLeaf.value,
+				[`${context.prefixCls}-treenode-checkbox-checked`]: props.checked,
+				[`${context.prefixCls}-treenode-checkbox-indeterminate`]: props.halfChecked,
+				[`${context.prefixCls}-treenode-selected`]: props.selected,
+				[`${context.prefixCls}-treenode-loading`]: props.loading,
+				[`${context.prefixCls}-treenode-active`]: props.active,
+				[`${context.prefixCls}-treenode-leaf-last`]: isEndNode.value,
+				[`${context.prefixCls}-treenode-draggable`]: isDraggable.value,
+				"dragging": context.draggingNodeKey === props.eventKey,
+				"drop-target": context.dropTargetKey === props.eventKey,
+				"drop-container": context.dropContainerKey === props.eventKey,
+				"drag-over": !isDisabled.value && props.dragOver,
+				"drag-over-gap-top": !isDisabled.value && props.dragOverGapTop,
+				"drag-over-gap-bottom": !isDisabled.value && props.dragOverGapBottom,
+				"filter-node": !!filterNode,
+				[`${context.prefixCls}-treenode-leaf`]: memoizedIsLeaf.value
+			}),
+			"style": {
+				...props.style || {},
+				...context.styles?.item || {}
+			},
+			"draggable": draggableWithoutDisabled.value,
+			"onDragstart": draggableWithoutDisabled.value ? onDragStart : void 0,
+			"onDragenter": isDraggable.value ? onDragEnter : void 0,
+			"onDragover": isDraggable.value ? onDragOver : void 0,
+			"onDragleave": isDraggable.value ? onDragLeave : void 0,
+			"onDrop": isDraggable.value ? onDrop : void 0,
+			"onDragend": isDraggable.value ? onDragEnd : void 0,
+			"onMousemove": props.onMouseMove
+		}, dataOrAriaAttributeProps.value), [
+			createVNode(Indent_default, {
+				"prefixCls": context.prefixCls,
+				"level": level.value,
+				"isStart": props.isStart || [],
+				"isEnd": props.isEnd || []
+			}, null),
+			dragHandlerNode.value,
+			renderSwitcher(),
+			checkboxNode.value,
+			selectorNode.value
+		]);
+	};
+}, {
+	props: {
+		eventKey: {
+			type: [String, Number],
+			required: false,
+			default: void 0
+		},
+		prefixCls: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		className: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		style: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		id: {
+			type: [String, Number],
+			required: false,
+			default: void 0
+		},
+		treeId: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		expanded: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		selected: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		checked: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		loaded: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		loading: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		halfChecked: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		title: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		dragOver: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		dragOverGapTop: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		dragOverGapBottom: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		pos: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		domRef: {
+			required: false,
+			default: void 0
+		},
+		data: {
+			required: false,
+			default: void 0
+		},
+		isStart: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		isEnd: {
+			type: Array,
+			required: false,
+			default: void 0
+		},
+		active: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		onMouseMove: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		isLeaf: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		checkable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		selectable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		disableCheckbox: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		icon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		switcherIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		children: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		}
+	},
+	name: "TreeNode",
+	inheritAttrs: false
+});
+TreeNode.isTreeNode = true;
+var TreeNode_default = TreeNode;
+export { TreeNode_default as default };

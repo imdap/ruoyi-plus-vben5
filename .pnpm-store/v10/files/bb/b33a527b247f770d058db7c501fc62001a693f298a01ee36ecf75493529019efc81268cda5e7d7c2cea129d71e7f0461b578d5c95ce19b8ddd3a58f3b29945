@@ -1,0 +1,427 @@
+import { usePreviewGroupContext } from "../context.js";
+import useStatus from "../hooks/useStatus.js";
+import useImageTransform from "../hooks/useImageTransform.js";
+import "../previewConfig.js";
+import useMouseEvent from "../hooks/useMouseEvent.js";
+import useTouchEvent from "../hooks/useTouchEvent.js";
+import CloseBtn from "./CloseBtn.js";
+import Footer from "./Footer.js";
+import PrevNext from "./PrevNext.js";
+import { Transition, computed, createVNode, defineComponent, mergeDefaults, mergeProps, nextTick, shallowRef, watch, watchEffect } from "vue";
+import { clsx } from "@v-c/util";
+import Portal from "@v-c/portal";
+import canUseDom from "@v-c/util/dist/Dom/canUseDom";
+import { useLockFocus } from "@v-c/util/dist/Dom/focus";
+import { KeyCodeStr } from "@v-c/util/dist/KeyCode";
+import { getTransitionProps } from "@v-c/util/dist/utils/transition";
+//#region src/Preview/index.tsx
+var Preview = /* @__PURE__ */ defineComponent((props, { attrs, slots }) => {
+	const imgEl = shallowRef();
+	const wrapperRef = shallowRef(null);
+	const triggerRef = shallowRef(null);
+	const groupContext = usePreviewGroupContext();
+	const showLeftOrRightSwitches = computed(() => !!groupContext && (props.count ?? 1) > 1);
+	const showOperationsProgress = computed(() => !!groupContext && (props.count ?? 1) >= 1);
+	const enableTransition = shallowRef(true);
+	watch(enableTransition, async (val) => {
+		if (!val) {
+			await nextTick();
+			enableTransition.value = true;
+		}
+	});
+	const { transform, resetTransform, updateTransform, dispatchZoomChange } = useImageTransform(imgEl, computed(() => props.minScale ?? 1), computed(() => props.maxScale ?? 50), (info) => props.onTransform?.(info));
+	const { isMoving, onMouseDown, onWheel } = useMouseEvent(imgEl, computed(() => props.movable ?? true), computed(() => !!props.open), computed(() => props.scaleStep ?? .5), transform, updateTransform, dispatchZoomChange);
+	const { isTouching, onTouchStart, onTouchMove, onTouchEnd } = useTouchEvent(imgEl, computed(() => props.movable ?? true), computed(() => !!props.open), computed(() => props.minScale ?? 1), transform, updateTransform, dispatchZoomChange);
+	watch(() => props.open, (open) => {
+		if (!open) resetTransform("close");
+	});
+	watch(() => props.open, (open) => {
+		if (open && canUseDom()) triggerRef.value = document.activeElement;
+	});
+	const onDoubleClick = (event) => {
+		if (!props.open) return;
+		if (transform.value.scale !== 1) updateTransform({
+			x: 0,
+			y: 0,
+			scale: 1
+		}, "doubleClick");
+		else dispatchZoomChange(1 + (props.scaleStep ?? .5), "doubleClick", event.clientX, event.clientY);
+	};
+	const onZoomIn = () => {
+		dispatchZoomChange(1 + (props.scaleStep ?? .5), "zoomIn");
+	};
+	const onZoomOut = () => {
+		dispatchZoomChange(1 / (1 + (props.scaleStep ?? .5)), "zoomOut");
+	};
+	const onRotateRight = () => {
+		updateTransform({ rotate: transform.value.rotate + 90 }, "rotateRight");
+	};
+	const onRotateLeft = () => {
+		updateTransform({ rotate: transform.value.rotate - 90 }, "rotateLeft");
+	};
+	const onFlipX = () => {
+		updateTransform({ flipX: !transform.value.flipX }, "flipX");
+	};
+	const onFlipY = () => {
+		updateTransform({ flipY: !transform.value.flipY }, "flipY");
+	};
+	const onReset = () => {
+		resetTransform("reset");
+	};
+	const onActive = (offset) => {
+		const current = props.current ?? 0;
+		const count = props.count ?? 1;
+		const nextCurrent = current + offset;
+		if (nextCurrent >= 0 && nextCurrent <= count - 1) {
+			enableTransition.value = false;
+			resetTransform(offset < 0 ? "prev" : "next");
+			props.onChange?.(nextCurrent, current);
+		}
+	};
+	const onKeyDown = (event) => {
+		if (!props.open) return;
+		const { key } = event;
+		if (showLeftOrRightSwitches.value) {
+			if (key === KeyCodeStr.ArrowLeft) onActive(-1);
+			else if (key === KeyCodeStr.ArrowRight) onActive(1);
+		}
+	};
+	watchEffect((onCleanup) => {
+		if (!canUseDom()) return;
+		if (props.open) window.addEventListener("keydown", onKeyDown);
+		onCleanup(() => {
+			window.removeEventListener("keydown", onKeyDown);
+		});
+	});
+	const animatedVisible = shallowRef(props?.open ?? false);
+	watch(() => props.open, (open) => {
+		if (open) animatedVisible.value = true;
+	});
+	const portalRender = shallowRef(props?.open ?? false);
+	watch(() => props.open, (open) => {
+		if (open) portalRender.value = true;
+	});
+	const onVisibleChanged = (nextVisible) => {
+		if (!nextVisible) {
+			animatedVisible.value = false;
+			portalRender.value = false;
+			triggerRef.value?.focus?.();
+			triggerRef.value = null;
+		}
+		props.afterOpenChange?.(nextVisible);
+	};
+	const setImgRef = (el) => {
+		imgEl.value = el;
+	};
+	const [getImgRef, srcAndOnload] = useStatus({
+		src: computed(() => props.src),
+		fallback: computed(() => props.fallback)
+	});
+	const focusTrap = computed(() => props.focusTrap ?? true);
+	useLockFocus(computed(() => !!(focusTrap.value && props.open && portalRender.value)), () => wrapperRef.value);
+	return () => {
+		const { prefixCls, rootClassName, src, alt, imageInfo, open, closeIcon, getContainer, current = 0, count = 1, countRender, motionName = "fade", imageRender, imgCommonProps, actionsRender = slots?.actionsRender, classNames = {}, styles = {}, mousePosition, zIndex, icons = {}, movable = true, maskClosable = true } = props;
+		const bodyStyle = { ...styles.body ?? {} };
+		if (mousePosition) bodyStyle.transformOrigin = `${mousePosition.x}px ${mousePosition.y}px`;
+		const image = {
+			url: src || "",
+			alt: alt || "",
+			...imageInfo
+		};
+		const imgNode = createVNode("img", mergeProps(imgCommonProps, {
+			"src": srcAndOnload.value.src,
+			"ref": (el) => {
+				setImgRef(el);
+				getImgRef(el);
+			},
+			"width": props.width,
+			"height": props.height,
+			"class": `${prefixCls}-img`,
+			"alt": alt,
+			"onLoad": srcAndOnload.value.onLoad,
+			"style": {
+				transform: `translate3d(${transform.value.x}px, ${transform.value.y}px, 0) scale3d(${transform.value.flipX ? "-" : ""}${transform.value.scale}, ${transform.value.flipY ? "-" : ""}${transform.value.scale}, 1) rotate(${transform.value.rotate}deg)`,
+				transitionDuration: !enableTransition.value || isTouching.value ? "0s" : void 0
+			},
+			"onWheel": onWheel,
+			"onMousedown": onMouseDown,
+			"onDblclick": onDoubleClick,
+			"onTouchstart": onTouchStart,
+			"onTouchmove": onTouchMove,
+			"onTouchend": onTouchEnd,
+			"onTouchcancel": onTouchEnd
+		}), null);
+		const mergedRootStyle = {
+			...styles.root ?? {},
+			...attrs.style
+		};
+		if (zIndex) mergedRootStyle.zIndex = zIndex;
+		const mergedRootCls = clsx(prefixCls, rootClassName, classNames.root, {
+			[`${prefixCls}-movable`]: movable,
+			[`${prefixCls}-moving`]: isMoving.value
+		});
+		const transitionProps = getTransitionProps(motionName);
+		return createVNode(Portal, {
+			"open": open || animatedVisible.value || portalRender.value,
+			"getContainer": getContainer,
+			"autoLock": open || animatedVisible.value,
+			"onEsc": ({ top }) => {
+				if (top) props.onClose?.();
+			}
+		}, { default: () => [createVNode(Transition, mergeProps(transitionProps, {
+			"onAfterEnter": () => onVisibleChanged(true),
+			"onAfterLeave": () => onVisibleChanged(false)
+		}), { default: () => {
+			if (!(portalRender.value && open)) return null;
+			return createVNode("div", {
+				"ref": wrapperRef,
+				"class": mergedRootCls,
+				"style": mergedRootStyle,
+				"role": "dialog",
+				"aria-modal": "true",
+				"aria-label": alt,
+				"tabindex": -1
+			}, [
+				createVNode("div", {
+					"class": clsx(`${prefixCls}-mask`, classNames.mask),
+					"style": styles.mask,
+					"onClick": maskClosable ? () => props.onClose?.() : void 0
+				}, null),
+				createVNode("div", {
+					"class": clsx(`${prefixCls}-body`, classNames.body),
+					"style": bodyStyle
+				}, [imageRender ? imageRender(imgNode, {
+					transform: transform.value,
+					image,
+					...groupContext ? { current } : {}
+				}) : imgNode]),
+				closeIcon !== false && closeIcon !== null && createVNode(CloseBtn, {
+					"prefixCls": prefixCls,
+					"icon": closeIcon === true ? icons.close : closeIcon || icons.close,
+					"onClick": () => props.onClose?.(),
+					"className": classNames.close,
+					"style": styles.close
+				}, null),
+				showLeftOrRightSwitches.value && createVNode(PrevNext, {
+					"prefixCls": prefixCls,
+					"current": current,
+					"count": count,
+					"icons": icons,
+					"onActive": onActive
+				}, null),
+				createVNode(Footer, {
+					"prefixCls": prefixCls,
+					"showProgress": showOperationsProgress.value,
+					"current": current,
+					"count": count,
+					"showSwitch": showLeftOrRightSwitches.value,
+					"classNames": classNames,
+					"styles": styles,
+					"image": image,
+					"transform": transform.value,
+					"icons": icons,
+					"countRender": countRender,
+					"actionsRender": actionsRender,
+					"scale": transform.value.scale,
+					"minScale": props.minScale ?? 1,
+					"maxScale": props.maxScale ?? 50,
+					"onActive": onActive,
+					"onFlipY": onFlipY,
+					"onFlipX": onFlipX,
+					"onRotateLeft": onRotateLeft,
+					"onRotateRight": onRotateRight,
+					"onZoomOut": onZoomOut,
+					"onZoomIn": onZoomIn,
+					"onClose": () => props.onClose?.(),
+					"onReset": onReset
+				}, null)
+			]);
+		} })] });
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		prefixCls: {
+			type: String,
+			required: true
+		},
+		classNames: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		imageInfo: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		fallback: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		imgCommonProps: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		width: {
+			type: [String, Number],
+			required: false,
+			default: void 0
+		},
+		height: {
+			type: [String, Number],
+			required: false,
+			default: void 0
+		},
+		current: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		count: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		onChange: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onClose: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		mousePosition: {
+			type: [null, Object],
+			required: true
+		},
+		rootClassName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		src: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		alt: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		scaleStep: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		minScale: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		maxScale: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		motionName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		open: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		getContainer: {
+			required: false,
+			default: void 0
+		},
+		zIndex: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		maskClosable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		afterOpenChange: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		focusTrap: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		movable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		icons: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		closeIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		onTransform: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		countRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		imageRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		actionsRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		}
+	}, {
+		movable: true,
+		scaleStep: .5,
+		minScale: 1,
+		maxScale: 50,
+		motionName: "fade",
+		current: 0,
+		count: 1,
+		icons: {}
+	}),
+	name: "ImagePreview",
+	inheritAttrs: false
+});
+//#endregion
+export { Preview as default };

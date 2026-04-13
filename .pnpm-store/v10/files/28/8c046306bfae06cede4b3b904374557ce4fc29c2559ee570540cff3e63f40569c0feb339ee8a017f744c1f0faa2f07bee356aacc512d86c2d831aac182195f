@@ -1,0 +1,1 @@
+import{d as o,c as t,o as a,a as s,r as c,n as l,b as r,t as i}from"./index-B5ZMOy4O.js";const d={flex:"~ gap-3","items-center":""},f=o({__name:"IconTitle",props:{icon:{},text:{}},setup(e){return(n,m)=>(a(),t("div",d,[e.icon?(a(),t("div",{key:0,class:l(e.icon)},null,2)):s("",!0),c(n.$slots,"default",{},()=>[r("div",null,i(e.text),1)])]))}});export{f as _};

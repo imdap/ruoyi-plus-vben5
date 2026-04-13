@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:!0}),exports.i18nConfigStore=void 0;var _vue=require("vue");let i18nConfigStore=exports.i18nConfigStore=(0,_vue.reactive)({language:"",langMaps:{}});

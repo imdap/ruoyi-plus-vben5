@@ -1,0 +1,39 @@
+import { defineComponent } from "vue";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+var Icon_default = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	return () => {
+		const { icon, props: iconProps } = props;
+		const children = slots.default?.();
+		let iconNode;
+		if (icon === null || icon === false) return null;
+		if (typeof icon === "function") {
+			const childIcons = icon(iconProps);
+			if (!childIcons) {
+				iconNode = null;
+				return children;
+			}
+			iconNode = filterEmpty(childIcons ? Array.isArray(childIcons) ? childIcons : [childIcons] : []);
+		} else if (typeof icon !== "boolean") iconNode = icon;
+		return iconNode || children || null;
+	};
+}, { props: {
+	icon: {
+		type: [
+			Object,
+			Function,
+			String,
+			Number,
+			null,
+			Boolean,
+			Array
+		],
+		required: false,
+		default: void 0
+	},
+	props: {
+		type: Object,
+		required: false,
+		default: void 0
+	}
+} });
+export { Icon_default as default };

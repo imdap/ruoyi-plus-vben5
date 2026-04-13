@@ -1,0 +1,12 @@
+import generateCalendar, { CalendarEmits, CalendarMode, CalendarProps, CalendarSlots } from "./generateCalendar.js";
+import * as vue155 from "vue";
+import { Dayjs } from "dayjs";
+
+//#region src/calendar/index.d.ts
+declare const Calendar: vue155.DefineSetupFnComponent<CalendarProps<Dayjs>, CalendarEmits<Dayjs>, vue155.SlotsType<CalendarSlots>, CalendarProps<Dayjs>, vue155.PublicProps>;
+type CalendarType = typeof Calendar & {
+  generateCalendar: typeof generateCalendar;
+};
+declare const _default: CalendarType;
+//#endregion
+export { type CalendarMode, type CalendarProps, CalendarType, _default as default };

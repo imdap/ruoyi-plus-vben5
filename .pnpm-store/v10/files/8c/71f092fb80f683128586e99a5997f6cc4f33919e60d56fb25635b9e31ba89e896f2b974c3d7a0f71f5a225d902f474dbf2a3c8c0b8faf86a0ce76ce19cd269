@@ -1,0 +1,32 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue413 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/result/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 标题字体大小
+   * @descEN Title font size
+   */
+  titleFontSize: number;
+  /**
+   * @desc 副标题字体大小
+   * @descEN Subtitle font size
+   */
+  subtitleFontSize: number;
+  /**
+   * @desc 图标大小
+   * @descEN Icon size
+   */
+  iconFontSize: number;
+  /**
+   * @desc 额外区域外间距
+   * @descEN Margin of extra area
+   */
+  extraMargin: CSSProperties['margin'];
+}
+declare const prepareComponentToken: GetDefaultToken<'Result'>;
+declare const _default: (prefixCls: vue413.Ref<string>, rootCls?: vue413.Ref<string | undefined>) => readonly [vue413.Ref<string, string>, vue413.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

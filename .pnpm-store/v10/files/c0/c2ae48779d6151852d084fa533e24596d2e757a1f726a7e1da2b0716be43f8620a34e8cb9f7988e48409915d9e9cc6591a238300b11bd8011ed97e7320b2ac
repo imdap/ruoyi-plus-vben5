@@ -1,0 +1,23 @@
+import { CalendarMode, SelectInfo } from "./generateCalendar.js";
+import * as vue124 from "vue";
+import { CSSProperties } from "vue";
+import { Locale } from "@v-c/picker";
+import { GenerateConfig } from "@v-c/picker/generate";
+
+//#region src/calendar/Header.d.ts
+interface CalendarHeaderProps<DateType> {
+  className?: string;
+  style?: CSSProperties;
+  prefixCls: string;
+  value: DateType;
+  validRange?: [DateType, DateType];
+  generateConfig: GenerateConfig<DateType>;
+  locale: Locale;
+  mode: CalendarMode;
+  fullscreen: boolean;
+  onChange: (date: DateType, source: SelectInfo['source']) => void;
+  onModeChange: (mode: CalendarMode) => void;
+}
+declare const CalendarHeader: vue124.DefineSetupFnComponent<CalendarHeaderProps<any>, {}, {}, CalendarHeaderProps<any> & {}, vue124.PublicProps>;
+//#endregion
+export { CalendarHeaderProps, CalendarHeader as default };

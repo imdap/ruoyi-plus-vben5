@@ -1,0 +1,66 @@
+import { GroupPreviewConfig } from "../PreviewGroup.js";
+import { PreviewConfig } from "../index.js";
+import * as vue596 from "vue";
+import { Ref } from "vue";
+import * as _v_c_util0 from "@v-c/util";
+import * as _v_c_image0 from "@v-c/image";
+import * as _v_c_image_dist_Preview_index_js0 from "@v-c/image/dist/Preview/index.js";
+import * as _v_c_portal_dist_Portal_js0 from "@v-c/portal/dist/Portal.js";
+import * as _v_c_image_dist_hooks_useImageTransform_js0 from "@v-c/image/dist/hooks/useImageTransform.js";
+
+//#region src/image/hooks/usePreviewConfig.d.ts
+declare function usePreviewConfig<T extends PreviewConfig | GroupPreviewConfig>(preview: Ref<T | boolean | undefined>): vue596.ComputedRef<({} | null)[] | readonly [{
+  readonly open: boolean | undefined;
+  readonly onOpenChange: ((value: boolean, info: {
+    current: number;
+  }) => void) | undefined;
+  readonly cover: string | number | boolean | vue596.ComponentOptions<any, any, any, vue596.ComputedOptions, vue596.MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, vue596.ComponentProvideOptions> | vue596.FunctionalComponent<any, {}, any, {}> | {
+    new (...args: any[]): any;
+    __isFragment?: never;
+    __isTeleport?: never;
+    __isSuspense?: never;
+  } | vue596.VNode<vue596.RendererNode, vue596.RendererElement, {
+    [key: string]: any;
+  }> | (string | number | boolean | void | vue596.Component | vue596.VNode<vue596.RendererNode, vue596.RendererElement, {
+    [key: string]: any;
+  }> | null | undefined)[] | _v_c_image0.CoverConfig | {
+    enabled?: boolean;
+    blur: boolean;
+    closable?: boolean;
+  } | undefined;
+  readonly mask: boolean | vue596.VNode<vue596.RendererNode, vue596.RendererElement, {
+    [key: string]: any;
+  }> | {
+    enabled?: boolean;
+    blur: boolean;
+    closable?: boolean;
+  } | undefined;
+  readonly actionsRender: ((originalNode: _v_c_util0.VueNode, info: _v_c_image_dist_Preview_index_js0.ToolbarRenderInfoType) => _v_c_util0.VueNode) | undefined;
+  readonly current?: number;
+  readonly imageRender?: (originalNode: _v_c_util0.VueNode, info: {
+    transform: _v_c_image_dist_hooks_useImageTransform_js0.TransformType;
+    current: number;
+    image: _v_c_image0.ImgInfo;
+  }) => _v_c_util0.VueNode;
+  readonly onChange?: (current: number, prevCurrent: number) => void;
+  readonly afterOpenChange?: (open: boolean) => void;
+  readonly zIndex?: number;
+  readonly getContainer?: _v_c_portal_dist_Portal_js0.PortalProps["getContainer"];
+  readonly closeIcon?: _v_c_util0.VueNode | boolean | null;
+  readonly motionName?: string;
+  readonly src?: string;
+  readonly alt?: string;
+  readonly countRender?: (current: number, total: number) => _v_c_util0.VueNode;
+  readonly scaleStep?: number;
+  readonly minScale?: number;
+  readonly maxScale?: number;
+  readonly movable?: boolean;
+  readonly icons?: _v_c_image_dist_Preview_index_js0.OperationIcons;
+  readonly onTransform?: (info: {
+    transform: _v_c_image_dist_hooks_useImageTransform_js0.TransformType;
+    action: _v_c_image_dist_hooks_useImageTransform_js0.TransformAction;
+  }) => void;
+  readonly rootClass?: string;
+}, string | undefined, string | undefined]>;
+//#endregion
+export { usePreviewConfig as default };

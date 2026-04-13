@@ -1,0 +1,37 @@
+import { MouseEventHandler } from '../../../../util/src/EventInterface';
+import { InputHTMLAttributes } from 'vue';
+import { RangeTimeProps, SharedPickerProps, SharedTimeProps, ValueDate } from '../../interface';
+import { FooterProps } from './Footer';
+import { PopupPanelProps } from './PopupPanel';
+export type PopupShowTimeConfig<DateType extends object = any> = Omit<RangeTimeProps<DateType>, 'defaultValue' | 'defaultOpenValue' | 'disabledTime'> & Pick<SharedTimeProps<DateType>, 'disabledTime'>;
+export type PopupProps<DateType extends object = any, PresetValue = DateType> = Pick<InputHTMLAttributes, 'onFocus' | 'onBlur'> & FooterProps<DateType> & PopupPanelProps<DateType> & {
+    panelRender?: SharedPickerProps['panelRender'];
+    presets: ValueDate<PresetValue>[];
+    onPresetHover: (presetValue: PresetValue | null) => void;
+    onPresetSubmit: (presetValue: PresetValue) => void;
+    activeInfo?: [activeInputLeft: number, activeInputRight: number, selectorWidth: number];
+    direction?: 'ltr' | 'rtl';
+    defaultOpenValue: DateType;
+    needConfirm: boolean | undefined;
+    isInvalid: (date: DateType | DateType[]) => boolean;
+    onOk: VoidFunction;
+    onPanelMouseDown?: MouseEventHandler;
+    classNames?: SharedPickerProps['classNames'];
+    styles?: SharedPickerProps['styles'];
+};
+declare const Popup: import('vue').DefineSetupFnComponent<PopupProps<any, any>, {}, {}, Pick<InputHTMLAttributes, "onFocus" | "onBlur"> & FooterProps<any> & PopupPanelProps<any> & {
+    panelRender?: SharedPickerProps["panelRender"];
+    presets: ValueDate<any>[];
+    onPresetHover: (presetValue: any) => void;
+    onPresetSubmit: (presetValue: any) => void;
+    activeInfo?: [activeInputLeft: number, activeInputRight: number, selectorWidth: number];
+    direction?: "ltr" | "rtl";
+    defaultOpenValue: any;
+    needConfirm: boolean | undefined;
+    isInvalid: (date: any) => boolean;
+    onOk: VoidFunction;
+    onPanelMouseDown?: MouseEventHandler;
+    classNames?: SharedPickerProps["classNames"];
+    styles?: SharedPickerProps["styles"];
+} & {}, import('vue').PublicProps>;
+export default Popup;

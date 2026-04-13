@@ -1,0 +1,25 @@
+{
+    "name": "@types/json-bigint",
+    "version": "1.0.4",
+    "description": "TypeScript definitions for json-bigint",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/json-bigint",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "yamachu",
+            "githubUsername": "yamachu",
+            "url": "https://github.com/yamachu"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/json-bigint"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "f90144d9ad84206e64f9d12af7aee5b1f820d30bb9ac3ff5a281a94409f6482d",
+    "typeScriptVersion": "4.5"
+}

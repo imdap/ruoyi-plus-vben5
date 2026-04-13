@@ -1,0 +1,12 @@
+import { AggregationColor } from "../color.js";
+import * as vue984 from "vue";
+
+//#region src/color-picker/components/ColorHsbInput.d.ts
+interface ColorHsbInputProps {
+  prefixCls: string;
+  value?: AggregationColor;
+  onChange?: (value: AggregationColor) => void;
+}
+declare const _default: vue984.DefineSetupFnComponent<ColorHsbInputProps, {}, {}, ColorHsbInputProps & {}, vue984.PublicProps>;
+//#endregion
+export { ColorHsbInputProps, _default as default };

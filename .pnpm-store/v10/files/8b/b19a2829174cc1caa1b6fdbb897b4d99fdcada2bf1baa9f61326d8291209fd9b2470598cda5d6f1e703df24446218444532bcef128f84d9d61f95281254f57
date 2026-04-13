@@ -1,0 +1,18 @@
+import { AnyObject, EmptyEmit } from "../_util/type.js";
+import { ColumnType } from "./interface.js";
+import * as vue943 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/table/Column.d.ts
+interface ColumnProps<RecordType = AnyObject> extends ColumnType<RecordType> {
+  children?: null;
+}
+interface ColumnSlots {
+  default?: () => any;
+}
+/**
+ * Syntactic sugar for `columns` prop. HOC will not work on this.
+ */
+declare const Column: vue943.DefineSetupFnComponent<ColumnProps<AnyObject>, EmptyEmit, SlotsType<ColumnSlots>, ColumnProps<AnyObject>, vue943.PublicProps>;
+//#endregion
+export { ColumnProps, ColumnSlots, Column as default };

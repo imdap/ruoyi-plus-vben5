@@ -1,0 +1,13 @@
+import { CSSProperties } from "vue";
+import * as vue_jsx_runtime4 from "vue/jsx-runtime";
+
+//#region src/_util/PurePanel.d.ts
+interface BaseProps {
+  prefixCls?: string;
+  style?: CSSProperties;
+  open?: boolean;
+}
+declare function withPureRenderTheme(Component: any): (props: any) => vue_jsx_runtime4.JSX.Element;
+declare function genPurePanel(Component: any, alignPropName?: 'align' | 'dropdownAlign' | 'popupAlign', postProps?: (props: any) => any, defaultPrefixCls?: string, getDropdownCls?: (prefixCls: string) => string): (props: any) => vue_jsx_runtime4.JSX.Element;
+//#endregion
+export { BaseProps, genPurePanel as default, withPureRenderTheme };

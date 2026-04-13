@@ -1,0 +1,62 @@
+import { AnyObject, EmptyObject, ValidChar } from "../type.js";
+import * as vue204 from "vue";
+import { CSSProperties, Ref } from "vue";
+
+//#region src/_util/hooks/useMergeSemantic.d.ts
+type SemanticSchema = {
+  _default?: string;
+} & {
+  [key: `${ValidChar}${string}`]: SemanticSchema;
+};
+type SemanticClassNames<Name extends string> = Partial<Record<Name, string>>;
+type SemanticStyles<Name extends string> = Partial<Record<Name, CSSProperties>>;
+type Resolvable<T, P extends AnyObject> = T | ((info: {
+  props: P;
+}) => T);
+type SemanticType<P = any, T = any> = T | ((info: {
+  props: P;
+}) => T);
+type SemanticClassNamesType<Props extends AnyObject, SemanticClassNames extends { [K in keyof SemanticClassNames]?: string }, NestedStructure extends EmptyObject = EmptyObject> = Resolvable<Readonly<SemanticClassNames>, Props> & NestedStructure;
+type SemanticStylesType<Props extends AnyObject, SemanticStyles extends { [K in keyof SemanticStyles]?: CSSProperties }, NestedStructure extends EmptyObject = EmptyObject> = Resolvable<Readonly<SemanticStyles>, Props> & NestedStructure;
+declare function mergeClassNames<Name extends string, SemanticClassNames extends Partial<Record<Name, any>>>(schema?: SemanticSchema, ...classNames: (SemanticClassNames | undefined)[]): SemanticClassNames;
+declare function mergeStyles<StylesType extends AnyObject>(...styles: (Partial<StylesType> | undefined)[]): Record<PropertyKey, CSSProperties>;
+declare function resolveStyleOrClass<T extends AnyObject>(value: T | ((config: any) => T), info: {
+  props: AnyObject;
+}): T;
+type MaybeFn<T, P> = T | ((info: {
+  props: P;
+}) => T) | undefined;
+type ObjectOnly<T> = T extends ((...args: any) => any) ? never : T;
+/**
+ * @desc Merge classNames and styles from multiple sources. When `schema` is provided, it **must** provide the nest object structure.
+ * @descZH 合并来自多个来源的 classNames 和 styles，当提供了 `schema` 时，必须提供嵌套的对象结构。
+ */
+/**
+ * @desc Merge classNames and styles from multiple sources. When `schema` is provided, it **must** provide the nest object structure.
+ * @descZH 合并来自多个来源的 classNames 和 styles，当提供了 `schema` 时，必须提供嵌套的对象结构。
+ */
+declare function useMergeSemantic<ClassNamesType extends AnyObject, StylesType extends AnyObject, Props extends AnyObject>(classNamesList: Ref<MaybeFn<ClassNamesType, Props>[]>, stylesList: Ref<MaybeFn<StylesType, Props>[]>, info: Ref<{
+  props: Props;
+}>, schema?: Ref<SemanticSchema>): readonly [vue204.ComputedRef<ObjectOnly<ClassNamesType>>, vue204.ComputedRef<ObjectOnly<StylesType>>];
+declare function useMergeSemanticNoRef<ClassNamesType extends AnyObject, StylesType extends AnyObject, Props extends AnyObject>(classNamesList: MaybeFn<ClassNamesType, Props>[], stylesList: MaybeFn<StylesType, Props>[], info: {
+  props: Props;
+}, schema?: SemanticSchema): readonly [ObjectOnly<ClassNamesType>, ObjectOnly<StylesType>];
+declare function useToArr<T = any>(...args: Ref<T | undefined>[]): vue204.ComputedRef<(T | undefined)[]>;
+declare function useToProps<T>(props: Ref<T>): vue204.ComputedRef<{
+  props: T;
+}>;
+interface RemoveBaseAttributesOptions {
+  class?: boolean;
+  style?: boolean;
+  omit?: string[];
+}
+declare function pureAttrs(attrs: Record<string, any>, options?: RemoveBaseAttributesOptions): Omit<{
+  [x: string]: any;
+}, string>;
+declare function getAttrStyleAndClass(attrs: Record<string, any>, options?: RemoveBaseAttributesOptions, props?: Record<string, any>): {
+  className: any;
+  style: any;
+  restAttrs: Record<string, any>;
+};
+//#endregion
+export { Resolvable, SemanticClassNames, SemanticClassNamesType, SemanticSchema, SemanticStyles, SemanticStylesType, SemanticType, getAttrStyleAndClass, mergeClassNames, mergeStyles, pureAttrs, resolveStyleOrClass, useMergeSemantic, useMergeSemanticNoRef, useToArr, useToProps };

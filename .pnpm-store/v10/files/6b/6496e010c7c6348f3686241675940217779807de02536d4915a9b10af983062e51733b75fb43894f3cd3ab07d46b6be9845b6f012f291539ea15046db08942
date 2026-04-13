@@ -1,0 +1,20 @@
+import { VueNode } from "../_util/type.js";
+import { CellSemanticClassNames, CellSemanticStyles } from "./DescriptionsContext.js";
+import * as vue587 from "vue";
+
+//#region src/descriptions/Cell.d.ts
+interface CellProps {
+  itemPrefixCls: string;
+  span: number;
+  component: string;
+  classes?: CellSemanticClassNames;
+  styles?: CellSemanticStyles;
+  bordered?: boolean;
+  label?: VueNode;
+  content?: VueNode;
+  type?: 'label' | 'content' | 'item';
+  colon?: boolean;
+}
+declare const Cell: vue587.DefineSetupFnComponent<CellProps, {}, {}, CellProps & {}, vue587.PublicProps>;
+//#endregion
+export { CellProps, Cell as default };

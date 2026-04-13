@@ -1,0 +1,1 @@
+{"version":3,"file":"WebSocketReadyStateEnum.d.ts","sourceRoot":"","sources":["../../src/web-socket/WebSocketReadyStateEnum.ts"],"names":[],"mappings":"AAAA,aAAK,uBAAuB;IAC3B,UAAU,IAAI;IACd,IAAI,IAAI;IACR,OAAO,IAAI;IACX,MAAM,IAAI;CACV;AAED,eAAe,uBAAuB,CAAC"}

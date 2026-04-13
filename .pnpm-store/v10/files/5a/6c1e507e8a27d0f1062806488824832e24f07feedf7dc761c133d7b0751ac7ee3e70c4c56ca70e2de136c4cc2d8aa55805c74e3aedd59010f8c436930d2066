@@ -1,0 +1,39 @@
+import { ConfigProviderEmits, ConfigProviderProps as ConfigProviderProps$1, ConfigProviderSlots } from "./define.js";
+import { useExportConfig } from "./hooks/useConfig.js";
+import { CSPConfig, Theme, ThemeConfig, useConfig } from "./context.js";
+import * as vue60 from "vue";
+import { AppContext, SlotsType, VNodeChild } from "vue";
+
+//#region src/config-provider/index.d.ts
+interface ConfigProviderEmitsProps {
+  [key: string]: ConfigProviderEmits[string];
+}
+type holderRenderType = (children: VNodeChild) => VNodeChild;
+interface GlobalConfigProps {
+  prefixCls?: string;
+  iconPrefixCls?: string;
+  theme?: Theme | ThemeConfig;
+  holderRender?: holderRenderType;
+  appContext?: AppContext;
+}
+declare function getGlobalIconPrefixCls(): string;
+interface InternalConfigProviderProps extends ConfigProviderProps$1, ConfigProviderEmitsProps {}
+declare const ConfigProvider: vue60.DefineSetupFnComponent<InternalConfigProviderProps, ConfigProviderEmits, SlotsType<ConfigProviderSlots>, InternalConfigProviderProps & {
+  [x: `on${Capitalize<string>}`]: ((...args: any[] | unknown[]) => any) | undefined;
+}, vue60.PublicProps>;
+declare const _default: typeof ConfigProvider & {
+  config: (props: GlobalConfigProps) => void;
+  useConfig: typeof useExportConfig;
+};
+type ConfigProviderProps = InternalConfigProviderProps;
+declare function globalConfig(): {
+  getPrefixCls: (suffixCls?: string, customizePrefixCls?: string) => string;
+  getIconPrefixCls: typeof getGlobalIconPrefixCls;
+  getRootPrefixCls: () => string;
+  getTheme: () => Theme | ThemeConfig;
+  theme: vue60.ComputedRef<Theme | ThemeConfig>;
+  holderRender: holderRenderType | undefined;
+  readonly appContext: AppContext | undefined;
+};
+//#endregion
+export { type CSPConfig, ConfigProviderProps, GlobalConfigProps, InternalConfigProviderProps, _default as default, globalConfig, useConfig, useExportConfig };

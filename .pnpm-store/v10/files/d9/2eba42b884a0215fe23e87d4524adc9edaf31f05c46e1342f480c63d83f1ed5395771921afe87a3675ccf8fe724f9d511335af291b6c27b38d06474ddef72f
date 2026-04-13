@@ -1,0 +1,74 @@
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { InputStatus } from "../_util/statusUtils.js";
+import { ComponentBaseProps, Variant } from "../config-provider/context.js";
+import * as vue1014 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { InputProps } from "@v-c/input";
+import { TextAreaProps as TextAreaProps$1, TextAreaRef as TextAreaRef$1 } from "@v-c/textarea";
+
+//#region src/input/TextArea.d.ts
+type TextAreaSemanticName = keyof TextAreaSemanticClassNames & keyof TextAreaSemanticStyles;
+interface TextAreaSemanticClassNames {
+  root?: string;
+  textarea?: string;
+  count?: string;
+}
+interface TextAreaSemanticStyles {
+  root?: CSSProperties;
+  textarea?: CSSProperties;
+  count?: CSSProperties;
+}
+type TextAreaClassNamesType = SemanticClassNamesType<TextAreaProps, TextAreaSemanticClassNames>;
+type TextAreaStylesType = SemanticStylesType<TextAreaProps, TextAreaSemanticStyles>;
+interface TextAreaRef extends Pick<TextAreaRef$1, 'focus' | 'blur'> {
+  resizableTextArea?: TextAreaRef$1['resizableTextArea'];
+  nativeElement: TextAreaRef$1['nativeElement'] | null;
+}
+type InputTextAreaRef = TextAreaRef;
+interface TextAreaProps extends ComponentBaseProps, Omit<TextAreaProps$1, 'classNames' | 'styles' | 'onChange' | 'onFocus' | 'onBlur' | 'onCompositionStart' | 'onCompositionEnd' | 'onKeydown' | 'onPressEnter' | 'onResize' | 'maxLength' | 'readOnly' | 'minLength'>, TextAreaEmitsProps {
+  /** @deprecated Use `variant` instead */
+  bordered?: boolean;
+  size?: SizeType;
+  status?: InputStatus;
+  /** @since 5.13.0 */
+  variant?: Variant;
+  classes?: TextAreaClassNamesType;
+  styles?: TextAreaStylesType;
+  rows?: number;
+  maxlength?: number;
+  minlength?: number;
+  readonly?: boolean;
+  showCount?: InputProps['showCount'];
+}
+interface TextAreaEmits {
+  'pressEnter': NonNullable<TextAreaProps$1['onPressEnter']>;
+  'change': NonNullable<TextAreaProps$1['onChange']>;
+  'focus': (e: FocusEvent) => void;
+  'blur': (e: FocusEvent) => void;
+  'resize': NonNullable<TextAreaProps$1['onResize']>;
+  'keydown': (e: KeyboardEvent) => void;
+  'compositionstart': (e: CompositionEvent) => void;
+  'compositionend': (e: CompositionEvent) => void;
+  'mousedown': (e: MouseEvent) => void;
+  'update:value': (value?: string | number) => void;
+}
+interface TextAreaEmitsProps {
+  onPressEnter?: TextAreaEmits['pressEnter'];
+  onChange?: TextAreaEmits['change'];
+  onFocus?: TextAreaEmits['focus'];
+  onBlur?: TextAreaEmits['blur'];
+  onResize?: TextAreaEmits['resize'];
+  onKeydown?: TextAreaEmits['keydown'];
+  onCompositionstart?: TextAreaEmits['compositionstart'];
+  onCompositionend?: TextAreaEmits['compositionend'];
+  onMousedown?: TextAreaEmits['mousedown'];
+  'onUpdate:value'?: TextAreaEmits['update:value'];
+}
+interface TextAreaSlots {
+  default?: () => any;
+}
+declare const InternalTextArea: vue1014.DefineSetupFnComponent<TextAreaProps, TextAreaEmits, SlotsType<TextAreaSlots>, TextAreaProps, vue1014.PublicProps>;
+//#endregion
+export { InputTextAreaRef, TextAreaClassNamesType, TextAreaEmits, TextAreaEmitsProps, TextAreaProps, TextAreaRef, TextAreaSemanticClassNames, TextAreaSemanticName, TextAreaSemanticStyles, TextAreaSlots, TextAreaStylesType, InternalTextArea as default };

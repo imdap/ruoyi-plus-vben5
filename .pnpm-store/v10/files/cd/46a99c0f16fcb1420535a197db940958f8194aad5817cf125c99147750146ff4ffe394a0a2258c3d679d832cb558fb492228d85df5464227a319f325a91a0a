@@ -1,0 +1,33 @@
+{
+	"name": "@iconify/icons-ri",
+	"description": "Iconify icon components for Remix Icon",
+	"version": "1.2.10",
+	"iconSetInfo": {
+		"name": "Remix Icon",
+		"total": 2537,
+		"version": "3.5.0",
+		"author": {
+			"name": "Remix Design",
+			"url": "https://github.com/Remix-Design/RemixIcon"
+		},
+		"license": {
+			"title": "Apache 2.0",
+			"spdx": "Apache-2.0",
+			"url": "https://github.com/Remix-Design/RemixIcon/blob/master/License"
+		},
+		"samples": [
+			"lock-2-line",
+			"mark-pen-fill",
+			"moon-line"
+		],
+		"height": 24,
+		"category": "General",
+		"palette": false
+	},
+	"homepage": "https://icon-sets.iconify.design/ri/",
+	"bugs": "https://github.com/iconify/icon-sets/issues",
+	"license": "Apache-2.0",
+	"dependencies": {
+		"@iconify/types": "*"
+	}
+}

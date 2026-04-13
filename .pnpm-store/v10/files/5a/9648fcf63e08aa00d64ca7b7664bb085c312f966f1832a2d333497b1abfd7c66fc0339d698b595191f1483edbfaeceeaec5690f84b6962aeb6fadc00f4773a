@@ -1,0 +1,25 @@
+{
+    "id": "terraform",
+    "version": "0.2",
+    "name": "Terraform",
+    "description": "Terraform dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "terraform",
+            "path": "./dict/terraform.txt",
+            "description": "Terraform dictionary."
+        }
+    ],
+    "languageSettings": [
+        {
+            "languageId": "terraform,tf,tfvars",
+            "locale": "*",
+            "includeRegExpList": [],
+            "ignoreRegExpList": [],
+            "patterns": [],
+            "dictionaries": ["terraform"]
+        }
+    ],
+    "overrides": [{ "filename": "**/*.tf", "languageId": "terraform" }]
+}

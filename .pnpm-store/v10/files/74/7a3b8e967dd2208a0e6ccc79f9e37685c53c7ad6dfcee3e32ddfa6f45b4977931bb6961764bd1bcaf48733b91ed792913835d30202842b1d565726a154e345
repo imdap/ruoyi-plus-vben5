@@ -1,0 +1,36 @@
+{
+    "id": "java",
+    "name": "Java",
+    "description": "Java dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "java",
+            "path": "./dict/java.trie",
+            "description": "Java dictionary."
+        }
+    ],
+    "patterns": [
+        {
+            "name": "java-statement-import",
+            "description": "Matches the import statement",
+            "pattern": "/^\\s*import\\s+[\\w.]+/gm"
+        },
+        {
+            "name": "java-member-function",
+            "description": "Ignore member functions etc, these are checked by the compiler.",
+            "pattern": "/(\\.\\w+)+(?=\\()/g"
+        }
+    ],
+    "languageSettings": [
+        {
+            "languageId": "java",
+            "locale": "*",
+            "includeRegExpList": [],
+            "ignoreRegExpList": ["java-statement-import", "java-member-function"],
+            "patterns": [],
+            "dictionaries": ["java"],
+            "dictionaryDefinitions": []
+        }
+    ]
+}

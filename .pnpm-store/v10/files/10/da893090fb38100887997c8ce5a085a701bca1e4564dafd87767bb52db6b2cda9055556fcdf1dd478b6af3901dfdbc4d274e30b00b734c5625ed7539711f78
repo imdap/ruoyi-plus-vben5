@@ -1,0 +1,5405 @@
+{
+  "version": "1.1.9",
+  "tags": [
+    {
+      "name": "a-affix",
+      "description": "(ZH) 将页面元素钉在可视范围。\n\n(EN) Stick an element to the viewport.",
+      "attributes": [
+        {
+          "name": "offset-top",
+          "description": "Default: 0\n\nOffset from the top of the viewport (in pixels)"
+        },
+        {
+          "name": "offset-bottom",
+          "description": "Default: -\n\nOffset from the bottom of the viewport (in pixels)"
+        },
+        {
+          "name": "target",
+          "description": "Default: () => window\n\nSpecifies the scrollable area DOM node"
+        }
+      ]
+    },
+    {
+      "name": "a-alert",
+      "description": "(ZH) 警告提示，展现需要关注的信息。\n\n(EN) Display warning messages that require attention.",
+      "attributes": [
+        {
+          "name": "type",
+          "description": "Default: info, in banner mode default is warning\n\nType of Alert styles, options: success, info, warning, error"
+        },
+        {
+          "name": "closable",
+          "description": "Default: false\n\nThe config of closable, >=5.15.0: support aria-*"
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\nContent of Alert"
+        },
+        {
+          "name": "message",
+          "description": "Default: -\n\nContent of Alert, please use title instead"
+        },
+        {
+          "name": "description",
+          "description": "Default: -\n\nAdditional content of Alert"
+        },
+        {
+          "name": "after-close",
+          "description": "Default: -\n\nCalled when close animation is finished, please use closable.afterClose instead"
+        },
+        {
+          "name": "show-icon",
+          "description": "Default: false, in banner mode default is true\n\nWhether to show icon"
+        },
+        {
+          "name": "role",
+          "description": "Default: -\n\nhttps://www.w3.org/TR/2014/REC-html5-20141028/dom.html#aria-role-attribute"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "banner",
+          "description": "Default: false\n\nWhether to show as banner"
+        },
+        {
+          "name": "icon",
+          "description": "Default: -\n\nCustom icon, effective when showIcon is true"
+        },
+        {
+          "name": "close-icon",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "action",
+          "description": "Default: -\n\nThe action of Alert"
+        },
+        {
+          "name": "id",
+          "description": "Default: -\n\n-"
+        }
+      ]
+    },
+    {
+      "name": "a-app",
+      "description": "(ZH) 提供重置样式和提供消费上下文的默认环境。\n\n(EN) Application wrapper for some global usages.",
+      "attributes": [
+        {
+          "name": "message",
+          "description": "Default: -\n\nGlobal config for Message"
+        },
+        {
+          "name": "notification",
+          "description": "Default: -\n\nGlobal config for Notification"
+        },
+        {
+          "name": "component",
+          "description": "Default: div\n\nConfig render element, iffalse will not create DOM node"
+        }
+      ]
+    },
+    {
+      "name": "a-anchor",
+      "description": "(ZH) 用于跳转到页面指定位置。\n\n(EN) Hyperlinks to scroll on one page.",
+      "attributes": [
+        {
+          "name": "affix",
+          "description": "Default: true\n\nFixed mode of Anchor"
+        },
+        {
+          "name": "bounds",
+          "description": "Default: 5\n\nBounding distance of anchor area"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "get-container",
+          "description": "Default: () => window\n\nScrolling container"
+        },
+        {
+          "name": "get-current-anchor",
+          "description": "Default: -\n\nCustomize the anchor highlight"
+        },
+        {
+          "name": "offset-top",
+          "description": "Default: -\n\nPixels to offset from top when calculating position of scroll"
+        },
+        {
+          "name": "show-ink-in-fixed",
+          "description": "Default: false\n\nWhether show ink-square when affix={false}"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "target-offset",
+          "description": "Default: -\n\nAnchor scroll offset, default as offsetTop, example"
+        },
+        {
+          "name": "items",
+          "description": "Default: -\n\nData configuration option content, support nesting through children"
+        },
+        {
+          "name": "direction",
+          "description": "Default: vertical\n\nSet Anchor direction"
+        },
+        {
+          "name": "replace",
+          "description": "Default: false\n\nReplace items' href in browser history instead of pushing it"
+        }
+      ]
+    },
+    {
+      "name": "a-badge",
+      "description": "(ZH) 图标右上角的圆形徽标数字。\n\n(EN) Small numerical value or status descriptor for UI elements.",
+      "attributes": [
+        {
+          "name": "count",
+          "description": "Default: -\n\nNumber to show in badge"
+        },
+        {
+          "name": "show-zero",
+          "description": "Default: false\n\nWhether to show badge when count is zero"
+        },
+        {
+          "name": "overflow-count",
+          "description": "Default: 99\n\nMax count to show"
+        },
+        {
+          "name": "dot",
+          "description": "Default: false\n\nWhether to display a red dot instead of count"
+        },
+        {
+          "name": "scroll-number-prefix-cls",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "status",
+          "description": "Default: -\n\nSet Badge as a status dot"
+        },
+        {
+          "name": "color",
+          "description": "Default: -\n\nCustomize Badge dot color"
+        },
+        {
+          "name": "text",
+          "description": "Default: -\n\nIf status is set, text sets the display text of the status dot"
+        },
+        {
+          "name": "size",
+          "description": "Default: -\n\nIf count is set, size sets the size of badge"
+        },
+        {
+          "name": "offset",
+          "description": "Default: -\n\nSet offset of the badge dot"
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\nText to show when hovering over the badge"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-breadcrumb",
+      "description": "(ZH) 显示当前页面在系统层级结构中的位置，并能向上返回。\n\n(EN) Display the current location within a hierarchy. And allow going back to states higher up in the hierarchy.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "dropdown-icon",
+          "description": "Default: -\n\nCustom dropdown icon"
+        },
+        {
+          "name": "item-render",
+          "description": "Default: -\n\nCustom item renderer, work with vue-router"
+        },
+        {
+          "name": "params",
+          "description": "Default: -\n\nRouting parameters"
+        },
+        {
+          "name": "items",
+          "description": "Default: -\n\nThe routing stack information of router"
+        },
+        {
+          "name": "separator",
+          "description": "Default: /\n\nCustom separator"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-button",
+      "description": "(ZH) 按钮用于开始一个即时操作。\n\n(EN) To trigger an operation.",
+      "attributes": [
+        {
+          "name": "auto-insert-space",
+          "description": "Default: true\n\nWe add a space between two Chinese characters by default. Set autoInsertSpace to false to disable."
+        },
+        {
+          "name": "block",
+          "description": "Default: false\n\nOption to fit button width to its parent width"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "color",
+          "description": "Default: -\n\nSet button color"
+        },
+        {
+          "name": "danger",
+          "description": "Default: false\n\nSyntactic sugar. Set the danger status of button. Will follow color if provided"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisabled state of button"
+        },
+        {
+          "name": "ghost",
+          "description": "Default: false\n\nMake background transparent and invert text and border colors"
+        },
+        {
+          "name": "href",
+          "description": "Default: -\n\nRedirect url of link button"
+        },
+        {
+          "name": "html-type",
+          "description": "Default: button\n\nSet the original html type of button, see: HTML Standard"
+        },
+        {
+          "name": "icon-placement",
+          "description": "Default: start\n\nSet the icon position of button"
+        },
+        {
+          "name": "loading",
+          "description": "Default: false\n\nSet the loading status of button"
+        },
+        {
+          "name": "shape",
+          "description": "Default: default\n\nCan be used to set button shape"
+        },
+        {
+          "name": "size",
+          "description": "Default: middle\n\nSet the size of button"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "target",
+          "description": "Default: -\n\nSame as target attribute of a, works when href is specified"
+        },
+        {
+          "name": "type",
+          "description": "Default: default\n\nSyntactic sugar. Set button type. Will follow variant & color if provided"
+        },
+        {
+          "name": "variant",
+          "description": "Default: -\n\nSet button variant"
+        }
+      ]
+    },
+    {
+      "name": "a-calendar",
+      "description": "(ZH) 按照日历形式展示数据的容器。\n\n(EN) A container that displays data in calendar form.",
+      "attributes": [
+        {
+          "name": "prefix-cls",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "locale",
+          "description": "Default: (default)\n\nThe calendar's locale"
+        },
+        {
+          "name": "valid-range",
+          "description": "Default: -\n\nTo set valid range"
+        },
+        {
+          "name": "disabled-date",
+          "description": "Default: -\n\nFunction that specifies the dates that cannot be selected, currentDate is same dayjs object as value prop which you shouldn't mutate it"
+        },
+        {
+          "name": "date-full-cell-render",
+          "description": "Default: -\n\nCustomize the display of the date cell, the returned content will override the cell"
+        },
+        {
+          "name": "date-cell-render",
+          "description": "Default: -\n\nDeprecated."
+        },
+        {
+          "name": "month-full-cell-render",
+          "description": "Default: -\n\nDeprecated."
+        },
+        {
+          "name": "month-cell-render",
+          "description": "Default: -\n\nDeprecated."
+        },
+        {
+          "name": "cell-render",
+          "description": "Default: -\n\nCustomize cell content"
+        },
+        {
+          "name": "full-cell-render",
+          "description": "Default: -\n\nCustomize cell content"
+        },
+        {
+          "name": "header-render",
+          "description": "Default: -\n\nRender custom header in panel"
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nThe current selected date, support v-model:value"
+        },
+        {
+          "name": "default-value",
+          "description": "Default: -\n\nThe date selected by default"
+        },
+        {
+          "name": "mode",
+          "description": "Default: month\n\nThe display mode of the calendar"
+        },
+        {
+          "name": "fullscreen",
+          "description": "Default: true\n\nWhether to display in full-screen"
+        },
+        {
+          "name": "show-week",
+          "description": "Default: false\n\nWhether to display week number"
+        }
+      ]
+    },
+    {
+      "name": "a-avatar",
+      "description": "(ZH) 用来代表用户或事物，支持图片、图标或字符展示。\n\n(EN) Used to represent users or things, supporting the display of images, icons, or characters.",
+      "attributes": [
+        {
+          "name": "shape",
+          "description": "Default: circle\n\nThe shape of avatar"
+        },
+        {
+          "name": "size",
+          "description": "Default: medium\n\nThe size of the avatar"
+        },
+        {
+          "name": "gap",
+          "description": "Default: 4\n\nLetter type unit distance between left and right sides"
+        },
+        {
+          "name": "src",
+          "description": "Default: -\n\nThe address of the image for an image avatar or image element"
+        },
+        {
+          "name": "src-set",
+          "description": "Default: -\n\nA list of sources to use for different screen resolutions"
+        },
+        {
+          "name": "draggable",
+          "description": "Default: true\n\nWhether the picture is allowed to be dragged"
+        },
+        {
+          "name": "icon",
+          "description": "Default: -\n\nCustom icon type for an icon avatar"
+        },
+        {
+          "name": "alt",
+          "description": "Default: -\n\nThis attribute defines the alternative text describing the image"
+        },
+        {
+          "name": "cross-origin",
+          "description": "Default: -\n\nCORS settings attributes"
+        },
+        {
+          "name": "on-error",
+          "description": "Default: -\n\nHandler when img load error, return false to prevent default fallback behavior"
+        }
+      ]
+    },
+    {
+      "name": "a-avatar-group",
+      "description": "(ZH) 用来代表用户或事物，支持图片、图标或字符展示。\n\n(EN) Used to represent users or things, supporting the display of images, icons, or characters.",
+      "attributes": [
+        {
+          "name": "prefix-cls",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "max",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "size",
+          "description": "Default: default\n\nThe size of the avatar"
+        },
+        {
+          "name": "shape",
+          "description": "Default: circle\n\nThe shape of avatar"
+        }
+      ]
+    },
+    {
+      "name": "a-auto-complete",
+      "description": "(ZH) 输入框自动完成功能。\n\n(EN) Autocomplete function of input field.",
+      "attributes": [
+        {
+          "name": "allow-clear",
+          "description": "Default: false\n\nShow clear button"
+        },
+        {
+          "name": "backfill",
+          "description": "Default: false\n\nIf backfill selected item the input when using keyboard"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "default-active-first-option",
+          "description": "Default: true\n\nWhether active first option by default"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nWhether disabled select"
+        },
+        {
+          "name": "get-popup-container",
+          "description": "Default: () => document.body\n\nParent node of the dropdown. Default to body, if you encountered positioning problems during scroll, try changing to the scrollable area and position relative to it"
+        },
+        {
+          "name": "not-found-content",
+          "description": "Default: -\n\nSpecify content to show when no result matches"
+        },
+        {
+          "name": "open",
+          "description": "Default: -\n\nControlled open state of dropdown"
+        },
+        {
+          "name": "options",
+          "description": "Default: -\n\nSelect options. Will get better perf than jsx definition"
+        },
+        {
+          "name": "placeholder",
+          "description": "Default: -\n\nThe placeholder of input"
+        },
+        {
+          "name": "popup-match-select-width",
+          "description": "Default: true\n\nDetermine whether the dropdown menu and the select input are the same width. Default set min-width same as input. Will ignore when value less than select width. false will disable virtual scroll"
+        },
+        {
+          "name": "popup-render",
+          "description": "Default: -\n\nCustomize dropdown content"
+        },
+        {
+          "name": "show-search",
+          "description": "Default: true\n\nSearch configuration"
+        },
+        {
+          "name": "size",
+          "description": "Default: -\n\nThe size of the input box"
+        },
+        {
+          "name": "status",
+          "description": "Default: -\n\nSet validation status"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nSelected option, support v-model:value"
+        },
+        {
+          "name": "variant",
+          "description": "Default: outlined\n\nVariants of input"
+        },
+        {
+          "name": "virtual",
+          "description": "Default: true\n\nDisable virtual scroll when set to false"
+        }
+      ]
+    },
+    {
+      "name": "a-card",
+      "description": "(ZH) 通用卡片容器。\n\n(EN) A container for displaying information.",
+      "attributes": [
+        {
+          "name": "title",
+          "description": "Default: -\n\nCard title"
+        },
+        {
+          "name": "extra",
+          "description": "Default: -\n\nContent to render in the top-right corner of the card"
+        },
+        {
+          "name": "bordered",
+          "description": "Default: true\n\nToggles rendering of the border around the card, please use variant instead"
+        },
+        {
+          "name": "head-style",
+          "description": "Default: -\n\nDeprecated."
+        },
+        {
+          "name": "body-style",
+          "description": "Default: -\n\nDeprecated."
+        },
+        {
+          "name": "loading",
+          "description": "Default: false\n\nShows a loading indicator while the contents of the card are being fetched"
+        },
+        {
+          "name": "hoverable",
+          "description": "Default: false\n\nLift up when hovering card"
+        },
+        {
+          "name": "id",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "size",
+          "description": "Default: default\n\nSize of card"
+        },
+        {
+          "name": "type",
+          "description": "Default: -\n\nCard style type, can be set to inner or not set"
+        },
+        {
+          "name": "cover",
+          "description": "Default: -\n\nCard cover"
+        },
+        {
+          "name": "actions",
+          "description": "Default: -\n\nThe action list, shows at the bottom of the Card"
+        },
+        {
+          "name": "tab-list",
+          "description": "Default: -\n\nList of TabPane's head"
+        },
+        {
+          "name": "tab-bar-extra-content",
+          "description": "Default: -\n\nExtra content in tab bar"
+        },
+        {
+          "name": "active-tab-key",
+          "description": "Default: -\n\nCurrent TabPane's key"
+        },
+        {
+          "name": "default-active-tab-key",
+          "description": "Default: The key of first tab\n\nInitial active TabPane's key, if activeTabKey is not set"
+        },
+        {
+          "name": "tab-props",
+          "description": "Default: -\n\nTabs"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "variant",
+          "description": "Default: outlined\n\nVariants of Card"
+        }
+      ]
+    },
+    {
+      "name": "a-card-grid",
+      "description": "(ZH) 通用卡片容器。\n\n(EN) A container for displaying information.",
+      "attributes": [
+        {
+          "name": "prefix-cls",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "hoverable",
+          "description": "Default: false\n\nLift up when hovering card"
+        }
+      ]
+    },
+    {
+      "name": "a-card-meta",
+      "description": "(ZH) 通用卡片容器。\n\n(EN) A container for displaying information.",
+      "attributes": [
+        {
+          "name": "prefix-cls",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "avatar",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\nCard title"
+        },
+        {
+          "name": "description",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-carousel",
+      "description": "(ZH) 一组轮播的区域。\n\n(EN) A set of carousel areas.",
+      "attributes": [
+        {
+          "name": "effect",
+          "description": "Default: scrollx\n\nTransition effect"
+        },
+        {
+          "name": "id",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "slick-go-to",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "dot-position",
+          "description": "Default: bottom\n\nThe position of the dots, which can be one of top bottom left right start end, Please use dotPlacement instead"
+        },
+        {
+          "name": "dot-placement",
+          "description": "Default: bottom\n\nThe position of the dots, which can be one of top bottom start end"
+        },
+        {
+          "name": "dots",
+          "description": "Default: true\n\nWhether to show the dots at the bottom of the gallery, object for dotsClass"
+        },
+        {
+          "name": "wait-for-animate",
+          "description": "Default: false\n\nWhether to wait for the animation when switching"
+        },
+        {
+          "name": "autoplay",
+          "description": "Default: false\n\nWhether to scroll automatically, you can specify autoplay=&#123;&#123; dotDuration: true &#125;&#125; to display the progress bar"
+        },
+        {
+          "name": "prev-arrow",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "next-arrow",
+          "description": "Default: -\n\n-"
+        }
+      ]
+    },
+    {
+      "name": "a-cascader",
+      "description": "(ZH) 级联选择框。\n\n(EN) Cascade selection box.",
+      "attributes": [
+        {
+          "name": "allow-clear",
+          "description": "Default: true\n\nShow clear button"
+        },
+        {
+          "name": "change-on-select",
+          "description": "Default: false\n\nChange value on each selection if set to true (always works when multiple is true)"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nWhether disabled select"
+        },
+        {
+          "name": "expand-trigger",
+          "description": "Default: click\n\nexpand current item when click or hover, one of click hover"
+        },
+        {
+          "name": "field-names",
+          "description": "Default: \\{ label: label, value: value, children: children \\}\n\nCustom field name for label and value and children"
+        },
+        {
+          "name": "get-popup-container",
+          "description": "Default: () => document.body\n\nParent Node which the selector should be rendered to. Default to body. When position issues happen, try to modify it into scrollable content and position it relative. example"
+        },
+        {
+          "name": "load-data",
+          "description": "Default: -\n\nTo load option lazily, and it cannot work with showSearch"
+        },
+        {
+          "name": "max-tag-count",
+          "description": "Default: -\n\nMax tag count to show. responsive will cost render performance"
+        },
+        {
+          "name": "max-tag-placeholder",
+          "description": "Default: -\n\nPlaceholder for not showing tags"
+        },
+        {
+          "name": "max-tag-text-length",
+          "description": "Default: -\n\nMax tag text length to show"
+        },
+        {
+          "name": "multiple",
+          "description": "Default: -\n\nSupport multiple or not"
+        },
+        {
+          "name": "open",
+          "description": "Default: -\n\nSet visible of cascader popup"
+        },
+        {
+          "name": "options",
+          "description": "Default: -\n\nThe data options of cascade"
+        },
+        {
+          "name": "placeholder",
+          "description": "Default: -\n\nThe input placeholder"
+        },
+        {
+          "name": "placement",
+          "description": "Default: bottomLeft\n\nUse preset popup align config from builtinPlacements"
+        },
+        {
+          "name": "popup-menu-column-style",
+          "description": "Default: -\n\nThe style of the drop-down menu column"
+        },
+        {
+          "name": "show-checked-strategy",
+          "description": "Default: Cascader.SHOW_PARENT\n\nThe way to show selected items in the box (only effective when multiple is true). Cascader.SHOW_CHILD: just show child treeNode. Cascader.SHOW_PARENT: just show parent treeNode (when all child treeNode under the parent treeNode are checked)"
+        },
+        {
+          "name": "show-search",
+          "description": "Default: false\n\nWhether show search input in single mode"
+        },
+        {
+          "name": "~~search-value~~",
+          "description": "Default: -\n\nSet search value, Need work with showSearch"
+        },
+        {
+          "name": "size",
+          "description": "Default: -\n\nThe input size"
+        },
+        {
+          "name": "status",
+          "description": "Default: -\n\nSet validation status"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nThe selected value, support v-model:value"
+        },
+        {
+          "name": "variant",
+          "description": "Default: outlined\n\nVariants of selector"
+        }
+      ]
+    },
+    {
+      "name": "a-collapse",
+      "description": "(ZH) 可以折叠/展开的内容区域。\n\n(EN) A content area which can be collapsed and expanded.",
+      "attributes": [
+        {
+          "name": "active-key",
+          "description": "Default: No default value. In accordion mode, it's the key of the first panel\n\nKey of the active panel"
+        },
+        {
+          "name": "default-active-key",
+          "description": "Default: -\n\nKey of the initial active panel"
+        },
+        {
+          "name": "accordion",
+          "description": "Default: false\n\nIf true, Collapse renders as Accordion"
+        },
+        {
+          "name": "destroy-on-hidden",
+          "description": "Default: false\n\nDestroy Inactive Panel"
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\nRoot container class"
+        },
+        {
+          "name": "bordered",
+          "description": "Default: true\n\nToggles rendering of the border around the collapse block"
+        },
+        {
+          "name": "expand-icon",
+          "description": "Default: -\n\nAllow to customize collapse icon"
+        },
+        {
+          "name": "expand-icon-placement",
+          "description": "Default: start\n\nSet expand icon placement"
+        },
+        {
+          "name": "ghost",
+          "description": "Default: false\n\nMake the collapse borderless and its background transparent"
+        },
+        {
+          "name": "size",
+          "description": "Default: middle\n\nSet the size of collapse"
+        },
+        {
+          "name": "collapsible",
+          "description": "Default: -\n\nSpecify how to trigger Collapse. Either by clicking icon or by clicking any area in header or disable collapse functionality itself"
+        },
+        {
+          "name": "label-render",
+          "description": "Default: -\n\nCustom render label"
+        },
+        {
+          "name": "content-render",
+          "description": "Default: -\n\nCustom render content"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "items",
+          "description": "Default: -\n\nCollapse items content"
+        }
+      ]
+    },
+    {
+      "name": "a-collapse-panel",
+      "description": "(ZH) 可以折叠/展开的内容区域。\n\n(EN) A content area which can be collapsed and expanded.",
+      "attributes": [
+        {
+          "name": "header",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "show-arrow",
+          "description": "Default: true\n\n-"
+        },
+        {
+          "name": "extra",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "collapsible",
+          "description": "Default: -\n\nSpecify how to trigger Collapse. Either by clicking icon or by clicking any area in header or disable collapse functionality itself"
+        }
+      ]
+    },
+    {
+      "name": "a-checkbox",
+      "description": "(ZH) 收集用户的多项选择。\n\n(EN) Collect user's choices.",
+      "attributes": [
+        {
+          "name": "checked",
+          "description": "Default: false\n\nSpecifies whether the checkbox is selected, support v-model:checked"
+        },
+        {
+          "name": "checked-value",
+          "description": "Default: true\n\nThe value when checked"
+        },
+        {
+          "name": "default-checked",
+          "description": "Default: false\n\nWhether to set the initial state"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nIf disable checkbox"
+        },
+        {
+          "name": "indeterminate",
+          "description": "Default: false\n\nThe indeterminate checked state of checkbox"
+        },
+        {
+          "name": "un-checked-value",
+          "description": "Default: false\n\nThe value when unchecked"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-checkbox-group",
+      "description": "(ZH) 收集用户的多项选择。\n\n(EN) Collect user's choices.",
+      "attributes": [
+        {
+          "name": "options",
+          "description": "Default: \\[]\n\nSpecifies options"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nIf disable all checkboxes"
+        },
+        {
+          "name": "name",
+          "description": "Default: -\n\nThe name property of all input[type=\"checkbox\"] children"
+        },
+        {
+          "name": "value",
+          "description": "Default: \\[]\n\nUsed for setting the currently selected value, support v-model:value"
+        },
+        {
+          "name": "label-render",
+          "description": "Default: -\n\n-"
+        }
+      ]
+    },
+    {
+      "name": "a-color-picker",
+      "description": "(ZH) 用于选择颜色。\n\n(EN) Used for color selection.",
+      "attributes": [
+        {
+          "name": "allow-clear",
+          "description": "Default: false\n\nAllow clearing color selected"
+        },
+        {
+          "name": "arrow",
+          "description": "Default: true\n\nConfiguration for popup arrow"
+        },
+        {
+          "name": "auto-adjust-overflow",
+          "description": "Default: -\n\nAuto adjust placement when popup is invisible"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "default-format",
+          "description": "Default: hex\n\nDefault format of color"
+        },
+        {
+          "name": "default-value",
+          "description": "Default: -\n\nDefault value of color"
+        },
+        {
+          "name": "destroy-on-hidden",
+          "description": "Default: false\n\nWhether destroy dom when close"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisable ColorPicker"
+        },
+        {
+          "name": "disabled-alpha",
+          "description": "Default: false\n\nDisable Alpha"
+        },
+        {
+          "name": "disabled-format",
+          "description": "Default: false\n\nDisable format of color"
+        },
+        {
+          "name": "format",
+          "description": "Default: -\n\nFormat of color, support v-model:format"
+        },
+        {
+          "name": "get-popup-container",
+          "description": "Default: -\n\nSpecify container for popup"
+        },
+        {
+          "name": "mode",
+          "description": "Default: single\n\nConfigure single or gradient color"
+        },
+        {
+          "name": "open",
+          "description": "Default: -\n\nWhether to show popup, support v-model:open"
+        },
+        {
+          "name": "placement",
+          "description": "Default: bottomLeft\n\nPlacement of popup"
+        },
+        {
+          "name": "presets",
+          "description": "Default: -\n\nPreset colors"
+        },
+        {
+          "name": "panel-render",
+          "description": "Default: -\n\nCustom Render Panel"
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\nRoot container class"
+        },
+        {
+          "name": "show-text",
+          "description": "Default: false\n\nShow color text"
+        },
+        {
+          "name": "size",
+          "description": "Default: middle\n\nSetting the trigger size"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "trigger",
+          "description": "Default: click\n\nColorPicker trigger mode"
+        },
+        {
+          "name": "value-format",
+          "description": "Default: -\n\nSet the output format of color value, supporting hex, rgb, and hsb. After setting, v-model:value returns strings in the selected format. Demo: Value Format"
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nValue of color, support v-model:value"
+        }
+      ]
+    },
+    {
+      "name": "a-localization",
+      "description": "To select or input a date.",
+      "attributes": []
+    },
+    {
+      "name": "a-common-api",
+      "description": "To select or input a date.",
+      "attributes": []
+    },
+    {
+      "name": "a-common-methods",
+      "description": "To select or input a date.",
+      "attributes": []
+    },
+    {
+      "name": "a-date-picker",
+      "description": "(ZH) 输入或选择日期的控件。\n\n(EN) To select or input a date.",
+      "attributes": []
+    },
+    {
+      "name": "a-date-picker[picker=year]",
+      "description": "(ZH) 输入或选择日期的控件。\n\n(EN) To select or input a date.",
+      "attributes": []
+    },
+    {
+      "name": "a-date-picker[picker=quarter]",
+      "description": "(ZH) 输入或选择日期的控件。\n\n(EN) To select or input a date.",
+      "attributes": []
+    },
+    {
+      "name": "a-date-picker[picker=month]",
+      "description": "(ZH) 输入或选择日期的控件。\n\n(EN) To select or input a date.",
+      "attributes": []
+    },
+    {
+      "name": "a-date-picker[picker=week]",
+      "description": "(ZH) 输入或选择日期的控件。\n\n(EN) To select or input a date.",
+      "attributes": []
+    },
+    {
+      "name": "a-range-picker",
+      "description": "(ZH) 输入或选择日期的控件。\n\n(EN) To select or input a date.",
+      "attributes": []
+    },
+    {
+      "name": "a-国际化配置",
+      "description": "输入或选择日期的控件。",
+      "attributes": []
+    },
+    {
+      "name": "a-共同的-api",
+      "description": "输入或选择日期的控件。",
+      "attributes": []
+    },
+    {
+      "name": "a-共同的方法",
+      "description": "输入或选择日期的控件。",
+      "attributes": []
+    },
+    {
+      "name": "a-config-provider",
+      "description": "(ZH) 为组件提供统一的全局化配置。\n\n(EN) Provide a uniform configuration support for components.",
+      "attributes": [
+        {
+          "name": "component-disabled",
+          "description": "Default: -\n\nConfig antd component disabled"
+        },
+        {
+          "name": "component-size",
+          "description": "Default: -\n\nConfig antd component size"
+        },
+        {
+          "name": "csp",
+          "description": "Default: -\n\nSet Content Security Policy config"
+        },
+        {
+          "name": "direction",
+          "description": "Default: ltr\n\nSet direction of layout. See demo"
+        },
+        {
+          "name": "get-popup-container",
+          "description": "Default: () => document.body\n\nTo set the container of the popup element. The default is to create a div element in body"
+        },
+        {
+          "name": "get-target-container",
+          "description": "Default: () => window\n\nConfig Affix, Anchor scroll target container"
+        },
+        {
+          "name": "icon-prefix-cls",
+          "description": "Default: anticon\n\nSet icon prefix className"
+        },
+        {
+          "name": "locale",
+          "description": "Default: -\n\nLanguage package setting, you can find the packages in antd/locale"
+        },
+        {
+          "name": "popup-match-select-width",
+          "description": "Default: -\n\nDetermine whether the dropdown menu and the select input are the same width. Default set min-width same as input. Will ignore when value less than select width. false will disable virtual scroll"
+        },
+        {
+          "name": "popup-overflow",
+          "description": "Default: viewport\n\nSelect like component popup logic. Can set to show in viewport or follow window scroll"
+        },
+        {
+          "name": "prefix-cls",
+          "description": "Default: ant\n\nSet prefix className"
+        },
+        {
+          "name": "render-empty",
+          "description": "Default: -\n\nSet empty content of components. Ref Empty"
+        },
+        {
+          "name": "theme",
+          "description": "Default: -\n\nSet theme, ref Customize Theme"
+        },
+        {
+          "name": "variant",
+          "description": "Default: -\n\nSet variant of data entry components"
+        },
+        {
+          "name": "virtual",
+          "description": "Default: -\n\nDisable virtual scroll when set to false"
+        },
+        {
+          "name": "warning",
+          "description": "Default: -\n\nConfig warning level, when strict is false, it will aggregate deprecated information into a single message"
+        }
+      ]
+    },
+    {
+      "name": "a-descriptions",
+      "description": "(ZH) 展示多个只读字段的组合。\n\n(EN) Display multiple read-only fields in a group.",
+      "attributes": [
+        {
+          "name": "bordered",
+          "description": "Default: false\n\nWhether to display the border"
+        },
+        {
+          "name": "size",
+          "description": "Default: -\n\nSet the size of the list. Can be set to middle,small, or not filled"
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\nThe title of the description list, placed at the top"
+        },
+        {
+          "name": "extra",
+          "description": "Default: -\n\nThe action area of the description list, placed at the top-right"
+        },
+        {
+          "name": "label-render",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "content-render",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "column",
+          "description": "Default: {xxxl: 4,xxl: 3,xl: 3,lg: 3,md: 3,sm: 2,xs: 1}\n\nThe number of DescriptionItems in a row, could be a number or a responsive object like { xs: 8, sm: 16, md: 24}"
+        },
+        {
+          "name": "layout",
+          "description": "Default: horizontal\n\nDefine description layout"
+        },
+        {
+          "name": "colon",
+          "description": "Default: true\n\nChange default props colon value of Descriptions.Item. Indicates whether the colon after the label is displayed"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "items",
+          "description": "Default: -\n\nDescribe the contents of the list item"
+        },
+        {
+          "name": "id",
+          "description": "Default: -\n\n-"
+        }
+      ]
+    },
+    {
+      "name": "a-divider",
+      "description": "(ZH) 区隔内容的分割线。\n\n(EN) A divider line separates different content.",
+      "attributes": [
+        {
+          "name": "dashed",
+          "description": "Default: false\n\nWhether line is dashed"
+        },
+        {
+          "name": "orientation",
+          "description": "Default: horizontal\n\nWhether line is horizontal or vertical"
+        },
+        {
+          "name": "plain",
+          "description": "Default: true\n\nDivider text show as plain style"
+        },
+        {
+          "name": "size",
+          "description": "Default: -\n\nThe size of divider. Only valid for horizontal layout"
+        },
+        {
+          "name": "title-placement",
+          "description": "Default: center\n\nThe position of title inside divider"
+        },
+        {
+          "name": "variant",
+          "description": "Default: solid\n\nWhether line is dashed, dotted or solid"
+        },
+        {
+          "name": "vertical",
+          "description": "Default: false\n\nOrientation, Simultaneously configure with orientation and prioritize orientation"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-drawer",
+      "description": "(ZH) 屏幕边缘滑出的浮层面板。\n\n(EN) A panel that slides out from the edge of the screen.",
+      "attributes": [
+        {
+          "name": "after-open-change",
+          "description": "Default: -\n\nCallback after the animation ends when switching drawers"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the Drawer component. Supports object or function."
+        },
+        {
+          "name": "closable",
+          "description": "Default: true\n\nWhether to show a close button. The position can be configured with placement"
+        },
+        {
+          "name": "close-icon",
+          "description": "Default: -\n\nCustom close icon"
+        },
+        {
+          "name": "~~destroy-on-close~~",
+          "description": "Default: false\n\nWhether to unmount child components on closing drawer or not"
+        },
+        {
+          "name": "destroy-on-hidden",
+          "description": "Default: false\n\nWhether to unmount child components on closing drawer or not"
+        },
+        {
+          "name": "extra",
+          "description": "Default: -\n\nExtra actions area at corner"
+        },
+        {
+          "name": "footer",
+          "description": "Default: -\n\nThe footer for Drawer"
+        },
+        {
+          "name": "force-render",
+          "description": "Default: false\n\nPre-render Drawer component forcibly"
+        },
+        {
+          "name": "get-container",
+          "description": "Default: document.body\n\nMounted node and display window for Drawer"
+        },
+        {
+          "name": "keyboard",
+          "description": "Default: true\n\nWhether support press esc to close"
+        },
+        {
+          "name": "loading",
+          "description": "Default: false\n\nShow the Skeleton"
+        },
+        {
+          "name": "mask",
+          "description": "Default: true\n\nMask effect"
+        },
+        {
+          "name": "mask-closable",
+          "description": "Default: true\n\nClicking on the mask (area outside the Drawer) to close the Drawer or not"
+        },
+        {
+          "name": "placement",
+          "description": "Default: right\n\nThe placement of the Drawer"
+        },
+        {
+          "name": "push",
+          "description": "Default: \\{ distance: 180 \\}\n\nNested drawers push behavior"
+        },
+        {
+          "name": "resizable",
+          "description": "Default: -\n\nEnable resizable by dragging"
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\nRoot container class"
+        },
+        {
+          "name": "root-style",
+          "description": "Default: -\n\nStyle of wrapper element which contains mask"
+        },
+        {
+          "name": "size",
+          "description": "Default: 'default'\n\nPreset size of drawer, default 378px and large 736px, or a custom number"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the Drawer component. Supports object or function."
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\nThe title for Drawer"
+        },
+        {
+          "name": "open",
+          "description": "Default: false\n\nWhether the Drawer dialog is visible or not, support v-model:open"
+        },
+        {
+          "name": "z-index",
+          "description": "Default: 1000\n\nThe z-index of the Drawer"
+        }
+      ]
+    },
+    {
+      "name": "a-dropdown",
+      "description": "(ZH) 向下弹出的列表。\n\n(EN) A dropdown list.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the Dropdown component. Supports object or function"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the Dropdown component. Supports object or function"
+        },
+        {
+          "name": "menu",
+          "description": "Default: -\n\nThe menu props"
+        },
+        {
+          "name": "auto-focus",
+          "description": "Default: -\n\nFocus the first menu item when opened"
+        },
+        {
+          "name": "arrow",
+          "description": "Default: false\n\nWhether the dropdown arrow should be visible. Supports pointAtCenter"
+        },
+        {
+          "name": "trigger",
+          "description": "Default: ['hover']\n\nThe trigger mode which executes the dropdown action. Note that hover can't be used on touchscreens"
+        },
+        {
+          "name": "popup-render",
+          "description": "Default: -\n\nCustomize popup content"
+        },
+        {
+          "name": "open",
+          "description": "Default: -\n\nWhether the dropdown menu is currently open"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: -\n\nWhether the dropdown menu is disabled"
+        },
+        {
+          "name": "destroy-on-hidden",
+          "description": "Default: false\n\nWhether destroy dropdown when hidden"
+        },
+        {
+          "name": "align",
+          "description": "Default: -\n\nPopup align config"
+        },
+        {
+          "name": "get-popup-container",
+          "description": "Default: () => document.body\n\nTo set the container of the dropdown menu. The default is to create a div element in body, but you can reset it to the scrolling area and make a relative reposition. Example on CodePen"
+        },
+        {
+          "name": "prefix-cls",
+          "description": "Default: -\n\nCustomize prefix class name"
+        },
+        {
+          "name": "transition-name",
+          "description": "Default: -\n\nMotion name of dropdown"
+        },
+        {
+          "name": "placement",
+          "description": "Default: bottomLeft\n\nPlacement of popup menu: bottom bottomLeft bottomRight top topLeft topRight"
+        },
+        {
+          "name": "force-render",
+          "description": "Default: -\n\nForce render dropdown overlay"
+        },
+        {
+          "name": "mouse-enter-delay",
+          "description": "Default: 0.15\n\nDelay in seconds before showing dropdown"
+        },
+        {
+          "name": "mouse-leave-delay",
+          "description": "Default: 0.1\n\nDelay in seconds before hiding dropdown"
+        },
+        {
+          "name": "open-class-name",
+          "description": "Default: -\n\nClass added to trigger when dropdown is open"
+        },
+        {
+          "name": "auto-adjust-overflow",
+          "description": "Default: true\n\nWhether to adjust dropdown placement automatically when dropdown is off screen"
+        }
+      ]
+    },
+    {
+      "name": "a-empty",
+      "description": "(ZH) 空状态时的展示占位图。\n\n(EN) Empty state placeholder.",
+      "attributes": [
+        {
+          "name": "vertical",
+          "description": "Default: false\n\nIs direction of the flex vertical, use flex-direction: column"
+        },
+        {
+          "name": "wrap",
+          "description": "Default: nowrap\n\nSet whether the element is displayed in a single line or in multiple lines"
+        },
+        {
+          "name": "justify",
+          "description": "Default: normal\n\nSets the alignment of elements in the direction of the main axis"
+        },
+        {
+          "name": "align",
+          "description": "Default: normal\n\nSets the alignment of elements in the direction of the cross axis"
+        },
+        {
+          "name": "flex",
+          "description": "Default: normal\n\nflex CSS shorthand properties"
+        },
+        {
+          "name": "gap",
+          "description": "Default: -\n\nSets the gap between grids"
+        },
+        {
+          "name": "component",
+          "description": "Default: div\n\ncustom element type"
+        }
+      ]
+    },
+    {
+      "name": "a-flex",
+      "description": "用于对齐的弹性布局容器。",
+      "attributes": []
+    },
+    {
+      "name": "a-float-button-group",
+      "description": "(ZH) 悬浮于页面上方的按钮。\n\n(EN) A button that floats at the top of the page.",
+      "attributes": [
+        {
+          "name": "shape",
+          "description": "Default: circle\n\nSetting button shape of children"
+        },
+        {
+          "name": "trigger",
+          "description": "Default: -\n\nWhich action can trigger menu open/close"
+        },
+        {
+          "name": "open",
+          "description": "Default: -\n\nWhether the menu is visible or not, use it with trigger"
+        },
+        {
+          "name": "close-icon",
+          "description": "Default: -\n\nCustomize close button icon"
+        },
+        {
+          "name": "placement",
+          "description": "Default: top\n\nCustomize menu animation placement"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-float-button",
+      "description": "(ZH) 悬浮于页面上方的按钮。\n\n(EN) A button that floats at the top of the page.",
+      "attributes": [
+        {
+          "name": "icon",
+          "description": "Default: -\n\nSet the icon component of button"
+        },
+        {
+          "name": "content",
+          "description": "Default: -\n\nText and other"
+        },
+        {
+          "name": "~~description~~",
+          "description": "Default: -\n\nPlease use content instead"
+        },
+        {
+          "name": "tooltip",
+          "description": "Default: -\n\nThe text shown in the tooltip"
+        },
+        {
+          "name": "type",
+          "description": "Default: default\n\nSetting button type"
+        },
+        {
+          "name": "shape",
+          "description": "Default: circle\n\nSetting button shape"
+        },
+        {
+          "name": "href",
+          "description": "Default: -\n\nThe target of hyperlink"
+        },
+        {
+          "name": "target",
+          "description": "Default: -\n\nSpecifies where to display the linked URL"
+        },
+        {
+          "name": "html-type",
+          "description": "Default: button\n\nSet the original html type of button, see: MDN"
+        },
+        {
+          "name": "badge",
+          "description": "Default: -\n\nAttach Badge to FloatButton. status and other props related are not supported."
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-float-back-top",
+      "description": "(ZH) 悬浮于页面上方的按钮。\n\n(EN) A button that floats at the top of the page.",
+      "attributes": [
+        {
+          "name": "duration",
+          "description": "Default: 450\n\nTime to return to top（ms）"
+        },
+        {
+          "name": "target",
+          "description": "Default: -\n\nSpecifies where to display the linked URL"
+        },
+        {
+          "name": "visibility-height",
+          "description": "Default: 400\n\nThe BackTop button will not show until the scroll height reaches this value"
+        },
+        {
+          "name": "badge",
+          "description": "Default: -\n\nAttach Badge to FloatButton. status and other props related are not supported."
+        },
+        {
+          "name": "html-type",
+          "description": "Default: button\n\nSet the original html type of button, see: MDN"
+        },
+        {
+          "name": "aria-label",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "style",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-row",
+      "description": "(ZH) 24 栅格系统。\n\n(EN) 24 Grids System.",
+      "attributes": [
+        {
+          "name": "align",
+          "description": "Default: top\n\nVertical alignment"
+        },
+        {
+          "name": "gutter",
+          "description": "Default: 0\n\nSpacing between grids, could be a string CSS units or a object like { xs: 8, sm: 16, md: 24}. Or you can use array to make horizontal and vertical spacing work at the same time [horizontal, vertical]"
+        },
+        {
+          "name": "justify",
+          "description": "Default: start\n\nHorizontal arrangement"
+        },
+        {
+          "name": "wrap",
+          "description": "Default: true\n\nAuto wrap line"
+        }
+      ]
+    },
+    {
+      "name": "a-col",
+      "description": "(ZH) 24 栅格系统。\n\n(EN) 24 Grids System.",
+      "attributes": [
+        {
+          "name": "flex",
+          "description": "Default: -\n\nFlex layout style"
+        },
+        {
+          "name": "offset",
+          "description": "Default: 0\n\nThe number of cells to offset Col from the left"
+        },
+        {
+          "name": "order",
+          "description": "Default: 0\n\nRaster order"
+        },
+        {
+          "name": "pull",
+          "description": "Default: 0\n\nThe number of cells that raster is moved to the left"
+        },
+        {
+          "name": "push",
+          "description": "Default: 0\n\nThe number of cells that raster is moved to the right"
+        },
+        {
+          "name": "span",
+          "description": "Default: none\n\nRaster number of cells to occupy, 0 corresponds to display: none"
+        },
+        {
+          "name": "xs",
+          "description": "Default: -\n\nscreen < 576px and also default setting, could be a span value or an object containing above props"
+        },
+        {
+          "name": "sm",
+          "description": "Default: -\n\nscreen ≥ 576px, could be a span value or an object containing above props"
+        },
+        {
+          "name": "md",
+          "description": "Default: -\n\nscreen ≥ 768px, could be a span value or an object containing above props"
+        },
+        {
+          "name": "lg",
+          "description": "Default: -\n\nscreen ≥ 992px, could be a span value or an object containing above props"
+        },
+        {
+          "name": "xl",
+          "description": "Default: -\n\nscreen ≥ 1200px, could be a span value or an object containing above props"
+        },
+        {
+          "name": "xxl",
+          "description": "Default: -\n\nscreen ≥ 1600px, could be a span value or an object containing above props"
+        },
+        {
+          "name": "xxxl",
+          "description": "Default: -\n\nscreen ≥ 1920px, could be a span value or an object containing above props"
+        }
+      ]
+    },
+    {
+      "name": "a-form",
+      "description": "(ZH) 高性能表单控件，自带数据域管理。包含数据录入、校验以及对应样式。\n\n(EN) High-performance form component with data domain management. Includes data entry, validation, and corresponding styles.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "colon",
+          "description": "Default: true\n\nConfigure the default value of colon for Form.Item. Indicates whether the colon after the label is displayed (only effective when prop layout is horizontal)"
+        },
+        {
+          "name": "name",
+          "description": "Default: -\n\nForm name. Will be the prefix of Field id"
+        },
+        {
+          "name": "layout",
+          "description": "Default: horizontal\n\nForm layout"
+        },
+        {
+          "name": "label-align",
+          "description": "Default: right\n\nThe text align of label of all items"
+        },
+        {
+          "name": "label-wrap",
+          "description": "Default: false\n\nwhether label can be wrap"
+        },
+        {
+          "name": "label-col",
+          "description": "Default: -\n\nLabel layout, like Col component. Set span offset value like {span: 3, offset: 12} or sm: {span: 3, offset: 12}"
+        },
+        {
+          "name": "wrapper-col",
+          "description": "Default: -\n\nThe layout for input controls, same as labelCol"
+        },
+        {
+          "name": "feedback-icons",
+          "description": "Default: -\n\nCan be passed custom icons while Form.Item element has hasFeedback"
+        },
+        {
+          "name": "size",
+          "description": "Default: -\n\nSet field component size (antd components only)"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nSet form component disable, only available for antd components"
+        },
+        {
+          "name": "scroll-to-first-error",
+          "description": "Default: false\n\nAuto scroll to first failed field when submit"
+        },
+        {
+          "name": "required-mark",
+          "description": "Default: true\n\nRequired mark style. Can use required mark or optional mark. You can not config to single Form.Item since this is a Form level config"
+        },
+        {
+          "name": "variant",
+          "description": "Default: outlined\n\nVariant of components inside form"
+        },
+        {
+          "name": "validate-messages",
+          "description": "Default: -\n\nValidation prompt template, description see below"
+        },
+        {
+          "name": "model",
+          "description": "Default: -\n\nForm model"
+        },
+        {
+          "name": "rules",
+          "description": "Default: -\n\nForm rules"
+        },
+        {
+          "name": "validate-trigger",
+          "description": "Default: change\n\nConfig field validate trigger. When set to false, all interaction-driven validation is disabled even if a rule declares trigger or validateTrigger; validateFields and submit validation still run"
+        },
+        {
+          "name": "preserve",
+          "description": "Default: true\n\nKeep field value even when field removed. You can get the preserve field value by getFieldsValue(true)"
+        },
+        {
+          "name": "clear-on-destroy",
+          "description": "Default: false\n\nClear form values when the form is uninstalled"
+        },
+        {
+          "name": "validate-on-rule-change",
+          "description": "Default: false\n\nAutomatically revalidates the form when Form.rules changes"
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\nRoot container class"
+        },
+        {
+          "name": "prefix-cls",
+          "description": "Default: -\n\nPrefix class name"
+        }
+      ]
+    },
+    {
+      "name": "a-form-item",
+      "description": "(ZH) 高性能表单控件，自带数据域管理。包含数据录入、校验以及对应样式。\n\n(EN) High-performance form component with data domain management. Includes data entry, validation, and corresponding styles.",
+      "attributes": [
+        {
+          "name": "name",
+          "description": "Default: -\n\nField name"
+        },
+        {
+          "name": "label",
+          "description": "Default: -\n\nLabel text"
+        },
+        {
+          "name": "label-align",
+          "description": "Default: right\n\nThe text align of label"
+        },
+        {
+          "name": "label-col",
+          "description": "Default: -\n\nThe layout of label. If both Form and Form.Item exists, use Item first"
+        },
+        {
+          "name": "wrapper-col",
+          "description": "Default: -\n\nThe layout for input controls, same as labelCol"
+        },
+        {
+          "name": "colon",
+          "description": "Default: true\n\nUsed with label, whether to display : after label text"
+        },
+        {
+          "name": "extra",
+          "description": "Default: -\n\nThe extra prompt message"
+        },
+        {
+          "name": "help",
+          "description": "Default: -\n\nThe prompt message. If not provided, the prompt message will be generated by the validation rule"
+        },
+        {
+          "name": "has-feedback",
+          "description": "Default: false\n\nDisplay validation status icon"
+        },
+        {
+          "name": "validate-status",
+          "description": "Default: -\n\nThe validation status"
+        },
+        {
+          "name": "required",
+          "description": "Default: false\n\nDisplay required style. It will be generated by the validation rule"
+        },
+        {
+          "name": "rules",
+          "description": "Default: -\n\nRules for field validation"
+        },
+        {
+          "name": "validate-trigger",
+          "description": "Default: change\n\nWhen to validate the value of children node. When set to false, all interaction-driven validation for the field is disabled even if a rule declares trigger or validateTrigger; explicit validateFields and submit validation still run"
+        },
+        {
+          "name": "validate-debounce",
+          "description": "Default: -\n\nDelay milliseconds to start validation"
+        },
+        {
+          "name": "validate-first",
+          "description": "Default: false\n\nWhether stop validate on first rule of error for this field. Will parallel validate when parallel configured"
+        },
+        {
+          "name": "no-style",
+          "description": "Default: false\n\nNo style for true, used as a pure field control"
+        },
+        {
+          "name": "id",
+          "description": "Default: -\n\nSet sub label htmlFor"
+        },
+        {
+          "name": "hidden",
+          "description": "Default: false\n\nWhether to hide Form.Item (still collect and validate value)"
+        },
+        {
+          "name": "message-variables",
+          "description": "Default: -\n\nThe default validate field info"
+        },
+        {
+          "name": "tooltip",
+          "description": "Default: -\n\nConfig tooltip info"
+        },
+        {
+          "name": "layout",
+          "description": "Default: -\n\nForm item layout"
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\nRoot container class"
+        },
+        {
+          "name": "prefix-cls",
+          "description": "Default: -\n\nPrefix class name"
+        }
+      ]
+    },
+    {
+      "name": "a-类型",
+      "description": "高性能表单控件，自带数据域管理。包含数据录入、校验以及对应样式。",
+      "attributes": []
+    },
+    {
+      "name": "a-common-icon",
+      "description": "Semantic vector graphics.",
+      "attributes": []
+    },
+    {
+      "name": "a-custom-icon",
+      "description": "Semantic vector graphics.",
+      "attributes": []
+    },
+    {
+      "name": "a-about-svg-icons",
+      "description": "Semantic vector graphics.",
+      "attributes": []
+    },
+    {
+      "name": "a-set-two-tone-color",
+      "description": "Semantic vector graphics.",
+      "attributes": []
+    },
+    {
+      "name": "a-custom-font-icon",
+      "description": "Semantic vector graphics.",
+      "attributes": []
+    },
+    {
+      "name": "a-custom-svg-icon",
+      "description": "Semantic vector graphics.",
+      "attributes": []
+    },
+    {
+      "name": "a-通用图标",
+      "description": "语义化的矢量图形。",
+      "attributes": []
+    },
+    {
+      "name": "a-自定义-icon",
+      "description": "语义化的矢量图形。",
+      "attributes": []
+    },
+    {
+      "name": "a-关于-svg-图标",
+      "description": "语义化的矢量图形。",
+      "attributes": []
+    },
+    {
+      "name": "a-双色图标主色",
+      "description": "语义化的矢量图形。",
+      "attributes": []
+    },
+    {
+      "name": "a-自定义-font-图标",
+      "description": "语义化的矢量图形。",
+      "attributes": []
+    },
+    {
+      "name": "a-自定义-svg-图标",
+      "description": "语义化的矢量图形。",
+      "attributes": []
+    },
+    {
+      "name": "a-image",
+      "description": "(ZH) 可预览的图片。\n\n(EN) Preview-able image.",
+      "attributes": [
+        {
+          "name": "preview",
+          "description": "Default: true\n\nPreview configuration; set to false to disable"
+        },
+        {
+          "name": "wrapper-style",
+          "description": "Default: -\n\nDeprecated."
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "alt",
+          "description": "Default: -\n\nImage description"
+        },
+        {
+          "name": "height",
+          "description": "Default: -\n\nImage height"
+        },
+        {
+          "name": "src",
+          "description": "Default: -\n\nImage URL"
+        },
+        {
+          "name": "width",
+          "description": "Default: -\n\nImage width"
+        }
+      ]
+    },
+    {
+      "name": "a-input",
+      "description": "(ZH) 通过鼠标或键盘输入内容，是最基础的表单域的包装。\n\n(EN) Through mouse or keyboard input content, it is the most basic form field wrapper.",
+      "attributes": [
+        {
+          "name": "allow-clear",
+          "description": "Default: false\n\nIf allow to remove input content with clear icon"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "count",
+          "description": "Default: -\n\nCharacter count config"
+        },
+        {
+          "name": "default-value",
+          "description": "Default: -\n\nThe initial input content"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nWhether the input is disabled"
+        },
+        {
+          "name": "id",
+          "description": "Default: -\n\nThe ID for input"
+        },
+        {
+          "name": "maxlength",
+          "description": "Default: -\n\nThe maximum number of characters in Input"
+        },
+        {
+          "name": "prefix",
+          "description": "Default: -\n\nThe prefix icon for the Input"
+        },
+        {
+          "name": "show-count",
+          "description": "Default: false\n\nWhether to show character count"
+        },
+        {
+          "name": "status",
+          "description": "Default: -\n\nSet validation status"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "size",
+          "description": "Default: -\n\nThe size of the input box. Note: in the context of a form, the middle size is used"
+        },
+        {
+          "name": "suffix",
+          "description": "Default: -\n\nThe suffix icon for the Input"
+        },
+        {
+          "name": "type",
+          "description": "Default: text\n\nThe type of input, see: MDN( use Input.TextArea instead of type=\"textarea\")"
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nThe input content value, support v-model:value"
+        },
+        {
+          "name": "variant",
+          "description": "Default: outlined\n\nVariants of Input"
+        }
+      ]
+    },
+    {
+      "name": "a-text-area",
+      "description": "(ZH) 通过鼠标或键盘输入内容，是最基础的表单域的包装。\n\n(EN) Through mouse or keyboard input content, it is the most basic form field wrapper.",
+      "attributes": [
+        {
+          "name": "auto-size",
+          "description": "Default: false\n\nHeight auto size feature, can be set to true | false or an object &#123; minRows: 2, maxRows: 6 &#125;"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-input-search",
+      "description": "(ZH) 通过鼠标或键盘输入内容，是最基础的表单域的包装。\n\n(EN) Through mouse or keyboard input content, it is the most basic form field wrapper.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "enter-button",
+          "description": "Default: false\n\nfalse displays the default button color, true uses the primary color, or you can provide a custom button. Conflicts with addonAfter."
+        },
+        {
+          "name": "loading",
+          "description": "Default: false\n\nSearch box with loading"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-input-password",
+      "description": "(ZH) 通过鼠标或键盘输入内容，是最基础的表单域的包装。\n\n(EN) Through mouse or keyboard input content, it is the most basic form field wrapper.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nSemantic DOM class"
+        },
+        {
+          "name": "icon-render",
+          "description": "Default: (visible) => (visible ?  : )\n\nCustom toggle button"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nSemantic DOM style"
+        },
+        {
+          "name": "visibility-toggle",
+          "description": "Default: true\n\nWhether show toggle button or control password visible"
+        }
+      ]
+    },
+    {
+      "name": "a-input-otp",
+      "description": "(ZH) 通过鼠标或键盘输入内容，是最基础的表单域的包装。\n\n(EN) Through mouse or keyboard input content, it is the most basic form field wrapper.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "default-value",
+          "description": "Default: -\n\nDefault value"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nWhether the input is disabled"
+        },
+        {
+          "name": "formatter",
+          "description": "Default: -\n\nFormat display, blank fields will be filled with"
+        },
+        {
+          "name": "separator",
+          "description": "Default: -\n\nrender the separator after the input box of the specified index"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "mask",
+          "description": "Default: false\n\nCustom display, the original value will not be modified"
+        },
+        {
+          "name": "length",
+          "description": "Default: 6\n\nThe number of input elements"
+        },
+        {
+          "name": "status",
+          "description": "Default: -\n\nSet validation status"
+        },
+        {
+          "name": "size",
+          "description": "Default: middle\n\nThe size of the input box"
+        },
+        {
+          "name": "variant",
+          "description": "Default: outlined\n\nVariants of Input"
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nThe input content value"
+        }
+      ]
+    },
+    {
+      "name": "a-types",
+      "description": "(ZH) 通过鼠标或键盘输入内容，是最基础的表单域的包装。\n\n(EN) Through mouse or keyboard input content, it is the most basic form field wrapper.",
+      "attributes": []
+    },
+    {
+      "name": "a-input-number",
+      "description": "(ZH) 通过鼠标或键盘，输入范围内的数值。\n\n(EN) Enter a number within certain range with the mouse or keyboard.",
+      "attributes": [
+        {
+          "name": "size",
+          "description": "Default: -\n\nThe height of input box"
+        },
+        {
+          "name": "status",
+          "description": "Default: -\n\nSet validation status"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nIf the input is disabled"
+        },
+        {
+          "name": "addon-before",
+          "description": "Default: -\n\nThe label text displayed before (on the left side of) the input field, please use Space.Compact instead"
+        },
+        {
+          "name": "addon-after",
+          "description": "Default: -\n\nThe label text displayed after (on the right side of) the input field, please use Space.Compact instead"
+        },
+        {
+          "name": "prefix",
+          "description": "Default: -\n\nThe prefix icon for the Input"
+        },
+        {
+          "name": "suffix",
+          "description": "Default: -\n\nThe suffix icon for the Input"
+        },
+        {
+          "name": "bordered",
+          "description": "Default: -\n\nDeprecated."
+        },
+        {
+          "name": "variant",
+          "description": "Default: outlined\n\nVariants of Input"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "controls",
+          "description": "Default: -\n\nWhether to show +- controls, or set custom arrow icons"
+        },
+        {
+          "name": "type",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "step",
+          "description": "Default: 1\n\nThe number to which the current value is increased or decreased. It can be an integer or decimal"
+        }
+      ]
+    },
+    {
+      "name": "a-layout",
+      "description": "(ZH) 协助进行页面级整体布局。\n\n(EN) Handling the overall layout of a page.",
+      "attributes": [
+        {
+          "name": "has-sider",
+          "description": "Default: -\n\nWhether contain Sider in children, don't have to assign it normally. Useful in ssr avoid style flickering"
+        }
+      ]
+    },
+    {
+      "name": "a-layout-sider",
+      "description": "(ZH) 协助进行页面级整体布局。\n\n(EN) Handling the overall layout of a page.",
+      "attributes": [
+        {
+          "name": "breakpoint",
+          "description": "Default: -\n\nBreakpoints of the responsive layout"
+        },
+        {
+          "name": "collapsed",
+          "description": "Default: -\n\nTo set the current status"
+        },
+        {
+          "name": "collapsed-width",
+          "description": "Default: 80\n\nWidth of the collapsed sidebar, by setting to 0 a special trigger will appear"
+        },
+        {
+          "name": "collapsible",
+          "description": "Default: false\n\nWhether can be collapsed"
+        },
+        {
+          "name": "reverse-arrow",
+          "description": "Default: false\n\nReverse direction of arrow, for a sider that expands from the right"
+        },
+        {
+          "name": "theme",
+          "description": "Default: dark\n\nColor theme of the sidebar"
+        },
+        {
+          "name": "trigger",
+          "description": "Default: -\n\nSpecify the customized trigger, set to null to hide the trigger"
+        },
+        {
+          "name": "width",
+          "description": "Default: 200\n\nWidth of the sidebar"
+        },
+        {
+          "name": "zero-width-trigger-style",
+          "description": "Default: -\n\nTo customize the styles of the special trigger that appears when collapsedWidth is 0"
+        }
+      ]
+    },
+    {
+      "name": "a-masonry",
+      "description": "(ZH) 瀑布流\n\n(EN) A masonry layout component for displaying content with different heights.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "columns",
+          "description": "Default: 3\n\nNumber of columns, can be a fixed value or a responsive configuration"
+        },
+        {
+          "name": "fresh",
+          "description": "Default: false\n\nWhether to continuously monitor the size changes of child items"
+        },
+        {
+          "name": "gutter",
+          "description": "Default: 0\n\nSpacing, can be a fixed value, responsive configuration, or a configuration for horizontal and vertical spacing"
+        },
+        {
+          "name": "items",
+          "description": "Default: -\n\nMasonry items"
+        },
+        {
+          "name": "item-render",
+          "description": "Default: -\n\nCustom item rendering function"
+        }
+      ]
+    },
+    {
+      "name": "a-mentions",
+      "description": "(ZH) 用于在输入中提及某人或某事。\n\n(EN) Used to mention someone or something in an input.",
+      "attributes": [
+        {
+          "name": "loading",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "status",
+          "description": "Default: -\n\nSet validation status"
+        },
+        {
+          "name": "options",
+          "description": "Default: \\[]\n\nOption Configuration"
+        },
+        {
+          "name": "popup-class-name",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "variant",
+          "description": "Default: outlined\n\nVariants of Input"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "size",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "label-render",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "allow-clear",
+          "description": "Default: false\n\nIf allow to remove mentions content with clear icon"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: -\n\n-"
+        }
+      ]
+    },
+    {
+      "name": "a-menu",
+      "description": "(ZH) 为页面和功能提供导航的菜单列表。\n\n(EN) A versatile menu for navigation.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\nRoot container class"
+        },
+        {
+          "name": "default-open-keys",
+          "description": "Default: -\n\nArray with the keys of default opened sub menus"
+        },
+        {
+          "name": "default-selected-keys",
+          "description": "Default: -\n\nArray with the keys of default selected menu items"
+        },
+        {
+          "name": "expand-icon",
+          "description": "Default: -\n\nCustom expand icon of submenu"
+        },
+        {
+          "name": "force-sub-menu-render",
+          "description": "Default: false\n\nRender submenu into DOM before it becomes visible"
+        },
+        {
+          "name": "inline-collapsed",
+          "description": "Default: -\n\nSpecifies the collapsed status when menu is inline mode"
+        },
+        {
+          "name": "inline-indent",
+          "description": "Default: 24\n\nIndent (in pixels) of inline menu items on each level"
+        },
+        {
+          "name": "items",
+          "description": "Default: -\n\nMenu item content"
+        },
+        {
+          "name": "mode",
+          "description": "Default: vertical\n\nType of menu"
+        },
+        {
+          "name": "multiple",
+          "description": "Default: false\n\nAllows selection of multiple items"
+        },
+        {
+          "name": "open-keys",
+          "description": "Default: -\n\nArray with the keys of currently opened sub-menus"
+        },
+        {
+          "name": "overflowed-indicator",
+          "description": "Default: -\n\nCustomized the ellipsis icon when menu is collapsed horizontally"
+        },
+        {
+          "name": "selectable",
+          "description": "Default: true\n\nAllows selecting menu items"
+        },
+        {
+          "name": "selected-keys",
+          "description": "Default: -\n\nArray with the keys of currently selected menu items"
+        },
+        {
+          "name": "sub-menu-close-delay",
+          "description": "Default: 0.1\n\nDelay time to hide submenu when mouse leaves (in seconds)"
+        },
+        {
+          "name": "sub-menu-open-delay",
+          "description": "Default: 0\n\nDelay time to show submenu when mouse enters, (in seconds)"
+        },
+        {
+          "name": "theme",
+          "description": "Default: light\n\nColor theme of the menu"
+        },
+        {
+          "name": "trigger-sub-menu-action",
+          "description": "Default: hover\n\nWhich action can trigger submenu open/close"
+        },
+        {
+          "name": "get-popup-container",
+          "description": "Default: () => document.body\n\nTo set the container of the submenu popup. The default is to create a div element in body, but you can reset it to the scrolling area and make a relative reposition"
+        },
+        {
+          "name": "item-icon",
+          "description": "Default: -\n\nCustom menu item icon render"
+        },
+        {
+          "name": "label-render",
+          "description": "Default: -\n\nCustom label render"
+        },
+        {
+          "name": "icon-render",
+          "description": "Default: -\n\nCustom icon render (items mode)"
+        },
+        {
+          "name": "extra-render",
+          "description": "Default: -\n\nCustom extra render"
+        },
+        {
+          "name": "popup-render",
+          "description": "Default: -\n\nCustom popup renderer for submenu"
+        }
+      ]
+    },
+    {
+      "name": "a-modal",
+      "description": "(ZH) 展示一个对话框，提供标题、内容区、操作区。\n\n(EN) Display a modal dialog box, providing a title, content area, and action buttons.",
+      "attributes": [
+        {
+          "name": "after-close",
+          "description": "Default: -\n\nSpecify a function that will be called when modal is closed completely"
+        },
+        {
+          "name": "after-open-change",
+          "description": "Default: -\n\nCallback when the animation ends when Modal is turned on and off"
+        },
+        {
+          "name": "cancel-button-props",
+          "description": "Default: -\n\nThe cancel button props"
+        },
+        {
+          "name": "cancel-text",
+          "description": "Default: Cancel\n\nText of the Cancel button"
+        },
+        {
+          "name": "centered",
+          "description": "Default: false\n\nCentered Modal"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the Modal component. Supports object or function."
+        },
+        {
+          "name": "closable",
+          "description": "Default: true\n\nWhether a close (x) button is visible on top right or not"
+        },
+        {
+          "name": "close-icon",
+          "description": "Default: -\n\nCustom close icon. Close button will be hidden when setting to null or false"
+        },
+        {
+          "name": "confirm-loading",
+          "description": "Default: false\n\nWhether to apply loading visual effect for OK button or not"
+        },
+        {
+          "name": "destroy-on-hidden",
+          "description": "Default: false\n\nWhether to unmount child components on close"
+        },
+        {
+          "name": "focus-trigger-after-close",
+          "description": "Default: true\n\nWhether need to focus trigger element after dialog is closed"
+        },
+        {
+          "name": "footer",
+          "description": "Default: (OK and Cancel buttons)\n\nFooter content, set as footer={null} when you don't need default buttons"
+        },
+        {
+          "name": "force-render",
+          "description": "Default: false\n\nForce render Modal"
+        },
+        {
+          "name": "focusable",
+          "description": "Default: -\n\nConfiguration for focus management in the Modal"
+        },
+        {
+          "name": "get-container",
+          "description": "Default: document.body\n\nThe mounted node for Modal but still display at fullscreen"
+        },
+        {
+          "name": "keyboard",
+          "description": "Default: true\n\nWhether support press esc to close"
+        },
+        {
+          "name": "loading",
+          "description": "Default: false\n\nShow the skeleton"
+        },
+        {
+          "name": "mask",
+          "description": "Default: true\n\nMask effect"
+        },
+        {
+          "name": "~~mask-closable~~",
+          "description": "Default: true\n\nWhether to close the modal dialog when the mask (area outside the modal) is clicked"
+        },
+        {
+          "name": "modal-render",
+          "description": "Default: -\n\nCustom modal content render"
+        },
+        {
+          "name": "mouse-position",
+          "description": "Default: -\n\nSet animation start position"
+        },
+        {
+          "name": "ok-button-props",
+          "description": "Default: -\n\nThe ok button props"
+        },
+        {
+          "name": "ok-text",
+          "description": "Default: OK\n\nText of the OK button"
+        },
+        {
+          "name": "ok-type",
+          "description": "Default: primary\n\nButton type of the OK button"
+        },
+        {
+          "name": "open",
+          "description": "Default: false\n\nWhether the modal dialog is visible or not, support v-model:open"
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\nRoot container class"
+        },
+        {
+          "name": "root-style",
+          "description": "Default: -\n\nRoot container style"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the Modal component. Supports object or function."
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\nThe modal dialog's title"
+        },
+        {
+          "name": "transition-name",
+          "description": "Default: -\n\nTransition name of dialog"
+        },
+        {
+          "name": "mask-transition-name",
+          "description": "Default: -\n\nTransition name of mask"
+        },
+        {
+          "name": "width",
+          "description": "Default: 520\n\nWidth of the modal dialog"
+        },
+        {
+          "name": "wrap-class-name",
+          "description": "Default: -\n\nThe class name of the container of the modal dialog"
+        },
+        {
+          "name": "wrap-props",
+          "description": "Default: -\n\nWrapper element props"
+        },
+        {
+          "name": "z-index",
+          "description": "Default: 1000\n\nThe z-index of the Modal"
+        }
+      ]
+    },
+    {
+      "name": "a-static-methods",
+      "description": "Prompt notification message globally.",
+      "attributes": []
+    },
+    {
+      "name": "a-arguments",
+      "description": "Display global messages as feedback in response to user operations.",
+      "attributes": []
+    },
+    {
+      "name": "a-config",
+      "description": "(ZH) 全局展示操作反馈信息。\n\n(EN) Display global messages as feedback in response to user operations.",
+      "attributes": []
+    },
+    {
+      "name": "a-global-configuration",
+      "description": "Prompt notification message globally.",
+      "attributes": []
+    },
+    {
+      "name": "a-静态方法",
+      "description": "全局展示通知提醒信息。",
+      "attributes": []
+    },
+    {
+      "name": "a-参数",
+      "description": "全局展示操作反馈信息。",
+      "attributes": []
+    },
+    {
+      "name": "a-全局配置",
+      "description": "全局展示通知提醒信息。",
+      "attributes": []
+    },
+    {
+      "name": "a-args-props",
+      "description": "(ZH) 全局展示通知提醒信息。\n\n(EN) Prompt notification message globally.",
+      "attributes": []
+    },
+    {
+      "name": "a-notification-use-notification",
+      "description": "(ZH) 全局展示通知提醒信息。\n\n(EN) Prompt notification message globally.",
+      "attributes": []
+    },
+    {
+      "name": "a-closable-type",
+      "description": "(ZH) 全局展示通知提醒信息。\n\n(EN) Prompt notification message globally.",
+      "attributes": []
+    },
+    {
+      "name": "a-popconfirm",
+      "description": "(ZH) 点击元素，弹出气泡式的确认框。\n\n(EN) Pop up a bubble confirmation box for an action.",
+      "attributes": [
+        {
+          "name": "cancel-button-props",
+          "description": "Default: -\n\nThe cancel button props"
+        },
+        {
+          "name": "cancel-text",
+          "description": "Default: Cancel\n\nThe text of the Cancel button"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nWhether to show popconfirm when clicking its children node"
+        },
+        {
+          "name": "icon",
+          "description": "Default: -\n\nCustomize icon of confirmation"
+        },
+        {
+          "name": "ok-button-props",
+          "description": "Default: -\n\nThe ok button props"
+        },
+        {
+          "name": "ok-text",
+          "description": "Default: OK\n\nThe text of the Confirm button"
+        },
+        {
+          "name": "ok-type",
+          "description": "Default: primary\n\nButton type of the Confirm button"
+        },
+        {
+          "name": "show-cancel",
+          "description": "Default: true\n\nShow cancel button"
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\nThe title of the confirmation box"
+        },
+        {
+          "name": "description",
+          "description": "Default: -\n\nThe description of the confirmation box"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        }
+      ]
+    },
+    {
+      "name": "a-pagination",
+      "description": "(ZH) 分页器用于分隔长列表，每次只加载一个页面。\n\n(EN) A long list can be divided into several pages, and only one page will be loaded at a time.",
+      "attributes": [
+        {
+          "name": "align",
+          "description": "Default: -\n\nAlignment of pagination"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "current",
+          "description": "Default: -\n\nCurrent page number"
+        },
+        {
+          "name": "default-current",
+          "description": "Default: 1\n\nDefault initial page number"
+        },
+        {
+          "name": "default-page-size",
+          "description": "Default: 10\n\nDefault number of data items per page"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: -\n\nDisable pagination"
+        },
+        {
+          "name": "hide-on-single-page",
+          "description": "Default: false\n\nWhether to hide pager on single page"
+        },
+        {
+          "name": "item-render",
+          "description": "Default: -\n\nTo customize item's innerHTML"
+        },
+        {
+          "name": "page-size",
+          "description": "Default: -\n\nNumber of data items per page"
+        },
+        {
+          "name": "page-size-options",
+          "description": "Default: ['10', '20', '50', '100']\n\nSpecify the sizeChanger options"
+        },
+        {
+          "name": "responsive",
+          "description": "Default: -\n\nIf size is not specified, Pagination would resize according to the width of the window"
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\nRoot container class"
+        },
+        {
+          "name": "show-less-items",
+          "description": "Default: false\n\nShow less page items"
+        },
+        {
+          "name": "show-quick-jumper",
+          "description": "Default: false\n\nDetermine whether you can jump to pages directly"
+        },
+        {
+          "name": "show-size-changer",
+          "description": "Default: -\n\nDetermine whether to show pageSize select"
+        },
+        {
+          "name": "total-boundary-show-size-changer",
+          "description": "Default: 50\n\nWhen total larger than it, showSizeChanger will be true"
+        },
+        {
+          "name": "show-title",
+          "description": "Default: true\n\nShow page item's title"
+        },
+        {
+          "name": "show-total",
+          "description": "Default: -\n\nTo display the total number and range"
+        },
+        {
+          "name": "simple",
+          "description": "Default: -\n\nWhether to use simple mode"
+        },
+        {
+          "name": "size",
+          "description": "Default: default\n\nSpecify the size of Pagination, can be set to small"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "total",
+          "description": "Default: 0\n\nTotal number of data items"
+        },
+        {
+          "name": "locale",
+          "description": "Default: -\n\nPagination locale"
+        },
+        {
+          "name": "prev-icon",
+          "description": "Default: -\n\nCustom previous icon"
+        },
+        {
+          "name": "next-icon",
+          "description": "Default: -\n\nCustom next icon"
+        },
+        {
+          "name": "jump-prev-icon",
+          "description": "Default: -\n\nCustom jump-prev icon"
+        },
+        {
+          "name": "jump-next-icon",
+          "description": "Default: -\n\nCustom jump-next icon"
+        },
+        {
+          "name": "select-component-class",
+          "description": "Default: -\n\nDeprecated, not official support"
+        }
+      ]
+    },
+    {
+      "name": "a-progress",
+      "description": "(ZH) 展示操作的当前进度。\n\n(EN) Display the current progress of the operation.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\nRoot container class"
+        },
+        {
+          "name": "type",
+          "description": "Default: line\n\nTo set the type, options: line circle dashboard"
+        },
+        {
+          "name": "percent",
+          "description": "Default: 0\n\nTo set the completion percentage"
+        },
+        {
+          "name": "format",
+          "description": "Default: (percent) => percent + %\n\nThe template function of the content"
+        },
+        {
+          "name": "status",
+          "description": "Default: -\n\nTo set the status of the Progress, options: success exception normal active(line only)"
+        },
+        {
+          "name": "show-info",
+          "description": "Default: true\n\nWhether to display the progress value and the status icon"
+        },
+        {
+          "name": "stroke-width",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "stroke-linecap",
+          "description": "Default: round\n\nTo set the style of the progress linecap"
+        },
+        {
+          "name": "stroke-color",
+          "description": "Default: -\n\nThe color of progress bar"
+        },
+        {
+          "name": "rail-color",
+          "description": "Default: -\n\nThe color of unfilled part"
+        },
+        {
+          "name": "success",
+          "description": "Default: -\n\nConfigs of successfully progress bar"
+        },
+        {
+          "name": "trail-color",
+          "description": "Default: -\n\nThe color of unfilled part. Please use railColor instead"
+        },
+        {
+          "name": "width",
+          "description": "Default: -\n\nDeprecated. Use size instead"
+        },
+        {
+          "name": "size",
+          "description": "Default: default\n\nProgress size"
+        }
+      ]
+    },
+    {
+      "name": "a-popover",
+      "description": "(ZH) 点击/鼠标移入元素，弹出气泡式的卡片浮层。\n\n(EN) The floating card pops up when clicking/mouse hovering over an element.",
+      "attributes": [
+        {
+          "name": "title",
+          "description": "Default: -\n\nTitle of the card"
+        },
+        {
+          "name": "content",
+          "description": "Default: -\n\nContent of the card"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        }
+      ]
+    },
+    {
+      "name": "a-qrcode",
+      "description": "(ZH) 能够将文本转换生成二维码的组件，支持自定义配色和 Logo 配置。\n\n(EN) Components that can convert text into QR codes, and support custom color and logo.",
+      "attributes": [
+        {
+          "name": "value",
+          "description": "Default: -\n\nscanned text"
+        },
+        {
+          "name": "type",
+          "description": "Default: canvas\n\nrender type"
+        },
+        {
+          "name": "icon",
+          "description": "Default: -\n\ninclude image url (only image link are supported)"
+        },
+        {
+          "name": "size",
+          "description": "Default: 160\n\nQRCode size"
+        },
+        {
+          "name": "icon-size",
+          "description": "Default: 40\n\ninclude image size"
+        },
+        {
+          "name": "color",
+          "description": "Default: #000\n\nQRCode Color"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "bg-color",
+          "description": "Default: transparent\n\nQRCode Background Color"
+        },
+        {
+          "name": "margin-size",
+          "description": "Default: 0\n\nQuiet zone size (in modules). 0 means no margin"
+        },
+        {
+          "name": "bordered",
+          "description": "Default: true\n\nWhether has border style"
+        },
+        {
+          "name": "error-level",
+          "description": "Default: 'M'\n\nError Code Level"
+        },
+        {
+          "name": "boost-level",
+          "description": "Default: true\n\nIf enabled, the Error Correction Level of the result may be higher than the specified Error Correction Level"
+        },
+        {
+          "name": "status",
+          "description": "Default: 'active'\n\nQRCode status"
+        },
+        {
+          "name": "status-render",
+          "description": "Default: -\n\ncustom status render"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-radio/radio-button",
+      "description": "(ZH) 用于在多个备选项中选中单个状态。\n\n(EN) Used to select a single state from multiple options.",
+      "attributes": [
+        {
+          "name": "checked",
+          "description": "Default: false\n\nSpecifies whether the radio is selected, support v-model:checked"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisable radio"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nAccording to value for comparison, to determine whether the selected"
+        }
+      ]
+    },
+    {
+      "name": "a-radio-group",
+      "description": "(ZH) 用于在多个备选项中选中单个状态。\n\n(EN) Used to select a single state from multiple options.",
+      "attributes": [
+        {
+          "name": "block",
+          "description": "Default: false\n\nOption to fit RadioGroup width to its parent width"
+        },
+        {
+          "name": "button-style",
+          "description": "Default: outline\n\nThe style type of radio button"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "default-value",
+          "description": "Default: -\n\nDefault selected value"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisable all radio buttons"
+        },
+        {
+          "name": "name",
+          "description": "Default: -\n\nThe name property of all input[type=\"radio\"] children. If not set, it will fallback to a randomly generated name"
+        },
+        {
+          "name": "options",
+          "description": "Default: -\n\nSet children optional"
+        },
+        {
+          "name": "option-type",
+          "description": "Default: default\n\nSet Radio optionType"
+        },
+        {
+          "name": "orientation",
+          "description": "Default: horizontal\n\nOrientation"
+        },
+        {
+          "name": "size",
+          "description": "Default: -\n\nThe size of radio button style"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nUsed for setting the currently selected value, support v-model:value"
+        },
+        {
+          "name": "vertical",
+          "description": "Default: false\n\nIf true, the Radio group will be vertical. Simultaneously existing with orientation, orientation takes priority"
+        }
+      ]
+    },
+    {
+      "name": "a-rate",
+      "description": "(ZH) 用于对事物进行评分操作。\n\n(EN) Used for rating operation on something.",
+      "attributes": [
+        {
+          "name": "allow-clear",
+          "description": "Default: true\n\nWhether to allow clear when click again"
+        },
+        {
+          "name": "allow-half",
+          "description": "Default: false\n\nWhether to allow semi selection"
+        },
+        {
+          "name": "character",
+          "description": "Default: -\n\nThe custom character of rate"
+        },
+        {
+          "name": "class-name",
+          "description": "Default: -\n\nThe custom class name of rate"
+        },
+        {
+          "name": "count",
+          "description": "Default: 5\n\nStar count"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nIf read only, unable to interact"
+        },
+        {
+          "name": "keyboard",
+          "description": "Default: true\n\nSupport keyboard operation"
+        },
+        {
+          "name": "size",
+          "description": "Default: 'middle'\n\nStar size"
+        },
+        {
+          "name": "style",
+          "description": "Default: -\n\nThe custom style object of rate"
+        },
+        {
+          "name": "tooltips",
+          "description": "Default: -\n\nCustomize tooltip by each character"
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nThe current value, support v-model:value"
+        }
+      ]
+    },
+    {
+      "name": "a-result",
+      "description": "(ZH) 用于反馈一系列操作任务的处理结果。\n\n(EN) Used to feedback the processing results of a series of operations.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "extra",
+          "description": "Default: -\n\nOperating area"
+        },
+        {
+          "name": "icon",
+          "description": "Default: -\n\nCustom back icon"
+        },
+        {
+          "name": "status",
+          "description": "Default: info\n\nResult status, decide icons and colors"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "sub-title",
+          "description": "Default: -\n\nThe subTitle"
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\nThe title"
+        }
+      ]
+    },
+    {
+      "name": "a-segmented",
+      "description": "(ZH) 用于展示多个选项并允许用户选择其中单个选项。\n\n(EN) Display multiple options and allow users to select a single option.",
+      "attributes": [
+        {
+          "name": "block",
+          "description": "Default: false\n\nOption to fit width to its parent\\'s width"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the Segmented component. Supports object or function."
+        },
+        {
+          "name": "default-value",
+          "description": "Default: -\n\nDefault selected value"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisable all segments"
+        },
+        {
+          "name": "options",
+          "description": "Default: []\n\nSet children optional"
+        },
+        {
+          "name": "orientation",
+          "description": "Default: horizontal\n\nOrientation"
+        },
+        {
+          "name": "size",
+          "description": "Default: middle\n\nThe size of the Segmented."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the Segmented component. Supports object or function."
+        },
+        {
+          "name": "vertical",
+          "description": "Default: false\n\nOrientation，Simultaneously existing with orientation, orientation takes priority"
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nCurrently selected value, support v-model:value"
+        },
+        {
+          "name": "shape",
+          "description": "Default: default\n\nshape of Segmented"
+        },
+        {
+          "name": "name",
+          "description": "Default: -\n\nThe name property of all input[type=\"radio\"] children. if not set, it will fallback to a randomly generated name"
+        }
+      ]
+    },
+    {
+      "name": "a-select",
+      "description": "(ZH) 下拉选择器。\n\n(EN) A dropdown menu for displaying choices.",
+      "attributes": [
+        {
+          "name": "allow-clear",
+          "description": "Default: false\n\nShow clear button"
+        },
+        {
+          "name": "auto-clear-search-value",
+          "description": "Default: true\n\nWhether the current search will be cleared on selecting an item. Only applies when mode is set to multiple or tags"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "default-active-first-option",
+          "description": "Default: true\n\nWhether active first option by default"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nWhether disabled select"
+        },
+        {
+          "name": "dropdown-class-name",
+          "description": "Default: -\n\nThe className of dropdown menu, **Deprecated. Use classes.popup.root instead**"
+        },
+        {
+          "name": "dropdown-match-select-width",
+          "description": "Default: -\n\nDetermine whether the dropdown menu and the select input are the same width, **Deprecated. Use popupMatchSelectWidth instead**"
+        },
+        {
+          "name": "dropdown-render",
+          "description": "Default: -\n\nCustomize dropdown content, **Deprecated. Use popupRender instead**"
+        },
+        {
+          "name": "dropdown-style",
+          "description": "Default: -\n\nThe style of dropdown menu, **Deprecated. Use styles.popup.root instead**"
+        },
+        {
+          "name": "field-names",
+          "description": "Default: &#123; label: 'label', value: 'value', options: 'options', groupLabel: 'label' &#125;\n\nCustomize node label, value, options, groupLabel field name"
+        },
+        {
+          "name": "filter-option",
+          "description": "Default: true\n\nIf true, filter options by input, if function, filter options against it. The function will receive two arguments, inputValue and option, if the function returns true, the option will be included in the filtered set; Otherwise, it will be excluded"
+        },
+        {
+          "name": "filter-sort",
+          "description": "Default: -\n\nSort function for search options sorting, see Array.sort's compareFunction"
+        },
+        {
+          "name": "get-popup-container",
+          "description": "Default: () => document.body\n\nParent Node which the selector should be rendered to. Default to body. When position issues happen, try to modify it into scrollable content and position it relative"
+        },
+        {
+          "name": "label-in-value",
+          "description": "Default: false\n\nWhether to embed label in value, turn the format of value from string to &#123; value: string, label: VueNode &#125;"
+        },
+        {
+          "name": "list-height",
+          "description": "Default: 256\n\nConfig popup height"
+        },
+        {
+          "name": "loading",
+          "description": "Default: false\n\nIndicate loading state"
+        },
+        {
+          "name": "max-count",
+          "description": "Default: -\n\nThe max number of items can be selected, only applies when mode is multiple or tags"
+        },
+        {
+          "name": "max-tag-count",
+          "description": "Default: -\n\nMax tag count to show. responsive will cost render performance"
+        },
+        {
+          "name": "max-tag-placeholder",
+          "description": "Default: -\n\nPlaceholder for not showing tags"
+        },
+        {
+          "name": "max-tag-text-length",
+          "description": "Default: -\n\nMax tag text length to show"
+        },
+        {
+          "name": "menu-item-selected-icon",
+          "description": "Default: -\n\nThe custom menuItemSelected icon with multiple options"
+        },
+        {
+          "name": "mode",
+          "description": "Default: -\n\nSet mode of Select"
+        },
+        {
+          "name": "not-found-content",
+          "description": "Default: Not Found\n\nSpecify content to show when no result matches"
+        },
+        {
+          "name": "open",
+          "description": "Default: -\n\nControlled open state of dropdown"
+        },
+        {
+          "name": "option-filter-prop",
+          "description": "Default: value\n\nWhich prop value of option will be used for filter if filterOption is true. If options is set, it should be set to label. When a string[] is provided, multiple fields are searched using OR matching"
+        },
+        {
+          "name": "options",
+          "description": "Default: -\n\nSelect options. Will get better perf than jsx definition"
+        },
+        {
+          "name": "option-render",
+          "description": "Default: -\n\nCustomize the rendering dropdown options"
+        },
+        {
+          "name": "placeholder",
+          "description": "Default: -\n\nThe placeholder of select"
+        },
+        {
+          "name": "placement",
+          "description": "Default: bottomLeft\n\nThe position where the selection box pops up"
+        },
+        {
+          "name": "popup-class-name",
+          "description": "Default: -\n\nThe className of dropdown menu, use classes.popup.root instead"
+        },
+        {
+          "name": "popup-match-select-width",
+          "description": "Default: true\n\nDetermine whether the dropdown menu and the select input are the same width. Default set min-width same as input. Will ignore when value less than select width. false will disable virtual scroll"
+        },
+        {
+          "name": "popup-render",
+          "description": "Default: -\n\nCustomize dropdown content"
+        },
+        {
+          "name": "prefix",
+          "description": "Default: -\n\nThe custom prefix"
+        },
+        {
+          "name": "remove-icon",
+          "description": "Default: -\n\nThe custom remove icon"
+        },
+        {
+          "name": "search-value",
+          "description": "Default: -\n\nThe current input \"search\" text"
+        },
+        {
+          "name": "show-search",
+          "description": "Default: single: false, multiple: true\n\nWhether select is searchable"
+        },
+        {
+          "name": "size",
+          "description": "Default: -\n\nSize of Select input"
+        },
+        {
+          "name": "status",
+          "description": "Default: -\n\nSet validation status"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "suffix-icon",
+          "description": "Default: -\n\nThe custom suffix icon. Customize icon will not response click open to avoid icon designed to do other interactive. You can use pointer-events: none style to bypass"
+        },
+        {
+          "name": "tag-render",
+          "description": "Default: -\n\nCustomize tag render, only applies when mode is set to multiple or tags"
+        },
+        {
+          "name": "label-render",
+          "description": "Default: -\n\nCustomize selected label render"
+        },
+        {
+          "name": "token-separators",
+          "description": "Default: -\n\nSeparator used to tokenize, only applies when mode=\"tags\""
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nCurrent selected option (considered as a immutable array), support v-model:value"
+        },
+        {
+          "name": "variant",
+          "description": "Default: outlined\n\nVariants of selector"
+        },
+        {
+          "name": "virtual",
+          "description": "Default: true\n\nDisable virtual scroll when set to false"
+        }
+      ]
+    },
+    {
+      "name": "a-skeleton",
+      "description": "(ZH) 在需要等待加载内容的位置提供一个占位图形组合。\n\n(EN) Provide a placeholder while you wait for content to load, or to visualize content that doesn't exist yet.",
+      "attributes": [
+        {
+          "name": "active",
+          "description": "Default: false\n\nShow animation effect"
+        },
+        {
+          "name": "avatar",
+          "description": "Default: false\n\nShow avatar placeholder"
+        },
+        {
+          "name": "loading",
+          "description": "Default: -\n\nDisplay the skeleton when true"
+        },
+        {
+          "name": "paragraph",
+          "description": "Default: true\n\nShow paragraph placeholder"
+        },
+        {
+          "name": "round",
+          "description": "Default: false\n\nShow paragraph and title radius when true"
+        },
+        {
+          "name": "title",
+          "description": "Default: true\n\nShow title placeholder"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component"
+        }
+      ]
+    },
+    {
+      "name": "a-skeleton-avatar",
+      "description": "(ZH) 在需要等待加载内容的位置提供一个占位图形组合。\n\n(EN) Provide a placeholder while you wait for content to load, or to visualize content that doesn't exist yet.",
+      "attributes": [
+        {
+          "name": "active",
+          "description": "Default: false\n\nShow animation effect"
+        },
+        {
+          "name": "shape",
+          "description": "Default: circle\n\nSet the shape of avatar"
+        },
+        {
+          "name": "size",
+          "description": "Default: medium\n\nSet the size of avatar"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component"
+        }
+      ]
+    },
+    {
+      "name": "a-skeleton-title",
+      "description": "(ZH) 在需要等待加载内容的位置提供一个占位图形组合。\n\n(EN) Provide a placeholder while you wait for content to load, or to visualize content that doesn't exist yet.",
+      "attributes": [
+        {
+          "name": "width",
+          "description": "Default: -\n\nSet the width of title"
+        }
+      ]
+    },
+    {
+      "name": "a-skeleton-paragraph",
+      "description": "(ZH) 在需要等待加载内容的位置提供一个占位图形组合。\n\n(EN) Provide a placeholder while you wait for content to load, or to visualize content that doesn't exist yet.",
+      "attributes": [
+        {
+          "name": "rows",
+          "description": "Default: -\n\nSet the row count of paragraph"
+        },
+        {
+          "name": "width",
+          "description": "Default: -\n\nSet the width of paragraph. When width is an Array, it can set the width of each row. Otherwise only set the last row width"
+        }
+      ]
+    },
+    {
+      "name": "a-skeleton-button",
+      "description": "(ZH) 在需要等待加载内容的位置提供一个占位图形组合。\n\n(EN) Provide a placeholder while you wait for content to load, or to visualize content that doesn't exist yet.",
+      "attributes": [
+        {
+          "name": "active",
+          "description": "Default: false\n\nShow animation effect"
+        },
+        {
+          "name": "block",
+          "description": "Default: false\n\nOption to fit button width to its parent width"
+        },
+        {
+          "name": "shape",
+          "description": "Default: -\n\nSet the shape of button"
+        },
+        {
+          "name": "size",
+          "description": "Default: medium\n\nSet the size of button"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component"
+        }
+      ]
+    },
+    {
+      "name": "a-skeleton-input",
+      "description": "(ZH) 在需要等待加载内容的位置提供一个占位图形组合。\n\n(EN) Provide a placeholder while you wait for content to load, or to visualize content that doesn't exist yet.",
+      "attributes": [
+        {
+          "name": "active",
+          "description": "Default: false\n\nShow animation effect"
+        },
+        {
+          "name": "size",
+          "description": "Default: medium\n\nSet the size of input"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component"
+        }
+      ]
+    },
+    {
+      "name": "a-skeleton-image",
+      "description": "(ZH) 在需要等待加载内容的位置提供一个占位图形组合。\n\n(EN) Provide a placeholder while you wait for content to load, or to visualize content that doesn't exist yet.",
+      "attributes": [
+        {
+          "name": "active",
+          "description": "Default: false\n\nShow animation effect"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component"
+        }
+      ]
+    },
+    {
+      "name": "a-skeleton-node",
+      "description": "(ZH) 在需要等待加载内容的位置提供一个占位图形组合。\n\n(EN) Provide a placeholder while you wait for content to load, or to visualize content that doesn't exist yet.",
+      "attributes": [
+        {
+          "name": "active",
+          "description": "Default: false\n\nShow animation effect"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component"
+        }
+      ]
+    },
+    {
+      "name": "a-space",
+      "description": "(ZH) 设置组件之间的间距。\n\n(EN) Set components spacing.",
+      "attributes": [
+        {
+          "name": "align",
+          "description": "Default: -\n\nAlign items"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "orientation",
+          "description": "Default: horizontal\n\nThe space direction"
+        },
+        {
+          "name": "separator",
+          "description": "Default: -\n\nSet separator"
+        },
+        {
+          "name": "size",
+          "description": "Default: small\n\nThe space size"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "vertical",
+          "description": "Default: false\n\nOrientation, Simultaneously configure with orientation and prioritize orientation"
+        },
+        {
+          "name": "wrap",
+          "description": "Default: false\n\nAuto wrap line, when horizontal effective"
+        }
+      ]
+    },
+    {
+      "name": "a-size",
+      "description": "(ZH) 设置组件之间的间距。\n\n(EN) Set components spacing.",
+      "attributes": []
+    },
+    {
+      "name": "a-space-compact",
+      "description": "(ZH) 设置组件之间的间距。\n\n(EN) Set components spacing.",
+      "attributes": [
+        {
+          "name": "block",
+          "description": "Default: false\n\nOption to fit width to its parent's width"
+        },
+        {
+          "name": "orientation",
+          "description": "Default: horizontal\n\nSet direction of layout"
+        },
+        {
+          "name": "size",
+          "description": "Default: middle\n\nSet child component size"
+        },
+        {
+          "name": "vertical",
+          "description": "Default: false\n\nOrientation, Simultaneously configure with orientation and prioritize orientation"
+        }
+      ]
+    },
+    {
+      "name": "a-spin",
+      "description": "(ZH) 用于页面和区块的加载中状态。\n\n(EN) Used for the loading status of a page or a block.",
+      "attributes": [
+        {
+          "name": "spinning",
+          "description": "Default: true\n\nWhether Spin is visible"
+        },
+        {
+          "name": "size",
+          "description": "Default: default\n\nThe size of Spin, options: small, default and large"
+        },
+        {
+          "name": "tip",
+          "description": "Default: -\n\nCustomize description content when Spin has children"
+        },
+        {
+          "name": "delay",
+          "description": "Default: -\n\nSpecifies a delay in milliseconds for loading state (prevent flush)"
+        },
+        {
+          "name": "wrapper-class-name",
+          "description": "Default: -\n\nThe className of wrapper when Spin has children"
+        },
+        {
+          "name": "indicator",
+          "description": "Default: -\n\nThe node of the spinning indicator"
+        },
+        {
+          "name": "fullscreen",
+          "description": "Default: false\n\nDisplay a backdrop with the Spin component"
+        },
+        {
+          "name": "percent",
+          "description": "Default: -\n\nThe progress percentage, when set to auto, it will be an indeterminate progress"
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\nRoot container class"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-splitter",
+      "description": "(ZH) 分割面板用于隔离内容。\n\n(EN) Split panels to isolate content.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "collapsible-icon",
+          "description": "Default: -\n\nCustom collapsible icon"
+        },
+        {
+          "name": "dragger-icon",
+          "description": "Default: -\n\nCustom dragger icon"
+        },
+        {
+          "name": "lazy",
+          "description": "Default: false\n\nLazy rendering mode"
+        },
+        {
+          "name": "orientation",
+          "description": "Default: horizontal\n\nLayout direction"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "vertical",
+          "description": "Default: false\n\nOrientation, Simultaneously existing with orientation, orientation takes priority"
+        }
+      ]
+    },
+    {
+      "name": "a-splitter-panel",
+      "description": "(ZH) 分割面板用于隔离内容。\n\n(EN) Split panels to isolate content.",
+      "attributes": [
+        {
+          "name": "collapsible",
+          "description": "Default: false\n\nEnable collapsible"
+        },
+        {
+          "name": "default-size",
+          "description": "Default: -\n\nInitial panel size, supports px and percentage"
+        },
+        {
+          "name": "max",
+          "description": "Default: -\n\nMaximum threshold, supports px and percentage"
+        },
+        {
+          "name": "min",
+          "description": "Default: -\n\nMinimum threshold, supports px and percentage"
+        },
+        {
+          "name": "resizable",
+          "description": "Default: true\n\nWhether to enable resize"
+        },
+        {
+          "name": "size",
+          "description": "Default: -\n\nControlled panel size, supports px and percentage"
+        }
+      ]
+    },
+    {
+      "name": "a-steps",
+      "description": "(ZH) 引导用户按照流程完成任务的导航条。\n\n(EN) A navigation bar that guides users through the steps of a task.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "current",
+          "description": "Default: 0\n\nTo set the current step, counting from 0. You can overwrite this state by using status of Step, support v-model:current"
+        },
+        {
+          "name": "icon-render",
+          "description": "Default: -\n\nCustom render icon, please use items.icon first"
+        },
+        {
+          "name": "initial",
+          "description": "Default: 0\n\nSet the initial step, counting from 0"
+        },
+        {
+          "name": "items",
+          "description": "Default: []\n\nStepItem content"
+        },
+        {
+          "name": "orientation",
+          "description": "Default: horizontal\n\nTo specify the orientation of the step bar, horizontal or vertical"
+        },
+        {
+          "name": "percent",
+          "description": "Default: -\n\nProgress circle percentage of current step in process status (only works on basic Steps)"
+        },
+        {
+          "name": "progress-dot",
+          "description": "Default: false\n\nSteps with progress dot style, customize the progress dot by setting it to a function. titlePlacement will be vertical"
+        },
+        {
+          "name": "responsive",
+          "description": "Default: true\n\nChange to vertical direction when screen width smaller than 532px"
+        },
+        {
+          "name": "size",
+          "description": "Default: default\n\nTo specify the size of the step bar, default and small are currently supported"
+        },
+        {
+          "name": "status",
+          "description": "Default: process\n\nTo specify the status of current step, can be set to one of the following values: wait process finish error"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "title-placement",
+          "description": "Default: horizontal\n\nPlace title and content with horizontal or vertical direction"
+        },
+        {
+          "name": "type",
+          "description": "Default: default\n\nType of steps, can be set to one of the following values: default dot inline navigation panel"
+        },
+        {
+          "name": "variant",
+          "description": "Default: filled\n\nConfig style variant"
+        }
+      ]
+    },
+    {
+      "name": "a-statistic",
+      "description": "(ZH) 展示统计数值。\n\n(EN) Display statistic number.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the Statistic component. Supports object or function"
+        },
+        {
+          "name": "decimal-separator",
+          "description": "Default: .\n\nThe decimal separator"
+        },
+        {
+          "name": "formatter",
+          "description": "Default: -\n\nCustomize value display logic"
+        },
+        {
+          "name": "group-separator",
+          "description": "Default: ,\n\nGroup separator"
+        },
+        {
+          "name": "loading",
+          "description": "Default: false\n\nLoading status of Statistic"
+        },
+        {
+          "name": "precision",
+          "description": "Default: -\n\nThe precision of input value"
+        },
+        {
+          "name": "prefix",
+          "description": "Default: -\n\nThe prefix node of value"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the Statistic component. Supports object or function"
+        },
+        {
+          "name": "suffix",
+          "description": "Default: -\n\nThe suffix node of value"
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\nDisplay title"
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nDisplay value"
+        },
+        {
+          "name": "value-style",
+          "description": "Default: -\n\nSet value section style"
+        }
+      ]
+    },
+    {
+      "name": "a-statistic-timer",
+      "description": "(ZH) 展示统计数值。\n\n(EN) Display statistic number.",
+      "attributes": []
+    },
+    {
+      "name": "a-switch",
+      "description": "(ZH) 使用开关切换两种状态之间。\n\n(EN) Used to toggle between two states.",
+      "attributes": [
+        {
+          "name": "auto-focus",
+          "description": "Default: false\n\nAuto focus when component mounted"
+        },
+        {
+          "name": "checked",
+          "description": "Default: false\n\nDetermine whether the Switch is checked, support v-model:checked"
+        },
+        {
+          "name": "checked-children",
+          "description": "Default: -\n\nThe content to be shown when the state is checked"
+        },
+        {
+          "name": "checked-value",
+          "description": "Default: true\n\nThe value when checked"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "default-checked",
+          "description": "Default: false\n\nWhether to set the initial state"
+        },
+        {
+          "name": "default-value",
+          "description": "Default: -\n\nAlias for defaultChecked"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisable switch"
+        },
+        {
+          "name": "loading",
+          "description": "Default: false\n\nLoading state of switch"
+        },
+        {
+          "name": "size",
+          "description": "Default: default\n\nThe size of the Switch, options: default small"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "un-checked-children",
+          "description": "Default: -\n\nThe content to be shown when the state is unchecked"
+        },
+        {
+          "name": "un-checked-value",
+          "description": "Default: false\n\nThe value when unchecked"
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nAlias for checked, support v-model:value"
+        }
+      ]
+    },
+    {
+      "name": "a-table",
+      "description": "(ZH) 展示行列数据。\n\n(EN) A table displays rows of data.",
+      "attributes": [
+        {
+          "name": "bordered",
+          "description": "Default: false\n\nWhether to show all table borders"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "columns",
+          "description": "Default: -\n\nColumns of table"
+        },
+        {
+          "name": "data-source",
+          "description": "Default: -\n\nData record array to be displayed"
+        },
+        {
+          "name": "expandable",
+          "description": "Default: -\n\nConfig expandable content"
+        },
+        {
+          "name": "get-popup-container",
+          "description": "Default: () => TableHtmlElement\n\nThe render container of dropdowns in table"
+        },
+        {
+          "name": "loading",
+          "description": "Default: false\n\nLoading status of table"
+        },
+        {
+          "name": "locale",
+          "description": "Default: 默认值\n\nThe i18n text including filter, sort, empty text, etc"
+        },
+        {
+          "name": "pagination",
+          "description": "Default: -\n\nConfig of pagination. You can ref table pagination config or full pagination document, hide it by setting it to false"
+        },
+        {
+          "name": "row-class-name",
+          "description": "Default: -\n\nRow's className"
+        },
+        {
+          "name": "row-key",
+          "description": "Default: key\n\nRow's unique key, could be a string or function that returns a string"
+        },
+        {
+          "name": "row-selection",
+          "description": "Default: -\n\nRow selection config"
+        },
+        {
+          "name": "row-hoverable",
+          "description": "Default: true\n\nRow hover"
+        },
+        {
+          "name": "scroll",
+          "description": "Default: -\n\nWhether the table can be scrollable, config"
+        },
+        {
+          "name": "show-header",
+          "description": "Default: true\n\nWhether to show table header"
+        },
+        {
+          "name": "show-sorter-tooltip",
+          "description": "Default: \\{ target: 'full-header' \\}\n\nThe header show next sorter direction tooltip. It will be set as the property of Tooltip if its type is object"
+        },
+        {
+          "name": "size",
+          "description": "Default: large\n\nSize of table"
+        },
+        {
+          "name": "sort-directions",
+          "description": "Default: \\[ascend, descend]\n\nSupported sort way, could be ascend, descend"
+        },
+        {
+          "name": "sticky",
+          "description": "Default: -\n\nSet sticky header and scroll bar"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "table-layout",
+          "description": "Default: -fixed when header/columns are fixed, or using column.ellipsis\n\nThe table-layout attribute of table element"
+        },
+        {
+          "name": "dropdown-prefix-cls",
+          "description": "Default: -\n\n-"
+        },
+        {
+          "name": "virtual",
+          "description": "Default: -\n\nSupport virtual list"
+        }
+      ]
+    },
+    {
+      "name": "a-tabs",
+      "description": "(ZH) 选项卡切换组件。\n\n(EN) Tabs make it easy to explore and switch between different views.",
+      "attributes": [
+        {
+          "name": "active-key",
+          "description": "Default: -\n\nCurrent TabPane's key, support v-model:active-key"
+        },
+        {
+          "name": "add-icon",
+          "description": "Default: -\n\nCustomize add icon, only works with type=\"editable-card\""
+        },
+        {
+          "name": "animated",
+          "description": "Default: \\{ inkBar: true, tabPane: false \\}\n\nWhether to change tabs with animation"
+        },
+        {
+          "name": "centered",
+          "description": "Default: false\n\nCenters tabs"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "default-active-key",
+          "description": "Default: The key of first tab\n\nInitial active TabPane's key, if activeKey is not set"
+        },
+        {
+          "name": "hide-add",
+          "description": "Default: false\n\nHide plus icon or not. Only works while type=\"editable-card\""
+        },
+        {
+          "name": "indicator",
+          "description": "Default: -\n\nCustomize size and align of indicator"
+        },
+        {
+          "name": "items",
+          "description": "Default: []\n\nConfigure tab content"
+        },
+        {
+          "name": "more",
+          "description": "Default: \\{ icon: , trigger: 'hover' \\}\n\nCustomize the collapse menu"
+        },
+        {
+          "name": "more-icon",
+          "description": "Default: -\n\nCustom icon of the collapse menu"
+        },
+        {
+          "name": "remove-icon",
+          "description": "Default: -\n\nThe custom icon of remove, only works with type=\"editable-card\""
+        },
+        {
+          "name": "render-tab-bar",
+          "description": "Default: -\n\nReplace the TabBar"
+        },
+        {
+          "name": "size",
+          "description": "Default: middle\n\nPreset tab bar size"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "tab-bar-extra-content",
+          "description": "Default: -\n\nExtra content in tab bar"
+        },
+        {
+          "name": "tab-bar-gutter",
+          "description": "Default: -\n\nThe gap between tabs"
+        },
+        {
+          "name": "tab-bar-style",
+          "description": "Default: -\n\nTab bar style object"
+        },
+        {
+          "name": "tab-placement",
+          "description": "Default: top\n\nPlacement of tabs"
+        },
+        {
+          "name": "destroy-on-hidden",
+          "description": "Default: false\n\nWhether destroy inactive TabPane when change tab"
+        },
+        {
+          "name": "type",
+          "description": "Default: line\n\nBasic style of tabs"
+        }
+      ]
+    },
+    {
+      "name": "a-tag",
+      "description": "(ZH) 进行标记和分类的小标签。\n\n(EN) Used for marking and categorization.",
+      "attributes": [
+        {
+          "name": "closable",
+          "description": "Default: false\n\nWhether the Tag can be closed"
+        },
+        {
+          "name": "close-icon",
+          "description": "Default: -\n\nCustom close icon. Setting to null or false hides the close button"
+        },
+        {
+          "name": "color",
+          "description": "Default: -\n\nColor of the Tag"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nWhether the tag is disabled"
+        },
+        {
+          "name": "href",
+          "description": "Default: -\n\nThe address to jump when clicking, when specified the tag will be rendered as  tag"
+        },
+        {
+          "name": "icon",
+          "description": "Default: -\n\nSet the icon of tag"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "target",
+          "description": "Default: -\n\nSame as target attribute of , works when href is specified"
+        },
+        {
+          "name": "variant",
+          "description": "Default: filled\n\nVariant of the tag"
+        }
+      ]
+    },
+    {
+      "name": "a-checkable-tag",
+      "description": "Used for marking and categorization.",
+      "attributes": [
+        {
+          "name": "checked",
+          "description": "Default: false\n\nChecked status of Tag. This is a controlled component"
+        },
+        {
+          "name": "icon",
+          "description": "Default: -\n\nSet the icon of tag"
+        }
+      ]
+    },
+    {
+      "name": "a-checkable-tag-group",
+      "description": "Used for marking and categorization.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "default-value",
+          "description": "Default: -\n\nInitial value"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisable check/uncheck"
+        },
+        {
+          "name": "multiple",
+          "description": "Default: false\n\nMultiple select mode"
+        },
+        {
+          "name": "options",
+          "description": "Default: -\n\nOption list"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nValue of checked tag(s), support v-model:value"
+        }
+      ]
+    },
+    {
+      "name": "a-tag-checkable-tag",
+      "description": "进行标记和分类的小标签。",
+      "attributes": []
+    },
+    {
+      "name": "a-tag-checkable-tag-group",
+      "description": "进行标记和分类的小标签。",
+      "attributes": []
+    },
+    {
+      "name": "a-slider",
+      "description": "(ZH) 滑动型输入器，展示当前值和可选范围。\n\n(EN) A Slider component for displaying current value and intervals in range.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "default-value",
+          "description": "Default: 0 | [0, 0]\n\nThe default value of the slider. When range is false, use number, otherwise, use [number, number]"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nIf true, the slider will not be interactive"
+        },
+        {
+          "name": "dots",
+          "description": "Default: false\n\nWhether the thumb can only be dragged to tick marks"
+        },
+        {
+          "name": "included",
+          "description": "Default: true\n\nTakes effect when marks is not null. True means containment and false means coordinative"
+        },
+        {
+          "name": "keyboard",
+          "description": "Default: true\n\nSupport using keyboard to move handlers"
+        },
+        {
+          "name": "marks",
+          "description": "Default: &#123; number: VueNode &#125; | &#123; number: &#123; style: CSSProperties, label: VueNode &#125; &#125;\n\nTick marks of Slider. The type of key must be number, and must be in closed interval [min, max]. Each mark can declare its own style"
+        },
+        {
+          "name": "max",
+          "description": "Default: 100\n\nThe maximum value the slider can slide to"
+        },
+        {
+          "name": "min",
+          "description": "Default: 0\n\nThe minimum value the slider can slide to"
+        },
+        {
+          "name": "orientation",
+          "description": "Default: horizontal\n\nOrientation direction"
+        },
+        {
+          "name": "range",
+          "description": "Default: false\n\nEnable dual thumb mode for range selection"
+        },
+        {
+          "name": "reverse",
+          "description": "Default: false\n\nReverse the component"
+        },
+        {
+          "name": "step",
+          "description": "Default: 1\n\nThe granularity the slider can step through values. Must be greater than 0, and be divisible by (max - min). When step is null and marks exist, valid points will only be marks, min and max"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "tooltip",
+          "description": "Default: -\n\nThe tooltip related props"
+        },
+        {
+          "name": "value",
+          "description": "Default: -\n\nThe value of slider. When range is false, use number, otherwise, use [number, number], support v-model:value"
+        },
+        {
+          "name": "vertical",
+          "description": "Default: false\n\nIf true, the slider will be vertical. Simultaneously existing with orientation, orientation takes priority"
+        }
+      ]
+    },
+    {
+      "name": "a-timeline",
+      "description": "(ZH) 垂直展示的时间流信息。\n\n(EN) Vertical display timeline.",
+      "attributes": [
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "items",
+          "description": "Default: -\n\nEach node of timeline"
+        },
+        {
+          "name": "mode",
+          "description": "Default: -\n\nBy sending alternate the timeline will distribute the nodes to the left and right"
+        },
+        {
+          "name": "pending",
+          "description": "Default: false\n\nSet the last ghost node's existence or its content. Use item.loading instead"
+        },
+        {
+          "name": "pending-dot",
+          "description": "Default: -\n\nSet the dot of the last ghost node when pending is true. Use item.icon instead"
+        },
+        {
+          "name": "reverse",
+          "description": "Default: false\n\nWhether reverse nodes or not"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "dot-render",
+          "description": "Default: -\n\nCustom rendering function for timeline dot"
+        },
+        {
+          "name": "label-render",
+          "description": "Default: -\n\nCustom rendering function for timeline label"
+        },
+        {
+          "name": "content-render",
+          "description": "Default: -\n\nCustom rendering function for timeline content"
+        }
+      ]
+    },
+    {
+      "name": "a-time-picker",
+      "description": "(ZH) 输入或选择时间的控件。\n\n(EN) To select/input a time.",
+      "attributes": []
+    },
+    {
+      "name": "a-tooltip",
+      "description": "(ZH) 简单的文字提示气泡框。\n\n(EN) Simple text popup box.",
+      "attributes": [
+        {
+          "name": "align",
+          "description": "Default: -\n\nPopup alignment config"
+        },
+        {
+          "name": "arrow",
+          "description": "Default: -\n\nShow, hide or keep arrow in the center"
+        },
+        {
+          "name": "auto-adjust-overflow",
+          "description": "Default: -\n\nAuto adjust placement when tooltip is invisible"
+        },
+        {
+          "name": "color",
+          "description": "Default: -\n\nThe background color. After using this attribute, the internal text color will adapt automatically"
+        },
+        {
+          "name": "open",
+          "description": "Default: -\n\nWhether tooltip is visible"
+        },
+        {
+          "name": "default-open",
+          "description": "Default: false\n\nInitial open state"
+        },
+        {
+          "name": "get-popup-container",
+          "description": "Default: -\n\nSpecify container for tooltip"
+        },
+        {
+          "name": "destroy-on-hidden",
+          "description": "Default: -\n\nDestroy tooltip when hidden"
+        },
+        {
+          "name": "z-index",
+          "description": "Default: -\n\nSet z-index of tooltip"
+        },
+        {
+          "name": "placement",
+          "description": "Default: top\n\nTooltip placement"
+        },
+        {
+          "name": "trigger",
+          "description": "Default: -\n\nTrigger action"
+        },
+        {
+          "name": "fresh",
+          "description": "Default: -\n\nUpdate content even when tooltip is hidden"
+        },
+        {
+          "name": "mouse-enter-delay",
+          "description": "Default: 0.1\n\nDelay in seconds before showing tooltip"
+        },
+        {
+          "name": "mouse-leave-delay",
+          "description": "Default: 0.1\n\nDelay in seconds before hiding tooltip"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nSemantic DOM class. Supports object or function"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nSemantic DOM style. Supports object or function"
+        },
+        {
+          "name": "get-tooltip-container",
+          "description": "Default: -\n\nLegacy alias of getPopupContainer"
+        },
+        {
+          "name": "motion",
+          "description": "Default: -\n\nPopup motion config"
+        },
+        {
+          "name": "after-open-change",
+          "description": "Default: -\n\nCallback after visibility change"
+        },
+        {
+          "name": "builtin-placements",
+          "description": "Default: -\n\nBuilt-in placement config"
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\nThe text shown in the tooltip"
+        },
+        {
+          "name": "overlay",
+          "description": "Default: -\n\nLegacy alias of title"
+        },
+        {
+          "name": "open-class",
+          "description": "Default: -\n\nClass added to child when tooltip is open"
+        },
+        {
+          "name": "unique",
+          "description": "Default: -\n\nEnable unique display inside AUniqueProvider/ConfigProvider"
+        }
+      ]
+    },
+    {
+      "name": "a-tree",
+      "description": "(ZH) 多层次的结构列表。\n\n(EN) Multiple-level structure list.",
+      "attributes": [
+        {
+          "name": "allow-drop",
+          "description": "Default: -\n\nWhether to allow dropping on the node"
+        },
+        {
+          "name": "auto-expand-parent",
+          "description": "Default: false\n\nWhether to automatically expand a parent treeNode"
+        },
+        {
+          "name": "block-node",
+          "description": "Default: false\n\nWhether treeNode fill remaining horizontal space"
+        },
+        {
+          "name": "checkable",
+          "description": "Default: false\n\nAdd a Checkbox before the treeNodes"
+        },
+        {
+          "name": "checked-keys",
+          "description": "Default: []\n\n(Controlled) Specifies the keys of the checked treeNodes (PS: When this specifies the key of a treeNode which is also a parent treeNode, all the children treeNodes of will be checked; and vice versa, when it specifies the key of a treeNode which is a child treeNode, its parent treeNode will also be checked. When checkable and checkStrictly is true, its object has checked and halfChecked property. Regardless of whether the child or parent treeNode is checked, they won't impact each other, support v-model:checked-keys"
+        },
+        {
+          "name": "check-strictly",
+          "description": "Default: false\n\nCheck treeNode precisely; parent treeNode and children treeNodes are not associated"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "default-checked-keys",
+          "description": "Default: []\n\nSpecifies the keys of the default checked treeNodes"
+        },
+        {
+          "name": "default-expand-all",
+          "description": "Default: false\n\nWhether to expand all treeNodes by default"
+        },
+        {
+          "name": "default-expanded-keys",
+          "description": "Default: []\n\nSpecify the keys of the default expanded treeNodes"
+        },
+        {
+          "name": "default-expand-parent",
+          "description": "Default: true\n\nIf auto expand parent treeNodes when init"
+        },
+        {
+          "name": "default-selected-keys",
+          "description": "Default: []\n\nSpecifies the keys of the default selected treeNodes"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nWhether the tree is disabled"
+        },
+        {
+          "name": "draggable",
+          "description": "Default: false\n\nSpecifies whether this Tree or the node is draggable. Use icon: false to disable drag handler icon"
+        },
+        {
+          "name": "expanded-keys",
+          "description": "Default: []\n\n(Controlled) Specifies the keys of the expanded treeNodes, support v-model:expanded-keys"
+        },
+        {
+          "name": "field-names",
+          "description": "Default: &#123; title: title, key: key, children: children &#125;\n\nCustomize node title, key, children field name"
+        },
+        {
+          "name": "filter-ant-tree-node",
+          "description": "Default: -\n\nDefines a function to filter (highlight) treeNodes. When the function returns true, the corresponding treeNode will be highlighted"
+        },
+        {
+          "name": "height",
+          "description": "Default: -\n\nConfig virtual scroll height. Will not support horizontal scroll when enabled"
+        },
+        {
+          "name": "icon",
+          "description": "Default: -\n\nInsert a custom icon before the title. Need to set showIcon to true"
+        },
+        {
+          "name": "load-data",
+          "description": "Default: -\n\nLoad data asynchronously"
+        },
+        {
+          "name": "loaded-keys",
+          "description": "Default: []\n\n(Controlled) Set loaded tree nodes. Need to work with loadData"
+        },
+        {
+          "name": "multiple",
+          "description": "Default: false\n\nAllows selecting multiple treeNodes"
+        },
+        {
+          "name": "root-style",
+          "description": "Default: -\n\nStyle on the root element"
+        },
+        {
+          "name": "selectable",
+          "description": "Default: true\n\nWhether it can be selected"
+        },
+        {
+          "name": "selected-keys",
+          "description": "Default: -\n\n(Controlled) Specifies the keys of the selected treeNodes, multiple selection needs to set multiple to true, support v-model:selected-keys"
+        },
+        {
+          "name": "show-icon",
+          "description": "Default: false\n\nControls whether to display the icon node (no default style)"
+        },
+        {
+          "name": "show-line",
+          "description": "Default: false\n\nShows a connecting line"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "switcher-icon",
+          "description": "Default: -\n\nCustomize expand/collapse icons for tree nodes (With default rotate angular style)"
+        },
+        {
+          "name": "switcher-loading-icon",
+          "description": "Default: -\n\nCustomize loading icons for tree nodes"
+        },
+        {
+          "name": "title-render",
+          "description": "Default: -\n\nCustomize tree node title render"
+        },
+        {
+          "name": "tree-data",
+          "description": "Default: -\n\nThe treeNodes data Array, if set it then you need not to construct children TreeNode. (key should be unique across the whole array)"
+        },
+        {
+          "name": "virtual",
+          "description": "Default: true\n\nDisable virtual scroll when set to false"
+        }
+      ]
+    },
+    {
+      "name": "a-tree-node",
+      "description": "(ZH) 多层次的结构列表。\n\n(EN) Multiple-level structure list.",
+      "attributes": [
+        {
+          "name": "checkable",
+          "description": "Default: -\n\nWhen Tree is checkable, set TreeNode display Checkbox or not"
+        },
+        {
+          "name": "disable-checkbox",
+          "description": "Default: false\n\nDisables the checkbox of the treeNode"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisables the treeNode"
+        },
+        {
+          "name": "icon",
+          "description": "Default: -\n\nCustomize icon. When you pass component, whose render will receive full TreeNode props as component props"
+        },
+        {
+          "name": "is-leaf",
+          "description": "Default: -\n\nDetermines if this is a leaf node (effective when loadData is specified). false will force the TreeNode to be treated as a parent node"
+        },
+        {
+          "name": "key",
+          "description": "Default: (internal calculated position of treeNode)\n\nUsed with (default)ExpandedKeys / (default)CheckedKeys / (default)SelectedKeys. P.S.: It must be unique in all of treeNodes of the tree"
+        },
+        {
+          "name": "selectable",
+          "description": "Default: true\n\nSet whether the treeNode can be selected"
+        },
+        {
+          "name": "title",
+          "description": "Default: ---\n\nTitle"
+        }
+      ]
+    },
+    {
+      "name": "a-directory-tree",
+      "description": "(ZH) 多层次的结构列表。\n\n(EN) Multiple-level structure list.",
+      "attributes": [
+        {
+          "name": "expand-action",
+          "description": "Default: click\n\nDirectory opening logic, options: false | click | doubleClick"
+        }
+      ]
+    },
+    {
+      "name": "a-transfer",
+      "description": "(ZH) 双栏穿梭选择框。\n\n(EN) Double column transfer choice box.",
+      "attributes": [
+        {
+          "name": "actions",
+          "description": "Default: [>, <]\n\nA set of operations that are sorted from top to bottom. When an array of strings is provided, default buttons will be used; when an array of VueNode is provided, custom elements will be used"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "data-source",
+          "description": "Default: []\n\nUsed for setting the source data. The elements that are part of this array will be present the left column. Except the elements whose keys are included in targetKeys prop"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nWhether disabled transfer"
+        },
+        {
+          "name": "filter-option",
+          "description": "Default: -\n\nA function to determine whether an item should show in search result list, only works when searching"
+        },
+        {
+          "name": "footer",
+          "description": "Default: -\n\nA function used for rendering the footer"
+        },
+        {
+          "name": "locale",
+          "description": "Default: -\n\nThe i18n text including filter, empty text, item unit, etc"
+        },
+        {
+          "name": "one-way",
+          "description": "Default: false\n\nDisplay as single direction style"
+        },
+        {
+          "name": "pagination",
+          "description": "Default: false\n\nUse pagination. Not work in render props"
+        },
+        {
+          "name": "render",
+          "description": "Default: -\n\nThe function to generate the item shown on a column. Based on an record (element of the dataSource array), this function should return a VueNode which is generated from that record. Also, it can return a plain object with value and label, label is a VueNode and value is for title"
+        },
+        {
+          "name": "row-key",
+          "description": "Default: -\n\nSpecify the key that will be used for uniquely identify each element"
+        },
+        {
+          "name": "select-all-labels",
+          "description": "Default: -\n\nA set of customized labels for select all checkboxes on the header"
+        },
+        {
+          "name": "selected-keys",
+          "description": "Default: []\n\nA set of keys of selected items, support v-model:selected-keys"
+        },
+        {
+          "name": "selections-icon",
+          "description": "Default: -\n\nCustom dropdown icon"
+        },
+        {
+          "name": "show-search",
+          "description": "Default: false\n\nIf included, a search box is shown on each column"
+        },
+        {
+          "name": "show-select-all",
+          "description": "Default: true\n\nShow select all checkbox on the header"
+        },
+        {
+          "name": "status",
+          "description": "Default: -\n\nSet validation status"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function"
+        },
+        {
+          "name": "target-keys",
+          "description": "Default: []\n\nA set of keys of elements that are listed on the right column, support v-model:target-keys"
+        },
+        {
+          "name": "titles",
+          "description": "Default: -\n\nA set of titles that are sorted from left to right"
+        }
+      ]
+    },
+    {
+      "name": "a-tree-select-props",
+      "description": "Tree selection control.",
+      "attributes": []
+    },
+    {
+      "name": "a-tree-select",
+      "description": "树型选择控件。",
+      "attributes": []
+    },
+    {
+      "name": "a-tour",
+      "description": "(ZH) 用于分步引导用户了解产品功能的气泡组件。\n\n(EN) A popup component for guiding users through a product.",
+      "attributes": [
+        {
+          "name": "steps",
+          "description": "Default: -\n\nTour steps"
+        },
+        {
+          "name": "open",
+          "description": "Default: false\n\nOpen tour, support v-model:open"
+        },
+        {
+          "name": "current",
+          "description": "Default: -\n\nWhat is the current step"
+        },
+        {
+          "name": "arrow",
+          "description": "Default: true\n\nWhether to show the arrow, including the configuration whether to point to the center of the element"
+        },
+        {
+          "name": "close-icon",
+          "description": "Default: true\n\nCustomize close icon"
+        },
+        {
+          "name": "disabled-interaction",
+          "description": "Default: false\n\nDisable interaction on highlighted area"
+        },
+        {
+          "name": "gap",
+          "description": "Default: &#123; offset: 6, radius: 2 &#125;\n\nControl the radius of the highlighted area and the offset between highlighted area and the element"
+        },
+        {
+          "name": "placement",
+          "description": "Default: bottom\n\nPosition of the guide card relative to the target element"
+        },
+        {
+          "name": "mask",
+          "description": "Default: true\n\nWhether to enable masking, change mask style and fill color by pass custom props"
+        },
+        {
+          "name": "type",
+          "description": "Default: default\n\nType, affects the background color and text color"
+        },
+        {
+          "name": "scroll-into-view-options",
+          "description": "Default: true\n\nsupport pass custom scrollIntoView options"
+        },
+        {
+          "name": "indicators-render",
+          "description": "Default: -\n\nCustom indicator"
+        },
+        {
+          "name": "actions-render",
+          "description": "Default: -\n\nCustom action"
+        },
+        {
+          "name": "z-index",
+          "description": "Default: 1001\n\nTour zIndex"
+        },
+        {
+          "name": "get-popup-container",
+          "description": "Default: () => document.body\n\nSet the rendering node of Tour floating layer"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "root-class",
+          "description": "Default: -\n\nRoot container class"
+        },
+        {
+          "name": "prefix-cls",
+          "description": "Default: -\n\n-"
+        }
+      ]
+    },
+    {
+      "name": "a-upload",
+      "description": "(ZH) 文件选择上传和拖拽上传控件。\n\n(EN) Used to select and upload files or drag and drop files.",
+      "attributes": [
+        {
+          "name": "accept",
+          "description": "Default: -\n\nFile types that can be accepted. See input accept Attribute"
+        },
+        {
+          "name": "action",
+          "description": "Default: -\n\nUploading URL"
+        },
+        {
+          "name": "before-upload",
+          "description": "Default: -\n\nHook function which will be executed before uploading. Uploading will be stopped with false or a rejected Promise returned. When returned value is Upload.LIST_IGNORE, the list of files that have been uploaded will ignore it. **Warning：this function is not supported in IE9**"
+        },
+        {
+          "name": "custom-request",
+          "description": "Default: -\n\nOverride for the default xhr behavior allowing for additional customization and the ability to implement your own XMLHttpRequest"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "data",
+          "description": "Default: -\n\nUploading extra params or function which can return uploading extra params"
+        },
+        {
+          "name": "directory",
+          "description": "Default: false\n\nSupport upload whole directory (caniuse)"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisable upload button"
+        },
+        {
+          "name": "file-list",
+          "description": "Default: -\n\nList of files that have been uploaded (controlled). Here is a common issue #2423 when using it, support v-model:file-list"
+        },
+        {
+          "name": "headers",
+          "description": "Default: -\n\nSet request headers, valid above IE10"
+        },
+        {
+          "name": "icon-render",
+          "description": "Default: -\n\nCustom show icon"
+        },
+        {
+          "name": "is-image-url",
+          "description": "Default: (inside implementation)\n\nCustomize if render  in thumbnail"
+        },
+        {
+          "name": "item-render",
+          "description": "Default: -\n\nCustom item of uploadList"
+        },
+        {
+          "name": "list-type",
+          "description": "Default: text\n\nBuilt-in stylesheets, support for four types: text, picture, picture-card or picture-circle"
+        },
+        {
+          "name": "max-count",
+          "description": "Default: -\n\nLimit the number of uploaded files. Will replace current one when maxCount is 1"
+        },
+        {
+          "name": "method",
+          "description": "Default: post\n\nThe http method of upload request"
+        },
+        {
+          "name": "multiple",
+          "description": "Default: false\n\nWhether to support selected multiple files. IE10+ supported. You can select multiple files with CTRL holding down while multiple is set to be true"
+        },
+        {
+          "name": "name",
+          "description": "Default: file\n\nThe name of uploading file"
+        },
+        {
+          "name": "open-file-dialog-on-click",
+          "description": "Default: true\n\nClick open file dialog"
+        },
+        {
+          "name": "pastable",
+          "description": "Default: false\n\nSupport paste file"
+        },
+        {
+          "name": "preview-file",
+          "description": "Default: -\n\nCustomize preview file logic"
+        },
+        {
+          "name": "progress",
+          "description": "Default: \\{ strokeWidth: 2, showInfo: false \\}\n\nCustom progress bar"
+        },
+        {
+          "name": "show-upload-list",
+          "description": "Default: true\n\nWhether to show default upload list, could be an object to specify extra, showPreviewIcon, showRemoveIcon, showDownloadIcon, removeIcon and downloadIcon individually"
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "with-credentials",
+          "description": "Default: false\n\nThe ajax upload with cookie sent"
+        }
+      ]
+    },
+    {
+      "name": "a-watermark",
+      "description": "(ZH) 给页面的某个区域加上水印。\n\n(EN) Add specific text or patterns to the page.",
+      "attributes": [
+        {
+          "name": "width",
+          "description": "Default: 120\n\nThe width of the watermark, the default value of content is its own width"
+        },
+        {
+          "name": "height",
+          "description": "Default: 64\n\nThe height of the watermark, the default value of content is its own height"
+        },
+        {
+          "name": "inherit",
+          "description": "Default: true\n\nPass the watermark to the pop-up component such as Modal, Drawer"
+        },
+        {
+          "name": "rotate",
+          "description": "Default: -22\n\nWhen the watermark is drawn, the rotation angle, unit °"
+        },
+        {
+          "name": "z-index",
+          "description": "Default: 9\n\nThe z-index of the appended watermark element"
+        },
+        {
+          "name": "image",
+          "description": "Default: -\n\nImage source, it is recommended to export 2x or 3x image, high priority (support base64 format)"
+        },
+        {
+          "name": "content",
+          "description": "Default: -\n\nWatermark text content"
+        },
+        {
+          "name": "font",
+          "description": "Default: Font\n\nText style"
+        },
+        {
+          "name": "gap",
+          "description": "Default: \\[100, 100\\]\n\nThe spacing between watermarks"
+        },
+        {
+          "name": "offset",
+          "description": "Default: \\[gap\\[0\\]/2, gap\\[1\\]/2\\]\n\nThe offset of the watermark from the upper left corner of the container. The default is gap/2"
+        }
+      ]
+    },
+    {
+      "name": "a-typography",
+      "description": "(ZH) 文本的基本格式。\n\n(EN) Basic text writing, including headings, body text, lists, and more.",
+      "attributes": [
+        {
+          "name": "direction",
+          "description": "Default: -\n\nDirection control"
+        }
+      ]
+    },
+    {
+      "name": "a-typography-text",
+      "description": "(ZH) 文本的基本格式。\n\n(EN) Basic text writing, including headings, body text, lists, and more.",
+      "attributes": [
+        {
+          "name": "code",
+          "description": "Default: false\n\nCode style"
+        },
+        {
+          "name": "copyable",
+          "description": "Default: false\n\nWhether to be copyable, customize it via setting an object"
+        },
+        {
+          "name": "delete",
+          "description": "Default: false\n\nDeleted line style"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisabled content"
+        },
+        {
+          "name": "editable",
+          "description": "Default: false\n\nIf editable. Can control edit state when is object"
+        },
+        {
+          "name": "ellipsis",
+          "description": "Default: false\n\nDisplay ellipsis when text overflows, can't configure expandable, rows and onExpand by using object. Diff with Typography.Paragraph, Text do not have 100% width style which means it will fix width on the first ellipsis. If you want to have responsive ellipsis, please set width manually"
+        },
+        {
+          "name": "keyboard",
+          "description": "Default: false\n\nKeyboard style"
+        },
+        {
+          "name": "mark",
+          "description": "Default: false\n\nMarked style"
+        },
+        {
+          "name": "strong",
+          "description": "Default: false\n\nBold style"
+        },
+        {
+          "name": "italic",
+          "description": "Default: false\n\nItalic style"
+        },
+        {
+          "name": "type",
+          "description": "Default: -\n\nContent type"
+        },
+        {
+          "name": "underline",
+          "description": "Default: false\n\nUnderlined style"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-typography-title",
+      "description": "(ZH) 文本的基本格式。\n\n(EN) Basic text writing, including headings, body text, lists, and more.",
+      "attributes": [
+        {
+          "name": "code",
+          "description": "Default: false\n\nCode style"
+        },
+        {
+          "name": "copyable",
+          "description": "Default: false\n\nWhether to be copyable, customize it via setting an object"
+        },
+        {
+          "name": "delete",
+          "description": "Default: false\n\nDeleted line style"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisabled content"
+        },
+        {
+          "name": "editable",
+          "description": "Default: false\n\nIf editable. Can control edit state when is object"
+        },
+        {
+          "name": "ellipsis",
+          "description": "Default: false\n\nDisplay ellipsis when text overflows, can configure rows and expandable by using object"
+        },
+        {
+          "name": "level",
+          "description": "Default: 1\n\nSet content importance. Match with h1, h2, h3, h4, h5"
+        },
+        {
+          "name": "mark",
+          "description": "Default: false\n\nMarked style"
+        },
+        {
+          "name": "italic",
+          "description": "Default: false\n\nItalic style"
+        },
+        {
+          "name": "type",
+          "description": "Default: -\n\nContent type"
+        },
+        {
+          "name": "underline",
+          "description": "Default: false\n\nUnderlined style"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-typography-paragraph",
+      "description": "(ZH) 文本的基本格式。\n\n(EN) Basic text writing, including headings, body text, lists, and more.",
+      "attributes": [
+        {
+          "name": "code",
+          "description": "Default: false\n\nCode style"
+        },
+        {
+          "name": "copyable",
+          "description": "Default: false\n\nWhether to be copyable, customize it via setting an object"
+        },
+        {
+          "name": "delete",
+          "description": "Default: false\n\nDeleted line style"
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\nDisabled content"
+        },
+        {
+          "name": "editable",
+          "description": "Default: false\n\nIf editable. Can control edit state when is object"
+        },
+        {
+          "name": "ellipsis",
+          "description": "Default: false\n\nDisplay ellipsis when text overflows, can configure rows and expandable by using object"
+        },
+        {
+          "name": "mark",
+          "description": "Default: false\n\nMarked style"
+        },
+        {
+          "name": "strong",
+          "description": "Default: false\n\nBold style"
+        },
+        {
+          "name": "italic",
+          "description": "Default: false\n\nItalic style"
+        },
+        {
+          "name": "type",
+          "description": "Default: -\n\nContent type"
+        },
+        {
+          "name": "underline",
+          "description": "Default: false\n\nUnderlined style"
+        },
+        {
+          "name": "classes",
+          "description": "Default: -\n\nCustomize class for each semantic structure inside the component. Supports object or function."
+        },
+        {
+          "name": "styles",
+          "description": "Default: -\n\nCustomize inline style for each semantic structure inside the component. Supports object or function."
+        }
+      ]
+    },
+    {
+      "name": "a-menu-item",
+      "description": "(ZH) Menu item used as a child of Menu or SubMenu.\n\n(EN) Menu item used as a child of Menu or SubMenu.",
+      "attributes": [
+        {
+          "name": "danger",
+          "description": "Default: false\n\n(ZH) Display the danger style.\n\n(EN) Display the danger style."
+        },
+        {
+          "name": "disabled",
+          "description": "Default: false\n\n(ZH) Whether the menu item is disabled.\n\n(EN) Whether the menu item is disabled."
+        },
+        {
+          "name": "icon",
+          "description": "Default: -\n\n(ZH) Icon of the menu item.\n\n(EN) Icon of the menu item."
+        },
+        {
+          "name": "extra",
+          "description": "Default: -\n\n(ZH) Extra content rendered at the end of the menu item.\n\n(EN) Extra content rendered at the end of the menu item."
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\n(ZH) Title content used for the collapsed tooltip.\n\n(EN) Title content used for the collapsed tooltip."
+        }
+      ]
+    },
+    {
+      "name": "a-sub-menu",
+      "description": "(ZH) Submenu container used to group related menu items.\n\n(EN) Submenu container used to group related menu items.",
+      "attributes": [
+        {
+          "name": "disabled",
+          "description": "Default: false\n\n(ZH) Whether the submenu is disabled.\n\n(EN) Whether the submenu is disabled."
+        },
+        {
+          "name": "icon",
+          "description": "Default: -\n\n(ZH) Icon of the submenu.\n\n(EN) Icon of the submenu."
+        },
+        {
+          "name": "title",
+          "description": "Default: -\n\n(ZH) Title content of the submenu.\n\n(EN) Title content of the submenu."
+        },
+        {
+          "name": "popup-class-name",
+          "description": "Default: -\n\n(ZH) Submenu popup class name. Not effective when `mode=\"inline\"`.\n\n(EN) Submenu popup class name. Not effective when `mode=\"inline\"`."
+        },
+        {
+          "name": "popup-offset",
+          "description": "Default: -\n\n(ZH) Submenu popup offset. Not effective when `mode=\"inline\"`.\n\n(EN) Submenu popup offset. Not effective when `mode=\"inline\"`."
+        },
+        {
+          "name": "popup-style",
+          "description": "Default: -\n\n(ZH) Inline style of the submenu popup.\n\n(EN) Inline style of the submenu popup."
+        },
+        {
+          "name": "popup-render",
+          "description": "Default: -\n\n(ZH) Custom renderer for the current submenu popup.\n\n(EN) Custom renderer for the current submenu popup."
+        },
+        {
+          "name": "theme",
+          "description": "Default: -\n\n(ZH) Color theme of the submenu. Inherits from Menu by default.\n\n(EN) Color theme of the submenu. Inherits from Menu by default."
+        }
+      ]
+    },
+    {
+      "name": "a-menu-divider",
+      "description": "(ZH) Divider line between menu items.\n\n(EN) Divider line between menu items.",
+      "attributes": [
+        {
+          "name": "dashed",
+          "description": "Default: false\n\n(ZH) Whether the divider line is dashed.\n\n(EN) Whether the divider line is dashed."
+        }
+      ]
+    },
+    {
+      "name": "a-menu-item-group",
+      "description": "(ZH) Group container for related menu items.\n\n(EN) Group container for related menu items.",
+      "attributes": [
+        {
+          "name": "title",
+          "description": "Default: -\n\n(ZH) Title content of the menu item group.\n\n(EN) Title content of the menu item group."
+        }
+      ]
+    },
+    {
+      "name": "a-style-provider",
+      "description": "(ZH) Provide CSS-in-JS context for styling configuration.\n\n(EN) Provide CSS-in-JS context for styling configuration.",
+      "attributes": [
+        {
+          "name": "auto-clear",
+          "description": "Default: -\n\n(ZH) Clear style cache on unmount.\n\n(EN) Clear style cache on unmount."
+        },
+        {
+          "name": "cache",
+          "description": "Default: -\n\n(ZH) Set when you need SSR to extract style on your own. If not provided, it auto creates <style /> on server side.\n\n(EN) Set when you need SSR to extract style on your own. If not provided, it auto creates <style /> on server side."
+        },
+        {
+          "name": "default-cache",
+          "description": "Default: -\n\n(ZH) Tell children this context is default generated context.\n\n(EN) Tell children this context is default generated context."
+        },
+        {
+          "name": "hash-priority",
+          "description": "Default: -\n\n(ZH) Use :where selector to reduce hashId selector priority.\n\n(EN) Use :where selector to reduce hashId selector priority."
+        },
+        {
+          "name": "container",
+          "description": "Default: -\n\n(ZH) Tell cssinjs where to inject style in.\n\n(EN) Tell cssinjs where to inject style in."
+        },
+        {
+          "name": "ssr-inline",
+          "description": "Default: -\n\n(ZH) Render inline <style /> for SSR fallback. Not recommended.\n\n(EN) Render inline <style /> for SSR fallback. Not recommended."
+        },
+        {
+          "name": "transformers",
+          "description": "Default: -\n\n(ZH) Transform css before inject in document. Transformers do not support dynamic update.\n\n(EN) Transform css before inject in document. Transformers do not support dynamic update."
+        },
+        {
+          "name": "linters",
+          "description": "Default: -\n\n(ZH) Linters to lint css before inject in document. Styles linted after transforming. Linters do not support dynamic update.\n\n(EN) Linters to lint css before inject in document. Styles linted after transforming. Linters do not support dynamic update."
+        },
+        {
+          "name": "layer",
+          "description": "Default: -\n\n(ZH) Wrap css in a layer to avoid global style conflict.\n\n(EN) Wrap css in a layer to avoid global style conflict."
+        },
+        {
+          "name": "auto-prefix",
+          "description": "Default: -\n\n(ZH) Hardcode here since transformer not support serialize effect.\n\n(EN) Hardcode here since transformer not support serialize effect."
+        }
+      ]
+    }
+  ]
+}

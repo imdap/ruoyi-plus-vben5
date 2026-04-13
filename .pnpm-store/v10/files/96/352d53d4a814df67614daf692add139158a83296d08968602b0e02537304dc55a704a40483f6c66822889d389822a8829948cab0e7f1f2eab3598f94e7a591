@@ -1,0 +1,62 @@
+import { AnyObject, VueNode } from "../../_util/type.js";
+import { PickerProps as PickerProps$1 } from "./interface.js";
+import * as vue968 from "vue";
+import { SlotsType } from "vue";
+import { PickerMode } from "@v-c/picker";
+import { GenerateConfig } from "@v-c/picker/generate";
+
+//#region src/date-picker/generatePicker/generateSinglePicker.d.ts
+interface DatePickerEmits<DateType = AnyObject> {
+  'change': (date: DateType | DateType[] | null, dateString: string | string[]) => void;
+  'update:value': (date: DateType | DateType[] | null) => void;
+  'calendarChange': (date: DateType | DateType[], dateString: string | string[], info: any) => void;
+  'panelChange': (date: DateType, mode: PickerMode) => void;
+  'openChange': (open: boolean) => void;
+  'ok': (date: DateType | DateType[]) => void;
+  'select': (date: DateType) => void;
+  'focus': (e: FocusEvent, info: any) => void;
+  'blur': (e: FocusEvent, info: any) => void;
+  'keydown': (e: KeyboardEvent, preventDefault: VoidFunction) => void;
+}
+interface DatePickerSlots {
+  suffixIcon?: () => any;
+  renderExtraFooter?: (mode: PickerMode) => any;
+  panelRender?: (originPanel: VueNode) => any;
+  inputRender?: (props: Record<string, any>) => any;
+  cellRender?: (ctx: {
+    current: AnyObject;
+    info: any;
+  }) => any;
+  dateRender?: (ctx: {
+    date: AnyObject;
+    today: AnyObject;
+  }) => any;
+  monthCellRender?: (ctx: {
+    date: AnyObject;
+    locale: any;
+  }) => any;
+  [key: string]: any;
+}
+interface DatePickerEmitsProps<DateType = AnyObject> {
+  onChange?: DatePickerEmits<DateType>['change'];
+  'onUpdate:value'?: DatePickerEmits<DateType>['update:value'];
+  onCalendarChange?: DatePickerEmits<DateType>['calendarChange'];
+  onPanelChange?: DatePickerEmits<DateType>['panelChange'];
+  onOpenChange?: DatePickerEmits<DateType>['openChange'];
+  onOk?: DatePickerEmits<DateType>['ok'];
+  onSelect?: DatePickerEmits<DateType>['select'];
+  onFocus?: DatePickerEmits<DateType>['focus'];
+  onBlur?: DatePickerEmits<DateType>['blur'];
+  onKeydown?: DatePickerEmits<DateType>['keydown'];
+}
+interface InternalPickerProps<DateType extends AnyObject = AnyObject> extends PickerProps$1<DateType>, Omit<DatePickerEmitsProps<DateType>, keyof PickerProps$1<DateType>> {}
+declare function generatePicker<DateType extends AnyObject = AnyObject>(generateConfig: GenerateConfig<DateType>): {
+  DatePicker: vue968.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue968.PublicProps>;
+  WeekPicker: vue968.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue968.PublicProps>;
+  MonthPicker: vue968.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue968.PublicProps>;
+  YearPicker: vue968.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue968.PublicProps>;
+  TimePicker: vue968.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue968.PublicProps>;
+  QuarterPicker: vue968.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue968.PublicProps>;
+};
+//#endregion
+export { DatePickerEmits, DatePickerEmitsProps, DatePickerSlots, InternalPickerProps, generatePicker as default };

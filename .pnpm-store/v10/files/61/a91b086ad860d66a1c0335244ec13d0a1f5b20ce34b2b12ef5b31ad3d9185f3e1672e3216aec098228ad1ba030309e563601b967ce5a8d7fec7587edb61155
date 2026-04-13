@@ -1,0 +1,21 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue217 from "vue";
+
+//#region src/anchor/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 链接纵向内间距
+   * @descEN Vertical padding of link
+   */
+  linkPaddingBlock: number;
+  /**
+   * @desc 链接横向内间距
+   * @descEN Horizontal padding of link
+   */
+  linkPaddingInlineStart: number;
+}
+declare const prepareComponentToken: GetDefaultToken<'Anchor'>;
+declare const _default: (prefixCls: vue217.Ref<string>, rootCls?: vue217.Ref<string | undefined>) => readonly [vue217.Ref<string, string>, vue217.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

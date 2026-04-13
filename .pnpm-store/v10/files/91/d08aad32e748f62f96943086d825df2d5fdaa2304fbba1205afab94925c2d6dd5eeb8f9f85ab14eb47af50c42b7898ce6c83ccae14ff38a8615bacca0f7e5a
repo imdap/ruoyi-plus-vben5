@@ -1,0 +1,11 @@
+import { KeyWiseTransferItem, RenderedItem, TransferListBodyProps } from "./interface.js";
+import * as vue280 from "vue";
+
+//#region src/transfer/ListBody.d.ts
+type ExistPagination = Exclude<TransferListBodyProps<KeyWiseTransferItem>['pagination'], boolean>;
+interface ListBodyRef<RecordType extends KeyWiseTransferItem> {
+  items?: RenderedItem<RecordType>[];
+}
+declare const TransferListBody: vue280.DefineSetupFnComponent<TransferListBodyProps<KeyWiseTransferItem>, {}, {}, TransferListBodyProps<KeyWiseTransferItem> & {}, vue280.PublicProps>;
+//#endregion
+export { ExistPagination, ListBodyRef, TransferListBody as default };

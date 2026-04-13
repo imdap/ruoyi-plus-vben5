@@ -1,0 +1,25 @@
+import { SELECTION_ALL, SELECTION_COLUMN, SELECTION_INVERT, SELECTION_NONE } from "./hooks/useSelection.js";
+import { ColumnType, ColumnsType, ExpandType, FilterValue, SortOrder, SorterResult, TableLocale, TablePaginationConfig, TableRowSelection } from "./interface.js";
+import Column from "./Column.js";
+import ColumnGroup from "./ColumnGroup.js";
+import { TableClassNamesType, TableEmits, TableProps, TableSlots, TableStylesType } from "./InternalTable.js";
+import ForwardTable from "./Table.js";
+import { App } from "vue";
+import { DataIndex, EXPAND_COLUMN, Reference, Summary, SummaryCell, SummaryRow } from "@v-c/table";
+
+//#region src/table/index.d.ts
+declare const InternalTable: typeof ForwardTable & {
+  install: (app: App) => void;
+  Column: typeof Column;
+  ColumnGroup: typeof ColumnGroup;
+  Summary: typeof Summary;
+  SummaryRow: typeof SummaryRow;
+  SummaryCell: typeof SummaryCell;
+  SELECTION_COLUMN: typeof SELECTION_COLUMN;
+  EXPAND_COLUMN: typeof EXPAND_COLUMN;
+  SELECTION_ALL: typeof SELECTION_ALL;
+  SELECTION_INVERT: typeof SELECTION_INVERT;
+  SELECTION_NONE: typeof SELECTION_NONE;
+};
+//#endregion
+export { Column, ColumnGroup, type ColumnType, type ColumnsType, type DataIndex, EXPAND_COLUMN, type ExpandType, type FilterValue, type Reference, SELECTION_ALL, SELECTION_COLUMN, SELECTION_INVERT, SELECTION_NONE, type SortOrder, type SorterResult, Summary, SummaryCell, SummaryRow, type TableClassNamesType, type TableEmits, type TableLocale, type TablePaginationConfig, type TableProps, type TableRowSelection, type TableSlots, type TableStylesType, InternalTable as default };

@@ -1,0 +1,138 @@
+@use "sass:map";
+@use "sass:list";
+
+$loadingThemeList: (
+  (
+    name: "primary",
+    textColor: var(--vxe-ui-font-primary-color),
+    bgColor: var(--vxe-ui-font-primary-tinge-color)
+  ),
+  (
+    name: "success",
+    textColor: var(--vxe-ui-status-success-color),
+    bgColor: var(--vxe-ui-status-success-tinge-color)
+  ),
+  (
+    name: "info",
+    textColor: var(--vxe-ui-status-info-color),
+    bgColor: var(--vxe-ui-status-info-tinge-color)
+  ),
+  (
+    name: "warning",
+    textColor: var(--vxe-ui-status-warning-color),
+    bgColor: var(--vxe-ui-status-warning-tinge-color)
+  ),
+  (
+    name: "danger",
+    textColor: var(--vxe-ui-status-danger-color),
+    bgColor: var(--vxe-ui-status-danger-tinge-color)
+  ),
+  (
+    name: "error",
+    textColor: var(--vxe-ui-status-error-color),
+    bgColor: var(--vxe-ui-status-error-tinge-color)
+  )
+);
+
+.vxe-loading {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  user-select: none;
+  color: var(--vxe-ui-loading-color);
+  background-color: var(--vxe-ui-loading-background-color);
+  .vxe-loading--spinner {
+    &:before,
+    &:after {
+      background-color: var(--vxe-ui-font-primary-color);
+    }
+  }
+  @for $index from 0 to list.length($loadingThemeList) {
+    $item: list.nth($loadingThemeList, $index + 1);
+    &.theme--#{map.get($item, name)} {
+      color: map.get($item, textColor);
+      background-color: map.get($item, bgColor);
+      .vxe-loading--spinner {
+        &:before,
+        &:after {
+          background-color: map.get($item, bgColor);
+        }
+      }
+    }
+  }
+  &.is--visible {
+    display: block;
+  }
+  & > .vxe-loading--chunk,
+  & > .vxe-loading--wrapper {
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    text-align: center;
+  }
+  .vxe-loading--default-icon {
+    font-size: 1.4em;
+  }
+  .vxe-loading--text {
+    padding: 0.4em 0;
+  }
+  .vxe-loading--spinner {
+    display: inline-block;
+    position: relative;
+    width: 56px;
+    height: 56px;
+    &:before,
+    &:after {
+      content: "";
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      opacity: 0.6;
+      position: absolute;
+      top: 0;
+      left: 0;
+      animation: bounce 2.0s infinite ease-in-out;
+    }
+    &:after {
+      animation-delay: -1.0s;
+    }
+  }
+  @keyframes bounce {
+    0%, 100% {
+      transform: scale(0);
+    } 50% {
+      transform: scale(1);
+    }
+  }
+}
+
+.size--mini {
+  .vxe-loading {
+    .vxe-loading--spinner {
+      width: 38px;
+      height: 38px;
+    }
+  }
+}
+.size--small {
+  .vxe-loading {
+    .vxe-loading--spinner {
+      width: 44px;
+      height: 44px;
+    }
+  }
+}
+.size--medium {
+  .vxe-loading {
+    .vxe-loading--spinner {
+      width: 50px;
+      height: 50px;
+    }
+  }
+}

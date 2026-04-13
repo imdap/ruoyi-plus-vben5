@@ -1,0 +1,17 @@
+import { TooltipProps } from "../../tooltip/index.js";
+import * as vue802 from "vue";
+
+//#region src/typography/Base/EllipsisTooltip.d.ts
+interface EmptyEmitsProps {}
+interface EllipsisTooltipProps extends EmptyEmitsProps {
+  tooltipProps?: TooltipProps;
+  enableEllipsis: boolean;
+  isEllipsis?: boolean;
+  open: boolean;
+}
+interface EllipsisTooltipSlots {
+  default?: () => any;
+}
+declare const EllipsisTooltip: vue802.DefineComponent<EllipsisTooltipProps, {}, {}, {}, {}, vue802.ComponentOptionsMixin, vue802.ComponentOptionsMixin, {}, string, vue802.PublicProps, Readonly<EllipsisTooltipProps> & Readonly<{}>, {}, {}, {}, {}, string, vue802.ComponentProvideOptions, false, {}, any>;
+//#endregion
+export { EllipsisTooltipProps, EllipsisTooltipSlots, EmptyEmitsProps, EllipsisTooltip as default };

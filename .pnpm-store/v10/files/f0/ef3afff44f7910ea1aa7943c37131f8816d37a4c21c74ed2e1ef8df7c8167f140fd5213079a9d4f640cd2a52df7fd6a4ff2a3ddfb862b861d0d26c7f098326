@@ -1,0 +1,8 @@
+import { ButtonProps } from "../button/Button.js";
+import "../button/index.js";
+import * as vue58 from "vue";
+
+//#region src/date-picker/PickerButton.d.ts
+declare const PickerButton: vue58.DefineSetupFnComponent<ButtonProps, {}, {}, ButtonProps & {}, vue58.PublicProps>;
+//#endregion
+export { PickerButton as default };

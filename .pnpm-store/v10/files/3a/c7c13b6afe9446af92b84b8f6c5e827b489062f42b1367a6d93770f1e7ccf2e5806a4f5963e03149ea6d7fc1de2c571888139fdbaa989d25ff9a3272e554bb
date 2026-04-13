@@ -1,0 +1,268 @@
+.vxe-select {
+  position: relative;
+  display: inline-block;
+  width: 180px;
+  color: var(--vxe-ui-font-color);
+  text-align: left;
+}
+.vxe-select > .vxe-input .vxe-input--inner {
+  cursor: pointer;
+}
+.vxe-select.is--disabled > .vxe-input .vxe-input--inner {
+  cursor: no-drop;
+}
+.vxe-select.is--loading > .vxe-input .vxe-input--inner {
+  cursor: progress;
+}
+.vxe-select > .vxe-input {
+  width: 100%;
+}
+.vxe-select > .vxe-input .vxe-input--suffix-icon > i {
+  display: inline-block;
+  transition: transform 0.2s ease-in-out;
+}
+.vxe-select.is--active:not(.is--filter) > .vxe-input {
+  border-color: var(--vxe-ui-font-primary-color);
+}
+
+.vxe-select--readonly {
+  color: var(--vxe-ui-font-color);
+  display: inline-flex;
+}
+
+.vxe-select-slots {
+  display: none;
+}
+
+.vxe-select--panel {
+  display: none;
+  position: absolute;
+  left: 0;
+  padding: 4px 0;
+  color: var(--vxe-ui-font-color);
+  text-align: left;
+}
+.vxe-select--panel:not(.is--transfer) {
+  min-width: 100%;
+}
+.vxe-select--panel.is--transfer {
+  position: fixed;
+}
+.vxe-select--panel.ani--leave {
+  display: block;
+  opacity: 0;
+  transform: scaleY(0.5);
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  transform-origin: center top;
+  backface-visibility: hidden;
+}
+.vxe-select--panel.ani--leave[placement=top] {
+  transform-origin: center bottom;
+}
+.vxe-select--panel.ani--enter {
+  opacity: 1;
+  transform: scaleY(1);
+}
+.vxe-select--panel.ani--enter > div::after {
+  display: none;
+}
+.vxe-select--panel > div::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.vxe-select--panel-search {
+  display: block;
+  flex-shrink: 0;
+  padding: var(--vxe-ui-layout-padding-default);
+}
+.vxe-select--panel-search .vxe-select-search--input {
+  width: 100%;
+}
+
+.vxe-select--panel-wrapper {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  max-height: 18em;
+  border-radius: var(--vxe-ui-base-border-radius);
+  border: 1px solid var(--vxe-ui-base-popup-border-color);
+  box-shadow: var(--vxe-ui-base-popup-box-shadow);
+  background-color: var(--vxe-ui-layout-background-color);
+}
+
+.vxe-select--panel-body {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.vxe-select--header-button {
+  display: flex;
+  flex-direction: row;
+}
+
+.vxe-select--header-total {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding-left: 0.8em;
+}
+
+.vxe-select--header-btns {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  justify-content: right;
+}
+
+.vxe-select--panel-header {
+  border-bottom: 1px solid var(--vxe-ui-base-popup-border-color);
+}
+
+.vxe-select--panel-footer {
+  border-top: 1px solid var(--vxe-ui-base-popup-border-color);
+}
+
+.vxe-select--panel-header,
+.vxe-select--panel-footer {
+  flex-shrink: 0;
+  padding: 4px 0;
+}
+
+.vxe-select-option--wrapper {
+  flex-grow: 1;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.vxe-select--y-space {
+  width: 0;
+  float: left;
+}
+
+.vxe-select-option--wrapper,
+.vxe-select--body {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  outline: 0;
+}
+
+.vxe-select-option {
+  position: relative;
+  padding: 0 0.6em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  cursor: pointer;
+}
+.vxe-select-option.is--add {
+  padding-right: 2em;
+}
+.vxe-select-option.is--add:hover .vxe-select-option--add-icon {
+  color: var(--vxe-ui-font-primary-color);
+}
+.vxe-select-option.is--add .vxe-select-option--add-icon {
+  display: block;
+}
+.vxe-select-option.is--selected {
+  color: var(--vxe-ui-font-primary-color);
+}
+.vxe-select-option:not(.is--disabled).is--hover {
+  background-color: var(--vxe-ui-base-hover-background-color);
+}
+.vxe-select-option.is--disabled {
+  color: var(--vxe-ui-font-disabled-color);
+  cursor: no-drop;
+}
+
+.vxe-select-optgroup {
+  color: var(--vxe-ui-select-title-color);
+  font-size: 12px;
+  cursor: default;
+}
+
+.vxe-select-option--add-icon {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0.6em;
+}
+
+.vxe-select--search-icon {
+  margin-right: 0.5em;
+}
+
+.vxe-select--search-loading,
+.vxe-select--empty-placeholder {
+  padding: 0 0.6em;
+  text-align: center;
+  color: var(--vxe-ui-select-empty-color);
+}
+
+.vxe-select,
+.vxe-select--panel {
+  font-size: var(--vxe-ui-font-size-default);
+}
+.vxe-select.size--medium,
+.vxe-select--panel.size--medium {
+  font-size: var(--vxe-ui-font-size-medium);
+}
+.vxe-select.size--small,
+.vxe-select--panel.size--small {
+  font-size: var(--vxe-ui-font-size-small);
+}
+.vxe-select.size--mini,
+.vxe-select--panel.size--mini {
+  font-size: var(--vxe-ui-font-size-mini);
+}
+
+.vxe-select--panel .vxe-select-option {
+  height: var(--vxe-ui-select-option-height-default);
+}
+.vxe-select--panel .vxe-select-option,
+.vxe-select--panel .vxe-select--search-loading,
+.vxe-select--panel .vxe-select--empty-placeholder {
+  line-height: var(--vxe-ui-select-option-height-default);
+}
+.vxe-select--panel.size--medium .vxe-select-option {
+  height: var(--vxe-ui-select-option-height-medium);
+}
+.vxe-select--panel.size--medium .vxe-select-option,
+.vxe-select--panel.size--medium .vxe-select--search-loading,
+.vxe-select--panel.size--medium .vxe-select--empty-placeholder {
+  line-height: var(--vxe-ui-select-option-height-medium);
+}
+.vxe-select--panel.size--small .vxe-select-option {
+  height: var(--vxe-ui-select-option-height-small);
+}
+.vxe-select--panel.size--small .vxe-select-option,
+.vxe-select--panel.size--small .vxe-select--search-loading,
+.vxe-select--panel.size--small .vxe-select--empty-placeholder {
+  line-height: var(--vxe-ui-select-option-height-small);
+}
+.vxe-select--panel.size--mini .vxe-select-option {
+  height: var(--vxe-ui-select-option-height-mini);
+}
+.vxe-select--panel.size--mini .vxe-select-option,
+.vxe-select--panel.size--mini .vxe-select--search-loading,
+.vxe-select--panel.size--mini .vxe-select--empty-placeholder {
+  line-height: var(--vxe-ui-select-option-height-mini);
+}

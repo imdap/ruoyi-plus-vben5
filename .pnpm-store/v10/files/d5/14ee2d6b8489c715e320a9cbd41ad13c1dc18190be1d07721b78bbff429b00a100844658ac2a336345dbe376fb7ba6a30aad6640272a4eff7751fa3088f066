@@ -1,0 +1,25 @@
+{
+    "id": "dart",
+    "version": "0.2",
+    "name": "Dart",
+    "description": "Dart dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "dart",
+            "path": "./dict/dart.txt.gz",
+            "description": "Dart dictionary."
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "languageId": "dart",
+            "locale": "*",
+            "includeRegExpList": [],
+            "ignoreRegExpList": [],
+            "patterns": [],
+            "dictionaries": ["dart"]
+        }
+    ]
+}

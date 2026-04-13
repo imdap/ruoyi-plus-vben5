@@ -1,0 +1,11 @@
+import { ComponentBaseProps } from "../config-provider/context.js";
+import { AppConfig } from "./context.js";
+import * as vue24 from "vue";
+
+//#region src/app/App.d.ts
+interface AppProps extends ComponentBaseProps, AppConfig {
+  component?: any;
+}
+declare const App: vue24.DefineSetupFnComponent<AppProps, {}, {}, AppProps & {}, vue24.PublicProps>;
+//#endregion
+export { AppProps, App as default };

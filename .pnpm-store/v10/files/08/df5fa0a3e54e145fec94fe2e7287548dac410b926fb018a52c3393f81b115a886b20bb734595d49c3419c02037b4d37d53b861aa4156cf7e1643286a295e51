@@ -1,0 +1,72 @@
+{
+  "name": "gensequence",
+  "version": "8.0.8",
+  "description": "Small library to simplify working with Generators and Iterators in Javascript / Typescript",
+  "type": "module",
+  "module": "dist/index.js",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./operators": {
+      "import": "./dist/operators/index.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.6",
+    "@types/node": "^24.10.0",
+    "@vitest/coverage-istanbul": "^4.0.7",
+    "inject-markdown": "^4.0.0",
+    "prettier": "^3.6.2",
+    "shx": "^0.4.0",
+    "ts2mjs": "^4.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.7"
+  },
+  "scripts": {
+    "prepublishOnly": "npm run clean-build",
+    "build:readme": "inject-markdown README.md",
+    "clean-build": "npm run clean && npm run build",
+    "clean": "shx rm -rf dist coverage",
+    "test": "vitest run",
+    "build": "tsc -p .",
+    "lint": "npm run lint:prettier",
+    "lint:fix": "npm run lint:prettier",
+    "lint:prettier": "prettier . -w",
+    "watch": "tsc -w -p .",
+    "coverage": "npm test -- --coverage",
+    "update-packages": "npx npm-check-updates -t semver -u && shx rm -rf node_modules package-lock.json && npm i"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/streetsidesoftware/GenSequence.git"
+  },
+  "keywords": [
+    "generators",
+    "generator",
+    "iterator",
+    "iterators",
+    "iterable",
+    "functional",
+    "map",
+    "reduce"
+  ],
+  "files": [
+    "dist/",
+    "!**/*.tsbuildInfo",
+    "!**/samples",
+    "!**/*.map",
+    "!**/*.test.*",
+    "!**/*.perf.*"
+  ],
+  "author": "Jason Dent",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/GenSequence/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/GenSequence#readme"
+}

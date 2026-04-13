@@ -1,0 +1,71 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import { Orientation } from "../_util/hooks/useOrientation.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { TooltipProps } from "../tooltip/index.js";
+import * as vue473 from "vue";
+import { App, CSSProperties, SlotsType } from "vue";
+import { SegmentedLabeledOption as SegmentedLabeledOption$1, SegmentedProps as SegmentedProps$1, SegmentedRawOption, SegmentedValue } from "@v-c/segmented";
+
+//#region src/segmented/index.d.ts
+type SegmentedSemanticName = keyof SegmentedSemanticClassNames & keyof SegmentedSemanticStyles;
+interface SegmentedSemanticClassNames {
+  root?: string;
+  icon?: string;
+  label?: string;
+  item?: string;
+}
+interface SegmentedSemanticStyles {
+  root?: CSSProperties;
+  icon?: CSSProperties;
+  label?: CSSProperties;
+  item?: CSSProperties;
+}
+interface SegmentedLabeledOptionWithoutIcon<ValueType = SegmentedValue> extends SegmentedLabeledOption$1<ValueType> {
+  label: SegmentedLabeledOption$1['label'];
+  tooltip?: string | TooltipProps;
+}
+interface SegmentedLabeledOptionWithIcon<ValueType = SegmentedValue> extends Omit<SegmentedLabeledOption$1<ValueType>, 'label'> {
+  label?: SegmentedLabeledOption$1['label'];
+  /** Set icon for Segmented item */
+  icon?: VueNode;
+  tooltip?: string | TooltipProps;
+}
+type SegmentedLabeledOption<ValueType = SegmentedValue> = SegmentedLabeledOptionWithIcon<ValueType> | SegmentedLabeledOptionWithoutIcon<ValueType>;
+type SegmentedOptions<T = SegmentedRawOption> = (T | SegmentedLabeledOption<T>)[];
+type SegmentedClassNamesType = SemanticClassNamesType<SegmentedProps, SegmentedSemanticClassNames>;
+type SegmentedStylesType = SemanticStylesType<SegmentedProps, SegmentedSemanticStyles>;
+interface SegmentedProps extends Omit<SegmentedProps$1, 'size' | 'options' | 'itemRender' | 'styles' | 'classNames' | 'onChange'>, SegmentedEmitsProps {
+  options: SegmentedOptions;
+  rootClass?: string;
+  /** Option to fit width to its parent's width */
+  block?: boolean;
+  /** Option to control the display size */
+  size?: SizeType;
+  vertical?: boolean;
+  orientation?: Orientation;
+  classes?: SegmentedClassNamesType;
+  styles?: SegmentedStylesType;
+  shape?: 'default' | 'round';
+  iconRender?: (option: SegmentedLabeledOption) => any;
+  labelRender?: (option: SegmentedLabeledOption) => any;
+}
+interface SegmentedEmits {
+  'change': (value: SegmentedValue) => void;
+  'update:value': (value: SegmentedValue) => void;
+}
+interface SegmentedEmitsProps {
+  onChange?: SegmentedEmits['change'];
+  'onUpdate:value'?: SegmentedEmits['update:value'];
+}
+interface SegmentedSlots {
+  iconRender: (option: SegmentedLabeledOption) => any;
+  labelRender: (option: SegmentedLabeledOption) => any;
+}
+declare const InternalSegmented: vue473.DefineSetupFnComponent<SegmentedProps, SegmentedEmits, SlotsType<SegmentedSlots>, SegmentedProps, vue473.PublicProps>;
+declare const Segmented: typeof InternalSegmented & {
+  install: (app: App) => void;
+};
+//#endregion
+export { SegmentedClassNamesType, SegmentedEmits, SegmentedEmitsProps, SegmentedLabeledOption, SegmentedOptions, SegmentedProps, SegmentedSemanticClassNames, SegmentedSemanticName, SegmentedSemanticStyles, SegmentedSlots, SegmentedStylesType, Segmented as default };

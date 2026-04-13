@@ -1,0 +1,32 @@
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue445 from "vue";
+
+//#region src/drawer/style/index.d.ts
+interface ComponentToken {
+  /**
+   * @desc 弹窗 z-index
+   * @descEN z-index of drawer
+   */
+  zIndexPopup: number;
+  /**
+   * @desc 底部区域纵向内间距
+   * @descEN Vertical padding of footer
+   */
+  footerPaddingBlock: number;
+  /**
+   * @desc 底部区域横向内间距
+   * @descEN Horizontal padding of footer
+   */
+  footerPaddingInline: number;
+  /**
+   * @desc 拖拽手柄大小
+   * @descEN Size of resize handle
+   */
+  draggerSize: number;
+}
+interface DrawerToken extends FullToken<'Drawer'> {}
+declare const prepareComponentToken: GetDefaultToken<'Drawer'>;
+declare const _default: (prefixCls: vue445.Ref<string>, rootCls?: vue445.Ref<string | undefined>) => readonly [vue445.Ref<string, string>, vue445.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, DrawerToken, _default as default, prepareComponentToken };

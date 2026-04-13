@@ -1,0 +1,13 @@
+import * as vue793 from "vue";
+
+//#region src/skeleton/Paragraph.d.ts
+type WidthUnit = number | string;
+interface SkeletonParagraphProps {
+  prefixCls?: string;
+  rootClass?: string;
+  width?: WidthUnit | Array<WidthUnit>;
+  rows?: number;
+}
+declare const Paragraph: vue793.DefineSetupFnComponent<SkeletonParagraphProps, {}, {}, SkeletonParagraphProps & {}, vue793.PublicProps>;
+//#endregion
+export { SkeletonParagraphProps, Paragraph as default };

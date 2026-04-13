@@ -1,0 +1,153 @@
+import XEUtils from 'xe-utils';
+export const GLOBAL_EVENT_KEYS = {
+    F2: 'F2',
+    ESCAPE: 'Escape',
+    ENTER: 'Enter',
+    TAB: 'Tab',
+    DELETE: 'Delete',
+    BACKSPACE: 'Backspace',
+    SPACEBAR: ' ',
+    CONTEXT_MENU: 'ContextMenu',
+    ARROW_UP: 'ArrowUp',
+    ARROW_DOWN: 'ArrowDown',
+    ARROW_LEFT: 'ArrowLeft',
+    ARROW_RIGHT: 'ArrowRight',
+    PAGE_UP: 'PageUp',
+    PAGE_DOWN: 'PageDown',
+    Control: 'Control',
+    R: 'R',
+    P: 'P',
+    Z: 'Z',
+    X: 'X',
+    C: 'C',
+    V: 'V',
+    M: 'M'
+};
+const browse = XEUtils.browse();
+const convertEventKeys = {
+    ' ': 'Spacebar',
+    Apps: GLOBAL_EVENT_KEYS.CONTEXT_MENU,
+    Del: GLOBAL_EVENT_KEYS.DELETE,
+    Up: GLOBAL_EVENT_KEYS.ARROW_UP,
+    Down: GLOBAL_EVENT_KEYS.ARROW_DOWN,
+    Left: GLOBAL_EVENT_KEYS.ARROW_LEFT,
+    Right: GLOBAL_EVENT_KEYS.ARROW_RIGHT
+};
+// 监听全局事件
+const wheelName = browse.firefox ? 'DOMMouseScroll' : 'mousewheel';
+const eventStore = [];
+function triggerEvent(evnt) {
+    const isWheel = evnt.type === wheelName;
+    eventStore.forEach(({ type, cb }) => {
+        // 如果被取消冒泡，不再执行
+        if (!evnt.cancelBubble) {
+            if (type === evnt.type || (isWheel && type === 'mousewheel')) {
+                cb(evnt);
+            }
+        }
+    });
+}
+class VxeComponentEvent {
+    constructor(evnt, params1, params2) {
+        Object.defineProperty(this, "$event", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "type", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: ''
+        });
+        Object.defineProperty(this, "key", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: ''
+        });
+        Object.defineProperty(this, "code", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: ''
+        });
+        this.$event = evnt;
+        if (evnt) {
+            if (evnt.type) {
+                this.type = evnt.type;
+            }
+            if (evnt.key) {
+                this.key = evnt.key;
+            }
+            if (evnt.code) {
+                this.code = evnt.code;
+            }
+        }
+        Object.assign(this, params1);
+        XEUtils.objectEach(params2, (val, key) => {
+            if (XEUtils.isFunction(val)) {
+                let rest = null;
+                let isRun = false;
+                Object.defineProperty(this, key, {
+                    get() {
+                        if (!isRun) {
+                            isRun = true;
+                            rest = val();
+                        }
+                        return rest;
+                    }
+                });
+            }
+            else {
+                this[key] = val;
+            }
+        });
+    }
+    stopPropagation() {
+        const evnt = this.$event;
+        if (evnt) {
+            evnt.stopPropagation();
+        }
+    }
+    preventDefault() {
+        const evnt = this.$event;
+        if (evnt) {
+            evnt.preventDefault();
+        }
+    }
+}
+export const createEvent = (evnt, params1, params2) => {
+    if (evnt instanceof VxeComponentEvent) {
+        evnt = evnt.$event;
+    }
+    return new VxeComponentEvent(evnt, params1, params2);
+};
+export const globalEvents = {
+    on(comp, type, cb) {
+        eventStore.push({ comp, type, cb });
+    },
+    off(comp, type) {
+        XEUtils.remove(eventStore, item => item.comp === comp && item.type === type);
+    },
+    hasKey(evnt, targetKey) {
+        const { key } = evnt;
+        targetKey = targetKey.toLowerCase();
+        return key ? (targetKey === key.toLowerCase() || !!(convertEventKeys[key] && convertEventKeys[key].toLowerCase() === targetKey)) : false;
+    }
+};
+if (browse.isDoc) {
+    if (!browse.msie) {
+        window.addEventListener('copy', triggerEvent, false);
+        window.addEventListener('cut', triggerEvent, false);
+        window.addEventListener('paste', triggerEvent, false);
+    }
+    document.addEventListener('scroll', triggerEvent, true);
+    document.addEventListener('keydown', triggerEvent, false);
+    document.addEventListener('contextmenu', triggerEvent, false);
+    window.addEventListener('mousedown', triggerEvent, false);
+    window.addEventListener('blur', triggerEvent, false);
+    window.addEventListener('resize', triggerEvent, false);
+    window.addEventListener(wheelName, XEUtils.throttle(triggerEvent, 100, { leading: true, trailing: false }), { passive: true, capture: false });
+}

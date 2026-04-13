@@ -1,0 +1,57 @@
+import MenuContext_default, { useMenuContext } from "../context/MenuContext.js";
+import { getMotion } from "../utils/motionUtil.js";
+import SubMenuList_default from "./SubMenuList.js";
+import { Transition, computed, createVNode, defineComponent, shallowRef, watch, watchEffect } from "vue";
+import { getTransitionProps } from "@v-c/util/dist/utils/transition";
+var InlineSubMenuList_default = /* @__PURE__ */ defineComponent((props, { slots }) => {
+	const fixedMode = "inline";
+	const menuContext = useMenuContext();
+	const sameModeRef = shallowRef(false);
+	watchEffect(() => {
+		sameModeRef.value = menuContext?.value?.mode === fixedMode;
+	});
+	const destroy = shallowRef(!sameModeRef.value);
+	watch(() => menuContext?.value?.mode, () => {
+		if (sameModeRef.value) destroy.value = false;
+	}, { immediate: true });
+	const mergedOpen = computed(() => sameModeRef.value ? props?.open : false);
+	const mergedMotion = computed(() => {
+		const { motion, defaultMotions } = menuContext?.value ?? {};
+		const motionData = { ...getMotion(fixedMode, motion, defaultMotions) };
+		if (props.keyPath && props.keyPath.length > 1) motionData.appear = false;
+		const _onAfterLeave = motionData.onAfterLeave;
+		motionData.onAfterLeave = (el) => {
+			if (!sameModeRef.value) destroy.value = true;
+			return _onAfterLeave?.(el);
+		};
+		return motionData;
+	});
+	return () => {
+		if (destroy.value) return null;
+		return createVNode(MenuContext_default, {
+			"mode": fixedMode,
+			"locked": !sameModeRef.value
+		}, { default: () => [createVNode(Transition, getTransitionProps(mergedMotion.value?.name, mergedMotion.value), { default: () => [mergedOpen.value && createVNode(SubMenuList_default, { "id": props.id }, { default: () => [slots?.default?.()] })] })] });
+	};
+}, {
+	props: {
+		id: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		open: {
+			type: Boolean,
+			required: true,
+			default: void 0
+		},
+		keyPath: {
+			type: Array,
+			required: true,
+			default: void 0
+		}
+	},
+	name: "InlineSubMenuList",
+	inheritAttrs: false
+});
+export { InlineSubMenuList_default as default };

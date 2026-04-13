@@ -1,0 +1,31 @@
+import { toInlineCode } from './markdownHelper.js';
+export function _tokenizedLineToMarkdown(line, indentation = '') {
+    const markdownLines = [];
+    const header = `- \`${line.line.lineNumber + 1}\`: ${toInlineCode(line.line.text)}
+
+  | text      | scope                                                    |
+  | --------- | -------------------------------------------------------- |`;
+    markdownLines.push(...header.split('\n'), ...line.tokens.map((t) => `  | ${toInlineCode(t.text)} | ${t.scope} |`));
+    return markdownLines.map((line) => indentation + line).join('\n') + '\n\n';
+}
+export function tokenizedLineToMarkdown(line, indentation = '') {
+    const rows = line.tokens.map((t) => `| ${toInlineCode(t.text)} | ${t.scope} |`);
+    const detail = `<details>
+<summary><code>${line.line.lineNumber + 1}</code>: ${toInlineCode(line.line.text)}</summary>
+
+| text      | scope                                                    |
+| --------- | -------------------------------------------------------- |
+${rows.join('\n')}
+
+</details>
+`;
+    const markdownLines = detail.split('\n');
+    return (markdownLines
+        .map((line) => indentation + line)
+        .map((line) => (line.trim() === '' ? '' : line))
+        .join('\n') + '\n\n');
+}
+export function tokenizedLinesToMarkdown(lines, indentation = '') {
+    return lines.map((line) => tokenizedLineToMarkdown(line, indentation)).join('');
+}
+//# sourceMappingURL=visualizeAsMD.js.map

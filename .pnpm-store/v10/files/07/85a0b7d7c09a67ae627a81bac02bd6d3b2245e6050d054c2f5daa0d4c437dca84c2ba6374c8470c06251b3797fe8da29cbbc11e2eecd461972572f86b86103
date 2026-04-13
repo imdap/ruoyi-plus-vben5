@@ -1,0 +1,13 @@
+import { BlockProps, TypographyBaseEmits, TypographySlots } from "./interface.js";
+import * as vue368 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/typography/Title.d.ts
+type TypographyBaseEmitsProps = { [K in keyof TypographyBaseEmits as `on${Capitalize<string & K>}`]?: TypographyBaseEmits[K] };
+declare const TITLE_ELE_LIST: readonly [1, 2, 3, 4, 5];
+interface TitleProps extends Omit<BlockProps, 'strong'>, TypographyBaseEmitsProps {
+  level?: (typeof TITLE_ELE_LIST)[number];
+}
+declare const Title: vue368.DefineSetupFnComponent<TitleProps, TypographyBaseEmits, SlotsType<TypographySlots>, TitleProps, vue368.PublicProps>;
+//#endregion
+export { TitleProps, TypographyBaseEmitsProps, Title as default };

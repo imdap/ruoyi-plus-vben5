@@ -1,0 +1,23 @@
+import { GroupPreviewConfig } from "../PreviewGroup.js";
+import { PreviewConfig } from "../index.js";
+import * as vue593 from "vue";
+import { Ref } from "vue";
+import * as _v_c_util0 from "@v-c/util";
+import * as _v_c_image_dist_Preview_index_js0 from "@v-c/image/dist/Preview/index.js";
+import * as _v_c_portal_dist_Portal_js0 from "@v-c/portal/dist/Portal.js";
+
+//#region src/image/hooks/useMergedPreviewConfig.d.ts
+declare function useMergedPreviewConfig<T extends PreviewConfig | GroupPreviewConfig>(previewConfig: Ref<T>, contextPreviewConfig: Ref<T>, prefixCls: Ref<string>, mergedRootClassName: Ref<string>, getContextPopupContainer: PreviewConfig['getContainer'], icons: Ref<PreviewConfig['icons']>, defaultCover?: Ref<any>): vue593.ComputedRef<{
+  motionName: string;
+} & T & {
+  icons: _v_c_image_dist_Preview_index_js0.OperationIcons | undefined;
+  getContainer: _v_c_portal_dist_Portal_js0.GetContainer | undefined;
+  zIndex: number | undefined;
+  closeIcon: _v_c_util0.VueNode;
+  rootClassName: string;
+  mask: boolean;
+  blurClassName: string | undefined;
+  cover?: any;
+}>;
+//#endregion
+export { useMergedPreviewConfig as default };

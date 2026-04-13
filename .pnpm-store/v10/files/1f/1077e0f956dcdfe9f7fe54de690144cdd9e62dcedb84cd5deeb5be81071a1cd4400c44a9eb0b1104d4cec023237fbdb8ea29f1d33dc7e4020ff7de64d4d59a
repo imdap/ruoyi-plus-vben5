@@ -1,0 +1,18 @@
+import { AnyObject } from "../../_util/type.js";
+import { DatePickerEmits, DatePickerSlots, InternalPickerProps } from "./generateSinglePicker.js";
+import { GenericTimePickerProps, PickerLocale, PickerProps, PickerPropsWithMultiple, RangePickerProps } from "./interface.js";
+import { InternalRangePickerProps, RangePickerEmits, RangePickerSlots } from "./generateRangePicker.js";
+import * as vue922 from "vue";
+import { GenerateConfig } from "@v-c/picker/generate/index";
+
+//#region src/date-picker/generatePicker/index.d.ts
+declare function generatePicker<DateType extends AnyObject = AnyObject>(generateConfig: GenerateConfig<DateType>): vue922.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, vue922.SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue922.PublicProps> & {
+  WeekPicker: vue922.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, vue922.SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue922.PublicProps>;
+  MonthPicker: vue922.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, vue922.SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue922.PublicProps>;
+  YearPicker: vue922.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, vue922.SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue922.PublicProps>;
+  RangePicker: vue922.DefineSetupFnComponent<InternalRangePickerProps<DateType>, RangePickerEmits<DateType>, vue922.SlotsType<RangePickerSlots>, InternalRangePickerProps<DateType>, vue922.PublicProps>;
+  TimePicker: vue922.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, vue922.SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue922.PublicProps>;
+  QuarterPicker: vue922.DefineSetupFnComponent<InternalPickerProps<DateType>, DatePickerEmits<DateType>, vue922.SlotsType<DatePickerSlots>, InternalPickerProps<DateType>, vue922.PublicProps>;
+};
+//#endregion
+export { type GenericTimePickerProps, type PickerLocale, type PickerProps, type PickerPropsWithMultiple, type RangePickerProps, generatePicker as default };

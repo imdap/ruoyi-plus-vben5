@@ -1,0 +1,21 @@
+{
+    "id": "r",
+    "version": "0.2",
+    "name": "R",
+    "description": "R dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "r",
+            "path": "./r.txt.gz",
+            "description": "R dictionary."
+        }
+    ],
+    "languageSettings": [
+        {
+            "languageId": "r",
+            "locale": "*",
+            "dictionaries": ["r"]
+        }
+    ]
+}

@@ -1,0 +1,60 @@
+{
+  "name": "@cspell/dict-en_us",
+  "version": "4.4.33",
+  "description": "English dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "en_US",
+    "English",
+    "American",
+    "US English",
+    "dictionary",
+    "spelling"
+  ],
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/en_US#readme",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/en_US"
+  },
+  "license": "MIT",
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "files": [
+    "en_US.trie.gz",
+    "cspell-ext.json",
+    "src/**/README_en_*.txt",
+    "!scripts"
+  ],
+  "scripts": {
+    "build": "pnpm run compile",
+    "compile": "cspell-tools-cli build",
+    "conditional-build": "pnpm run build --conditional && pnpm gz",
+    "gz": "cspell-tools-cli gzip \"*.trie\"",
+    "prepare:dictionary": "pnpm gz",
+    "prepublishOnly": "echo pre-publish",
+    "test": "pnpm run test-dict && pnpm run test-text",
+    "test-dict": "pipe-cmds \"hunspell-reader words -n 10000 src/hunspell/en_US-large.dic\" \"cspell -c ./cspell-ext.json --locale=en --languageId=* stdin\"",
+    "test-text": "cspell -c ./cspell-ext.json --locale=en --languageId=* \"tests/*.txt\""
+  },
+  "devDependencies": {
+    "@cspell/aoo-mozilla-en-dict": "workspace:^",
+    "@cspell/dict-en-shared": "workspace:^"
+  },
+  "gitHead": "21ed4457dbbeb5ed32a0aed70deb17354a6e3c0d"
+}

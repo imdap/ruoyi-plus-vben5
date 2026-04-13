@@ -1,0 +1,12 @@
+import * as vue302 from "vue";
+import { VNodeChild } from "vue";
+
+//#region src/config-provider/defaultRenderEmpty.d.ts
+type ComponentName = 'Table' | 'Table.filter' | 'List' | 'Select' | 'TreeSelect' | 'Cascader' | 'Transfer' | 'Mentions';
+interface EmptyProps {
+  componentName?: ComponentName;
+}
+declare const DefaultRenderEmpty: vue302.DefineSetupFnComponent<EmptyProps, {}, {}, EmptyProps & {}, vue302.PublicProps>;
+type RenderEmptyHandler = (componentName?: ComponentName) => VNodeChild;
+//#endregion
+export { DefaultRenderEmpty, RenderEmptyHandler };

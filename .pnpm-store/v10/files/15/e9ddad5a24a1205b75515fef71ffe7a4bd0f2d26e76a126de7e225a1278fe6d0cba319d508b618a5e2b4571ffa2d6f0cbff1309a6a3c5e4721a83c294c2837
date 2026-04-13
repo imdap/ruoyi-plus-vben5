@@ -1,0 +1,12 @@
+import { VueNode } from "../../_util/type.js";
+import { ModalEmits, ModalProps } from "../interface.js";
+import * as vue477 from "vue";
+
+//#region src/modal/components/NormalOkBtn.d.ts
+interface NormalOkBtnProps extends Pick<ModalProps, 'confirmLoading' | 'okButtonProps' | 'okType'> {
+  okTextLocale?: VueNode;
+  onOk?: ModalEmits['ok'];
+}
+declare const NormalOkBtn: vue477.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue477.PublicProps>;
+//#endregion
+export { NormalOkBtnProps, NormalOkBtn as default };

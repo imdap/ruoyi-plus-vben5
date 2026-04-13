@@ -1,0 +1,7 @@
+import * as vue1030 from "vue";
+import { Ref } from "vue";
+
+//#region src/config-provider/hooks/useSize.d.ts
+declare function useSize<T extends string | undefined | number | object>(customSize?: Ref<T> | ((ctxSize: T) => T)): vue1030.ComputedRef<T>;
+//#endregion
+export { useSize };

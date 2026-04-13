@@ -1,0 +1,26 @@
+import { VueNode } from "../_util/type.js";
+import { ColProps } from "../grid/col.js";
+import "../grid/index.js";
+import { ValidateStatus } from "./FormItem/index.js";
+import * as vue982 from "vue";
+
+//#region src/form/FormItemInput.d.ts
+interface FormItemInputMiscProps {
+  prefixCls: string;
+  errors: any[];
+  warnings: any[];
+  marginBottom?: number | null;
+  onErrorVisibleChanged?: (visible: boolean) => void;
+}
+interface FormItemInputProps {
+  labelCol?: ColProps;
+  wrapperCol?: ColProps;
+  extra?: VueNode;
+  status?: ValidateStatus;
+  help?: VueNode;
+  fieldId?: string;
+  label?: VueNode;
+}
+declare const FormItemInput: vue982.DefineSetupFnComponent<FormItemInputProps & FormItemInputMiscProps, {}, {}, FormItemInputProps & FormItemInputMiscProps & {}, vue982.PublicProps>;
+//#endregion
+export { FormItemInputProps, FormItemInput as default };

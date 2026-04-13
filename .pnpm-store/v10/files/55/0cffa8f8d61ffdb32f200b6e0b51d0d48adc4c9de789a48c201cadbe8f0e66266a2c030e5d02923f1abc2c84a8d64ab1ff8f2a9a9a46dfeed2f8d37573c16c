@@ -1,0 +1,38 @@
+import AntdIcon from "../components/AntdIcon.js";
+import { createVNode, defineComponent, mergeProps } from "vue";
+import FileZipOutlinedSvg from "@ant-design/icons-svg/es/asn/FileZipOutlined.js";
+
+//#region src/icons/FileZipOutlined.tsx
+/**![file-zip](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiNjYWNhY2EiIHZpZXdCb3g9IjY0IDY0IDg5NiA4OTYiIGZvY3VzYWJsZT0iZmFsc2UiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTI5NiAzOTJoNjR2NjRoLTY0em0wIDE5MHYxNjBoMTI4VjU4MmgtNjR2LTYyaC02NHY2MnptODAgNDh2NjRoLTMydi02NGgzMnptLTE2LTMwMmg2NHY2NGgtNjR6bS02NC02NGg2NHY2NGgtNjR6bTY0IDE5Mmg2NHY2NGgtNjR6bTAtMjU2aDY0djY0aC02NHptNDk0LjYgODguNkw2MzkuNCA3My40Yy02LTYtMTQuMS05LjQtMjIuNi05LjRIMTkyYy0xNy43IDAtMzIgMTQuMy0zMiAzMnY4MzJjMCAxNy43IDE0LjMgMzIgMzIgMzJoNjQwYzE3LjcgMCAzMi0xNC4zIDMyLTMyVjMxMS4zYzAtOC41LTMuNC0xNi43LTkuNC0yMi43ek03OTAuMiAzMjZINjAyVjEzNy44TDc5MC4yIDMyNnptMS44IDU2MkgyMzJWMTM2aDY0djY0aDY0di02NGgxNzR2MjE2YTQyIDQyIDAgMDA0MiA0MmgyMTZ2NDk0eiIgLz48L3N2Zz4=) */
+const FileZipOutlined = /* @__PURE__ */ defineComponent((props) => {
+	return () => {
+		return createVNode(AntdIcon, mergeProps(props, { "icon": FileZipOutlinedSvg }), null);
+	};
+}, {
+	props: {
+		twoToneColor: {
+			type: [String, Array],
+			required: false
+		},
+		onClick: {
+			type: Function,
+			required: false
+		},
+		tabIndex: {
+			type: Number,
+			required: false
+		},
+		spin: {
+			type: Boolean,
+			required: false
+		},
+		rotate: {
+			type: Number,
+			required: false
+		}
+	},
+	name: "FileZipOutlined"
+});
+
+//#endregion
+export { FileZipOutlined as default };

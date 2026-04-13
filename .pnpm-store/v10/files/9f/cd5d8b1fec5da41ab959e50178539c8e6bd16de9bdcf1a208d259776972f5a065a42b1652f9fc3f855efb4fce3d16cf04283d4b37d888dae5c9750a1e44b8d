@@ -1,0 +1,30 @@
+import type File from '../file/File.js';
+/**
+ * Data transfer item.
+ *
+ * Reference:
+ * https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem.
+ */
+export default class DataTransferItem {
+    #private;
+    readonly kind: 'string' | 'file';
+    readonly type: string;
+    /**
+     * Constructor.
+     *
+     * @param item Item.
+     * @param type Type.
+     */
+    constructor(item: string | File, type?: string);
+    /**
+     * Returns file.
+     */
+    getAsFile(): File | null;
+    /**
+     * Returns string.
+     *
+     * @param callback Callback.
+     */
+    getAsString(callback: (text: string) => void): void;
+}
+//# sourceMappingURL=DataTransferItem.d.ts.map

@@ -1,0 +1,212 @@
+@use '../helpers/baseMixin.scss';
+
+// 避免 class 跟 icon 冲突，取名 ico
+.vxe-ico-picker {
+  position: relative;
+  display: inline-block;
+  color: var(--vxe-ui-font-color);
+  width: 100px;
+  border: 1px solid var(--vxe-ui-input-border-color);
+  border-radius: var(--vxe-ui-base-border-radius);
+  background-color: var(--vxe-ui-layout-background-color);
+  &.show--clear {
+    &:hover {
+      .vxe-ico-picker--clear-icon {
+        display: block;
+      }
+    }
+  }
+  &.is--active {
+    border-color: var(--vxe-ui-font-primary-color);
+  }
+}
+
+.vxe-ico-picker--inner {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 0 0.5em;
+}
+.vxe-ico-picker--input {
+  position: absolute;
+  z-index: -1;
+  width: 1px;
+  height: 1px;
+  outline: 0;
+  border: 0;
+}
+.vxe-ico-picker--icon {
+  flex-grow: 1;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  padding: 0 0.5em;
+  & > svg {
+    max-width: 1em;
+    max-height: 1em;
+    vertical-align: middle;
+  }
+}
+.vxe-ico-picker--placeholder {
+  flex-grow: 1;
+  color: var(--vxe-ui-input-placeholder-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.vxe-ico-picker--suffix {
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  color: var(--vxe-ui-input-placeholder-color);
+  cursor: pointer;
+  .vxe-ico-picker--suffix-icon > i {
+    display: inline-block;
+    @include baseMixin.createAnimationTransition(transform, .2s);
+  }
+}
+
+.vxe-ico-picker--readonly {
+  color: var(--vxe-ui-font-color);
+  display: inline-flex;
+}
+
+.vxe-ico-picker--clear-icon {
+  display: none;
+  padding-right: 0.5em;
+  height: 100%;
+  color: var(--vxe-ui-input-placeholder-color);
+  cursor: pointer;
+  &:hover {
+    color: var(--vxe-ui-font-color);
+  }
+  &:active {
+    color: var(--vxe-ui-font-primary-color);
+  }
+}
+
+.vxe-ico-picker--list-wrapper {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 22.3em;
+  padding: var(--vxe-ui-layout-padding-qtr);
+}
+.vxe-ico-picker--list {
+  display: flex;
+  flex-direction: row;
+}
+.vxe-ico-picker--item {
+  display: flex;
+  flex-direction: column;
+  width: 4.8em;
+  padding: 0.2em;
+  border: 1px solid var(--vxe-ui-input-border-color);
+  border-radius: var(--vxe-ui-base-border-radius);
+  margin: var(--vxe-ui-layout-padding-half);
+  cursor: pointer;
+  &:hover {
+    background-color: var(--vxe-ui-base-hover-background-color);
+  }
+  &.is--selected {
+    color: var(--vxe-ui-font-primary-color);
+    border-color: var(--vxe-ui-font-primary-color);
+  }
+}
+.vxe-ico-picker--item-icon {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 1.5em;
+  font-size: 1.4em;
+  & > svg {
+    max-width: 1em;
+    max-height: 1em;
+    vertical-align: middle;
+  }
+}
+.vxe-ico-picker--item-title {
+  padding: 0 0.2em;
+  line-height: 1.3em;
+  flex-shrink: 0;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9em;
+}
+.vxe-ico-picker--item-title,
+.vxe-ico-picker--item-icon {
+  width: 100%;
+}
+
+.vxe-ico-picker--panel-wrapper {
+  position: relative;
+  border-radius: var(--vxe-ui-base-border-radius);
+  border: 1px solid var(--vxe-ui-base-popup-border-color);
+  box-shadow: var(--vxe-ui-base-popup-box-shadow);
+  background-color: var(--vxe-ui-layout-background-color);
+}
+
+.vxe-ico-picker--panel {
+  display: none;
+  position: absolute;
+  left: 0;
+  padding: 4px 0;
+  color: var(--vxe-ui-font-color);
+  text-align: left;
+  &:not(.is--transfer) {
+    min-width: 100%;
+  }
+  &.is--transfer {
+    position: fixed;
+  }
+  &.ani--leave {
+    display: block;
+    opacity: 0;
+    transform: scaleY(0.5);
+    transition: transform .3s cubic-bezier(.23,1,.32,1), opacity .3s cubic-bezier(.23,1,.32,1);
+    transform-origin: center top;
+    backface-visibility: hidden;
+    &[placement="top"] {
+      transform-origin: center bottom;
+    }
+  }
+  &.ani--enter {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.vxe-ico-picker {
+  height: var(--vxe-ui-input-height-default);
+  line-height: var(--vxe-ui-input-height-default);
+  &.size--medium {
+    height: var(--vxe-ui-input-height-medium);
+    line-height: var(--vxe-ui-input-height-medium);
+  }
+  &.size--small {
+    height: var(--vxe-ui-input-height-small);
+    line-height: var(--vxe-ui-input-height-small);
+  }
+  &.size--mini {
+    height: var(--vxe-ui-input-height-mini);
+    line-height: var(--vxe-ui-input-height-mini);
+  }
+}
+
+.vxe-ico-picker,
+.vxe-ico-picker--panel {
+  font-size: var(--vxe-ui-font-size-default);
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}

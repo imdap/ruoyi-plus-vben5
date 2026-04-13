@@ -1,0 +1,70 @@
+{
+  "name": "cspell-glob",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "version": "9.8.0",
+  "description": "Glob matcher for cspell",
+  "keywords": [
+    "cspell",
+    "glob"
+  ],
+  "author": "Jason Dent <jason@streetsidesoftware.nl>",
+  "homepage": "https://github.com/streetsidesoftware/cspell/tree/main/packages/cspell-glob#readme",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "bin.mjs",
+    "dist",
+    "!**/*.tsbuildInfo",
+    "!**/__mocks__",
+    "!**/test/**",
+    "!**/*.test.*",
+    "!**/perf/**",
+    "!**/*.perf.*",
+    "!**/*.spec.*",
+    "!**/*.map"
+  ],
+  "scripts": {
+    "clean": "shx rm -rf dist temp coverage \"*.tsbuildInfo\"",
+    "build": "tsdown",
+    "build:check": "tsc -p .",
+    "clean-build": "pnpm run clean && pnpm run build",
+    "coverage": "vitest run --coverage",
+    "test:perf": "insight --file \"src/perf/**/*.perf.{mts,ts}\" -t 1000",
+    "test:perf:prof": "NODE_ENV=production node --cpu-prof ../../node_modules/perf-insight/bin.mjs --file \"dist/perf/**/*.perf.{mjs,js}\" -t 1000",
+    "test:watch": "vitest",
+    "test": "pnpm build:check && vitest run",
+    "watch": "tsdown -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell.git",
+    "directory": "packages/cspell-glob"
+  },
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell/labels/cspell-glob"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@cspell/url": "9.8.0",
+    "picomatch": "^4.0.4"
+  },
+  "devDependencies": {
+    "@types/micromatch": "^4.0.10",
+    "@types/picomatch": "^4.0.2",
+    "micromatch": "^4.0.8"
+  },
+  "gitHead": "c822013ce676dffb5fa5544567c25a3ae666718f"
+}

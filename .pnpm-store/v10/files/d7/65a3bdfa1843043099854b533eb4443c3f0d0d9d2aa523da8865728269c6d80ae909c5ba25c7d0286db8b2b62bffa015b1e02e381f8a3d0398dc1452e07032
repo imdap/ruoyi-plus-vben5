@@ -1,0 +1,6 @@
+import * as vue823 from "vue";
+
+//#region src/color-picker/components/PanelPicker/index.d.ts
+declare const _default: vue823.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue823.PublicProps>;
+//#endregion
+export { _default as default };

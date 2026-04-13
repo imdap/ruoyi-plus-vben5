@@ -1,0 +1,141 @@
+import { AliasToken } from "../../theme/interface/alias.js";
+import { FullToken, GenStyleFn, GlobalToken } from "../../theme/interface/cssinjs-utils.js";
+import { GenerateStyle } from "../../theme/interface/index.js";
+import { TokenWithCommonCls } from "../../theme/internal.js";
+import * as vue485 from "vue";
+
+//#region src/modal/style/index.d.ts
+/** Component only token. Which will handle additional calculation of alias token */
+interface ComponentToken {
+  /**
+   * @desc 顶部背景色
+   * @descEN Background color of header
+   */
+  headerBg: string;
+  /**
+   * @desc 标题行高
+   * @descEN Line height of title
+   */
+  titleLineHeight: number | string;
+  /**
+   * @desc 标题字体大小
+   * @descEN Font size of title
+   */
+  titleFontSize: number;
+  /**
+   * @desc 标题字体颜色
+   * @descEN Font color of title
+   */
+  titleColor: string;
+  /**
+   * @desc 内容区域背景色
+   * @descEN Background color of content
+   */
+  contentBg: string;
+  /**
+   * @desc 底部区域背景色
+   * @descEN Background color of footer
+   */
+  footerBg: string;
+  /** @internal */
+  contentPadding: number | string;
+  /** @internal */
+  headerPadding: string | number;
+  /** @internal */
+  headerBorderBottom: string;
+  /** @internal */
+  headerMarginBottom: number;
+  /** @internal */
+  bodyPadding: number;
+  /** @internal */
+  footerPadding: string | number;
+  /** @internal */
+  footerBorderTop: string;
+  /** @internal */
+  footerBorderRadius: string | number;
+  /** @internal */
+  footerMarginTop: string | number;
+  /** @internal */
+  confirmBodyPadding: string | number;
+  /** @internal */
+  confirmIconMarginInlineEnd: string | number;
+  /** @internal */
+  confirmBtnsMarginTop: string | number;
+}
+/**
+ * @desc Modal 组件的 Token
+ * @descEN Token for Modal component
+ */
+interface ModalToken extends FullToken<'Modal'> {
+  /**
+   * @desc 模态框头部高度
+   * @descEN Height of modal header
+   */
+  modalHeaderHeight: number | string;
+  /**
+   * @desc 模态框底部边框颜色
+   * @descEN Border color of modal footer
+   */
+  modalFooterBorderColorSplit: string;
+  /**
+   * @desc 模态框底部边框样式
+   * @descEN Border style of modal footer
+   */
+  modalFooterBorderStyle: string;
+  /**
+   * @desc 模态框底部边框宽度
+   * @descEN Border width of modal footer
+   */
+  modalFooterBorderWidth: number | string;
+  /**
+   * @desc 模态框关闭图标颜色
+   * @descEN Color of modal close icon
+   */
+  modalCloseIconColor: string;
+  /**
+   * @desc 模态框关闭图标悬停颜色
+   * @descEN Hover color of modal close icon
+   */
+  modalCloseIconHoverColor: string;
+  /**
+   * @desc 模态框关闭按钮尺寸
+   * @descEN Size of modal close button
+   */
+  modalCloseBtnSize: number | string;
+  /**
+   * @desc 模态框确认图标尺寸
+   * @descEN Size of modal confirm icon
+   */
+  modalConfirmIconSize: number | string;
+  /**
+   * @desc 模态框标题高度
+   * @descEN Height of modal title
+   */
+  modalTitleHeight: number | string;
+}
+declare const genModalMaskStyle: GenerateStyle<TokenWithCommonCls<AliasToken>>;
+declare function prepareToken(token: Parameters<GenStyleFn<'Modal'>>[0]): ModalToken;
+declare function prepareComponentToken(token: GlobalToken): {
+  footerBg: string;
+  headerBg: string;
+  titleLineHeight: number;
+  titleFontSize: number;
+  contentBg: string;
+  titleColor: string;
+  contentPadding: string | number;
+  headerPadding: string | number;
+  headerBorderBottom: string;
+  headerMarginBottom: number;
+  bodyPadding: number;
+  footerPadding: string | number;
+  footerBorderTop: string;
+  footerBorderRadius: string | number;
+  footerMarginTop: number;
+  confirmBodyPadding: string | number;
+  confirmIconMarginInlineEnd: number;
+  confirmBtnsMarginTop: number;
+  mask: boolean;
+};
+declare const _default: (prefixCls: vue485.Ref<string>, rootCls?: vue485.Ref<string | undefined>) => readonly [vue485.Ref<string, string>, vue485.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, ModalToken, _default as default, genModalMaskStyle, prepareComponentToken, prepareToken };

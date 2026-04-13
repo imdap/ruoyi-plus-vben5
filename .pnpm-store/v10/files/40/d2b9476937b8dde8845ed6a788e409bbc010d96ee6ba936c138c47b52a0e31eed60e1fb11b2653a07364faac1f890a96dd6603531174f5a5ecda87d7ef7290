@@ -1,0 +1,33 @@
+import { unit } from "@antdv-next/cssinjs";
+
+//#region src/menu/style/horizontal.ts
+const getHorizontalStyle = (token) => {
+	const { componentCls, motionDurationSlow, horizontalLineHeight, colorSplit, lineWidth, lineType, itemPaddingInline } = token;
+	return { [`${componentCls}-horizontal`]: {
+		lineHeight: horizontalLineHeight,
+		border: 0,
+		borderBottom: `${unit(lineWidth)} ${lineType} ${colorSplit}`,
+		boxShadow: "none",
+		"&::after": {
+			display: "block",
+			clear: "both",
+			height: 0,
+			content: "\"\\20\""
+		},
+		[`${componentCls}-item, ${componentCls}-submenu`]: {
+			position: "relative",
+			display: "inline-block",
+			verticalAlign: "bottom",
+			paddingInline: itemPaddingInline
+		},
+		[`> ${componentCls}-item:hover,
+        > ${componentCls}-item-active,
+        > ${componentCls}-submenu ${componentCls}-submenu-title:hover`]: { backgroundColor: "transparent" },
+		[`${componentCls}-item, ${componentCls}-submenu-title`]: { transition: [`border-color`, `background-color`].map((prop) => `${prop} ${motionDurationSlow}`).join(",") },
+		[`${componentCls}-submenu-arrow`]: { display: "none" }
+	} };
+};
+var horizontal_default = getHorizontalStyle;
+
+//#endregion
+export { horizontal_default as default };

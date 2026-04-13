@@ -1,0 +1,77 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue947 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { SwitchChangeEventHandler, SwitchClickEventHandler } from "@v-c/switch";
+
+//#region src/switch/index.d.ts
+type SwitchSize = Exclude<SizeType, 'large'> | 'default';
+type SwitchSemanticName = keyof SwitchSemanticClassNames & keyof SwitchSemanticStyles;
+interface SwitchSemanticClassNames {
+  root?: string;
+  content?: string;
+  indicator?: string;
+}
+interface SwitchSemanticStyles {
+  root?: CSSProperties;
+  content?: CSSProperties;
+  indicator?: CSSProperties;
+}
+type SwitchClassNamesType = SemanticClassNamesType<SwitchProps, SwitchSemanticClassNames>;
+type SwitchStylesType = SemanticStylesType<SwitchProps, SwitchSemanticStyles>;
+type CheckedValueType = string | number | boolean | object;
+interface SwitchProps extends ComponentBaseProps, SwitchEmitsProps {
+  size?: SwitchSize;
+  checked?: CheckedValueType;
+  defaultChecked?: CheckedValueType;
+  /**
+   * Alias for `checked`.
+   * @since 5.12.0
+   */
+  value?: CheckedValueType;
+  /**
+   * Alias for `defaultChecked`.
+   * @since 5.12.0
+   */
+  defaultValue?: CheckedValueType;
+  /**
+   * 选中时的值
+   */
+  checkedValue?: CheckedValueType;
+  /**
+   * 非选中时的值
+   */
+  unCheckedValue?: CheckedValueType;
+  checkedChildren?: VueNode;
+  unCheckedChildren?: VueNode;
+  disabled?: boolean;
+  loading?: boolean;
+  autoFocus?: boolean;
+  title?: string;
+  tabIndex?: number;
+  id?: string;
+  classes?: SwitchClassNamesType;
+  styles?: SwitchStylesType;
+}
+interface SwitchEmits {
+  'change': SwitchChangeEventHandler;
+  'click': SwitchClickEventHandler;
+  'update:checked': (checked: CheckedValueType) => void;
+  'update:value': (checked: CheckedValueType) => void;
+}
+interface SwitchEmitsProps {
+  onChange?: SwitchEmits['change'];
+  onClick?: SwitchEmits['click'];
+  'onUpdate:checked'?: SwitchEmits['update:checked'];
+  'onUpdate:value'?: SwitchEmits['update:value'];
+}
+interface SwitchSlots {
+  checkedChildren: () => any;
+  unCheckedChildren: () => any;
+}
+declare const Switch: vue947.DefineSetupFnComponent<SwitchProps, SwitchEmits, SlotsType<SwitchSlots>, SwitchProps, vue947.PublicProps>;
+//#endregion
+export { CheckedValueType, SwitchClassNamesType, SwitchEmits, SwitchEmitsProps, SwitchProps, SwitchSemanticClassNames, SwitchSemanticName, SwitchSemanticStyles, SwitchSize, SwitchSlots, SwitchStylesType, Switch as default };

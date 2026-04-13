@@ -1,0 +1,8 @@
+import * as vue789 from "vue";
+
+//#region src/space/style/addon.d.ts
+/** Component only token. Which will handle additional calculation of alias token */
+interface ComponentToken {}
+declare const _default: (prefixCls: vue789.Ref<string>, rootCls?: vue789.Ref<string | undefined>) => readonly [vue789.Ref<string, string>, vue789.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default };

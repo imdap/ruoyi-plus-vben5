@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:!0}),exports.warnLog=exports.errLog=void 0;var _core=require("@vxe-ui/core");let log=_core.VxeUI.log,version="table v4.18.11",warnLog=exports.warnLog=log.create("warn",version),errLog=exports.errLog=log.create("error",version);

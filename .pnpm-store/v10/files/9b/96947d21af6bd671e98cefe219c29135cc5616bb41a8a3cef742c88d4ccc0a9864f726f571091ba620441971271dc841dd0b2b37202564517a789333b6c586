@@ -1,0 +1,67 @@
+import Divider_default from "../Divider.js";
+import MenuItem_default from "../MenuItem.js";
+import { parseChildren } from "./commonUtil.js";
+import SubMenu_default from "../SubMenu/index.js";
+import MenuItemGroup_default from "../MenuItemGroup.js";
+import { createVNode, isVNode, mergeProps } from "vue";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+function convertItemsToNodes(list, components, prefixCls, slots) {
+	const { item: MergedMenuItem, group: MergedMenuItemGroup, submenu: MergedSubMenu, divider: MergedDivider } = components;
+	return (list || []).map((opt, index) => {
+		if (opt && typeof opt === "object") {
+			const { children, key, type, ...restProps } = opt;
+			const mergedKey = key ?? `tmp-${index}`;
+			let label;
+			let extra;
+			let icon;
+			const _labelRender = slots?.labelRender ? slots.labelRender(opt) : null;
+			const _extraRender = slots?.extraRender ? slots.extraRender(opt) : null;
+			const _iconRender = slots?.iconRender ? slots.iconRender(opt) : null;
+			const labelArr = filterEmpty(Array.isArray(_labelRender) ? _labelRender : [_labelRender]).filter((item) => item !== void 0 && item !== null);
+			const extraArr = filterEmpty(Array.isArray(_extraRender) ? _extraRender : [_extraRender]).filter((item) => item !== void 0 && item !== null);
+			const iconArr = filterEmpty(Array.isArray(_iconRender) ? _iconRender : [_iconRender]).filter((item) => item !== void 0 && item !== null);
+			if (iconArr.length) icon = iconArr?.[0];
+			if (labelArr.length) label = labelArr?.[0];
+			if (extraArr.length) extra = extraArr?.[0];
+			if (!label) label = opt.label;
+			if (!extra) extra = opt.extra;
+			if (!icon) icon = opt.icon;
+			if (children || type === "group") {
+				let _slot2;
+				if (type === "group") {
+					let _slot;
+					return createVNode(MergedMenuItemGroup, mergeProps({ "key": mergedKey }, restProps, {
+						"title": label,
+						"icon": icon
+					}), _isSlot(_slot = convertItemsToNodes(children, components, prefixCls, slots)) ? _slot : { default: () => [_slot] });
+				}
+				return createVNode(MergedSubMenu, mergeProps({ "key": mergedKey }, restProps, {
+					"title": label,
+					"icon": icon
+				}), _isSlot(_slot2 = convertItemsToNodes(children, components, prefixCls, slots)) ? _slot2 : { default: () => [_slot2] });
+			}
+			if (type === "divider") return createVNode(MergedDivider, mergeProps({ "key": mergedKey }, restProps), null);
+			return createVNode(MergedMenuItem, mergeProps({ "key": mergedKey }, restProps, {
+				"extra": extra,
+				"icon": icon
+			}), { default: () => [label, (!!extra || extra === 0) && createVNode("span", { "class": `${prefixCls}-item-extra` }, [extra])] });
+		}
+		return null;
+	}).filter((opt) => opt);
+}
+function parseItems(children, items, keyPath, components, prefixCls, slots) {
+	let childNodes = children;
+	const mergedComponents = {
+		divider: Divider_default,
+		item: MenuItem_default,
+		group: MenuItemGroup_default,
+		submenu: SubMenu_default,
+		...components
+	};
+	if (items) childNodes = convertItemsToNodes(items, mergedComponents, prefixCls, slots);
+	return parseChildren(childNodes, keyPath);
+}
+export { parseItems };

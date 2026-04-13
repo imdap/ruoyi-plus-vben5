@@ -1,0 +1,17 @@
+import { VueNode } from "../../_util/type.js";
+import { AntTreeNodeProps, SwitcherIcon, TreeLeafIcon } from "../Tree.js";
+import * as vue881 from "vue";
+
+//#region src/tree/utils/iconUtil.d.ts
+interface SwitcherIconProps {
+  prefixCls: string;
+  treeNodeProps: AntTreeNodeProps;
+  switcherIcon?: SwitcherIcon;
+  switcherLoadingIcon?: VueNode;
+  showLine?: boolean | {
+    showLeafIcon: boolean | TreeLeafIcon;
+  };
+}
+declare const SwitcherIconCom: vue881.DefineSetupFnComponent<SwitcherIconProps, {}, {}, SwitcherIconProps & {}, vue881.PublicProps>;
+//#endregion
+export { SwitcherIconCom as default };

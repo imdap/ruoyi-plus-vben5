@@ -1,0 +1,49 @@
+import { FormItemLabelProps } from "../FormItemLabel.js";
+import { NamePath, Rule, TriggerType } from "../types.js";
+import { FormItemLayout } from "../Form.js";
+import { FormItemInputProps } from "../FormItemInput.js";
+import { ComponentBaseProps } from "../../config-provider/context.js";
+import * as vue744 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/form/FormItem/index.d.ts
+declare const _ValidateStatuses: readonly ["success", "warning", "error", "validating", ""];
+type ValidateStatus = (typeof _ValidateStatuses)[number];
+type FeedbackIcons = (itemStatus: {
+  status: ValidateStatus;
+  errors?: any[];
+  warnings?: any[];
+}) => { [key in ValidateStatus]?: any };
+interface BaseFormItemProps {
+  name?: NamePath;
+  rules?: Rule[];
+  trigger?: TriggerType | TriggerType[];
+  validateTrigger?: TriggerType | TriggerType[] | false;
+  validateDebounce?: number;
+  validateFirst?: boolean | 'parallel';
+}
+type FormItemProps = BaseFormItemProps & ComponentBaseProps & Omit<FormItemLabelProps, 'requiredMark'> & FormItemInputProps & {
+  noStyle?: boolean;
+  id?: string;
+  hasFeedback?: boolean | {
+    icons: FeedbackIcons;
+  };
+  validateStatus?: ValidateStatus;
+  required?: boolean;
+  hidden?: boolean;
+  messageVariables?: Record<string, string>;
+  layout?: FormItemLayout;
+};
+interface FormItemEmits {}
+interface FormItemEmitsProps {}
+interface FormItemSlots {
+  default: () => any;
+  tooltip?: (tooltip?: FormItemLabelProps['tooltip']) => any;
+  label?: () => any;
+  extra?: () => any;
+  help?: () => any;
+}
+interface InternalFormItemProps extends FormItemProps, FormItemEmitsProps {}
+declare const InternalFormItem: vue744.DefineSetupFnComponent<InternalFormItemProps, FormItemEmits, SlotsType<FormItemSlots>, InternalFormItemProps, vue744.PublicProps>;
+//#endregion
+export { BaseFormItemProps, FeedbackIcons, FormItemEmits, FormItemEmitsProps, FormItemProps, FormItemSlots, ValidateStatus, InternalFormItem as default };

@@ -1,0 +1,15 @@
+import { defineComponent, inject, provide } from "vue";
+var PrivateContextKey = Symbol("PrivateContext");
+function usePrivateProvider(context) {
+	provide(PrivateContextKey, context);
+}
+function usePrivateContext() {
+	return inject(PrivateContextKey, {});
+}
+const PrivateContextProvider = defineComponent((props, { slots }) => {
+	usePrivateProvider(props);
+	return () => {
+		return slots?.default?.();
+	};
+}, { props: ["_internalRenderMenuItem", "_internalRenderSubMenuItem"] });
+export { PrivateContextProvider, usePrivateContext, usePrivateProvider };

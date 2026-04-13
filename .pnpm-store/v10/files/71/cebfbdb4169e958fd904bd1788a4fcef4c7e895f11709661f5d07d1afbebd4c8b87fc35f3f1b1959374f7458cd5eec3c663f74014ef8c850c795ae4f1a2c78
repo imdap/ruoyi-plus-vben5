@@ -1,0 +1,39 @@
+import { FormItemLabelProps } from "../FormItemLabel.js";
+import { Meta } from "../types.js";
+import { FormItemLayout } from "../Form.js";
+import { FormItemInputProps } from "../FormItemInput.js";
+import { BaseFormItemProps, FeedbackIcons, FormItemProps, ValidateStatus } from "./index.js";
+import { ComponentBaseProps } from "../../config-provider/context.js";
+import { ReportMetaChange } from "../context.js";
+import * as vue577 from "vue";
+
+//#region src/form/FormItem/ItemHolder.d.ts
+type ItemHolderProps = FormItemProps & {
+  errors: any[];
+  warnings: any[];
+  meta: Meta;
+  fieldId?: string;
+  isRequired?: boolean;
+  onSubItemMetaChange: ReportMetaChange;
+};
+declare const ItemHolder: vue577.DefineSetupFnComponent<ItemHolderProps, {}, {}, BaseFormItemProps & ComponentBaseProps & Omit<FormItemLabelProps, "requiredMark"> & FormItemInputProps & {
+  noStyle?: boolean;
+  id?: string;
+  hasFeedback?: boolean | {
+    icons: FeedbackIcons;
+  };
+  validateStatus?: ValidateStatus;
+  required?: boolean;
+  hidden?: boolean;
+  messageVariables?: Record<string, string>;
+  layout?: FormItemLayout;
+} & {
+  errors: any[];
+  warnings: any[];
+  meta: Meta;
+  fieldId?: string;
+  isRequired?: boolean;
+  onSubItemMetaChange: ReportMetaChange;
+} & {}, vue577.PublicProps>;
+//#endregion
+export { ItemHolderProps, ItemHolder as default };

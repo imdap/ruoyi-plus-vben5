@@ -1,0 +1,6 @@
+import * as vue920 from "vue";
+
+//#region src/empty/empty.d.ts
+declare const Empty: vue920.DefineSetupFnComponent<Record<string, any>, {}, {}, Record<string, any> & {}, vue920.PublicProps>;
+//#endregion
+export { Empty as default };

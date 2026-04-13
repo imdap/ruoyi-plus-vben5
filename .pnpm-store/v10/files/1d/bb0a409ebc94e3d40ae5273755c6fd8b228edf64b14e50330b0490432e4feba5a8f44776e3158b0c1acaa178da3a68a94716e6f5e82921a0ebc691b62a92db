@@ -1,0 +1,14 @@
+// cSpell Settings
+{
+    "id": "fonts",
+    "name": "Font Names",
+    "description": "Font names dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "fonts",
+            "path": "./dict/fonts.txt",
+            "description": "Font names dictionary."
+        }
+    ]
+}

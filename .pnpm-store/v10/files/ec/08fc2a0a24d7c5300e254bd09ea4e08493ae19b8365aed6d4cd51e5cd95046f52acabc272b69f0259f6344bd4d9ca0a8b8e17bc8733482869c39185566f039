@@ -1,0 +1,14 @@
+import { GradientColor } from "../../color.js";
+import { PanelPickerContextProps } from "../../context.js";
+import * as vue825 from "vue";
+
+//#region src/color-picker/components/PanelPicker/GradientColorBar.d.ts
+interface GradientColorBarProps extends PanelPickerContextProps {
+  colors: GradientColor;
+}
+/**
+ * GradientColorBar will auto show when the mode is `gradient`.
+ */
+declare const _default: vue825.DefineSetupFnComponent<GradientColorBarProps, {}, {}, GradientColorBarProps & {}, vue825.PublicProps>;
+//#endregion
+export { GradientColorBarProps, _default as default };

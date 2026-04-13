@@ -1,0 +1,89 @@
+{
+  "name": "@v-c/picker",
+  "type": "module",
+  "version": "1.0.4",
+  "description": "picker ui component for vue",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "",
+  "license": "MIT",
+  "keywords": [
+    "picker",
+    "vue-component"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./dist/locale/*": {
+      "types": "./dist/locale/*.d.ts",
+      "import": "./dist/locale/*.js",
+      "default": "./dist/locale/*.js"
+    },
+    "./locale/*": {
+      "types": "./dist/locale/*.d.ts",
+      "import": "./dist/locale/*.js",
+      "default": "./dist/locale/*.js"
+    },
+    "./generate": {
+      "types": "./dist/generate/index.d.ts",
+      "import": "./dist/generate/index.js",
+      "default": "./dist/generate/index.js"
+    },
+    "./generate/*": {
+      "types": "./dist/generate/*.d.ts",
+      "import": "./dist/generate/*.js",
+      "default": "./dist/generate/*.js"
+    },
+    "./dist/*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "default": "./dist/*.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "index.js",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "peerDependencies": {
+    "date-fns": ">= 2.x",
+    "dayjs": ">= 1.x",
+    "luxon": ">= 3.x",
+    "moment": ">= 2.x",
+    "vue": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "date-fns": {
+      "optional": true
+    },
+    "dayjs": {
+      "optional": true
+    },
+    "luxon": {
+      "optional": true
+    },
+    "moment": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@v-c/overflow": "^1.0.3",
+    "@v-c/resize-observer": "^1.0.8",
+    "@v-c/util": "^1.0.14",
+    "@v-c/trigger": "^1.0.11"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.7.1"
+  },
+  "scripts": {
+    "build": "vite build",
+    "prepublish": "pnpm build",
+    "test": "vitest run",
+    "bump": "bumpp --release patch"
+  }
+}

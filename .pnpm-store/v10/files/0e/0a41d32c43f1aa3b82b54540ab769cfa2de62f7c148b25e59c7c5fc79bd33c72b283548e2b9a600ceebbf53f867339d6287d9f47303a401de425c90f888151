@@ -1,0 +1,16 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import * as vue1072 from "vue";
+import { SlotsType } from "vue";
+import { MenuItemGroupProps as MenuItemGroupProps$1 } from "@v-c/menu";
+
+//#region src/menu/MenuItemGroup.d.ts
+interface MenuItemGroupProps extends Omit<MenuItemGroupProps$1, 'title' | 'children'> {
+  title?: VueNode;
+}
+interface MenuItemGroupSlots {
+  default?: () => any;
+  title?: () => any;
+}
+declare const MenuItemGroup: vue1072.DefineSetupFnComponent<MenuItemGroupProps, EmptyEmit, SlotsType<MenuItemGroupSlots>, MenuItemGroupProps, vue1072.PublicProps>;
+//#endregion
+export { MenuItemGroupProps, MenuItemGroupSlots, MenuItemGroup as default };

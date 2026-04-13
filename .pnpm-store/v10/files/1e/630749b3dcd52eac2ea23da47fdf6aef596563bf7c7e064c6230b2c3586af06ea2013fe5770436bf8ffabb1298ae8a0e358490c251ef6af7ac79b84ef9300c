@@ -1,0 +1,64 @@
+{
+  "name": "vite-plugin-vue-devtools",
+  "type": "module",
+  "version": "8.1.1",
+  "description": "A vite plugin for Vue DevTools",
+  "author": "webfansplz",
+  "license": "MIT",
+  "homepage": "https://github.com/vuejs/devtools#readme",
+  "repository": {
+    "directory": "packages/vite",
+    "type": "git",
+    "url": "git+https://github.com/vuejs/devtools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vuejs/devtools/issues"
+  },
+  "keywords": [
+    "vue-devtools",
+    "vite-plugin",
+    "vite-plugin-vue-devtools",
+    "dx"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/vite.js",
+      "require": "./dist/vite.cjs"
+    },
+    "./*": "./*"
+  },
+  "main": "dist/vite.cjs",
+  "module": "dist/vite.mjs",
+  "files": [
+    "*.d.ts",
+    "./src/overlay.js",
+    "./src/overlay/**",
+    "client",
+    "dist",
+    "overlay"
+  ],
+  "engines": {
+    "node": ">=v14.21.3"
+  },
+  "peerDependencies": {
+    "vite": "^6.0.0 || ^7.0.0 || ^8.0.0"
+  },
+  "dependencies": {
+    "sirv": "^3.0.2",
+    "vite-plugin-inspect": "^11.3.3",
+    "vite-plugin-vue-inspector": "^5.3.2",
+    "@vue/devtools-core": "^8.1.1",
+    "@vue/devtools-kit": "^8.1.1",
+    "@vue/devtools-shared": "^8.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "fast-glob": "^3.3.3",
+    "image-meta": "^0.2.2",
+    "pathe": "^2.0.3"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "stub": "tsdown --watch"
+  }
+}

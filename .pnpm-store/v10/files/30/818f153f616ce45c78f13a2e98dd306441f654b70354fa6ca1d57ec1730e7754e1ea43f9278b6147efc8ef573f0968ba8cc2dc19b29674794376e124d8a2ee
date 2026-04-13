@@ -1,0 +1,12 @@
+import { ConfigOptions, MessageInstance } from "./interface.js";
+import { MaybeRef } from "@v-c/util/dist/type";
+import * as vue_jsx_runtime19 from "vue/jsx-runtime";
+
+//#region src/message/useMessage.d.ts
+type HolderProps = ConfigOptions & {
+  onAllRemoved?: VoidFunction;
+};
+declare function useInternalMessage(messageConfig?: MaybeRef<HolderProps>): readonly [MessageInstance, () => vue_jsx_runtime19.JSX.Element];
+declare function useMessage(messageConfig?: ConfigOptions): readonly [MessageInstance, () => vue_jsx_runtime19.JSX.Element];
+//#endregion
+export { useMessage as default, useInternalMessage };

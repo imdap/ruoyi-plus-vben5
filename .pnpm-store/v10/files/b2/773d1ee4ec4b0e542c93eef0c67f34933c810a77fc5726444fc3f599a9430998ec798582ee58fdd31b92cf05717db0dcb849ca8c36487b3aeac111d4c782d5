@@ -1,0 +1,12 @@
+import { VueNode } from "../../_util/type.js";
+import * as vue643 from "vue";
+
+//#region src/spin/Indicator/index.d.ts
+interface IndicatorProps {
+  prefixCls: string;
+  indicator?: VueNode;
+  percent?: number;
+}
+declare const Indicator: vue643.DefineSetupFnComponent<IndicatorProps, {}, {}, IndicatorProps & {}, vue643.PublicProps>;
+//#endregion
+export { IndicatorProps, Indicator as default };

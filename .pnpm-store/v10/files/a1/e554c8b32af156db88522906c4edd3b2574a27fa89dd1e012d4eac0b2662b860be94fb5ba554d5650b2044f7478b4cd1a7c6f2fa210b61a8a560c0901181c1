@@ -1,0 +1,100 @@
+{
+  "name": "jsonc-eslint-parser",
+  "version": "3.1.0",
+  "description": "JSON, JSONC and JSON5 parser for use with ESLint plugins",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.mts",
+      "default": "./lib/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "lib/index.d.mts",
+  "files": [
+    "lib"
+  ],
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
+  "scripts": {
+    "build": "npm run build:bundle",
+    "build:bundle": "tsdown",
+    "clean": "rimraf .nyc_output lib coverage",
+    "lint": "npm run eslint && npm run tsc",
+    "eslint": "eslint .",
+    "eslint-fix": "eslint . --fix",
+    "tsc": "tsc --noEmit",
+    "test:base": "mocha --require tsx \"tests/src/**/*.ts\" --reporter dot --timeout 60000",
+    "test": "npm run test:base",
+    "test:nyc": "nyc --reporter=lcov npm run test:base",
+    "test:debug": "node --experimental-strip-types ./node_modules/mocha/bin/mocha.js \"tests/src/**/*.ts\" --reporter dot",
+    "update": "tsx ./tools/update.ts && npm run eslint-fix && npm run test:nyc",
+    "preversion": "npm test && npm run update && git add .",
+    "version": "npm run eslint-fix && git add .",
+    "update-fixtures": "tsx ./tools/update-fixtures.ts",
+    "benchmark": "tsx benchmark/index.ts",
+    "prerelease": "npm run clean && npm run build",
+    "release": "changeset publish",
+    "version:ci": "changeset version"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ota-meshi/jsonc-eslint-parser.git"
+  },
+  "keywords": [
+    "eslint",
+    "json",
+    "jsonc",
+    "json5",
+    "parser"
+  ],
+  "author": "Yosuke Ota",
+  "funding": "https://github.com/sponsors/ota-meshi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ota-meshi/jsonc-eslint-parser/issues"
+  },
+  "homepage": "https://github.com/ota-meshi/jsonc-eslint-parser#readme",
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.5.0",
+    "@changesets/cli": "^2.24.2",
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.3.0",
+    "@ota-meshi/eslint-plugin": "^0.20.0",
+    "@types/benchmark": "^2.1.0",
+    "@types/estree": "^1.0.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^24.0.0",
+    "@types/semver": "^7.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "benchmark": "^2.1.4",
+    "env-cmd": "^11.0.0",
+    "eslint": "^10.0.0",
+    "eslint-config-prettier": "^10.0.0",
+    "eslint-plugin-jsdoc": "^62.0.0",
+    "eslint-plugin-json-schema-validator": "^6.0.0",
+    "eslint-plugin-jsonc": "^2.0.0",
+    "eslint-plugin-n": "^17.0.0",
+    "eslint-plugin-node-dependencies": "^1.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-regexp": "^3.0.0",
+    "eslint-plugin-vue": "^10.0.0",
+    "mocha": "^11.0.0",
+    "nyc": "^17.0.0",
+    "prettier": "~3.8.0",
+    "tsdown": "^0.20.3",
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.0",
+    "typescript-eslint": "^8.0.0",
+    "vue-eslint-parser": "^10.0.0"
+  },
+  "dependencies": {
+    "acorn": "^8.5.0",
+    "eslint-visitor-keys": "^5.0.0",
+    "semver": "^7.3.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

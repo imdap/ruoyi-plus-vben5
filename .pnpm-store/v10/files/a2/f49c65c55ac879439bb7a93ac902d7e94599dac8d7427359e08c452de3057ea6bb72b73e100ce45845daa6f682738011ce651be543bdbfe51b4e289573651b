@@ -1,0 +1,23 @@
+import { EmptyEmit } from "../../_util/type.js";
+import { AggregationColor } from "../color.js";
+import { ColorFormatType, ColorPickerProps, ColorPickerSemanticClassNames, ColorPickerSemanticStyles } from "../interface.js";
+import * as vue849 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/color-picker/components/ColorTrigger.d.ts
+interface ColorTriggerProps {
+  prefixCls: string;
+  disabled?: boolean;
+  format?: ColorFormatType;
+  color: AggregationColor;
+  open?: boolean;
+  showText?: ColorPickerProps['showText'];
+  className?: string;
+  style?: CSSProperties;
+  activeIndex: number;
+  classes: ColorPickerSemanticClassNames;
+  styles: ColorPickerSemanticStyles;
+}
+declare const _default: vue849.DefineSetupFnComponent<ColorTriggerProps, EmptyEmit, {}, ColorTriggerProps, vue849.PublicProps>;
+//#endregion
+export { ColorTriggerProps, _default as default };

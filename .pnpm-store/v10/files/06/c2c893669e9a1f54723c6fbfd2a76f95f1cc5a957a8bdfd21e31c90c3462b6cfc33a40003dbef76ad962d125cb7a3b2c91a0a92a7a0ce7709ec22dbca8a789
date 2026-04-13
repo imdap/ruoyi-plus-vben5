@@ -1,0 +1,138 @@
+{
+  "name": "eslint-plugin-jsonc",
+  "version": "3.1.2",
+  "description": "ESLint plugin for JSON, JSONC and JSON5 files.",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
+  "scripts": {
+    "prebuild": "npm run -s clean",
+    "build": "npm run build:ts",
+    "build:ts": "tsdown",
+    "clean": "node -e \"import('fs').then(fs=>['dist','coverage'].forEach(d=>{try{fs.rmSync(d,{recursive:true,force:true})}catch(e){}}))\"",
+    "lint": "npm run eslint && npm run tsc",
+    "tsc": "tsc --noEmit",
+    "eslint": "eslint . --config=./eslint.config.mjs --no-config-lookup",
+    "eslint-fix": "npm run eslint -- --fix",
+    "test:base": "env-cmd -e test -- mocha --import=tsx/esm \"tests/lib/**/*.ts\" --reporter dot --timeout 60000",
+    "test": "npm run test:base",
+    "test:c8": "c8 --reporter=lcov npm run test:base",
+    "pretest:integrations": "npm run build:ts && npm pack",
+    "test:integrations": "mocha --import=tsx/esm \"tests-integrations/lib/**/*.ts\" --reporter dot --timeout 120000",
+    "update": "node --import=tsx/esm ./tools/update.ts && npm run eslint-fix && npm run test:c8",
+    "update-only": "node --import=tsx/esm ./tools/update.ts",
+    "new": "node --import=tsx/esm ./tools/new-rule.ts",
+    "predocs:watch": "npm run build:ts",
+    "docs:watch": "vitepress dev docs",
+    "docs:build": "npm run build:ts && vitepress build docs",
+    "prerelease": "npm run test && npm run build",
+    "release": "changeset publish",
+    "preversion": "npm test && git add .",
+    "version": "env-cmd -e version -- npm run update && git add .",
+    "preversion:ci": "npm run build",
+    "version:ci": "env-cmd -e version-ci -- npm run update && changeset version"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ota-meshi/eslint-plugin-jsonc.git"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "lint",
+    "jsonc",
+    "json5",
+    "json"
+  ],
+  "author": "Yosuke Ota",
+  "funding": "https://github.com/sponsors/ota-meshi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ota-meshi/eslint-plugin-jsonc/issues"
+  },
+  "homepage": "https://ota-meshi.github.io/eslint-plugin-jsonc/",
+  "dependencies": {
+    "@eslint-community/eslint-utils": "^4.5.1",
+    "@eslint/core": "^1.0.1",
+    "@eslint/plugin-kit": "^0.6.0",
+    "@ota-meshi/ast-token-store": "^0.3.0",
+    "diff-sequences": "^29.6.3",
+    "eslint-json-compat-utils": "^0.2.3",
+    "jsonc-eslint-parser": "^3.1.0",
+    "natural-compare": "^1.4.0",
+    "synckit": "^0.11.12"
+  },
+  "peerDependencies": {
+    "eslint": ">=9.38.0"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.27.0",
+    "@changesets/changelog-github": "^0.6.0",
+    "@changesets/cli": "^2.28.1",
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.4.1",
+    "@eslint/json": "^1.0.0",
+    "@ota-meshi/eslint-plugin": "^0.20.0",
+    "@ota-meshi/site-kit-eslint-editor-vue": "^0.2.4",
+    "@stylistic/eslint-plugin": "^5.7.1",
+    "@swc-node/register": "^1.11.1",
+    "@types/mocha": "^10.0.10",
+    "@types/natural-compare": "^1.4.3",
+    "@types/node": "^24.0.0",
+    "@types/semver": "^7.5.8",
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "@typescript-eslint/parser": "^8.28.0",
+    "c8": "^11.0.0",
+    "env-cmd": "^11.0.0",
+    "esbuild": "^0.27.3",
+    "eslint": "^10.0.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-eslint-plugin": "^7.0.0",
+    "eslint-plugin-eslint-rule-tester": "^0.6.0",
+    "eslint-plugin-jsdoc": "^62.0.0",
+    "eslint-plugin-json-schema-validator": "^6.0.0",
+    "eslint-plugin-jsonc": "^3.0.0",
+    "eslint-plugin-markdown": "^5.1.0",
+    "eslint-plugin-n": "^17.23.2",
+    "eslint-plugin-node-dependencies": "^2.0.0",
+    "eslint-plugin-prettier": "^5.2.4",
+    "eslint-plugin-regexp": "^3.0.0",
+    "eslint-plugin-vue": "^10.0.0",
+    "eslint-plugin-yml": "^3.0.0",
+    "eslint-scope": "^9.1.0",
+    "events": "^3.3.0",
+    "globals": "^17.0.0",
+    "mocha": "^11.1.0",
+    "pako": "^2.1.0",
+    "prettier": "^3.5.3",
+    "semver": "^7.7.1",
+    "stylelint": "^17.0.0",
+    "stylelint-config-recommended-vue": "^1.6.0",
+    "stylelint-config-standard": "^40.0.0",
+    "stylelint-config-standard-vue": "^1.0.0",
+    "stylelint-stylus": "^1.0.0",
+    "tsdown": "^0.20.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.28.0",
+    "vite-plugin-eslint4b": "^0.7.0",
+    "vitepress": "^1.6.3",
+    "vue-eslint-parser": "^10.1.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

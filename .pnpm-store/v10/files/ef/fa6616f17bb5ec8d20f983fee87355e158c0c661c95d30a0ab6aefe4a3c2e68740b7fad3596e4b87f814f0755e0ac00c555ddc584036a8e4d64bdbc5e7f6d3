@@ -1,0 +1,9 @@
+import { ValidateStatus } from "../form/FormItem/index.js";
+
+//#region src/_util/statusUtils.d.ts
+declare const _InputStatuses: readonly ["warning", "error", "", "success", "validating"];
+type InputStatus = (typeof _InputStatuses)[number];
+declare function getStatusClassNames(prefixCls: string, status?: ValidateStatus, hasFeedback?: boolean): string;
+declare function getMergedStatus(contextStatus?: ValidateStatus, customStatus?: InputStatus): "" | "success" | "warning" | "error" | "validating" | undefined;
+//#endregion
+export { InputStatus, getMergedStatus, getStatusClassNames };

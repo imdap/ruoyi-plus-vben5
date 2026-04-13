@@ -1,0 +1,47 @@
+{
+  "name": "secure-ls",
+  "description": "Secure localStorage/sessionStorage data with high level of encryption and data compression",
+  "main": "./dist/secure-ls.js",
+  "browser": "./dist/secure-ls.js",
+  "typings": "./types/secure-ls.d.ts",
+  "scripts": {
+    "build": "yarn build-dev && yarn build-prod",
+    "build-dev": "webpack --mode=development",
+    "build-prod": "webpack --mode=production",
+    "build:patch": "yarn build-dev --env type=patch npm version patch",
+    "build:minor": "yarn build-dev --env type=minor npm version minor",
+    "build:major": "yarn build-dev --env type=major npm version major",
+    "lint": "eslint src/*.js --fix",
+    "prettier": "prettier -w **/*.js *.md",
+    "test:dev": "jest --watch --runInBand --debug --colors --errorOnDeprecated",
+    "test:prod": "jest --runInBand --colors --errorOnDeprecated",
+    "test:coverage": "jest --coverage --coverageDirectory=coverage && cat ./coverage/lcov.info"
+  },
+  "dependencies": {
+    "crypto-js": "^4.2.0",
+    "lz-string": "^1.5.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.5",
+    "@babel/preset-env": "^7.24.5",
+    "babel-jest": "^25.x.x",
+    "jest": "^25.x.x",
+    "jest-environment-jsdom": "^25.x.x",
+    "semver": "^7.6.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/softvar/secure-ls.git"
+  },
+  "keywords": ["secure-ls", "localStorage", "encryption", "compression", "webpack", "es6", "umd", "commonjs"],
+  "author": "Varun Malhotra",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/softvar/secure-ls/issues"
+  },
+  "homepage": "https://github.com/softvar/secure-ls",
+  "engines": {
+    "node": ">=8.0"
+  },
+  "engineStrict": true
+}

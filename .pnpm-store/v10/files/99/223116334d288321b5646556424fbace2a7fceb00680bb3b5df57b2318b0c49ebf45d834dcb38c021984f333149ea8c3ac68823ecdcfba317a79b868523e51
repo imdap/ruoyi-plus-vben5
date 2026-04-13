@@ -1,0 +1,13 @@
+{
+    "id": "bash",
+    "name": "bash",
+    "description": "Bash dictionary.",
+    "import": ["@cspell/dict-shell"],
+    "languageSettings": [
+        {
+            "languageId": "shellscript",
+            "locale": "*",
+            "dictionaries": ["bash"]
+        }
+    ]
+}

@@ -1,0 +1,424 @@
+import dropdown_default from "../dropdown/index.js";
+import checkbox_default from "../checkbox/index.js";
+import search_default from "./search.js";
+import { groupKeysMap } from "../_util/transKeys.js";
+import { OmitProps } from "./interface.js";
+import ListBody_default from "./ListBody.js";
+import { Fragment, computed, createVNode, defineComponent, isVNode, mergeProps, ref } from "vue";
+import { clsx } from "@v-c/util";
+import { filterEmpty } from "@v-c/util/dist/props-util";
+import { DownOutlined } from "@antdv-next/icons";
+import { omit } from "es-toolkit";
+
+//#region src/transfer/Section.tsx
+const defaultRender = () => null;
+function isRenderResultPlainObject(result) {
+	return !!(result && !isVNode(result) && Object.prototype.toString.call(result) === "[object Object]");
+}
+function getEnabledItemKeys(items) {
+	return items.filter((data) => !data.disabled).map((data) => data.key);
+}
+function getTextFromRenderResult(renderResult, item) {
+	for (const v of [
+		renderResult,
+		item.title,
+		item.key
+	]) if (typeof v === "string" || typeof v === "number") return String(v);
+	return "";
+}
+const isValidIcon = (icon) => icon !== void 0;
+function getShowSearchOption(showSearch) {
+	if (showSearch && typeof showSearch === "object") return {
+		...showSearch,
+		defaultValue: showSearch.defaultValue || ""
+	};
+	return {
+		defaultValue: "",
+		placeholder: ""
+	};
+}
+const TransferSection = /* @__PURE__ */ defineComponent((props) => {
+	const sectionPrefixCls = computed(() => `${props.prefixCls}-section`);
+	const listPrefixCls = computed(() => `${props.prefixCls}-list`);
+	const dataSource = computed(() => props.dataSource || []);
+	const searchOptions = getShowSearchOption(props.showSearch || false);
+	const filterValue = ref(searchOptions.defaultValue);
+	const listBodyRef = ref(null);
+	const internalHandleFilter = (e) => {
+		filterValue.value = (e?.target)?.value ?? "";
+		props.handleFilter(e);
+	};
+	const internalHandleClear = () => {
+		filterValue.value = "";
+		props.handleClear();
+	};
+	const matchFilter = (text, item) => {
+		if (typeof props.filterOption === "function") return props.filterOption(filterValue.value, item, props.direction);
+		return text.includes(filterValue.value);
+	};
+	const renderItem = (item) => {
+		const renderResult = (props.render || defaultRender)(item);
+		const isRenderResultPlain = isRenderResultPlainObject(renderResult);
+		const labelNode = props.labelRender?.(item);
+		let mergedLabel = null;
+		if (Array.isArray(labelNode)) {
+			const labelNodes = filterEmpty(labelNode);
+			if (labelNodes.length) mergedLabel = labelNodes;
+		} else if (labelNode !== void 0 && labelNode !== null) mergedLabel = labelNode;
+		return {
+			item,
+			renderedEl: mergedLabel ?? (isRenderResultPlain ? renderResult.label : renderResult),
+			renderedText: isRenderResultPlain ? renderResult.value : getTextFromRenderResult(renderResult, item)
+		};
+	};
+	const notFoundContentEle = computed(() => Array.isArray(props.notFoundContent) ? props.notFoundContent[props.direction === "left" ? 0 : 1] : props.notFoundContent);
+	const filteredItems = computed(() => {
+		const filterItems = [];
+		const filterRenderItems = [];
+		dataSource.value.forEach((item) => {
+			const renderedItem = renderItem(item);
+			if (filterValue.value && !matchFilter(renderedItem.renderedText, item)) return;
+			filterItems.push(item);
+			filterRenderItems.push(renderedItem);
+		});
+		return {
+			filterItems,
+			filterRenderItems
+		};
+	});
+	const checkedActiveItems = computed(() => filteredItems.value.filterItems.filter((item) => props.checkedKeys.includes(item.key) && !item.disabled));
+	const checkStatus = computed(() => {
+		if (checkedActiveItems.value.length === 0) return "none";
+		const checkedKeysMap = groupKeysMap(props.checkedKeys);
+		if (filteredItems.value.filterItems.every((item) => checkedKeysMap.has(item.key) || !!item.disabled)) return "all";
+		return "part";
+	});
+	const renderListBody = () => {
+		const search = props.showSearch ? createVNode("div", { "class": `${listPrefixCls.value}-body-search-wrapper` }, [createVNode(search_default, {
+			"prefixCls": `${listPrefixCls.value}-search`,
+			"onChange": internalHandleFilter,
+			"onClear": internalHandleClear,
+			"placeholder": searchOptions.placeholder || props.searchPlaceholder,
+			"value": filterValue.value,
+			"disabled": props.disabled
+		}, null)]) : null;
+		const listProps = {
+			...omit(props, [...OmitProps]),
+			filteredItems: filteredItems.value.filterItems,
+			filteredRenderItems: filteredItems.value.filterRenderItems,
+			selectedKeys: props.checkedKeys,
+			classes: props.classes,
+			styles: props.styles
+		};
+		let bodyContent = props.renderList ? props.renderList({
+			...listProps,
+			onItemSelect: (key, check) => listProps.onItemSelect(key, check)
+		}) : null;
+		const customize = !!bodyContent;
+		if (!customize) bodyContent = createVNode(ListBody_default, mergeProps({ "ref": listBodyRef }, listProps, { "prefixCls": listPrefixCls.value }), null);
+		const bodyNode = customize ? createVNode("div", { "class": `${listPrefixCls.value}-body-customize-wrapper` }, [bodyContent]) : filteredItems.value.filterItems.length ? bodyContent : createVNode("div", { "class": `${listPrefixCls.value}-body-not-found` }, [notFoundContentEle.value]);
+		return createVNode("div", {
+			"class": clsx(`${listPrefixCls.value}-body`, { [`${listPrefixCls.value}-body-with-search`]: props.showSearch }, props.classes?.body),
+			"style": props.styles?.body
+		}, [search, bodyNode]);
+	};
+	const getSelectAllLabel = (selectedCount, totalCount) => {
+		if (props.selectAllLabel) return typeof props.selectAllLabel === "function" ? props.selectAllLabel({
+			selectedCount,
+			totalCount
+		}) : props.selectAllLabel;
+		const unit = totalCount > 1 ? props.itemsUnit : props.itemUnit;
+		return `${selectedCount > 0 ? `${selectedCount}/` : ""}${totalCount} ${unit}`;
+	};
+	return () => {
+		const checkBox = createVNode(checkbox_default, {
+			"disabled": dataSource.value.filter((d) => !d.disabled).length === 0 || props.disabled,
+			"checked": checkStatus.value === "all",
+			"indeterminate": checkStatus.value === "part",
+			"class": `${listPrefixCls.value}-checkbox`,
+			"onChange": () => {
+				props.onItemSelectAll?.(filteredItems.value.filterItems.filter((item) => !item.disabled).map(({ key }) => key), checkStatus.value !== "all");
+			}
+		}, null);
+		const footerDom = props.footer && (props.footer.length < 2 ? props.footer(props) : props.footer(props, { direction: props.direction }));
+		const listFooter = footerDom ? createVNode("div", {
+			"class": clsx(`${listPrefixCls.value}-footer`, props.classes?.footer),
+			"style": props.styles?.footer
+		}, [footerDom]) : null;
+		const checkAllCheckbox = !props.showRemove && !props.pagination && checkBox;
+		let items;
+		if (props.showRemove) items = [props.pagination ? {
+			key: "removeCurrent",
+			label: props.removeCurrent,
+			onClick() {
+				const pageKeys = getEnabledItemKeys((listBodyRef.value?.items || []).map((entity) => entity.item));
+				props.onItemRemove?.(pageKeys);
+			}
+		} : null, {
+			key: "removeAll",
+			label: props.removeAll,
+			onClick() {
+				props.onItemRemove?.(getEnabledItemKeys(filteredItems.value.filterItems));
+			}
+		}].filter(Boolean);
+		else items = [
+			{
+				key: "selectAll",
+				label: checkStatus.value === "all" ? props.deselectAll : props.selectAll,
+				onClick() {
+					const keys = getEnabledItemKeys(filteredItems.value.filterItems);
+					props.onItemSelectAll?.(keys, keys.length !== props.checkedKeys.length);
+				}
+			},
+			props.pagination ? {
+				key: "selectCurrent",
+				label: props.selectCurrent,
+				onClick() {
+					const pageItems = listBodyRef.value?.items || [];
+					props.onItemSelectAll?.(getEnabledItemKeys(pageItems.map((entity) => entity.item)), true);
+				}
+			} : null,
+			{
+				key: "selectInvert",
+				label: props.selectInvert,
+				onClick() {
+					const availablePageItemKeys = getEnabledItemKeys((listBodyRef.value?.items || []).map((entity) => entity.item));
+					const checkedKeySet = new Set(props.checkedKeys);
+					const newCheckedKeysSet = new Set(checkedKeySet);
+					availablePageItemKeys.forEach((key) => {
+						if (checkedKeySet.has(key)) newCheckedKeysSet.delete(key);
+						else newCheckedKeysSet.add(key);
+					});
+					props.onItemSelectAll?.([...newCheckedKeysSet], "replace");
+				}
+			}
+		].filter(Boolean);
+		const dropdown = createVNode(dropdown_default, {
+			"class": `${listPrefixCls.value}-header-dropdown`,
+			"menu": { items },
+			"disabled": props.disabled
+		}, { default: () => [isValidIcon(props.selectionsIcon) ? props.selectionsIcon : createVNode(DownOutlined, null, null)] });
+		return createVNode("div", {
+			"class": clsx(sectionPrefixCls.value, props.classes?.section, {
+				[`${sectionPrefixCls.value}-with-pagination`]: !!props.pagination,
+				[`${sectionPrefixCls.value}-with-footer`]: !!footerDom
+			}),
+			"style": {
+				...props.style,
+				...props.styles?.section
+			}
+		}, [
+			createVNode("div", {
+				"class": clsx(`${listPrefixCls.value}-header`, props.classes?.header),
+				"style": props.styles?.header
+			}, [
+				props.showSelectAll ? createVNode(Fragment, null, [checkAllCheckbox, dropdown]) : null,
+				createVNode("span", { "class": `${listPrefixCls.value}-header-selected` }, [getSelectAllLabel(checkedActiveItems.value.length, filteredItems.value.filterItems.length)]),
+				createVNode("span", {
+					"class": clsx(`${listPrefixCls.value}-header-title`, props.classes?.title),
+					"style": props.styles?.title
+				}, [props.titleText])
+			]),
+			renderListBody(),
+			listFooter
+		]);
+	};
+}, {
+	props: {
+		prefixCls: {
+			type: String,
+			required: true
+		},
+		style: {
+			type: Object,
+			required: false
+		},
+		classes: {
+			type: Object,
+			required: false
+		},
+		styles: {
+			type: Object,
+			required: false
+		},
+		titleText: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: true
+		},
+		dataSource: {
+			type: Array,
+			required: true
+		},
+		filterOption: {
+			type: Function,
+			required: false
+		},
+		checkedKeys: {
+			type: Array,
+			required: true
+		},
+		handleFilter: {
+			type: Function,
+			required: true
+		},
+		onItemSelect: {
+			type: Function,
+			required: true
+		},
+		onItemSelectAll: {
+			type: Function,
+			required: true
+		},
+		onItemRemove: {
+			type: Function,
+			required: false
+		},
+		handleClear: {
+			type: Function,
+			required: true
+		},
+		render: {
+			type: Function,
+			required: false
+		},
+		labelRender: {
+			type: Function,
+			required: false
+		},
+		showSearch: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		renderList: {
+			type: Function,
+			required: false
+		},
+		footer: {
+			type: Function,
+			required: false
+		},
+		onScroll: {
+			type: Function,
+			required: true
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		direction: {
+			type: String,
+			required: true
+		},
+		showSelectAll: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		selectAllLabel: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		showRemove: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		pagination: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		selectionsIcon: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		titles: {
+			type: Array,
+			required: false
+		},
+		notFoundContent: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		searchPlaceholder: {
+			type: String,
+			required: true
+		},
+		itemUnit: {
+			type: String,
+			required: true
+		},
+		itemsUnit: {
+			type: String,
+			required: true
+		},
+		remove: {
+			type: String,
+			required: false
+		},
+		selectAll: {
+			type: String,
+			required: false
+		},
+		deselectAll: {
+			type: String,
+			required: false
+		},
+		selectCurrent: {
+			type: String,
+			required: false
+		},
+		selectInvert: {
+			type: String,
+			required: false
+		},
+		removeAll: {
+			type: String,
+			required: false
+		},
+		removeCurrent: {
+			type: String,
+			required: false
+		}
+	},
+	name: "ATransferList",
+	inheritAttrs: false
+});
+var Section_default = TransferSection;
+
+//#endregion
+export { Section_default as default };

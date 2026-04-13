@@ -1,0 +1,1 @@
+.vxe-layout-container{display:flex;flex-direction:row;flex-grow:1;height:100%;color:var(--vxe-ui-font-color);font-family:var(--vxe-ui-font-family);overflow:auto;background-color:var(--vxe-ui-layout-background-color);outline:0}.vxe-layout-container.is--vertical{flex-direction:column}

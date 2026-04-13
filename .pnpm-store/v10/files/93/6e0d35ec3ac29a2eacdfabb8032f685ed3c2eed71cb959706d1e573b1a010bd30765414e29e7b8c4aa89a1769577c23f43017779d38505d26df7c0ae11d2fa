@@ -1,0 +1,41 @@
+import { VueNode } from "../_util/type.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import { AvatarSize } from "./AvatarContext.js";
+import * as vue10 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/avatar/Avatar.d.ts
+interface AvatarProps extends ComponentBaseProps, AvatarEmitsProps {
+  /** Shape of avatar, options: `circle`, `square` */
+  shape?: 'circle' | 'square';
+  /**
+   * Size of avatar, options: `large`, `medium`, `small`
+   * or a custom number size
+   */
+  size?: AvatarSize;
+  gap?: number;
+  /** Src of image avatar */
+  src?: VueNode;
+  /** Srcset of image avatar */
+  srcSet?: string;
+  draggable?: boolean | 'true' | 'false';
+  /** Icon to be used in avatar */
+  icon?: VueNode;
+  alt?: string;
+  crossOrigin?: '' | 'anonymous' | 'use-credentials';
+  onError?: () => boolean;
+}
+interface AvatarEmits {
+  click: (e: MouseEvent) => void;
+}
+interface AvatarEmitsProps {
+  onClick?: AvatarEmits['click'];
+}
+interface AvatarSlots {
+  icon: () => any;
+  src: () => any;
+  default: () => any;
+}
+declare const Avatar: vue10.DefineSetupFnComponent<AvatarProps, AvatarEmits, SlotsType<AvatarSlots>, AvatarProps, vue10.PublicProps>;
+//#endregion
+export { AvatarEmits, AvatarEmitsProps, AvatarProps, AvatarSlots, Avatar as default };

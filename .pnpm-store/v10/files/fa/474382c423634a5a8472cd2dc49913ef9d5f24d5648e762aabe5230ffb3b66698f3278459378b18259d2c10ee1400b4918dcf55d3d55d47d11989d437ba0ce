@@ -1,0 +1,258 @@
+import { COMMON_PROPS } from "./common.js";
+import { usePreviewGroupContext } from "./context.js";
+import useRegisterImage from "./hooks/useRegisterImage.js";
+import useStatus from "./hooks/useStatus.js";
+import Preview from "./Preview/index.js";
+import { Fragment, computed, createVNode, defineComponent, mergeDefaults, mergeProps, shallowRef } from "vue";
+import { clsx } from "@v-c/util";
+import useMergedState from "@v-c/util/dist/hooks/useMergedState";
+import pickAttrs from "@v-c/util/dist/pickAttrs";
+import { getAttrStyleAndClass, getStylePxValue } from "@v-c/util/dist/props-util";
+//#region src/Image.tsx
+var Image = /* @__PURE__ */ defineComponent((props, { attrs, slots }) => {
+	const groupContext = usePreviewGroupContext();
+	const prefixCls = computed(() => props.prefixCls ?? "vc-image");
+	const previewPrefixCls = computed(() => props.previewPrefixCls ?? `${prefixCls.value}-preview`);
+	const canPreview = computed(() => !!props.preview);
+	const mergedPreviewConfig = computed(() => {
+		if (props.preview && typeof props.preview === "object") return props.preview;
+		return {};
+	});
+	const previewSrc = computed(() => mergedPreviewConfig.value.src);
+	const previewOpen = computed(() => mergedPreviewConfig.value.open);
+	const cover = computed(() => mergedPreviewConfig.value.cover);
+	const previewRootClassName = computed(() => mergedPreviewConfig.value.rootClassName);
+	const [isShowPreview, setShowPreview] = useMergedState(!!previewOpen.value, { value: previewOpen });
+	const mousePosition = shallowRef(null);
+	const triggerPreviewOpen = (nextOpen) => {
+		setShowPreview(nextOpen);
+		mergedPreviewConfig.value.onOpenChange?.(nextOpen);
+	};
+	const onPreviewClose = () => {
+		triggerPreviewOpen(false);
+		mousePosition.value = null;
+	};
+	const isCustomPlaceholder = computed(() => !!slots.placeholder || !!(props.placeholder && props.placeholder !== true));
+	const src = computed(() => previewSrc.value ?? props.src);
+	const [getImgRef, srcAndOnload, status] = useStatus({
+		src: computed(() => props.src),
+		isCustomPlaceholder,
+		fallback: computed(() => props.fallback)
+	});
+	const imgCommonProps = computed(() => {
+		const obj = {};
+		COMMON_PROPS.forEach((prop) => {
+			if (props[prop] !== void 0) obj[prop] = props[prop];
+		});
+		return obj;
+	});
+	const imageId = useRegisterImage(canPreview, computed(() => ({
+		...imgCommonProps.value,
+		src: src.value
+	})));
+	const onPreview = (e) => {
+		const rect = (e.currentTarget || e.target).getBoundingClientRect();
+		const left = rect.x + rect.width / 2;
+		const top = rect.y + rect.height / 2;
+		if (groupContext) groupContext.onPreview(imageId, src.value || "", left, top);
+		else {
+			mousePosition.value = {
+				x: left,
+				y: top
+			};
+			triggerPreviewOpen(true);
+		}
+		props.onClick?.(e);
+	};
+	const onInternalClick = (e) => {
+		props.onClick?.(e);
+	};
+	const onImgError = (e) => {
+		props.onError?.(e);
+	};
+	const onPreviewKeyDown = (event) => {
+		props.onKeydown?.(event);
+		if (!canPreview.value) return;
+		if (event.key === "Enter" || event.key === " ") {
+			event.preventDefault();
+			const rect = event.target.getBoundingClientRect();
+			const left = rect.x + rect.width / 2;
+			const top = rect.y + rect.height / 2;
+			if (groupContext) groupContext.onPreview(imageId, src.value || "", left, top);
+			else {
+				mousePosition.value = {
+					x: left,
+					y: top
+				};
+				triggerPreviewOpen(true);
+			}
+		}
+	};
+	return () => {
+		const { width, height } = props;
+		const { className, style: attrStyle, restAttrs } = getAttrStyleAndClass(attrs);
+		const coverPlacement = typeof cover.value === "object" && cover.value && cover.value.placement ? cover.value.placement || "center" : "center";
+		const coverNode = slots.cover?.() || (typeof cover.value === "object" && cover.value && cover.value.coverNode ? cover.value.coverNode : cover.value);
+		const imgStyle = [
+			height ? { height: getStylePxValue(height) } : null,
+			props.styles?.image,
+			attrStyle
+		];
+		const rootStyle = {
+			width: getStylePxValue(width),
+			height: getStylePxValue(height),
+			...props.styles?.root ?? {}
+		};
+		const rootCls = clsx(prefixCls.value, props.rootClassName, props.classNames?.root, { [`${prefixCls.value}-error`]: status.value === "error" });
+		const imgCls = clsx(`${prefixCls.value}-img`, { [`${prefixCls.value}-img-placeholder`]: props.placeholder === true }, props.classNames?.image, className);
+		const imageRender = slots.imageRender ? (originNode, info) => slots.imageRender?.(originNode, info) : mergedPreviewConfig.value.imageRender;
+		const placeholderNode = slots.placeholder?.() ?? (props.placeholder === true ? null : props.placeholder);
+		const actionsRender = slots.actionsRender ? (originNode, info) => slots.actionsRender?.({
+			actionsNode: originNode,
+			...info
+		}) : mergedPreviewConfig.value.actionsRender;
+		const { src: _previewSrc, open: _previewOpen, onOpenChange: _onPreviewOpenChange, cover: _cover, rootClassName: _previewRootCls, ...restPreviewProps } = mergedPreviewConfig.value;
+		return createVNode(Fragment, null, [createVNode("div", mergeProps(pickAttrs(restAttrs, false), {
+			"class": rootCls,
+			"onClick": canPreview.value ? onPreview : onInternalClick,
+			"role": canPreview.value ? "button" : restAttrs.role,
+			"tabindex": canPreview.value && restAttrs.tabIndex == null ? 0 : restAttrs.tabIndex,
+			"aria-label": canPreview.value ? restAttrs["aria-label"] ?? restAttrs.alt : restAttrs["aria-label"],
+			"onKeydown": onPreviewKeyDown,
+			"style": rootStyle
+		}), [
+			createVNode("img", mergeProps(imgCommonProps.value, {
+				"src": srcAndOnload.value.src,
+				"class": imgCls,
+				"style": imgStyle,
+				"ref": getImgRef,
+				"width": width,
+				"height": height,
+				"onLoad": srcAndOnload.value.onLoad,
+				"onError": onImgError
+			}), null),
+			status.value === "loading" && createVNode("div", {
+				"aria-hidden": "true",
+				"class": `${prefixCls.value}-placeholder`
+			}, [placeholderNode]),
+			cover.value !== false && canPreview.value && createVNode("div", {
+				"class": clsx(`${prefixCls.value}-cover`, props.classNames?.cover, `${prefixCls.value}-cover-${coverPlacement}`),
+				"style": props.styles?.cover
+			}, [coverNode])
+		]), !groupContext && canPreview.value && createVNode(Preview, mergeProps({
+			"aria-hidden": !isShowPreview.value,
+			"open": isShowPreview.value,
+			"prefixCls": previewPrefixCls.value,
+			"onClose": onPreviewClose,
+			"mousePosition": mousePosition.value,
+			"src": src.value,
+			"alt": props.alt,
+			"imageInfo": {
+				width: props.width,
+				height: props.height
+			},
+			"fallback": props.fallback,
+			"imgCommonProps": imgCommonProps.value,
+			"imageRender": imageRender,
+			"actionsRender": actionsRender
+		}, restPreviewProps, {
+			"classNames": props.classNames?.popup,
+			"styles": props.styles?.popup,
+			"rootClassName": clsx(previewRootClassName.value, props.rootClassName)
+		}), null)]);
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		prefixCls: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		previewPrefixCls: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		rootClassName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		classNames: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		src: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		placeholder: {
+			type: [
+				Boolean,
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		fallback: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		preview: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		onClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onError: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onKeydown: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		width: {
+			type: [String, Number],
+			required: false,
+			default: void 0
+		},
+		height: {
+			type: [String, Number],
+			required: false,
+			default: void 0
+		},
+		fetchPriority: {
+			required: false,
+			default: void 0
+		}
+	}, {
+		prefixCls: "vc-image",
+		preview: true,
+		classNames: {},
+		styles: {}
+	}),
+	name: "Image",
+	inheritAttrs: false
+});
+//#endregion
+export { Image as default };

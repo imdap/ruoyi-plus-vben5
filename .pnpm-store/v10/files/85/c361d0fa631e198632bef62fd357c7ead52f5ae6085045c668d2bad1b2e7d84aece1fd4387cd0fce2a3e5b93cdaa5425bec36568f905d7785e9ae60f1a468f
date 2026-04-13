@@ -1,0 +1,30 @@
+{
+    "id": "node",
+    "name": "Node.js",
+    "description": "Node.js dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "node",
+            "path": "./dict/node.txt",
+            "description": "Node.js dictionary."
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "languageId": "javascript,typescript,javascriptreact,typescriptreact",
+            "locale": "*",
+            "includeRegExpList": [],
+            "ignoreRegExpList": [],
+            "dictionaries": ["node"],
+            "dictionaryDefinitions": []
+        }
+    ],
+    "overrides": [
+        {
+            "filename": "**/package.json",
+            "dictionaries": ["node"]
+        }
+    ]
+}

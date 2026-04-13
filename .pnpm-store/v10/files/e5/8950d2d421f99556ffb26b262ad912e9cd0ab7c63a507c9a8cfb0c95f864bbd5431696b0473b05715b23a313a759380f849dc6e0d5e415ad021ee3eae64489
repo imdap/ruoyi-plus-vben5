@@ -1,0 +1,77 @@
+@use "sass:map";
+@use "sass:list";
+
+$rateThemeList: (
+  (
+    name: "primary",
+    color: var(--vxe-ui-font-primary-color),
+  ),
+  (
+    name: "success",
+    color: var(--vxe-ui-status-success-color),
+  ),
+  (
+    name: "info",
+    color: var(--vxe-ui-status-info-color),
+  ),
+  (
+    name: "warning",
+    color: var(--vxe-ui-status-warning-color),
+  ),
+  (
+    name: "danger",
+    color: var(--vxe-ui-status-danger-color),
+  ),
+  (
+    name: "error",
+    color: var(--vxe-ui-status-error-color),
+  )
+);
+
+.vxe-rate {
+  display: inline-flex;
+  flex-direction: row;
+  color: var(--vxe-ui-font-color);
+  @for $index from 0 to list.length($rateThemeList) {
+    $item: list.nth($rateThemeList, $index + 1);
+    &.theme--#{map.get($item, name)} {
+      .vxe-rte--item {
+        color: map.get($item, color);
+      }
+    }
+  }
+  &.is--disabled {
+    .vxe-rte--item {
+      cursor: no-drop;
+    }
+  }
+  &.is--readonly {
+    .vxe-rte--item {
+      cursor: default;
+    }
+  }
+}
+.vxe-rte--item {
+  margin-right: 0.25em;
+  font-size: 1.2em;
+  cursor: pointer;
+  &:last-child {
+    margin: 0;
+  }
+  &.is--checked {
+    color: var(--vxe-ui-rate-item-color);
+  }
+}
+
+.vxe-rate {
+  font-size: var(--vxe-ui-font-size-default);
+  &.size--medium {
+    font-size: var(--vxe-ui-font-size-medium);
+  }
+  &.size--small {
+    font-size: var(--vxe-ui-font-size-small);
+  }
+  &.size--mini {
+    font-size: var(--vxe-ui-font-size-mini);
+  }
+}

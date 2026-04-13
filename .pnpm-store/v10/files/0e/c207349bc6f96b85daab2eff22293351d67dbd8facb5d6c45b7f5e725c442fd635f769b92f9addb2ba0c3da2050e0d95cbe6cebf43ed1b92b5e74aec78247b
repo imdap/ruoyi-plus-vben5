@@ -1,0 +1,33 @@
+import { MenuPopupSemanticClassNames, MenuPopupSemanticStyles, MenuSemanticClassNames, MenuSemanticStyles, SubMenuSemanticClassNames, SubMenuSemanticStyles } from "./menu.js";
+import { DirectionType } from "../config-provider/context.js";
+import * as vue1080 from "vue";
+import { Ref } from "vue";
+
+//#region src/menu/MenuContext.d.ts
+type MenuTheme = 'light' | 'dark';
+interface MenuContextProps {
+  prefixCls: string;
+  inlineCollapsed: boolean;
+  direction?: DirectionType;
+  theme?: MenuTheme;
+  firstLevel: boolean;
+  /** @internal Safe to remove */
+  disableMenuItemTitleTooltip?: boolean;
+  classes: MenuSemanticClassNames & {
+    popup?: MenuPopupSemanticClassNames;
+    subMenu?: SubMenuSemanticClassNames;
+  };
+  styles?: MenuSemanticStyles & {
+    popup?: MenuPopupSemanticStyles;
+    subMenu?: SubMenuSemanticStyles;
+  };
+}
+declare function useMenuContextProvider(props: Ref<MenuContextProps>): void;
+declare function useMenuContext(): Ref<MenuContextProps>;
+declare const MenuContextProvider: vue1080.DefineSetupFnComponent<{
+  value: MenuContextProps;
+}, {}, {}, {
+  value: MenuContextProps;
+} & {}, vue1080.PublicProps>;
+//#endregion
+export { MenuContextProps, MenuContextProvider, MenuTheme, useMenuContext, useMenuContextProvider };

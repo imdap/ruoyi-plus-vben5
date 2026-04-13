@@ -1,0 +1,25 @@
+import { EmptyEmit } from "./type.js";
+import { ButtonProps, LegacyButtonType } from "../button/Button.js";
+import "../button/index.js";
+import * as vue75 from "vue";
+import { SlotsType } from "vue";
+
+//#region src/_util/ActionButton.d.ts
+interface ActionButtonProps {
+  type?: LegacyButtonType;
+  actionFn?: (...args: any[]) => any | PromiseLike<any>;
+  close?: (...args: any[]) => void;
+  autoFocus?: boolean;
+  prefixCls: string;
+  buttonProps?: ButtonProps;
+  emitEvent?: boolean;
+  quitOnNullishReturnValue?: boolean;
+  children?: any;
+  isSilent?: () => boolean;
+}
+interface ActionButtonSlots {
+  default?: () => any;
+}
+declare const ActionButton: vue75.DefineSetupFnComponent<ActionButtonProps, EmptyEmit, SlotsType<ActionButtonSlots>, ActionButtonProps, vue75.PublicProps>;
+//#endregion
+export { ActionButtonProps, ActionButtonSlots, ActionButton as default };

@@ -1,0 +1,4 @@
+const supportsFlags = {};
+export {
+  supportsFlags
+};

@@ -1,0 +1,9 @@
+import { TooltipProps } from "./index.js";
+import * as vue248 from "vue";
+
+//#region src/tooltip/PurePanel.d.ts
+interface PurePanelProps extends TooltipProps {}
+/** @private Internal Component. Do not use in your production. */
+declare const PurePanel: vue248.DefineSetupFnComponent<PurePanelProps, {}, {}, PurePanelProps & {}, vue248.PublicProps>;
+//#endregion
+export { PurePanelProps, PurePanel as default };

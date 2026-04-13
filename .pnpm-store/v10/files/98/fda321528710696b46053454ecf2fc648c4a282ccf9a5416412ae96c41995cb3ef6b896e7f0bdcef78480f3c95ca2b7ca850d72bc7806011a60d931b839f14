@@ -1,0 +1,47 @@
+{
+    "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/v5.18.4/cspell.schema.json",
+    "version": "0.2",
+    "id": "ada",
+    "name": "Ada",
+    "description": "Ada Language Dictionary",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "ada",
+            "path": "./dict/ada.txt",
+            "description": "Ada Language Dictionary"
+        }
+    ],
+    "languageSettings": [
+        {
+            "languageId": "ada",
+            "locale": "*",
+            "dictionaries": ["ada"],
+            "patterns": [
+                {
+                    "name": "ada word break",
+                    "pattern": "/(?<=\\w)['](?=\\w)(?!((?<=n')t|ve|d|ll|m|s|re)\\b)/g",
+                    "description": "Ada Word Break"
+                },
+                {
+                    "name": "comment.single-line",
+                    "pattern": "/--.*/g",
+                    "description": "Single Line Comment"
+                },
+                {
+                    "name": "string.literal",
+                    "pattern": "/\".*?(?<=(?:\"\")+|[^\"])\"(?!\")/g",
+                    "description": "Single Line Comment"
+                }
+            ],
+            "ignoreRegExpList": ["ada word break"]
+        }
+    ],
+    "globRoot": "${cwd}",
+    "overrides": [
+        {
+            "filename": "*.{adb,ads}",
+            "languageId": "ada"
+        }
+    ]
+}

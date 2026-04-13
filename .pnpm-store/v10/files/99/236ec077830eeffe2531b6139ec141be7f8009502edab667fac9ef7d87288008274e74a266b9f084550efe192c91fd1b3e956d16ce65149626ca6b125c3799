@@ -1,0 +1,23 @@
+{
+  "version": "0.17.4",
+  "description": "High-performance type-aware TypeScript linter powered by typescript-go, for use with oxlint.",
+  "license": "MIT",
+  "author": "auvred <aauvred@gmail.com>",
+  "repository": "github:oxc-project/tsgolint",
+  "bugs": "https://github.com/oxc-project/tsgolint/issues",
+  "homepage": "https://github.com/oxc-project/tsgolint#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "name": "@oxlint-tsgolint/linux-x64",
+  "preferUnplugged": true,
+  "files": [
+    "tsgolint"
+  ],
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ]
+}

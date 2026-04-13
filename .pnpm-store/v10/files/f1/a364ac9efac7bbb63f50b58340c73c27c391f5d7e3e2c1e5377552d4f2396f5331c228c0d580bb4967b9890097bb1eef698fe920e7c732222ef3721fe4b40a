@@ -1,0 +1,29 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import * as vue1066 from "vue";
+import { SlotsType } from "vue";
+import { MenuItemType } from "@v-c/menu";
+
+//#region src/menu/MenuItem.d.ts
+interface MenuItemProps extends Omit<MenuItemType, 'key'> {
+  icon?: VueNode;
+  danger?: boolean;
+  title?: VueNode;
+  /** @private Internal filled key. Do not set it directly */
+  eventKey?: string;
+  /** @private Do not use. Private warning empty usage */
+  warnKey?: boolean;
+  /** @deprecated No place to use this. Should remove */
+  attribute?: Record<string, string>;
+  onKeyDown?: (e: KeyboardEvent) => void;
+  onFocus?: (e: FocusEvent) => void;
+  role?: string;
+}
+interface MenuItemSlots {
+  default: () => any;
+  icon: () => any;
+  title: () => any;
+  extra: () => any;
+}
+declare const MenuItem: vue1066.DefineSetupFnComponent<MenuItemProps, EmptyEmit, SlotsType<MenuItemSlots>, MenuItemProps, vue1066.PublicProps>;
+//#endregion
+export { MenuItemProps, MenuItemSlots, MenuItem as default };

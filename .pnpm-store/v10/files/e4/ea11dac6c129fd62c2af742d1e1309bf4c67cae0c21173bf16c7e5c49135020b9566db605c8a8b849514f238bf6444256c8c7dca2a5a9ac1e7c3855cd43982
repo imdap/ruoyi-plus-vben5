@@ -1,0 +1,22 @@
+import { EmptyEmit } from "../_util/type.js";
+import * as vue795 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/space/Item.d.ts
+interface ItemProps {
+  index: number;
+  className: string;
+  classes: {
+    separator?: string;
+  };
+  styles: {
+    separator?: CSSProperties;
+  };
+}
+interface ItemSlots {
+  default?: () => any;
+  separator?: () => any;
+}
+declare const Item: vue795.DefineSetupFnComponent<ItemProps, EmptyEmit, SlotsType<ItemSlots>, ItemProps, vue795.PublicProps>;
+//#endregion
+export { ItemProps, ItemSlots, Item as default };

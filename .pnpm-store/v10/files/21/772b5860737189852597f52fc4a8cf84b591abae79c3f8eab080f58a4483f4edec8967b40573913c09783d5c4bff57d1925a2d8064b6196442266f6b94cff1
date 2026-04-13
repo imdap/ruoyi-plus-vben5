@@ -1,0 +1,43 @@
+{
+  "name": "@cspell/dict-scala",
+  "version": "5.0.9",
+  "description": "Scala dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "cspell-tools-cli build",
+    "test": "shx head -n 1000 src/scala.txt | cspell -c ./cspell-ext.json --locale=* --languageId=scala stdin",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/scala"
+  },
+  "keywords": [
+    "cspell",
+    "scala",
+    "Scala",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/scala#readme",
+  "files": [
+    "dict/scala.txt",
+    "cspell-ext.json"
+  ],
+  "gitHead": "eb2dd1fb97fdc4e6fb74cd3bfd192d493a4c6f86"
+}

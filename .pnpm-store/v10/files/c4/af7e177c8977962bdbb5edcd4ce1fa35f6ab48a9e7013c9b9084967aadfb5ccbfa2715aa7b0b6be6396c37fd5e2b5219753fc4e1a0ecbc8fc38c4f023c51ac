@@ -1,0 +1,51 @@
+{
+  "name": "deps-regex",
+  "description": "Regular expression for matching javascript require/import statements.",
+  "version": "0.2.0",
+  "homepage": "https://github.com/mathieudutour/deps-regex",
+  "author": "Mathieu Dutour <mathieu@dutour.me>",
+  "repository": "mathieudutour/deps-regex",
+  "bugs": {
+    "url": "https://github.com/mathieudutour/deps-regex/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "mocha",
+    "lint": "eslint .",
+    "generate-types": "tsc index.js --declaration --allowJs --emitDeclarationOnly"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "mocha": "*",
+    "prettier": "^2.4.1",
+    "should": "*",
+    "typescript": "^4.4.3"
+  },
+  "keywords": [
+    "exec",
+    "expression",
+    "expressions",
+    "find",
+    "match",
+    "matcher",
+    "matches",
+    "matching",
+    "module",
+    "modules",
+    "re",
+    "regex",
+    "regexp",
+    "regular",
+    "require",
+    "requires",
+    "statement",
+    "test"
+  ]
+}

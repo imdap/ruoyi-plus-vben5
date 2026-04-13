@@ -1,0 +1,83 @@
+{
+  "name": "@antdv-next/icons",
+  "type": "module",
+  "version": "1.0.5",
+  "description": "Antdv Next icon components for Vue 3.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antdv-next/icons.git"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./all": {
+      "types": "./dist/icons/index.d.ts",
+      "import": "./dist/icons/index.js",
+      "default": "./dist/icons/index.js"
+    },
+    "./icons/*": {
+      "types": "./dist/icons/*.d.ts",
+      "import": "./dist/icons/*.js",
+      "default": "./dist/icons/*.js"
+    },
+    "./dist/antd-icons.esm.js": "./dist/antd-icons.esm.js",
+    "./dist/antd-icons.js": "./dist/antd-icons.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "unpkg": "dist/antd-icons.js",
+  "jsdelivr": "dist/antd-icons.js",
+  "types": "./dist/index.d.ts",
+  "peerDependencies": {
+    "vue": ">=3.2.0"
+  },
+  "sideEffects": [
+    "./dist/antd-icons.js",
+    "./dist/antd-icons.esm.js"
+  ],
+  "dependencies": {
+    "@ant-design/colors": "7.2.1",
+    "@ant-design/icons-svg": "^4.4.2",
+    "@v-c/util": "^1.0.15"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^7.6.0",
+    "@types/node": "^25.3.0",
+    "@vitejs/plugin-vue": "^6.0.4",
+    "@vitejs/plugin-vue-jsx": "^5.1.4",
+    "@vue/tsconfig": "^0.8.1",
+    "bumpp": "^10.4.1",
+    "es-toolkit": "1.44.0",
+    "eslint": "^10.0.2",
+    "esno": "4.8.0",
+    "jiti": "^2.6.1",
+    "jsdom": "^28.1.0",
+    "npm-run-all": "^4.1.5",
+    "pkg-types": "^2.3.0",
+    "tsdown": "^0.20.3",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.0-beta.15",
+    "vite-plugin-tsx-resolve-types": "^1.0.1-beta.5",
+    "vitest": "^4.0.18"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "build": "run-s build:icons build:parallel",
+    "build:parallel": "run-p build:es build:umd",
+    "build:icons": "tsdown",
+    "build:es": "vite build --config ./vite.esm.config.ts",
+    "build:umd": "vite build --config ./vite.umd.config.ts",
+    "gen:icons": "esno ./scripts/gen-icons.ts",
+    "prepublish": "pnpm build",
+    "bump": "bumpp",
+    "lint": "eslint . --fix"
+  }
+}

@@ -1,0 +1,52 @@
+{
+    "id": "cpp-dict",
+    "name": "C/C++",
+    "description": "C/C++ Keywords and common library functions.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "cpp-legacy",
+            "path": "./dict/cpp-legacy.txt.gz",
+            "description": "Legacy C/C++ Keywords and common library functions.",
+            "ignoreForbiddenWords": true
+        },
+        {
+            "name": "cpp",
+            "path": "./dict/cpp.txt.gz",
+            "description": "C/C++ Keywords and common library functions.",
+            "ignoreForbiddenWords": true
+        },
+        {
+            "name": "cpp-compound-words",
+            "path": "./dict/cpp-compound-words.txt.gz",
+            "description": "C/C++ Common word compounds.",
+            "ignoreForbiddenWords": true
+        },
+        {
+            "name": "cpp-refined",
+            "path": "./dict/cpp-refined.txt.gz",
+            "description": "Refined list of C/C++ Keywords and common library functions.",
+            "ignoreForbiddenWords": true
+        }
+    ],
+    "dictionaries": [],
+    "languageSettings": [
+        {
+            "languageId": "c,cpp",
+            "locale": "*",
+            "ignoreRegExpList": ["includes", "hex-digits"],
+            "patterns": [
+                {
+                    "name": "includes",
+                    "pattern": "/#include.*/g"
+                },
+                {
+                    "name": "hex-digits",
+                    "pattern": "/0[xX][0-9a-fA-F](?:'?[0-9a-fA-F])*/g"
+                }
+            ],
+            "dictionaries": ["cpp", "cpp-refined", "cpp-legacy", "cpp-compound-words"],
+            "dictionaryDefinitions": []
+        }
+    ]
+}

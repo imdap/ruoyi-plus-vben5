@@ -1,0 +1,45 @@
+{
+  "name": "@cspell/dict-ada",
+  "version": "4.1.1",
+  "description": "Ada Language dictionary for cspell.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "cspell-tools-cli build",
+    "test": "pnpm run test-dict && pnpm run test-samples",
+    "test-dict": "shx head -n 100 src/ada.txt | cspell -c ./cspell-ext.json --locale=* --languageId=ada stdin",
+    "test-samples": "cspell \"samples/**\"",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/ada"
+  },
+  "keywords": [
+    "cspell",
+    "ada",
+    "Ada Language",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/ada#readme",
+  "files": [
+    "dict/ada.txt",
+    "cspell-ext.json"
+  ],
+  "gitHead": "30c5c53b8e28152fc1d8a6cf0c872b068a64221a"
+}

@@ -1,0 +1,106 @@
+import { AnyObject, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { DropdownProps } from "../dropdown/dropdown.js";
+import "../dropdown/index.js";
+import _default, { BreadcrumbItemProps, MenuItem } from "./BreadcrumbItem.js";
+import _default$1 from "./BreadcrumbSeparator.js";
+import * as vue26 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { Key } from "@v-c/util/dist/type";
+
+//#region src/breadcrumb/Breadcrumb.d.ts
+interface BreadcrumbItemType {
+  key?: Key;
+  /**
+   * Different with `path`. Directly set the link of this item.
+   */
+  href?: string;
+  /**
+   * Different with `href`. It will concat all prev `path` to the current one.
+   */
+  path?: string;
+  title?: VueNode;
+  menu?: BreadcrumbItemProps['menu'];
+  class?: string;
+  style?: CSSProperties;
+  dropdownProps?: DropdownProps;
+  onClick?: (event: MouseEvent) => void;
+  [key: `data-${string}`]: string;
+}
+interface BreadcrumbSeparatorType {
+  type: 'separator';
+  separator?: VueNode;
+}
+type ItemType = Partial<BreadcrumbItemType & BreadcrumbSeparatorType>;
+type InternalRouteType = Partial<BreadcrumbItemType & BreadcrumbSeparatorType>;
+type BreadcrumbSemanticName = keyof BreadcrumbSemanticClassNames & keyof BreadcrumbSemanticStyles;
+interface BreadcrumbSemanticClassNames {
+  root?: string;
+  item?: string;
+  separator?: string;
+}
+interface BreadcrumbSemanticStyles {
+  root?: CSSProperties;
+  item?: CSSProperties;
+  separator?: CSSProperties;
+}
+type BreadcrumbClassNamesType<T extends AnyObject = AnyObject> = SemanticClassNamesType<BreadcrumbProps<T>, BreadcrumbSemanticClassNames>;
+type BreadcrumbStylesType<T extends AnyObject = AnyObject> = SemanticStylesType<BreadcrumbProps<T>, BreadcrumbSemanticStyles>;
+interface BreadcrumbProps<T extends AnyObject = AnyObject> extends BreadcrumbEmitsProps {
+  prefixCls?: string;
+  params?: T;
+  separator?: any;
+  rootClass?: string;
+  items?: ItemType[];
+  classes?: BreadcrumbClassNamesType<T>;
+  styles?: BreadcrumbStylesType<T>;
+  dropdownIcon?: VueNode;
+  itemRender?: (route: ItemType, params: T, routes: ItemType[], paths: string[]) => any;
+  titleRender?: (params: {
+    item: ItemType;
+    index: number;
+  }) => any;
+  menuLabelRender?: (params: {
+    item: ItemType;
+    index: number;
+    menu: MenuItem;
+  }) => any;
+  menuExtraRender?: (params: {
+    item: ItemType;
+    index: number;
+    menu: MenuItem;
+  }) => any;
+}
+interface BreadcrumbEmits {
+  clickItem: (item: ItemType, event: MouseEvent) => void;
+  [keys: string]: (...args: any[]) => any;
+}
+interface BreadcrumbEmitsProps {
+  onClickItem?: BreadcrumbEmits['clickItem'];
+}
+interface BreadcrumbSlots {
+  itemRender: (route: ItemType, params: AnyObject, routes: ItemType[], paths: string[]) => any;
+  titleRender: (params: {
+    item: ItemType;
+    index: number;
+  }) => any;
+  separator: () => any;
+  default: () => any;
+  dropdownIcon: () => any;
+  menuLabelRender?: (params: {
+    item: ItemType;
+    index: number;
+    menu: MenuItem;
+  }) => any;
+  menuExtraRender?: (params: {
+    item: ItemType;
+    index: number;
+    menu: MenuItem;
+  }) => any;
+}
+declare const Breadcrumb: vue26.DefineSetupFnComponent<BreadcrumbProps<AnyObject>, BreadcrumbEmits, SlotsType<BreadcrumbSlots>, BreadcrumbProps<AnyObject> & {
+  [x: `on${Capitalize<string>}`]: ((...args: any[]) => any) | undefined;
+}, vue26.PublicProps>;
+//#endregion
+export { BreadcrumbClassNamesType, BreadcrumbEmits, BreadcrumbEmitsProps, _default as BreadcrumbItem, BreadcrumbItemType, BreadcrumbProps, BreadcrumbSemanticClassNames, BreadcrumbSemanticName, BreadcrumbSemanticStyles, _default$1 as BreadcrumbSeparator, BreadcrumbSeparatorType, BreadcrumbSlots, BreadcrumbStylesType, InternalRouteType, ItemType, Breadcrumb as default };

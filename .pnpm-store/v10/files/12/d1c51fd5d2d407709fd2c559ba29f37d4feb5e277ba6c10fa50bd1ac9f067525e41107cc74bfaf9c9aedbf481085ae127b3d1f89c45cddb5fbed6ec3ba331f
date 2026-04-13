@@ -1,0 +1,63 @@
+import { FullToken, GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import { GenerateStyle } from "../../theme/interface/index.js";
+import "../../theme/internal.js";
+import * as vue381 from "vue";
+import { CSSProperties } from "vue";
+import { CSSObject } from "@antdv-next/cssinjs";
+
+//#region src/collapse/style/index.d.ts
+/** Component only token. Which will handle additional calculation of alias token */
+interface ComponentToken {
+  /**
+   * @desc 折叠面板头部内边距
+   * @descEN Padding of header
+   */
+  headerPadding: CSSProperties['padding'];
+  /**
+   * @desc 折叠面板头部背景
+   * @descEN Background of header
+   */
+  headerBg: string;
+  /**
+   * @desc 折叠面板内容内边距
+   * @descEN Padding of content
+   */
+  contentPadding: CSSProperties['padding'];
+  /**
+   * @desc 折叠面板内容背景
+   * @descEN Background of content
+   */
+  contentBg: string;
+  /**
+   * @desc 简约风格折叠面板的内容内边距
+   * @descEN Padding of content in borderless style
+   */
+  borderlessContentPadding: CSSProperties['padding'];
+  /**
+   * @desc 简约风格折叠面板的内容背景
+   * @descEN Background of content in borderless style
+   */
+  borderlessContentBg: string;
+}
+type CollapseToken = FullToken<'Collapse'> & {
+  /**
+   * @desc 小号折叠面板头部内边距
+   * @descEN Padding of small header
+   */
+  collapseHeaderPaddingSM: string;
+  /**
+   * @desc 大号折叠面板头部内边距
+   * @descEN Padding of large header
+   */
+  collapseHeaderPaddingLG: string;
+  /**
+   * @desc 折叠面板边框圆角
+   * @descEN Border radius of collapse panel
+   */
+  collapsePanelBorderRadius: number;
+};
+declare const genBaseStyle: GenerateStyle<CollapseToken, CSSObject>;
+declare const prepareComponentToken: GetDefaultToken<'Collapse'>;
+declare const _default: (prefixCls: vue381.Ref<string>, rootCls?: vue381.Ref<string | undefined>) => readonly [vue381.Ref<string, string>, vue381.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, genBaseStyle, prepareComponentToken };

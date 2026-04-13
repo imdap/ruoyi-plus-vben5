@@ -1,0 +1,25 @@
+import { AnyObject } from "../../_util/type.js";
+import { GetPopupContainer, GetRowKey, Key, SelectionItem, TableLocale, TableRowSelection, TransformColumns } from "../interface.js";
+import * as vue450 from "vue";
+import { Ref } from "vue";
+
+//#region src/table/hooks/useSelection.d.ts
+declare const SELECTION_COLUMN: {};
+declare const SELECTION_ALL: "SELECT_ALL";
+declare const SELECTION_INVERT: "SELECT_INVERT";
+declare const SELECTION_NONE: "SELECT_NONE";
+type MaybeRef<T> = T | Ref<T>;
+interface UseSelectionConfig<RecordType = AnyObject> {
+  prefixCls: MaybeRef<string>;
+  pageData: MaybeRef<RecordType[]>;
+  data: MaybeRef<RecordType[]>;
+  getRowKey: MaybeRef<GetRowKey<RecordType>>;
+  getRecordByKey: (key: Key) => RecordType;
+  childrenColumnName: MaybeRef<string>;
+  locale: MaybeRef<TableLocale>;
+  getPopupContainer?: MaybeRef<GetPopupContainer | undefined>;
+}
+type INTERNAL_SELECTION_ITEM = SelectionItem | typeof SELECTION_ALL | typeof SELECTION_INVERT | typeof SELECTION_NONE;
+declare function useSelection<RecordType extends AnyObject = AnyObject>(config: UseSelectionConfig<RecordType>, rowSelection?: MaybeRef<TableRowSelection<RecordType> | undefined>): readonly [TransformColumns<RecordType>, vue450.ComputedRef<Set<Key>>];
+//#endregion
+export { INTERNAL_SELECTION_ITEM, SELECTION_ALL, SELECTION_COLUMN, SELECTION_INVERT, SELECTION_NONE, useSelection as default };

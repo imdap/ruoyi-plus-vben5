@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:!0}),exports.coreVersion=exports.VxeCore=void 0;let coreVersion=exports.coreVersion="4.4.4",VxeCore=exports.VxeCore={coreVersion:coreVersion,uiVersion:"",tableVersion:"",designVersion:"",ganttVersion:""};

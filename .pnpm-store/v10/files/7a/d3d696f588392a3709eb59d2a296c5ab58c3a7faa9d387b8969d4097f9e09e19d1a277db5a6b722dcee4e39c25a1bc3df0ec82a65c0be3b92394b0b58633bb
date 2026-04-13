@@ -1,0 +1,5 @@
+@use './components/column.scss';
+@use './components/colgroup.scss';
+@use './components/table.scss';
+@use './components/grid.scss';
+@use './components/toolbar.scss';

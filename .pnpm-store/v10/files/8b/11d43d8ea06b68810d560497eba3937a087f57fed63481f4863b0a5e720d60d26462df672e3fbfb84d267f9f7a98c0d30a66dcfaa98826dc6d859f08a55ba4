@@ -1,0 +1,136 @@
+{
+  "name": "@cspell/cspell-pipe",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "version": "9.8.0",
+  "description": "Library to make working with Iterators/AsyncIterators easier.",
+  "keywords": [
+    "cspell",
+    "pipe",
+    "Iterator",
+    "Iterable",
+    "AsyncIterator",
+    "AsyncIterable"
+  ],
+  "author": "Jason Dent <jason@streetsidesoftware.nl>",
+  "homepage": "https://github.com/streetsidesoftware/cspell/tree/main/packages/cspell-pipe#readme",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "module": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "directories": {
+    "dist": "dist"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./index": {
+      "import": "./dist/index.js"
+    },
+    "./index.js": {
+      "import": "./dist/index.js"
+    },
+    "./operators": {
+      "import": "./dist/operators/index.js"
+    },
+    "./operators/index.js": {
+      "import": "./dist/operators/index.js"
+    },
+    "./async": {
+      "import": "./dist/async/index.js"
+    },
+    "./async/index": {
+      "import": "./dist/async/index.js"
+    },
+    "./async/index.js": {
+      "import": "./dist/async/index.js"
+    },
+    "./sync": {
+      "import": "./dist/sync/index.js"
+    },
+    "./sync/index": {
+      "import": "./dist/sync/index.js"
+    },
+    "./sync/index.js": {
+      "import": "./dist/sync/index.js"
+    }
+  },
+  "types": "dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "index.js": [
+        "dist/index.d.ts"
+      ],
+      "index.d.ts": [
+        "dist/index.d.ts"
+      ],
+      "operators": [
+        "dist/operators/index.d.ts"
+      ],
+      "operators/*.js": [
+        "dist/operators/*.d.ts"
+      ],
+      "operators/index.d.ts": [
+        "dist/operators/index.d.ts"
+      ],
+      "sync": [
+        "dist/sync/index.d.ts"
+      ],
+      "sync/index.js": [
+        "dist/sync/index.d.ts"
+      ],
+      "sync/index.d.ts": [
+        "dist/sync/index.d.ts"
+      ],
+      "dist/index.d.ts": [
+        "dist/index.d.ts"
+      ],
+      "*": [
+        "dist/*.d.ts",
+        "dist/*/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildInfo",
+    "!**/__mocks__",
+    "!**/*.spec.*",
+    "!**/*.perf.*",
+    "!**/*.test.*",
+    "!**/perf/**",
+    "!**/test/**",
+    "!**/*.map"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -p . -w",
+    "clean": "shx rm -rf dist temp coverage \"*.tsbuildInfo\"",
+    "clean-build": "pnpm run clean && pnpm run build",
+    "coverage": "vitest run --coverage",
+    "test-watch": "vitest",
+    "test": "vitest run",
+    "test:perf": "NODE_ENV=production insight  --file \"**/*.perf.{mjs,js}\"",
+    "test:perf:ts": "NODE_ENV=production NODE_OPTIONS=--import=@swc-node/register/esm-register insight  --file \"**/*.perf.{mts,ts}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell.git",
+    "directory": "packages/cspell-pipe"
+  },
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell/labels/cspell-pipe"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "globby": "^16.2.0",
+    "perf-insight": "^2.0.1"
+  },
+  "gitHead": "c822013ce676dffb5fa5544567c25a3ae666718f"
+}

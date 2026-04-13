@@ -1,0 +1,43 @@
+{
+  "name": "@cspell/dict-git",
+  "version": "3.1.0",
+  "description": "CSpell configuration for GIT.",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    ".": "./cspell-ext.json",
+    "./cspell": "./cspell-ext.json",
+    "./cspell-ext.json": "./cspell-ext.json"
+  },
+  "scripts": {
+    "build": "cspell-tools build",
+    "test": "cspell samples",
+    "prepublishOnly": "echo pre-publish",
+    "prepare:dictionary": "pnpm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell-dicts",
+    "directory": "dictionaries/git"
+  },
+  "keywords": [
+    "cspell",
+    "cspell-ext",
+    "git",
+    "dictionary",
+    "spelling"
+  ],
+  "author": "Street Side Software <support@streetsidesoftware.nl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell-dicts/issues"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell-dicts/blob/main/dictionaries/vue#readme",
+  "files": [
+    "cspell-ext.json",
+    "dict/*.txt"
+  ],
+  "gitHead": "617f1dee7079860f829a0f699202ad0682031e93"
+}

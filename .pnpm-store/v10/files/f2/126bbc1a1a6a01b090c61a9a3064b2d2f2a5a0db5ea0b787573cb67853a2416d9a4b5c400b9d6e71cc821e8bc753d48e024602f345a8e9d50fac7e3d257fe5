@@ -1,0 +1,14 @@
+import { TooltipProps } from "../tooltip/index.js";
+import * as vue694 from "vue";
+
+//#region src/slider/SliderTooltip.d.ts
+type SliderTooltipProps = TooltipProps & {
+  draggingDelete?: boolean;
+  value?: number;
+};
+declare const SliderTooltip: vue694.DefineSetupFnComponent<SliderTooltipProps, {}, {}, TooltipProps & {
+  draggingDelete?: boolean;
+  value?: number;
+} & {}, vue694.PublicProps>;
+//#endregion
+export { SliderTooltipProps, SliderTooltip as default };

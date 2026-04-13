@@ -1,0 +1,28 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue348 from "vue";
+import { CSSProperties } from "vue";
+
+//#region src/divider/style/index.d.ts
+/** Component only token. Which will handle additional calculation of alias token */
+interface ComponentToken {
+  /**
+   * @desc 文本横向内间距
+   * @descEN Horizontal padding of text
+   */
+  textPaddingInline: CSSProperties['paddingInline'];
+  /**
+   * @desc 文本与边缘距离，取值 0 ～ 1
+   * @descEN Distance between text and edge, which should be a number between 0 and 1.
+   */
+  orientationMargin?: number;
+  /**
+   * @desc 纵向分割线的横向外间距
+   * @descEN Horizontal margin of vertical Divider
+   */
+  verticalMarginInline: CSSProperties['marginInline'];
+}
+declare const prepareComponentToken: GetDefaultToken<'Divider'>;
+declare const _default: (prefixCls: vue348.Ref<string>, rootCls?: vue348.Ref<string | undefined>) => readonly [vue348.Ref<string, string>, vue348.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

@@ -1,0 +1,146 @@
+import { CSSProperties, Ref, VNodeChild } from 'vue';
+export type LazyLoadType = 'ondemand' | 'progressive' | boolean | null;
+export interface SlickProps {
+    accessibility?: boolean;
+    adaptiveHeight?: boolean;
+    afterChange?: ((currentSlide: number) => void) | null;
+    appendDots?: (dots: VNodeChild[]) => VNodeChild;
+    arrows?: boolean;
+    autoplay?: boolean;
+    autoplaySpeed?: number;
+    beforeChange?: ((currentSlide: number, nextSlide: number) => void) | null;
+    centerMode?: boolean;
+    centerPadding?: string;
+    className?: string;
+    cssEase?: string;
+    customPaging?: (index: number) => VNodeChild;
+    dots?: boolean;
+    dotsClass?: string;
+    draggable?: boolean;
+    easing?: string;
+    edgeFriction?: number;
+    fade?: boolean;
+    focusOnSelect?: boolean;
+    infinite?: boolean;
+    initialSlide?: number;
+    lazyLoad?: LazyLoadType;
+    nextArrow?: VNodeChild;
+    onEdge?: ((direction: string) => void) | null;
+    onInit?: (() => void) | null;
+    onLazyLoad?: ((slidesToLoad: number[]) => void) | null;
+    onLazyLoadError?: (() => void) | null;
+    onReInit?: (() => void) | null;
+    onSwipe?: ((direction: string) => void) | null;
+    pauseOnDotsHover?: boolean;
+    pauseOnFocus?: boolean;
+    pauseOnHover?: boolean;
+    prevArrow?: VNodeChild;
+    responsive?: ResponsiveSetting[] | null;
+    rows?: number;
+    rtl?: boolean;
+    slide?: string;
+    slidesPerRow?: number;
+    slidesToScroll?: number;
+    slidesToShow?: number;
+    speed?: number;
+    swipe?: boolean;
+    swipeEvent?: ((direction: string) => void) | null;
+    swipeToSlide?: boolean;
+    touchMove?: boolean;
+    touchThreshold?: number;
+    useCSS?: boolean;
+    useTransform?: boolean;
+    variableWidth?: boolean;
+    vertical?: boolean;
+    verticalSwiping?: boolean;
+    waitForAnimate?: boolean;
+    asNavFor?: SlickRef | InnerSliderRef | null;
+    unslick?: boolean;
+    style?: CSSProperties;
+}
+export type SlickSettings = Omit<SlickProps, 'responsive'>;
+export interface ResponsiveSetting {
+    breakpoint: number;
+    settings: 'unslick' | SlickSettings;
+}
+export type AutoPlayType = 'update' | 'leave' | 'blur' | 'play' | 'playing';
+export type PauseType = 'paused' | 'hovered' | 'focused';
+export interface SlickRef {
+    slickPrev: () => void;
+    slickNext: () => void;
+    slickGoTo: (slide: number, dontAnimate?: boolean) => void;
+    slickPause: () => void;
+    slickPlay: () => void;
+    innerSlider?: InnerSliderRef | Ref<InnerSliderRef | null> | null;
+}
+export interface InnerSliderState {
+    animating: boolean;
+    autoplaying: 'playing' | 'paused' | 'hovered' | 'focused' | null;
+    currentDirection: number;
+    currentLeft: number | null;
+    currentSlide: number;
+    direction: number;
+    dragging: boolean;
+    edgeDragged: boolean;
+    initialized: boolean;
+    lazyLoadedList: number[];
+    listHeight: number | null;
+    listWidth: number | null;
+    scrolling: boolean;
+    slideCount: number;
+    slideHeight: number | null;
+    slideWidth: number | string | null;
+    swipeLeft: number | null;
+    swiped: boolean;
+    swiping: boolean;
+    touchObject: {
+        startX: number;
+        startY: number;
+        curX: number;
+        curY: number;
+        swipeLength?: number;
+    };
+    trackStyle: Record<string, any>;
+    trackWidth: number;
+    targetSlide: number;
+}
+export interface InnerSliderRef {
+    slickPrev: () => void;
+    slickNext: () => void;
+    slickGoTo: (slide: number, dontAnimate?: boolean) => void;
+    autoPlay: (playType: AutoPlayType) => void;
+    pause: (pauseType: PauseType) => void;
+    play: () => void;
+    slideHandler: (index: number, dontAnimate?: boolean) => void;
+    changeSlide: (options: any, dontAnimate?: boolean) => void;
+}
+export interface TrackProps {
+    children: VNodeChild[];
+    currentSlide: number;
+    targetSlide: number;
+    slideCount: number;
+    slidesToShow: number;
+    slidesToScroll: number;
+    slideWidth?: number | string | null;
+    slideHeight?: number | null;
+    listHeight?: number | null;
+    fade?: boolean;
+    cssEase?: string;
+    speed?: number;
+    infinite?: boolean;
+    centerMode?: boolean;
+    focusOnSelect?: (options: any) => void;
+    lazyLoad?: LazyLoadType;
+    lazyLoadedList: number[];
+    rtl?: boolean;
+    vertical?: boolean;
+    variableWidth?: boolean;
+    unslick?: boolean;
+    centerPadding?: string;
+    trackStyle?: CSSProperties;
+    useCSS?: boolean;
+    onMouseEnter?: (e: MouseEvent) => void;
+    onMouseOver?: (e: MouseEvent) => void;
+    onMouseLeave?: (e: MouseEvent) => void;
+    nodeRef?: Ref<HTMLDivElement | null>;
+}

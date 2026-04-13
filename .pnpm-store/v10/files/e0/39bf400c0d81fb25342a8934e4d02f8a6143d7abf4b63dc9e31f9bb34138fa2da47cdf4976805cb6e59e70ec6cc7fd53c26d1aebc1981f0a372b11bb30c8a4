@@ -1,0 +1,32 @@
+import { SizeType } from "../config-provider/SizeContext.js";
+import { TooltipProps } from "../tooltip/index.js";
+import * as vue455 from "vue";
+import { RateProps as RateProps$1 } from "@v-c/rate";
+
+//#region src/rate/index.d.ts
+interface RateProps extends Omit<RateProps$1, 'onChange' | 'onHoverChange' | 'onFocus' | 'onBlur' | 'onKeyDown' | 'onMouseLeave' | 'onUpdate:value'>, RateEmitsProps {
+  rootClass?: string;
+  size?: SizeType;
+  tooltips?: (TooltipProps | string)[];
+}
+interface RateEmits {
+  'update:value': (value: number) => void;
+  'change': (value: number) => void;
+  'hoverChange': (value: number) => void;
+  'focus': () => void;
+  'blur': () => void;
+  'keydown': (e: KeyboardEvent) => void;
+  'mouseleave': (e: FocusEvent) => void;
+}
+interface RateEmitsProps {
+  'onUpdate:value'?: RateEmits['update:value'];
+  onChange?: RateEmits['change'];
+  onHoverChange?: RateEmits['hoverChange'];
+  onFocus?: RateEmits['focus'];
+  onBlur?: RateEmits['blur'];
+  onKeydown?: RateEmits['keydown'];
+  onMouseleave?: RateEmits['mouseleave'];
+}
+declare const Rate: vue455.DefineSetupFnComponent<RateProps, RateEmits, {}, RateProps, vue455.PublicProps>;
+//#endregion
+export { RateEmits, RateEmitsProps, RateProps, Rate as default };

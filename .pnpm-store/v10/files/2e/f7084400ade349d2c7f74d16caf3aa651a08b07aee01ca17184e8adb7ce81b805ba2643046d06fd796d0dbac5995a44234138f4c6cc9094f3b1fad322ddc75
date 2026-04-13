@@ -1,0 +1,30 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { CollapseSemanticClassNames, CollapseSemanticStyles } from "./Collapse.js";
+import * as vue274 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+
+//#region src/collapse/CollapsePanel.d.ts
+type CollapsibleType = 'header' | 'icon' | 'disabled';
+declare const COLLAPSE_PANEL_MARK = "_ANTDV_NEXT_COLLAPSE_PANEL";
+interface CollapsePanelProps {
+  key: string | number;
+  class?: string;
+  style?: CSSProperties;
+  header?: VueNode;
+  showArrow?: boolean;
+  prefixCls?: string;
+  forceRender?: boolean;
+  id?: string;
+  extra?: VueNode;
+  collapsible?: CollapsibleType;
+  classes?: Partial<CollapseSemanticClassNames>;
+  styles?: Partial<CollapseSemanticStyles>;
+}
+interface CollapsePanelSlots {
+  default?: () => any;
+  header?: () => any;
+  extra?: () => any;
+}
+declare const CollapsePanel: vue274.DefineSetupFnComponent<CollapsePanelProps, EmptyEmit, SlotsType<CollapsePanelSlots>, CollapsePanelProps, vue274.PublicProps>;
+//#endregion
+export { COLLAPSE_PANEL_MARK, CollapsePanelProps, CollapsePanelSlots, CollapsibleType, CollapsePanel as default };

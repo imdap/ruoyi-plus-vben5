@@ -1,0 +1,18 @@
+import { CheckboxEmits, CheckboxSlots } from "../checkbox/Checkbox.js";
+import { CheckboxOptionType } from "../checkbox/Group.js";
+import "../checkbox/index.js";
+import { RadioChangeEvent, RadioEmits, RadioGroupEmits, RadioGroupOptionType, RadioGroupSlots, RadioSlots } from "./interface.js";
+import { InternalRadioButtonProps } from "./radioButton.js";
+import "../index.js";
+import { InternalRadioGroupProps } from "./group.js";
+import InternalRadio, { InternalRadioProps } from "./radio.js";
+import * as vue397 from "vue";
+
+//#region src/radio/index.d.ts
+type RadioGroupProps = InternalRadioGroupProps;
+type RadioProps = InternalRadioProps;
+type RadioOptionType = CheckboxOptionType;
+declare const RadioGroup: vue397.DefineSetupFnComponent<InternalRadioGroupProps, RadioGroupEmits, vue397.SlotsType<RadioGroupSlots>, InternalRadioGroupProps, vue397.PublicProps>;
+declare const RadioButton: vue397.DefineSetupFnComponent<InternalRadioButtonProps, CheckboxEmits, vue397.SlotsType<CheckboxSlots>, InternalRadioButtonProps, vue397.PublicProps>;
+//#endregion
+export { RadioButton, type RadioChangeEvent, type RadioEmits, RadioGroup, type RadioGroupEmits, type RadioGroupOptionType, RadioGroupProps, type RadioGroupSlots, RadioOptionType, RadioProps, type RadioSlots, InternalRadio as default };

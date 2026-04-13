@@ -1,0 +1,38 @@
+import { SeedToken } from "./interface/seeds.js";
+import { MapToken } from "./interface/maps/index.js";
+import { AliasToken } from "./interface/alias.js";
+import { GlobalToken } from "./interface/cssinjs-utils.js";
+import { MappingAlgorithm } from "./interface/index.js";
+import getDesignToken from "./getDesignToken.js";
+import derivative from "./themes/default/index.js";
+import * as vue134 from "vue";
+import * as _antdv_next_cssinjs0 from "@antdv-next/cssinjs";
+
+//#region src/theme/index.d.ts
+/** Get current context Design Token. Will be different if you are using nest theme config. */
+declare function useToken(): {
+  theme: vue134.Ref<_antdv_next_cssinjs0.Theme<SeedToken, AliasToken>, _antdv_next_cssinjs0.Theme<SeedToken, AliasToken>>;
+  token: vue134.Ref<GlobalToken, GlobalToken>;
+  hashId: vue134.Ref<string, string>;
+};
+declare const _default: {
+  /** Default seedToken */defaultSeed: SeedToken;
+  useToken: typeof useToken;
+  defaultAlgorithm: typeof derivative;
+  darkAlgorithm: _antdv_next_cssinjs0.DerivativeFunc<SeedToken, MapToken>;
+  compactAlgorithm: _antdv_next_cssinjs0.DerivativeFunc<SeedToken, MapToken>;
+  getDesignToken: typeof getDesignToken;
+  /**
+   * @private Private variable
+   * @warring 🔥 Do not use in production. 🔥
+   */
+  defaultConfig: {
+    token: SeedToken;
+    override: {
+      override: SeedToken;
+    };
+    hashed: boolean;
+  };
+};
+//#endregion
+export { type GlobalToken, type MappingAlgorithm, _default as default };

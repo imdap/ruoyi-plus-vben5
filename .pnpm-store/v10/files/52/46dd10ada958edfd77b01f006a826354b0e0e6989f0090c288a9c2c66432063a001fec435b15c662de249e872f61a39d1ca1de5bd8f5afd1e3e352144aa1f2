@@ -1,0 +1,110 @@
+import { genFocusOutline } from "../../style/index.js";
+import { unit } from "@antdv-next/cssinjs";
+
+//#region src/menu/style/theme.ts
+const accessibilityFocus = (token) => genFocusOutline(token);
+function getThemeStyle(token, themeSuffix) {
+	const { componentCls, itemColor, itemSelectedColor, subMenuItemSelectedColor, groupTitleColor, itemBg, subMenuItemBg, itemSelectedBg, activeBarHeight, activeBarWidth, activeBarBorderWidth, motionDurationSlow, motionEaseInOut, motionEaseOut, itemPaddingInline, motionDurationMid, itemHoverColor, lineType, colorSplit, itemDisabledColor, dangerItemColor, dangerItemHoverColor, dangerItemSelectedColor, dangerItemActiveBg, dangerItemSelectedBg, popupBg, itemHoverBg, itemActiveBg, menuSubMenuBg, horizontalItemSelectedColor, horizontalItemSelectedBg, horizontalItemBorderRadius, horizontalItemHoverBg } = token;
+	return { [`${componentCls}-${themeSuffix}, ${componentCls}-${themeSuffix} > ${componentCls}`]: {
+		color: itemColor,
+		background: itemBg,
+		[`&${componentCls}-root:focus-visible`]: { ...accessibilityFocus(token) },
+		[`${componentCls}-item`]: { "&-group-title, &-extra": { color: groupTitleColor } },
+		[`${componentCls}-submenu-selected > ${componentCls}-submenu-title`]: { color: subMenuItemSelectedColor },
+		[`${componentCls}-item, ${componentCls}-submenu-title`]: {
+			color: itemColor,
+			[`&:not(${componentCls}-item-disabled):focus-visible`]: { ...accessibilityFocus(token) }
+		},
+		[`${componentCls}-item-disabled, ${componentCls}-submenu-disabled`]: { color: `${itemDisabledColor} !important` },
+		[`${componentCls}-item:not(${componentCls}-item-selected):not(${componentCls}-submenu-selected)`]: { [`&:hover, > ${componentCls}-submenu-title:hover`]: { color: itemHoverColor } },
+		[`${componentCls}-submenu:not(${componentCls}-submenu-selected)`]: { [`> ${componentCls}-submenu-title:hover`]: { color: itemHoverColor } },
+		[`&:not(${componentCls}-horizontal)`]: {
+			[`${componentCls}-item:not(${componentCls}-item-selected)`]: {
+				"&:hover": { backgroundColor: itemHoverBg },
+				"&:active": { backgroundColor: itemActiveBg }
+			},
+			[`${componentCls}-submenu-title`]: {
+				"&:hover": { backgroundColor: itemHoverBg },
+				"&:active": { backgroundColor: itemActiveBg }
+			}
+		},
+		[`${componentCls}-item-danger`]: {
+			color: dangerItemColor,
+			[`&${componentCls}-item:hover`]: { [`&:not(${componentCls}-item-selected):not(${componentCls}-submenu-selected)`]: { color: dangerItemHoverColor } },
+			[`&${componentCls}-item:active`]: { background: dangerItemActiveBg }
+		},
+		[`${componentCls}-item a`]: { "&, &:hover": { color: "inherit" } },
+		[`${componentCls}-item-selected`]: {
+			color: itemSelectedColor,
+			[`&${componentCls}-item-danger`]: { color: dangerItemSelectedColor },
+			"a, a:hover": { color: "inherit" }
+		},
+		[`& ${componentCls}-item-selected`]: {
+			backgroundColor: itemSelectedBg,
+			[`&${componentCls}-item-danger`]: { backgroundColor: dangerItemSelectedBg }
+		},
+		[`&${componentCls}-submenu > ${componentCls}`]: { backgroundColor: menuSubMenuBg },
+		[`&${componentCls}-popup > ${componentCls}`]: { backgroundColor: popupBg },
+		[`&${componentCls}-submenu-popup > ${componentCls}`]: { backgroundColor: popupBg },
+		[`&${componentCls}-horizontal`]: {
+			...themeSuffix === "dark" ? { borderBottom: 0 } : {},
+			[`> ${componentCls}-item, > ${componentCls}-submenu`]: {
+				top: activeBarBorderWidth,
+				marginTop: token.calc(activeBarBorderWidth).mul(-1).equal(),
+				marginBottom: 0,
+				borderRadius: horizontalItemBorderRadius,
+				"&::after": {
+					position: "absolute",
+					insetInline: itemPaddingInline,
+					bottom: 0,
+					borderBottom: `${unit(activeBarHeight)} solid transparent`,
+					transition: `border-color ${motionDurationSlow} ${motionEaseInOut}`,
+					content: "\"\""
+				},
+				"&:hover, &-active, &-open": {
+					background: horizontalItemHoverBg,
+					"&::after": {
+						borderBottomWidth: activeBarHeight,
+						borderBottomColor: horizontalItemSelectedColor
+					}
+				},
+				"&-selected": {
+					color: horizontalItemSelectedColor,
+					backgroundColor: horizontalItemSelectedBg,
+					"&:hover": { backgroundColor: horizontalItemSelectedBg },
+					"&::after": {
+						borderBottomWidth: activeBarHeight,
+						borderBottomColor: horizontalItemSelectedColor
+					}
+				}
+			}
+		},
+		[`&${componentCls}-root`]: { [`&${componentCls}-inline, &${componentCls}-vertical`]: { borderInlineEnd: `${unit(activeBarBorderWidth)} ${lineType} ${colorSplit}` } },
+		[`&${componentCls}-inline`]: {
+			[`${componentCls}-sub${componentCls}-inline`]: { background: subMenuItemBg },
+			[`${componentCls}-item`]: {
+				position: "relative",
+				"&::after": {
+					position: "absolute",
+					insetBlock: 0,
+					insetInlineEnd: 0,
+					borderInlineEnd: `${unit(activeBarWidth)} solid ${itemSelectedColor}`,
+					transform: "scaleY(0.0001)",
+					opacity: 0,
+					transition: [`transform`, `opacity`].map((prop) => `${prop} ${motionDurationMid} ${motionEaseOut}`).join(","),
+					content: "\"\""
+				},
+				[`&${componentCls}-item-danger`]: { "&::after": { borderInlineEndColor: dangerItemSelectedColor } }
+			},
+			[`${componentCls}-selected, ${componentCls}-item-selected`]: { "&::after": {
+				transform: "scaleY(1)",
+				opacity: 1,
+				transition: [`transform`, `opacity`].map((prop) => `${prop} ${motionDurationMid} ${motionEaseInOut}`).join(",")
+			} }
+		}
+	} };
+}
+var theme_default = getThemeStyle;
+
+//#endregion
+export { theme_default as default };

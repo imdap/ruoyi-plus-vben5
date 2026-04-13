@@ -1,0 +1,43 @@
+import { VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { IconType, NotificationSemanticClassNames, NotificationSemanticStyles } from "./interface.js";
+import * as vue141 from "vue";
+
+//#region src/notification/PurePanel.d.ts
+type PurePanelClassNamesType = SemanticClassNamesType<PurePanelProps, NotificationSemanticClassNames>;
+type PurePanelStylesType = SemanticStylesType<PurePanelProps, NotificationSemanticStyles>;
+declare function getCloseIcon(prefixCls: string, closeIcon?: VueNode): VueNode;
+interface PureContentProps {
+  prefixCls: string;
+  icon?: VueNode;
+  title?: VueNode;
+  description?: VueNode;
+  actions?: VueNode;
+  type?: IconType;
+  role?: 'alert' | 'status';
+  classes: NotificationSemanticClassNames;
+  styles: NotificationSemanticStyles;
+}
+declare const PureContent: vue141.DefineSetupFnComponent<PureContentProps, {}, {}, PureContentProps & {}, vue141.PublicProps>;
+interface PurePanelProps extends Omit<PureContentProps, 'prefixCls' | 'children' | 'classes' | 'styles'> {
+  content?: VueNode;
+  duration?: number | false | null;
+  showProgress?: boolean;
+  pauseOnHover?: boolean;
+  closable?: boolean | ({
+    closeIcon?: VueNode;
+    onClose?: VoidFunction;
+  } & Record<string, any>);
+  prefixCls?: string;
+  classes?: PurePanelClassNamesType;
+  styles?: PurePanelStylesType;
+  closeIcon?: VueNode;
+  props?: Record<string, any>;
+  onClose?: VoidFunction;
+  onClick?: (event: Event) => void;
+}
+/** @private Internal Component. Do not use in your production. */
+declare const PurePanel: vue141.DefineSetupFnComponent<PurePanelProps, {}, {}, PurePanelProps & {}, vue141.PublicProps>;
+//#endregion
+export { PureContent, PureContentProps, PurePanelClassNamesType, PurePanelProps, PurePanelStylesType, PurePanel as default, getCloseIcon };

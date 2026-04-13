@@ -1,0 +1,33 @@
+import { ArrowToken } from "../../style/roundedArrow.js";
+import { ArrowOffsetToken } from "../../style/placementArrow.js";
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue835 from "vue";
+
+//#region src/tour/style/index.d.ts
+interface ComponentToken extends ArrowOffsetToken, ArrowToken {
+  /**
+   * @desc 弹层 z-index
+   * @descEN Tour popup z-index
+   */
+  zIndexPopup: number;
+  /**
+   * @desc 关闭按钮尺寸
+   * @descEN Close button size
+   */
+  closeBtnSize: number;
+  /**
+   * @desc Primary 模式上一步按钮背景色
+   * @descEN Background color of previous button in primary type
+   */
+  primaryPrevBtnBg: string;
+  /**
+   * @desc Primary 模式下一步按钮悬浮背景色
+   * @descEN Hover background color of next button in primary type
+   */
+  primaryNextBtnHoverBg: string;
+}
+declare const prepareComponentToken: GetDefaultToken<'Tour'>;
+declare const _default: (prefixCls: vue835.Ref<string>, rootCls?: vue835.Ref<string | undefined>) => readonly [vue835.Ref<string, string>, vue835.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

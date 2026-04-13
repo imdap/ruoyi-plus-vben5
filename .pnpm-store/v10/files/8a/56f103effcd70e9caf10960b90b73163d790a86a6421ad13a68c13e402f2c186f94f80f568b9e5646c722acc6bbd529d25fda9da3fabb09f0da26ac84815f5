@@ -1,0 +1,73 @@
+import { EmptyEmit, VueNode } from "../_util/type.js";
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import "../_util/hooks/index.js";
+import { SizeType } from "../config-provider/SizeContext.js";
+import { Breakpoint } from "../_util/responsiveObserver.js";
+import DescriptionsItem, { DescriptionsItemProps, DescriptionsItemSlots } from "./Item.js";
+import { ComponentBaseProps } from "../config-provider/context.js";
+import * as vue899 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { Key } from "@v-c/util/dist/type";
+
+//#region src/descriptions/index.d.ts
+type DescriptionsSemanticName = keyof DescriptionsSemanticClassNames & keyof DescriptionsSemanticStyles;
+interface DescriptionsSemanticClassNames {
+  root?: string;
+  header?: string;
+  title?: string;
+  extra?: string;
+  label?: string;
+  content?: string;
+}
+interface DescriptionsSemanticStyles {
+  root?: CSSProperties;
+  header?: CSSProperties;
+  title?: CSSProperties;
+  extra?: CSSProperties;
+  label?: CSSProperties;
+  content?: CSSProperties;
+}
+type DescriptionsClassNamesType = SemanticClassNamesType<DescriptionsProps, DescriptionsSemanticClassNames>;
+type DescriptionsStylesType = SemanticStylesType<DescriptionsProps, DescriptionsSemanticStyles>;
+interface InternalDescriptionsItemType extends Omit<DescriptionsItemProps, 'span'> {
+  key?: Key;
+  filled?: boolean;
+  span?: number;
+  /**
+   * @internal 记录当前项的索引，用于渲染时的辅助计算
+   */
+  _$index?: number;
+}
+interface DescriptionsItemType extends Omit<DescriptionsItemProps, 'prefixCls'> {
+  key?: Key;
+}
+type RenderDescriptionsItem = (params: {
+  item: InternalDescriptionsItemType;
+  index: number;
+  value: any;
+}) => any;
+interface DescriptionsProps extends ComponentBaseProps {
+  bordered?: boolean;
+  size?: SizeType | 'default';
+  title?: VueNode;
+  extra?: VueNode;
+  labelRender?: RenderDescriptionsItem;
+  contentRender?: RenderDescriptionsItem;
+  column?: number | Partial<Record<Breakpoint, number>>;
+  layout?: 'horizontal' | 'vertical';
+  colon?: boolean;
+  styles?: DescriptionsStylesType;
+  classes?: DescriptionsClassNamesType;
+  items?: DescriptionsItemType[];
+  id?: string;
+}
+interface DescriptionsSlots {
+  default?: () => any;
+  title?: () => any;
+  extra?: () => any;
+  labelRender?: RenderDescriptionsItem;
+  contentRender?: RenderDescriptionsItem;
+}
+declare const Descriptions: vue899.DefineSetupFnComponent<DescriptionsProps, EmptyEmit, SlotsType<DescriptionsSlots>, DescriptionsProps, vue899.PublicProps>;
+//#endregion
+export { DescriptionsClassNamesType, DescriptionsItem, type DescriptionsItemProps, type DescriptionsItemSlots, DescriptionsItemType, DescriptionsProps, DescriptionsSemanticClassNames, DescriptionsSemanticName, DescriptionsSemanticStyles, DescriptionsSlots, DescriptionsStylesType, InternalDescriptionsItemType, RenderDescriptionsItem, Descriptions as default };

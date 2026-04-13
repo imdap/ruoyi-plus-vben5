@@ -1,0 +1,687 @@
+import { devUseWarning, isDev } from "../_util/warning.js";
+import { useComponentBaseConfig } from "../config-provider/context.js";
+import { useSize } from "../config-provider/hooks/useSize.js";
+import useToken from "../theme/useToken.js";
+import { useCompactItemContext } from "../space/Compact.js";
+import { getAttrStyleAndClass, useMergeSemantic, useToArr, useToProps } from "../_util/hooks/useMergeSemantic.js";
+import { useZIndex } from "../_util/hooks/useZIndex.js";
+import { getSlotPropsFnRun, toPropsRefs } from "../_util/tools.js";
+import useCSSVarCls_default from "../config-provider/hooks/useCSSVarCls.js";
+import { useDisabledContext } from "../config-provider/DisabledContext.js";
+import PurePanel_default from "../_util/PurePanel.js";
+import { getMergedStatus, getStatusClassNames } from "../_util/statusUtils.js";
+import { DefaultRenderEmpty } from "../config-provider/defaultRenderEmpty.js";
+import { useFormItemInputContext } from "../form/context.js";
+import { useVariants } from "../form/hooks/useVariant.js";
+import mergedBuiltinPlacements_default from "./mergedBuiltinPlacements.js";
+import style_default from "./style/index.js";
+import useIcons from "./useIcons.js";
+import usePopupRender_default from "./usePopupRender.js";
+import useShowArrow from "./useShowArrow.js";
+import { computed, createVNode, defineComponent, mergeDefaults, mergeProps, shallowRef, watch } from "vue";
+import { clsx } from "@v-c/util";
+import { getTransitionName } from "@v-c/util/dist/utils/transition";
+import { omit } from "es-toolkit";
+import VcSelect, { OptGroup, Option } from "@v-c/select";
+
+//#region src/select/index.tsx
+const omitKeys = [
+	"onClear",
+	"onKeyUp",
+	"onKeyDown",
+	"onBlur",
+	"onClick",
+	"onActive",
+	"onChange",
+	"onDeselect",
+	"onInputKeyDown",
+	"onMouseDown",
+	"onMouseLeave",
+	"onMouseEnter",
+	"onFocus",
+	"onPopupScroll",
+	"onPopupVisibleChange",
+	"onSelect",
+	"popupRender",
+	"labelRender",
+	"optionRender",
+	"maxTagPlaceholder",
+	"notFoundContent"
+];
+const SECRET_COMBOBOX_MODE_DO_NOT_USE = "SECRET_COMBOBOX_MODE_DO_NOT_USE";
+const Select = /* @__PURE__ */ defineComponent((props, { slots, emit, expose, attrs }) => {
+	const { getTargetContainer: getContextPopupContainer, getPrefixCls, renderEmpty, direction: contextDirection, virtual, popupMatchSelectWidth: contextPopupMatchSelectWidth, popupOverflow, showSearch, style: contextStyle, styles: contextStyles, class: contextClassName, classes: contextClassNames, prefixCls } = useComponentBaseConfig("select", props, ["showSearch"]);
+	const { listItemHeight: customListItemHeight, direction: propDirection, variant: customizeVariant, bordered, size: customizeSize, classes, styles } = toPropsRefs(props, "listItemHeight", "direction", "variant", "bordered", "size", "classes", "styles");
+	const [, token] = useToken();
+	const value = shallowRef(props.value ?? props?.defaultValue);
+	watch(() => props.value, () => {
+		value.value = props.value;
+	});
+	const listItemHeight = computed(() => customListItemHeight.value ?? token?.value?.controlHeight);
+	const rootPrefixCls = computed(() => getPrefixCls());
+	const direction = computed(() => propDirection.value ?? contextDirection.value);
+	const { compactSize, compactItemClassnames } = useCompactItemContext(prefixCls, direction);
+	const [variant, enableVariantCls] = useVariants("select", customizeVariant, bordered);
+	const rootCls = useCSSVarCls_default(prefixCls);
+	const [hashId, cssVarCls] = style_default(prefixCls, rootCls);
+	const mode = computed(() => {
+		const { mode: m } = props;
+		if (m === "combobox") return;
+		if (m === SECRET_COMBOBOX_MODE_DO_NOT_USE) return "combobox";
+		return m;
+	});
+	const isMultiple = computed(() => mode.value === "multiple" || mode.value === "tags");
+	const mergedOnOpenChange = (open) => {
+		emit("openChange", open);
+		emit("dropdownVisibleChange", open);
+	};
+	const formItemInputContext = useFormItemInputContext();
+	const mergedSize = useSize((ctx) => customizeSize.value ?? compactSize.value ?? ctx);
+	const disabled = useDisabledContext();
+	const mergedDisabled = computed(() => props.disabled ?? disabled.value);
+	const mergedProps = computed(() => {
+		return {
+			...props,
+			variant: variant.value,
+			disabled: mergedDisabled.value,
+			size: mergedSize.value
+		};
+	});
+	const [mergedClassNames, mergedStyles] = useMergeSemantic(useToArr(contextClassNames, classes), useToArr(contextStyles, styles), useToProps(mergedProps), computed(() => {
+		return { popup: { _default: "root" } };
+	}));
+	const memoPlacement = computed(() => {
+		const { placement } = props;
+		if (placement !== void 0) return placement;
+		return direction.value === "rtl" ? "bottomRight" : "bottomLeft";
+	});
+	if (isDev) {
+		const maxCount = props.maxCount;
+		const warning = devUseWarning("Select");
+		Object.entries({
+			dropdownMatchSelectWidth: "popupMatchSelectWidth",
+			dropdownStyle: "styles.popup.root",
+			dropdownClassName: "classNames.popup.root",
+			popupClassName: "classNames.popup.root",
+			dropdownRender: "popupRender",
+			onDropdownVisibleChange: "onOpenChange",
+			bordered: "variant"
+		}).forEach(([oldProp, newProp]) => {
+			warning.deprecated(!props[oldProp], oldProp, newProp);
+		});
+		warning(!props.showArrow, "deprecated", "`showArrow` is deprecated which will be removed in next major version. It will be a default behavior, you can hide it by setting `suffixIcon` to null.");
+		warning(!(typeof maxCount !== "undefined" && !isMultiple.value), "usage", "`maxCount` only works with mode `multiple` or `tags`");
+	}
+	const mergedPopupStyle = computed(() => {
+		const { popupStyle, dropdownStyle } = props;
+		return {
+			...mergedStyles.value.popup?.root,
+			...popupStyle ?? dropdownStyle
+		};
+	});
+	const [zIndex] = useZIndex("SelectLike", computed(() => mergedStyles.value?.popup?.root?.zIndex ?? mergedPopupStyle.value?.zIndex));
+	expose({});
+	return () => {
+		const { popupMatchSelectWidth, dropdownMatchSelectWidth, showArrow, dropdownRender, status: customStatus, allowClear, popupClassName, dropdownClassName, rootClass, popupStyle, dropdownStyle, transitionName, builtinPlacements, listHeight, getPopupContainer, maxCount, ...rest } = props;
+		const { className, style, restAttrs } = getAttrStyleAndClass(attrs);
+		const mergedSuffixIcon = getSlotPropsFnRun(slots, props, "suffixIcon", false);
+		const showSuffixIcon = useShowArrow(mergedSuffixIcon, showArrow);
+		const tagRender = slots?.tagRender ?? props?.tagRender;
+		const mergedPopupMatchSelectWidth = popupMatchSelectWidth ?? dropdownMatchSelectWidth ?? contextPopupMatchSelectWidth.value;
+		const mergedPopupRender = usePopupRender_default((slots?.popupRender ?? props?.popupRender) || dropdownRender);
+		const notFoundContent = getSlotPropsFnRun(slots, props, "notFoundContent", false);
+		const { status: contextStatus, hasFeedback, isFormItemInput, feedbackIcon } = formItemInputContext.value || {};
+		const mergedStatus = getMergedStatus(contextStatus, customStatus);
+		let mergedNotFound;
+		if (notFoundContent !== void 0) mergedNotFound = notFoundContent;
+		else if (mode.value === "combobox") mergedNotFound = null;
+		else mergedNotFound = renderEmpty?.value?.("Select") || createVNode(DefaultRenderEmpty, { "componentName": "Select" }, null);
+		const { suffixIcon, itemIcon, removeIcon, clearIcon } = useIcons({
+			...rest,
+			multiple: isMultiple.value,
+			hasFeedback,
+			feedbackIcon,
+			showSuffixIcon,
+			suffixIcon: mergedSuffixIcon,
+			prefixCls: prefixCls.value,
+			componentName: "Select"
+		});
+		const mergedAllowClear = allowClear === true ? { clearIcon } : allowClear;
+		const selectProps = omit(rest, [
+			"suffixIcon",
+			"classes",
+			"styles",
+			"itemIcon",
+			"value",
+			"showSearch",
+			...omitKeys
+		]);
+		const mergedPopupClassName = clsx(mergedClassNames.value?.popup?.root, popupClassName, dropdownClassName, { [`${prefixCls.value}-dropdown-${direction.value}`]: direction.value === "rtl" }, rootClass, cssVarCls.value, rootCls.value, hashId.value);
+		const mergedClassName = clsx({
+			[`${prefixCls.value}-lg`]: mergedSize.value === "large",
+			[`${prefixCls.value}-sm`]: mergedSize.value === "small",
+			[`${prefixCls.value}-rtl`]: direction.value === "rtl",
+			[`${prefixCls.value}-${variant.value}`]: enableVariantCls.value,
+			[`${prefixCls.value}-in-form-item`]: isFormItemInput
+		}, getStatusClassNames(prefixCls.value, mergedStatus, hasFeedback), compactItemClassnames.value, contextClassName.value, className, mergedClassNames.value?.root, rootClass, cssVarCls.value, rootCls.value, hashId.value);
+		const prefix = getSlotPropsFnRun(slots, props, "prefix");
+		const onAttrs = {
+			onSelect: (value, option) => {
+				emit("select", value, option);
+			},
+			onClear: () => {
+				emit("clear");
+			},
+			onKeyDown: (e) => {
+				emit("keydown", e);
+			},
+			onKeyUp: (e) => {
+				emit("keyup", e);
+			},
+			onBlur: (e) => {
+				emit("blur", e);
+			},
+			onFocus: (e) => {
+				emit("focus", e);
+			},
+			onClick: (e) => {
+				emit("click", e);
+			},
+			onActive: (value) => {
+				emit("active", value);
+			},
+			onChange: (value, option) => {
+				emit("update:value", value);
+				emit("change", value, option);
+			},
+			onDeselect: (value, option) => {
+				emit("deselect", value, option);
+			},
+			onInputKeyDown: (e) => {
+				emit("inputKeydown", e);
+			},
+			onMouseDown: (e) => {
+				emit("mousedown", e);
+			},
+			onMouseLeave: (e) => {
+				emit("mouseleave", e);
+			},
+			onMouseEnter: (e) => {
+				emit("mouseenter", e);
+			},
+			onPopupScroll: (e) => {
+				emit("popupScroll", e);
+			}
+		};
+		const labelRender = slots?.labelRender ?? props?.labelRender;
+		const optionRender = slots?.optionRender ?? props?.optionRender;
+		if (optionRender) selectProps.optionRender = (option, info) => {
+			return optionRender({
+				option,
+				info
+			});
+		};
+		if (mergedNotFound !== void 0) selectProps.notFoundContent = mergedNotFound;
+		return createVNode(VcSelect, mergeProps(restAttrs, onAttrs, {
+			"virtual": virtual.value,
+			"classNames": mergedClassNames.value,
+			"styles": mergedStyles.value,
+			"showSearch": props?.showSearch ?? showSearch.value
+		}, selectProps, {
+			"maxTagPlaceholder": slots.maxTagPlaceholder,
+			"labelRender": labelRender,
+			"style": {
+				...mergedStyles.value.root,
+				...contextStyle.value,
+				...style
+			},
+			"popupMatchSelectWidth": mergedPopupMatchSelectWidth,
+			"transitionName": getTransitionName(rootPrefixCls.value, "slide-up", transitionName),
+			"builtinPlacements": mergedBuiltinPlacements_default(builtinPlacements, popupOverflow.value),
+			"listHeight": listHeight,
+			"listItemHeight": listItemHeight.value,
+			"mode": mode.value,
+			"prefixCls": prefixCls.value,
+			"placement": memoPlacement.value,
+			"direction": direction.value,
+			"prefix": prefix,
+			"value": value.value,
+			"suffixIcon": suffixIcon,
+			"menuItemSelectedIcon": itemIcon,
+			"removeIcon": removeIcon,
+			"allowClear": mergedAllowClear,
+			"notFoundContent": mergedNotFound,
+			"className": mergedClassName,
+			"getPopupContainer": getPopupContainer || getContextPopupContainer,
+			"popupClassName": mergedPopupClassName,
+			"disabled": mergedDisabled.value,
+			"popupStyle": {
+				...mergedStyles.value?.popup?.root,
+				...mergedPopupStyle.value,
+				zIndex: zIndex.value
+			},
+			"maxCount": isMultiple.value ? maxCount : void 0,
+			"tagRender": isMultiple.value ? tagRender : void 0,
+			"popupRender": mergedPopupRender,
+			"onPopupVisibleChange": mergedOnOpenChange
+		}), null);
+	};
+}, {
+	props: /* @__PURE__ */ mergeDefaults({
+		placement: {
+			type: String,
+			required: false
+		},
+		mode: {
+			type: String,
+			required: false
+		},
+		status: {
+			type: String,
+			required: false
+		},
+		popupClassName: {
+			type: String,
+			required: false
+		},
+		dropdownClassName: {
+			type: String,
+			required: false
+		},
+		dropdownStyle: {
+			type: Object,
+			required: false
+		},
+		dropdownRender: {
+			type: Function,
+			required: false
+		},
+		dropdownMatchSelectWidth: {
+			type: [Boolean, Number],
+			required: false,
+			default: void 0
+		},
+		popupMatchSelectWidth: {
+			type: [Boolean, Number],
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: [Object, Function],
+			required: false
+		},
+		classes: {
+			type: [Object, Function],
+			required: false
+		},
+		optionRender: {
+			type: Function,
+			required: false
+		},
+		prefix: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		suffixIcon: {
+			type: [
+				Function,
+				String,
+				Number,
+				null,
+				Object,
+				Boolean
+			],
+			required: false,
+			default: void 0
+		},
+		size: {
+			type: [String, null],
+			required: false
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		bordered: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		showArrow: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		variant: {
+			type: String,
+			required: false
+		},
+		rootClass: {
+			type: String,
+			required: false
+		},
+		prefixCls: {
+			type: String,
+			required: false
+		},
+		id: {
+			type: String,
+			required: false
+		},
+		fieldNames: {
+			type: Object,
+			required: false
+		},
+		onSearch: {
+			type: Function,
+			required: false
+		},
+		showSearch: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		searchValue: {
+			type: String,
+			required: false
+		},
+		autoClearSearchValue: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		filterOption: {
+			type: [Boolean, Function],
+			required: false,
+			default: void 0
+		},
+		filterSort: {
+			type: Function,
+			required: false
+		},
+		optionFilterProp: {
+			type: String,
+			required: false
+		},
+		optionLabelProp: {
+			type: String,
+			required: false
+		},
+		options: {
+			type: Array,
+			required: false
+		},
+		defaultActiveFirstOption: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		virtual: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		direction: {
+			type: String,
+			required: false
+		},
+		listHeight: {
+			type: Number,
+			required: false
+		},
+		listItemHeight: {
+			type: Number,
+			required: false
+		},
+		labelRender: {
+			type: Function,
+			required: false
+		},
+		menuItemSelectedIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		labelInValue: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		value: { required: false },
+		defaultValue: { required: false },
+		maxCount: {
+			type: Number,
+			required: false
+		},
+		tagRender: {
+			type: Function,
+			required: false
+		},
+		autoFocus: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		placeholder: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		title: {
+			type: String,
+			required: false
+		},
+		tabIndex: {
+			type: Number,
+			required: false
+		},
+		notFoundContent: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		maxLength: {
+			type: Number,
+			required: false
+		},
+		showScrollBar: {
+			type: [Boolean, String],
+			required: false,
+			default: void 0
+		},
+		choiceTransitionName: {
+			type: String,
+			required: false
+		},
+		loading: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		open: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		defaultOpen: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		maxTagTextLength: {
+			type: Number,
+			required: false
+		},
+		maxTagCount: {
+			type: [Number, String],
+			required: false
+		},
+		maxTagPlaceholder: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		tokenSeparators: {
+			type: Array,
+			required: false
+		},
+		allowClear: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		suffix: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		clearIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		removeIcon: {
+			type: [
+				Object,
+				Function,
+				String,
+				Number,
+				null,
+				Boolean,
+				Array
+			],
+			required: false,
+			default: void 0
+		},
+		animation: {
+			type: String,
+			required: false
+		},
+		transitionName: {
+			type: String,
+			required: false
+		},
+		popupStyle: {
+			type: Object,
+			required: false
+		},
+		popupRender: {
+			type: Function,
+			required: false
+		},
+		popupAlign: {
+			type: Object,
+			required: false
+		},
+		builtinPlacements: {
+			type: Object,
+			required: false
+		},
+		getPopupContainer: {
+			type: Function,
+			required: false
+		},
+		showAction: {
+			type: Array,
+			required: false
+		},
+		components: {
+			type: Object,
+			required: false
+		}
+	}, { listHeight: 256 }),
+	emits: [
+		"openChange",
+		"dropdownVisibleChange",
+		"clear",
+		"keydown",
+		"keyup",
+		"blur",
+		"update:value",
+		"click",
+		"active",
+		"change",
+		"deselect",
+		"inputKeydown",
+		"mousedown",
+		"mouseleave",
+		"mouseenter",
+		"focus",
+		"popupScroll",
+		"select"
+	],
+	name: "ASelect",
+	inheritAttrs: false
+});
+Select.install = (app) => {
+	app.component(Select.name, Select);
+	app.component("ASelectOption", Option);
+	app.component("ASelectOptGroup", OptGroup);
+};
+Select.SECRET_COMBOBOX_MODE_DO_NOT_USE = SECRET_COMBOBOX_MODE_DO_NOT_USE;
+Select.Option = Option;
+Select.OptGroup = OptGroup;
+var select_default = Select;
+Select._InternalPanelDoNotUseOrYouWillBeFired = PurePanel_default(Select, "popupAlign");
+const SelectOption = Option;
+const SelectOptGroup = OptGroup;
+
+//#endregion
+export { SelectOptGroup, SelectOption, select_default as default };

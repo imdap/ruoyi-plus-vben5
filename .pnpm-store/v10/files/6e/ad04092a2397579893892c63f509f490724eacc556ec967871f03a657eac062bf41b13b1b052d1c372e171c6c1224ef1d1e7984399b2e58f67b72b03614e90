@@ -1,0 +1,15 @@
+import * as vue845 from "vue";
+
+//#region src/color-picker/components/ColorSteppers.d.ts
+interface ColorSteppersProps {
+  prefixCls: string;
+  value?: number;
+  min?: number;
+  max?: number;
+  onChange?: (value: number | null) => void;
+  className?: string;
+  formatter?: (value: number | null) => string | number;
+}
+declare const _default: vue845.DefineSetupFnComponent<ColorSteppersProps, {}, {}, ColorSteppersProps & {}, vue845.PublicProps>;
+//#endregion
+export { ColorSteppersProps, _default as default };

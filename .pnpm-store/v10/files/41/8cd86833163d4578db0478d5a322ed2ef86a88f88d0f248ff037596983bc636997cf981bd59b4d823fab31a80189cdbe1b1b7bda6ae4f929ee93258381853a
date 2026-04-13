@@ -1,0 +1,45 @@
+import { GetDefaultToken } from "../../theme/interface/cssinjs-utils.js";
+import "../../theme/internal.js";
+import * as vue781 from "vue";
+
+//#region src/skeleton/style/index.d.ts
+interface ComponentToken {
+  /** @deprecated use gradientFromColor instead. */
+  color: string;
+  /** @deprecated use gradientToColor instead. */
+  colorGradientEnd: string;
+  /**
+   * @desc 渐变色起点颜色
+   * @descEN Start color of gradient
+   */
+  gradientFromColor: string;
+  /**
+   * @desc 渐变色终点颜色
+   * @descEN End color of gradient
+   */
+  gradientToColor: string;
+  /**
+   * @desc 标题骨架屏高度
+   * @descEN Height of title skeleton
+   */
+  titleHeight: number | string;
+  /**
+   * @desc 骨架屏圆角
+   * @descEN Border radius of skeleton
+   */
+  blockRadius: number;
+  /**
+   * @desc 段落骨架屏上间距
+   * @descEN Margin top of paragraph skeleton
+   */
+  paragraphMarginTop: number;
+  /**
+   * @desc 段落骨架屏单行高度
+   * @descEN Line height of paragraph skeleton
+   */
+  paragraphLiHeight: number;
+}
+declare const prepareComponentToken: GetDefaultToken<'Skeleton'>;
+declare const _default: (prefixCls: vue781.Ref<string>, rootCls?: vue781.Ref<string | undefined>) => readonly [vue781.Ref<string, string>, vue781.ComputedRef<string | undefined>];
+//#endregion
+export { ComponentToken, _default as default, prepareComponentToken };

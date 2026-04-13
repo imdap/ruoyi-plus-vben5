@@ -1,0 +1,77 @@
+{
+  "name": "cspell-trie-lib",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "version": "9.8.0",
+  "description": "Trie Data Structure to support cspell.",
+  "type": "module",
+  "sideEffects": false,
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/__mocks__",
+    "!**/*.map",
+    "!**/*.perf.*",
+    "!**/*.spec.*",
+    "!**/*.test.*",
+    "!**/*.tsbuildInfo",
+    "!**/perf/**",
+    "!**/test/**"
+  ],
+  "scripts": {
+    "clean": "shx rm -rf dist temp coverage \"*.tsbuildInfo\"",
+    "build": "pnpm run build:lib && pnpm run build:api && pnpm run check:types",
+    "build:lib": "tsdown",
+    "build:api": "shx cp dist/index.d.ts api/api.d.ts",
+    "clean-build": "pnpm run clean && pnpm run build",
+    "coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "test:perf": "pnpm test:perf:ts --all",
+    "test:perf:ts": "insight --file \"**/*.perf.{mts,ts}\" -t 500",
+    "test:perf:prof": "NODE_ENV=production node --cpu-prof --cpu-prof-interval=100  ../../node_modules/perf-insight/bin.mjs --file \"**/*.perf.{mts,ts}\" -t 5000",
+    "perf": "pnpm test:perf",
+    "test": "vitest run",
+    "test:update-snapshot": "vitest run -u",
+    "check:types": "tsc -p .",
+    "watch": "tsdown -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/streetsidesoftware/cspell.git",
+    "directory": "packages/cspell-trie-lib"
+  },
+  "keywords": [
+    "trie",
+    "cspell"
+  ],
+  "author": "Jason Dent",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/streetsidesoftware/cspell/labels/cspell-trie"
+  },
+  "homepage": "https://github.com/streetsidesoftware/cspell/tree/main/packages/cspell-trie-lib#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "peerDependencies": {
+    "@cspell/cspell-types": "9.8.0"
+  },
+  "devDependencies": {
+    "@cspell/cspell-performance-monitor": "9.8.0",
+    "@cspell/cspell-pipe": "9.8.0",
+    "@cspell/dict-cpp": "^7.0.2",
+    "@cspell/dict-en_us": "^4.4.33",
+    "@cspell/dict-es-es": "^3.0.8",
+    "@cspell/dict-nl-nl": "^2.4.2",
+    "gensequence": "^8.0.8"
+  },
+  "gitHead": "c822013ce676dffb5fa5544567c25a3ae666718f"
+}

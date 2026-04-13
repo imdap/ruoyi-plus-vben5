@@ -1,0 +1,313 @@
+import { useRefProvide } from "./context.js";
+import { warnCheck } from "./util.js";
+import DrawerPopup from "./DrawerPopup.js";
+import { computed, createVNode, defineComponent, isVNode, mergeDefaults, mergeProps, nextTick, shallowRef, watch } from "vue";
+import Portal from "@v-c/portal";
+import canUseDom from "@v-c/util/dist/Dom/canUseDom";
+import { omit } from "@v-c/util/dist/utils/omit";
+//#region src/Drawer.tsx
+function _isSlot(s) {
+	return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
+}
+var Drawer = /* @__PURE__ */ defineComponent({
+	props: /* @__PURE__ */ mergeDefaults({
+		prefixCls: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		open: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		onClose: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		destroyOnHidden: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		getContainer: {
+			required: false,
+			default: void 0
+		},
+		panelRef: {
+			required: false,
+			default: void 0
+		},
+		wrapperClassName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		classNames: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		styles: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		focusTriggerAfterClose: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		push: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		forceRender: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		autoFocus: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		focusTrap: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		keyboard: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		rootClassName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		rootStyle: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		zIndex: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		placement: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		id: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		width: {
+			type: [Number, String],
+			required: false,
+			default: void 0
+		},
+		height: {
+			type: [Number, String],
+			required: false,
+			default: void 0
+		},
+		size: {
+			type: [Number, String],
+			required: false,
+			default: void 0
+		},
+		maxSize: {
+			type: Number,
+			required: false,
+			default: void 0
+		},
+		mask: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		maskClosable: {
+			type: Boolean,
+			required: false,
+			default: void 0
+		},
+		maskClassName: {
+			type: String,
+			required: false,
+			default: void 0
+		},
+		maskStyle: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		motion: {
+			type: [Object, Function],
+			required: false,
+			default: void 0
+		},
+		maskMotion: {
+			type: Object,
+			required: false,
+			default: void 0
+		},
+		afterOpenChange: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		drawerRender: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		defaultSize: {
+			type: [Number, String],
+			required: false,
+			default: void 0
+		},
+		resizable: {
+			type: [Boolean, Object],
+			required: false,
+			default: void 0
+		},
+		onMouseEnter: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseOver: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onMouseLeave: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onClick: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onKeyDown: {
+			type: Function,
+			required: false,
+			default: void 0
+		},
+		onKeyUp: {
+			type: Function,
+			required: false,
+			default: void 0
+		}
+	}, {
+		prefixCls: "vc-drawer",
+		placement: "right",
+		autoFocus: true,
+		keyboard: true,
+		mask: true,
+		maskClosable: true,
+		destroyOnHidden: false
+	}),
+	name: "Drawer",
+	setup(rawProps, { slots, expose, attrs }) {
+		const mergedOpen = shallowRef(!!rawProps.open);
+		const mergedProps = computed(() => {
+			return {
+				...attrs,
+				...rawProps,
+				open: mergedOpen.value
+			};
+		});
+		if (process.env.NODE_ENV !== "production") warnCheck(mergedProps.value);
+		const animatedVisible = shallowRef(!!(mergedProps.value.forceRender || mergedOpen.value));
+		const prefixCls = computed(() => mergedProps.value.prefixCls ?? "vc-drawer");
+		const lastActiveRef = shallowRef(null);
+		const popupRef = shallowRef();
+		const externalPanelRef = shallowRef();
+		watch(() => mergedProps.value.panelRef, () => {
+			externalPanelRef.value = mergedProps.value.panelRef;
+		}, { immediate: true });
+		const { panel } = useRefProvide((el) => {
+			const refTarget = externalPanelRef.value;
+			if (typeof refTarget === "function") refTarget(el);
+			else if (refTarget && typeof refTarget === "object" && "value" in refTarget) refTarget.value = el;
+		});
+		watch(mergedOpen, (visible) => {
+			if (visible) {
+				animatedVisible.value = true;
+				lastActiveRef.value = canUseDom() ? document.activeElement : null;
+			}
+		}, { immediate: true });
+		const internalAfterOpenChange = (nextVisible) => {
+			nextTick(() => {
+				animatedVisible.value = nextVisible;
+			});
+			mergedProps.value.afterOpenChange?.(nextVisible);
+			if (!nextVisible && mergedProps.value?.focusTriggerAfterClose !== false && lastActiveRef.value) {
+				const panelEl = popupRef.value?.panelRef?.value;
+				if (panelEl && !panelEl.contains(lastActiveRef.value)) try {
+					lastActiveRef.value?.focus?.({ preventScroll: true });
+				} catch (e) {}
+			}
+		};
+		expose({
+			panel,
+			popupRef
+		});
+		const onEsc = ({ top, event }) => {
+			const { keyboard } = rawProps;
+			if (top && keyboard) {
+				event.stopPropagation();
+				rawProps?.onClose?.(event);
+			}
+		};
+		return () => {
+			mergedOpen.value = !!rawProps.open;
+			const mp = mergedProps.value;
+			if (!mp.forceRender && !animatedVisible.value && !mergedOpen.value && mp.destroyOnHidden) return null;
+			const eventHandlers = {
+				onMouseEnter: mp.onMouseEnter,
+				onMouseOver: mp.onMouseOver,
+				onMouseLeave: mp.onMouseLeave,
+				onClick: mp.onClick,
+				onKeyDown: mp.onKeyDown,
+				onKeyUp: mp.onKeyUp
+			};
+			const popupNode = createVNode(DrawerPopup, mergeProps(omit(mp, ["onClose"]), eventHandlers, {
+				"onClose": (e) => {
+					mp?.onClose?.(e);
+				},
+				"ref": popupRef,
+				"mask": mp.mask !== false,
+				"maskClosable": mp.maskClosable !== false,
+				"placement": mp.placement ?? "right",
+				"autoFocus": mp.autoFocus !== false,
+				"keyboard": mp.keyboard !== false,
+				"prefixCls": prefixCls.value,
+				"inline": mp.getContainer === false,
+				"open": mergedOpen.value,
+				"afterOpenChange": internalAfterOpenChange
+			}), slots);
+			if (mp.getContainer === false) return popupNode;
+			return createVNode(Portal, {
+				"open": mergedOpen.value || mp.forceRender || animatedVisible.value,
+				"autoDestroy": false,
+				"onEsc": onEsc,
+				"getContainer": mp.getContainer,
+				"autoLock": mp.mask !== false && (mergedOpen.value || animatedVisible.value)
+			}, _isSlot(popupNode) ? popupNode : { default: () => [popupNode] });
+		};
+	}
+});
+//#endregion
+export { Drawer as default };

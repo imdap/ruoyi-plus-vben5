@@ -1,0 +1,19 @@
+{
+    "id": "gaming-terms",
+    "version": "0.2",
+    "name": "Gaming",
+    "description": "Gaming dictionary.",
+    "readonly": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "gaming-terms",
+            "path": "./dict/gaming-terms.txt",
+            "description": "Gaming dictionary."
+        },
+        {
+            "name": "game-development",
+            "path": "./dict/game-development.txt",
+            "description": "Game development dictionary. Includes Godot, Unity, and more terms."
+        }
+    ]
+}

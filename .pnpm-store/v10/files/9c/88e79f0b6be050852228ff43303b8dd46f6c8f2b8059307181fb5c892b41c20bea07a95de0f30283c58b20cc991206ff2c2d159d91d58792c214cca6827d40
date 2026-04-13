@@ -1,0 +1,47 @@
+import { ShowWaveEffect, WaveComponent } from "./interface.js";
+import { WaveProps } from "./index.js";
+import * as vue210 from "vue";
+import { PropType } from "vue";
+import * as vue_jsx_runtime6 from "vue/jsx-runtime";
+
+//#region src/_util/wave/WaveEffect.d.ts
+declare const WaveEffect: vue210.DefineComponent<vue210.ExtractPropTypes<{
+  className: {
+    type: StringConstructor;
+    required: true;
+  };
+  target: {
+    type: PropType<HTMLElement>;
+    required: true;
+  };
+  component: {
+    type: PropType<WaveComponent>;
+    required: false;
+  };
+  colorSource: {
+    type: PropType<WaveProps["colorSource"]>;
+    required: false;
+  };
+}>, () => vue_jsx_runtime6.JSX.Element | null, {}, {}, {}, vue210.ComponentOptionsMixin, vue210.ComponentOptionsMixin, "finish"[], "finish", vue210.PublicProps, Readonly<vue210.ExtractPropTypes<{
+  className: {
+    type: StringConstructor;
+    required: true;
+  };
+  target: {
+    type: PropType<HTMLElement>;
+    required: true;
+  };
+  component: {
+    type: PropType<WaveComponent>;
+    required: false;
+  };
+  colorSource: {
+    type: PropType<WaveProps["colorSource"]>;
+    required: false;
+  };
+}>> & Readonly<{
+  onFinish?: ((...args: any[]) => any) | undefined;
+}>, {}, {}, {}, {}, string, vue210.ComponentProvideOptions, true, {}, any>;
+declare const showWaveEffect: ShowWaveEffect;
+//#endregion
+export { WaveEffect, showWaveEffect as default };

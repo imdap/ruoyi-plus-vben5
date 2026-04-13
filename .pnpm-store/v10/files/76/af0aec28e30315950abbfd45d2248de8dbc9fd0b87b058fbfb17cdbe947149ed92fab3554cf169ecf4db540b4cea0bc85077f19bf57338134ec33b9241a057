@@ -1,0 +1,106 @@
+import { SemanticClassNamesType, SemanticStylesType } from "../_util/hooks/useMergeSemantic.js";
+import { Orientation } from "../_util/hooks/useOrientation.js";
+import "../_util/hooks/index.js";
+import { TooltipPlacement, TriggerCommonApi } from "../tooltip/index.js";
+import * as vue723 from "vue";
+import { CSSProperties, SlotsType } from "vue";
+import { SliderProps as SliderProps$1 } from "@v-c/slider";
+
+//#region src/slider/index.d.ts
+type SliderMarks = SliderProps$1['marks'];
+type SliderSemanticName = keyof SliderSemanticClassNames & keyof SliderSemanticStyles;
+interface SliderSemanticClassNames {
+  root?: string;
+  tracks?: string;
+  track?: string;
+  rail?: string;
+  handle?: string;
+}
+interface SliderSemanticStyles {
+  root?: CSSProperties;
+  tracks?: CSSProperties;
+  track?: CSSProperties;
+  rail?: CSSProperties;
+  handle?: CSSProperties;
+}
+type SliderClassNamesType = SemanticClassNamesType<SliderBaseProps, SliderSemanticClassNames>;
+type SliderStylesType = SemanticStylesType<SliderBaseProps, SliderSemanticStyles>;
+interface SliderProps extends Omit<SliderProps$1, 'styles' | 'classNames'> {
+  classes?: SliderClassNamesType;
+  styles?: SliderStylesType;
+}
+interface HandleGeneratorInfo {
+  value?: number;
+  dragging?: boolean;
+  index: number;
+}
+type HandleGeneratorFn = (config: {
+  tooltipPrefixCls?: string;
+  prefixCls?: string;
+  info: HandleGeneratorInfo;
+}) => any;
+type Formatter = ((value?: number) => any) | null;
+interface SliderTooltipProps extends TriggerCommonApi {
+  prefixCls?: string;
+  open?: boolean;
+  placement?: TooltipPlacement;
+  getPopupContainer?: (triggerNode: HTMLElement) => HTMLElement;
+  formatter?: Formatter;
+  autoAdjustOverflow?: boolean;
+}
+interface SliderBaseProps {
+  prefixCls?: string;
+  reverse?: boolean;
+  min?: number;
+  max?: number;
+  step?: null | number;
+  marks?: SliderMarks;
+  dots?: boolean;
+  included?: boolean;
+  disabled?: boolean;
+  keyboard?: boolean;
+  orientation?: Orientation;
+  vertical?: boolean;
+  rootClass?: string;
+  id?: string;
+  tooltip?: SliderTooltipProps;
+  autoFocus?: boolean;
+  styles?: SliderStylesType;
+  classes?: SliderClassNamesType;
+  tabIndex?: SliderProps['tabIndex'];
+  ariaLabelForHandle?: SliderProps['ariaLabelForHandle'];
+  ariaLabelledByForHandle?: SliderProps['ariaLabelledByForHandle'];
+  ariaRequired?: SliderProps['ariaRequired'];
+  ariaValueTextFormatterForHandle?: SliderProps['ariaValueTextFormatterForHandle'];
+}
+interface SliderInternalProps extends SliderBaseProps, SliderEmitsProps {
+  range?: boolean | SliderRange;
+  value?: number | number[];
+  defaultValue?: number | number[];
+  /** @deprecated Please use `styles.handle` instead */
+  handleStyle?: CSSProperties | CSSProperties[];
+  /** @deprecated Please use `styles.track` instead */
+  trackStyle?: CSSProperties | CSSProperties[];
+  /** @deprecated Please use `styles.rail` instead */
+  railStyle?: CSSProperties;
+}
+interface SliderEmits {
+  'change': (value: any) => void;
+  'afterChange': (value: any) => void;
+  'update:value': (value: any) => void;
+  'changeComplete': (value: any) => void;
+}
+interface SliderEmitsProps {
+  onChange?: SliderEmits['change'];
+  onAfterChange?: SliderEmits['afterChange'];
+  'onUpdate:value'?: SliderEmits['update:value'];
+  onChangeComplete?: SliderEmits['changeComplete'];
+}
+interface SliderSlots {}
+type SliderRange = SliderProps$1['range'];
+interface Opens {
+  [index: number]: boolean;
+}
+declare const Slider: vue723.DefineSetupFnComponent<SliderInternalProps, SliderEmits, SlotsType<SliderSlots>, SliderInternalProps, vue723.PublicProps>;
+//#endregion
+export { Formatter, HandleGeneratorFn, Opens, SliderBaseProps, SliderClassNamesType, SliderEmits, SliderEmitsProps, SliderInternalProps, SliderMarks, SliderProps, SliderSemanticClassNames, SliderSemanticName, SliderSemanticStyles, SliderSlots, SliderStylesType, SliderTooltipProps, Slider as default };
