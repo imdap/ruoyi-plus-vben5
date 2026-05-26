@@ -61,6 +61,7 @@ const offlineIconList = [
   'ep:fold',
   'lucide:book-open-text',
   'lucide:copyright',
+  'arcticons:openai-chatgpt',
 ];
 
 // Deduplicate list
