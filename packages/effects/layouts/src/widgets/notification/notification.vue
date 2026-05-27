@@ -74,7 +74,10 @@ const computedNotificationList = computed(() => {
 });
 </script>
 <template>
-  <VbenPopover v-model:open="open" content-class="relative right-2 !z-[1998] w-90 p-0">
+  <VbenPopover
+    v-model:open="open"
+    content-class="relative right-2 !z-[1998] w-90 p-0"
+  >
     <template #trigger>
       <div class="mr-2 flex-center h-full" @click.stop="toggle()">
         <VbenIconButton class="bell-button relative text-foreground">
@@ -181,8 +184,10 @@ const computedNotificationList = computed(() => {
         </div>
       </template>
 
+      <!-- 后端没有清空功能 -->
       <div
         class="flex items-center justify-between border-t border-border px-4 py-3"
+        v-if="false"
       >
         <VbenButton
           :disabled="notifications.length <= 0"
