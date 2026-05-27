@@ -40,6 +40,8 @@ catalog:
   '@antdv-next/auto-import-resolver': 1.0.7
   '@antdv-next/happy-work-theme': ^1.0.0
   '@antdv-next/icons': 1.0.5
+  '@antdv-next/x': ^1.1.0
+  '@antdv-next/x-markdown': ^0.1.0
   '@ast-grep/napi': ^0.42.0
   '@changesets/changelog-github': ^0.6.0
   '@changesets/cli': ^2.30.0
