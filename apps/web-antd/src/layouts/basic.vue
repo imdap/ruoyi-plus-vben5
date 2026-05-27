@@ -17,6 +17,7 @@ import { useAccessStore, useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
 import { GithubOutlined, UserOutlined } from '@antdv-next/icons';
+import { Badge } from 'antdv-next';
 
 import { $t } from '#/locales';
 import { resetRoutes } from '#/router';
@@ -158,18 +159,24 @@ useVersionUpdate();
       />
     </template>
     <template #notification>
-      <Notification
-        :dot="notifyStore.showDot"
-        :notifications="notifyStore.notifications"
-        :tab-list="notificationTabList"
-        v-model:current-tab="currentTab"
-        @click="handleNotificationClick"
-        @clear="notifyStore.clearAllMessage"
-        @make-all="notifyStore.setAllRead"
-        @read="notifyStore.setRead"
-        @view-all="handleViewAll"
-        @remove="notifyStore.removeMessage"
-      />
+      <Badge
+        :count="notifyStore.unreadNotifications.length"
+        :offset="[-5, 6]"
+        size="small"
+      >
+        <Notification
+          :dot="false"
+          :notifications="notifyStore.notifications"
+          :tab-list="notificationTabList"
+          v-model:current-tab="currentTab"
+          @click="handleNotificationClick"
+          @clear="notifyStore.clearAllMessage"
+          @make-all="notifyStore.setAllRead"
+          @read="notifyStore.setRead"
+          @view-all="handleViewAll"
+          @remove="notifyStore.removeMessage"
+        />
+      </Badge>
     </template>
     <template #extra>
       <AuthenticationLoginExpiredModal

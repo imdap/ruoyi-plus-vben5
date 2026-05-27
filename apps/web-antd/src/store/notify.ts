@@ -77,6 +77,10 @@ export const useNotifyStore = defineStore(
       );
     });
 
+    const unreadNotifications = computed(() => {
+      return notifications.value.filter((item) => !item.isRead);
+    });
+
     /**
      * 开始监听sse消息 & 从后端获取持久化消息
      */
@@ -209,6 +213,7 @@ export const useNotifyStore = defineStore(
       showDot,
       startListeningMessage,
       removeMessage,
+      unreadNotifications,
     };
   },
   {
