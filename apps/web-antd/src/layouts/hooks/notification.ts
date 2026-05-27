@@ -12,14 +12,18 @@ export function useNotification() {
   const notificationTabList = [
     {
       label: '消息',
-      value: 'message',
+      value: 'system',
     },
     {
       label: '通知',
       value: 'notice',
     },
+    {
+      label: '工作',
+      value: 'workflow',
+    },
   ];
-  const currentTab = ref('message');
+  const currentTab = ref('system');
 
   function handleViewAll() {
     window.message.warning('暂未开放');
@@ -50,7 +54,6 @@ export function useNotification() {
       // 解析路径和参数 支持带参跳转
       const { path, params } = extractPathAndParams(item.link);
       navigateTo(path, params);
-      return;
     }
   }
 
