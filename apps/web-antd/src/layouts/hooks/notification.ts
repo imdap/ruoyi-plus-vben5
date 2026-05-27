@@ -3,10 +3,11 @@ import type { NotificationItem } from '@vben/layouts';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { useVbenModal } from '@vben/common-ui';
-
 import { useNotifyStore } from '#/store/notify';
-import noticePreviewModal from '#/views/system/notice/notice-priview-modal.vue';
+import {
+  notificationMitt,
+  useNotificationMitt,
+} from '#/utils/mitt/notification';
 
 export function useNotification() {
   const notifyStore = useNotifyStore();
@@ -54,14 +55,13 @@ export function useNotification() {
     }
   }
 
-  const [NoticePreviewModal, previewModalApi] = useVbenModal({
-    connectedComponent: noticePreviewModal,
-  });
+  const { NoticePreviewModal } = useNotificationMitt();
 
   function handleNotificationClick(item: NotificationItem) {
     // 预览通知公告
     if (item.type === 'notice' && item.extra) {
-      previewModalApi.setData({ record: item.extra }).open();
+      // 改为发送消息
+      notificationMitt.emit('openModal', item.extra);
       return;
     }
     // 如果通知项有链接，点击时跳转

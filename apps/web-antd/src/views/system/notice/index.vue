@@ -10,10 +10,10 @@ import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import { noticeList, noticeRemove } from '#/api/system/notice';
+import { notificationMitt } from '#/utils/mitt/notification';
 
 import { columns, querySchema } from './data';
 import noticeModal from './notice-modal.vue';
-import noticePreviewModal from './notice-priview-modal.vue';
 
 const formOptions: VbenFormProps = {
   commonConfig: {
@@ -65,10 +65,6 @@ const [NoticeModal, modalApi] = useVbenModal({
   connectedComponent: noticeModal,
 });
 
-const [NoticePreviewModal, previewModalApi] = useVbenModal({
-  connectedComponent: noticePreviewModal,
-});
-
 function handleAdd() {
   modalApi.setData({});
   modalApi.open();
@@ -85,7 +81,7 @@ async function handleDelete(row: Notice) {
 }
 
 function handlePreview(record: Notice) {
-  previewModalApi.setData({ record }).open();
+  notificationMitt.emit('openModal', record);
 }
 
 function handleMultiDelete() {
@@ -154,6 +150,5 @@ function handleMultiDelete() {
       </template>
     </BasicTable>
     <NoticeModal @reload="tableApi.query()" />
-    <NoticePreviewModal />
   </Page>
 </template>
