@@ -3,7 +3,10 @@ import type { NotificationItem } from '@vben/layouts';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { useVbenModal } from '@vben/common-ui';
+
 import { useNotifyStore } from '#/store/notify';
+import noticePreviewModal from '#/views/system/notice/notice-priview-modal.vue';
 
 export function useNotification() {
   const notifyStore = useNotifyStore();
@@ -50,8 +53,17 @@ export function useNotification() {
       });
     }
   }
+
+  const [NoticePreviewModal, previewModalApi] = useVbenModal({
+    connectedComponent: noticePreviewModal,
+  });
+
   function handleNotificationClick(item: NotificationItem) {
-    console.log(item.link);
+    // 预览通知公告
+    if (item.type === 'notice' && item.extra) {
+      previewModalApi.setData({ record: item.extra }).open();
+      return;
+    }
     // 如果通知项有链接，点击时跳转
     if (item.link) {
       // 解析路径和参数 支持带参跳转
@@ -66,6 +78,7 @@ export function useNotification() {
     currentTab,
     handleViewAll,
     handleNotificationClick,
+    NoticePreviewModal,
   };
 }
 

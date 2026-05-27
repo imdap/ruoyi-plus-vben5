@@ -103,7 +103,11 @@ const computedNotificationList = computed(() => {
         <VbenSegmented v-model="currentTab" :tabs="tabList" />
       </div>
 
-      <VbenScrollbar v-if="computedNotificationList.length > 0">
+      <!-- 加key解决切换分段器 滚动条没有重新加载 -->
+      <VbenScrollbar
+        v-if="computedNotificationList.length > 0"
+        :key="currentTab"
+      >
         <ul class="!flex max-h-[360px] w-full flex-col">
           <template v-for="item in computedNotificationList" :key="item.title">
             <li

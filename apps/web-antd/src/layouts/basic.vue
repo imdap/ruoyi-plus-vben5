@@ -101,6 +101,7 @@ const {
   currentTab,
   handleViewAll,
   handleNotificationClick,
+  NoticePreviewModal,
 } = useNotification();
 
 watch(
@@ -177,6 +178,8 @@ useVersionUpdate();
           @remove="notifyStore.removeMessage"
         />
       </Badge>
+
+      <NoticePreviewModal />
     </template>
     <template #extra>
       <AuthenticationLoginExpiredModal

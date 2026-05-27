@@ -84,8 +84,8 @@ async function handleDelete(row: Notice) {
   await tableApi.query();
 }
 
-function handlePreview(id: string) {
-  previewModalApi.setData({ id }).open();
+function handlePreview(record: Notice) {
+  previewModalApi.setData({ record }).open();
 }
 
 function handleMultiDelete() {
@@ -128,7 +128,7 @@ function handleMultiDelete() {
       </template>
       <template #action="{ row }">
         <Space>
-          <action-button @click="handlePreview(row.noticeId)">
+          <action-button @click="handlePreview(row)">
             {{ $t('pages.common.preview') }}
           </action-button>
           <action-button

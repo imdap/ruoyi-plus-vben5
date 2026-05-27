@@ -5,16 +5,17 @@ import type { Notice } from '#/api/system/notice/model';
 
 import { computed, shallowRef } from 'vue';
 
+import { useAccess } from '@vben/access';
 import { useVbenModal } from '@vben/common-ui';
 import { DictEnum } from '@vben/constants';
 
 import { Descriptions } from 'antdv-next';
 
-import { noticeInfo } from '#/api/system/notice';
 import { contentWithOssIdTransform } from '#/components/tinymce/src/helper';
 import { renderDict } from '#/utils/render';
 
 const currentNotice = shallowRef<Notice | null>(null);
+  const {hasAccessByCodes}= useAccess();
 
 const [BasicModal, modalApi] = useVbenModal({
   class: 'w-[800px]',
@@ -26,9 +27,9 @@ const [BasicModal, modalApi] = useVbenModal({
     }
     modalApi.modalLoading(true);
 
-    const { id } = modalApi.getData() as { id: number | string };
-    const record = await noticeInfo(id);
-    if (record.noticeContent?.includes('data-oss-id=')) {
+    const { record } = modalApi.getData() as { record: Notice };
+    if (record.noticeContent?.includes('data-oss-id=')
+          && hasAccessByCodes(['system:notice:query'])) {
       record.noticeContent =
         (await contentWithOssIdTransform(record.noticeContent)) ?? '';
     }
