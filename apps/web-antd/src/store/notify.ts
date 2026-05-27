@@ -72,10 +72,14 @@ export const useNotifyStore = defineStore('app-notify', () => {
     }
     // 获取后端持久化消息
     const notifications = await getNotificationList();
-    flattenDeep(Object.values(notifications)).forEach((m) => {
-      const item = backNotificationToVbenNotification(m, userId.value);
-      notificationList.value.unshift(item);
-    });
+    flattenDeep(Object.values(notifications))
+      .toSorted(
+        (a, b) => dayjs(b.createTime).valueOf() - dayjs(a.createTime).valueOf(),
+      )
+      .forEach((m) => {
+        const item = backNotificationToVbenNotification(m, userId.value);
+        notificationList.value.push(item);
+      });
 
     const { data } = sseReturnData;
 
