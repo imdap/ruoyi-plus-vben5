@@ -150,8 +150,10 @@ const computedNotificationList = computed(() => {
                     >
                       <CircleCheckBig class="size-4" />
                     </VbenIconButton>
+                    <!-- 后端没有删除 只有已读 暂时关闭功能 -->
+                    <!-- v-if="item.isRead" -->
                     <VbenIconButton
-                      v-if="item.isRead"
+                      v-if="false"
                       size="xs"
                       variant="ghost"
                       class="h-6 px-2 text-destructive"
