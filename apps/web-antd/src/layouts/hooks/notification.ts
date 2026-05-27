@@ -1,6 +1,6 @@
 import type { NotificationItem } from '@vben/layouts';
 
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useNotifyStore } from '#/store/notify';
@@ -9,20 +9,23 @@ export function useNotification() {
   const notifyStore = useNotifyStore();
   onMounted(() => notifyStore.startListeningMessage());
 
-  const notificationTabList = [
-    {
-      label: '消息',
-      value: 'system',
-    },
-    {
-      label: '通知',
-      value: 'notice',
-    },
-    {
-      label: '工作',
-      value: 'workflow',
-    },
+  const tabConfig = [
+    { label: '消息', value: 'system' },
+    { label: '通知', value: 'notice' },
+    { label: '工作', value: 'workflow' },
   ];
+
+  const notificationTabList = computed(() => {
+    return tabConfig.map((tab) => {
+      const count = notifyStore.notifications.filter(
+        (item) => item.type === tab.value && !item.isRead,
+      ).length;
+      return {
+        label: count > 0 ? `${tab.label}(${count})` : tab.label,
+        value: tab.value,
+      };
+    });
+  });
   const currentTab = ref('system');
 
   function handleViewAll() {
