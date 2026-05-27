@@ -80,7 +80,7 @@ const computedNotificationList = computed(() => {
         <VbenIconButton class="bell-button relative text-foreground">
           <span
             v-if="dot"
-            class="absolute top-0.5 right-0.5 size-2 rounded-sm bg-primary"
+            class="absolute top-0.5 right-0.5 size-2 rounded-full bg-primary"
           ></span>
           <Bell class="size-4" />
         </VbenIconButton>
@@ -113,7 +113,7 @@ const computedNotificationList = computed(() => {
               <slot name="content" :item="item">
                 <span
                   v-if="!item.isRead"
-                  class="absolute top-2 right-2 size-2 rounded-sm bg-primary"
+                  class="absolute top-2 right-2 size-2 rounded-full bg-primary"
                 ></span>
 
                 <span
