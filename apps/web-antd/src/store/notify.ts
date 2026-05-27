@@ -20,12 +20,13 @@ import { useSseMessage } from '#/utils/message';
 function backNotificationToVbenNotification(
   m: NoticeList | SystemList | WorkflowList,
   userId: number | string,
+  readIds: (number | string)[],
 ) {
   const item: NotificationItem = {
     // avatar: `https://api.multiavatar.com/${random(0, 10_000)}.png`, 随机头像
     avatar: SvgMessageUrl,
     date: m.createTime,
-    isRead: false,
+    isRead: readIds.includes(m.messageId),
     message: m.message,
     title: $t('component.notice.title'),
     userId,
@@ -38,142 +39,181 @@ function backNotificationToVbenNotification(
   return item;
 }
 
-export const useNotifyStore = defineStore('app-notify', () => {
-  /**
-   * return才会被持久化 存储全部消息
-   */
-  const notificationList = ref<NotificationItem[]>([]);
+export const useNotifyStore = defineStore(
+  'app-notify',
+  () => {
+    /**
+     * 消息列表(非持久化 每次从接口获取)
+     */
+    const notificationList = ref<NotificationItem[]>([]);
 
-  const userStore = useUserStore();
-  const userId = computed(() => {
-    return userStore.userInfo?.userId || '0';
-  });
+    /**
+     * 已读消息映射(持久化) uid: [messageId]
+     */
+    const readMessageMap = ref<Record<string, (number | string)[]>>({});
 
-  const notifications = computed(() => {
-    return notificationList.value.filter(
-      (item) => item.userId === userId.value,
-    );
-  });
+    const userStore = useUserStore();
+    const userId = computed(() => {
+      return userStore.userInfo?.userId || '0';
+    });
 
-  /**
-   * 开始监听sse消息 & 从后端获取持久化消息
-   */
-  async function startListeningMessage() {
-    // 默认sse 使用 websocket自行开启注释
-    // const websocketReturnData = useWebSocketMessage();
-    // if (!websocketReturnData) {
-    //   return;
-    // }
-    // const { data } = websocketReturnData;
-
-    const sseReturnData = useSseMessage();
-    if (!sseReturnData) {
-      return;
+    function getReadIds(): (number | string)[] {
+      return readMessageMap.value[String(userId.value)] || [];
     }
-    // 获取后端持久化消息
-    const notifications = await getNotificationList();
-    flattenDeep(Object.values(notifications))
-      .toSorted(
-        (a, b) => dayjs(b.createTime).valueOf() - dayjs(a.createTime).valueOf(),
-      )
-      .forEach((m) => {
-        const item = backNotificationToVbenNotification(m, userId.value);
-        notificationList.value.push(item);
-      });
 
-    const { data } = sseReturnData;
+    function addReadId(messageId: number | string) {
+      const key = String(userId.value);
+      if (!readMessageMap.value[key]) {
+        readMessageMap.value[key] = [];
+      }
+      if (!readMessageMap.value[key].includes(messageId)) {
+        readMessageMap.value[key].push(messageId);
+      }
+    }
 
-    watch(data, (strMessage) => {
-      if (!strMessage) {
+    const notifications = computed(() => {
+      return notificationList.value.filter(
+        (item) => item.userId === userId.value,
+      );
+    });
+
+    /**
+     * 开始监听sse消息 & 从后端获取持久化消息
+     */
+    async function startListeningMessage() {
+      // 默认sse 使用 websocket自行开启注释
+      // const websocketReturnData = useWebSocketMessage();
+      // if (!websocketReturnData) {
+      //   return;
+      // }
+      // const { data } = websocketReturnData;
+
+      const sseReturnData = useSseMessage();
+      if (!sseReturnData) {
         return;
       }
-      console.log(`接收到消息: ${strMessage}`);
+      // 获取后端持久化消息
+      const notifications = await getNotificationList();
+      const readIds = getReadIds();
+      flattenDeep(Object.values(notifications))
+        .toSorted(
+          (a, b) =>
+            dayjs(b.createTime).valueOf() - dayjs(a.createTime).valueOf(),
+        )
+        .forEach((m) => {
+          const item = backNotificationToVbenNotification(
+            m,
+            userId.value,
+            readIds,
+          );
+          notificationList.value.push(item);
+        });
 
-      const m = JSON.parse(strMessage) as SSEMessage;
+      const { data } = sseReturnData;
 
-      window.notification.success({
-        description: m.message,
-        duration: 3,
-        title: $t('component.notice.received'),
+      watch(data, (strMessage) => {
+        if (!strMessage) {
+          return;
+        }
+        console.log(`接收到消息: ${strMessage}`);
+
+        const m = JSON.parse(strMessage) as SSEMessage;
+
+        window.notification.success({
+          description: m.message,
+          duration: 3,
+          title: $t('component.notice.received'),
+        });
+
+        notificationList.value.unshift({
+          // avatar: `https://api.multiavatar.com/${random(0, 10_000)}.png`, 随机头像
+          avatar: SvgMessageUrl,
+          date: dayjs(m.timestamp).format('YYYY-MM-DD HH:mm:ss'),
+          isRead: false,
+          message: m.message,
+          title: $t('component.notice.title'),
+          userId: userId.value,
+          type: m.type,
+          id: m.messageId,
+          link: m.path,
+        });
+
+        // 需要手动置空 vue3在值相同时不会触发watch
+        data.value = null;
       });
+    }
 
-      notificationList.value.unshift({
-        // avatar: `https://api.multiavatar.com/${random(0, 10_000)}.png`, 随机头像
-        avatar: SvgMessageUrl,
-        date: dayjs(m.timestamp).format('YYYY-MM-DD HH:mm:ss'),
-        isRead: false,
-        message: m.message,
-        title: $t('component.notice.title'),
-        userId: userId.value,
-        type: m.type,
-        id: m.messageId,
-        link: m.path,
-      });
+    /**
+     * 设置全部已读
+     */
+    function setAllRead() {
+      notificationList.value
+        .filter((item) => item.userId === userId.value)
+        .forEach((item) => {
+          if (!item.isRead) {
+            item.isRead = true;
+            addReadId(item.id);
+          }
+        });
+    }
 
-      // 需要手动置空 vue3在值相同时不会触发watch
-      data.value = null;
-    });
-  }
-
-  /**
-   * 设置全部已读
-   */
-  function setAllRead() {
-    notificationList.value
-      .filter((item) => item.userId === userId.value)
-      .forEach((item) => {
+    /**
+     * 设置单条消息已读
+     * @param item 通知
+     */
+    function setRead(item: NotificationItem) {
+      if (!item.isRead) {
         item.isRead = true;
-      });
-  }
+        addReadId(item.id);
+      }
+    }
 
-  /**
-   * 设置单条消息已读
-   * @param item 通知
-   */
-  function setRead(item: NotificationItem) {
-    !item.isRead && (item.isRead = true);
-  }
+    /**
+     * 清空全部消息
+     */
+    function clearAllMessage() {
+      notificationList.value = notificationList.value.filter(
+        (item) => item.userId !== userId.value,
+      );
+    }
 
-  /**
-   * 清空全部消息
-   */
-  function clearAllMessage() {
-    notificationList.value = notificationList.value.filter(
-      (item) => item.userId !== userId.value,
+    function removeMessage(item: NotificationItem) {
+      notificationList.value = notificationList.value.filter(
+        (i) => i.id !== item.id,
+      );
+    }
+
+    /**
+     * 只需要空实现即可
+     * 否则会在退出登录清空所有
+     */
+    function $reset() {
+      // notificationList.value = [];
+    }
+    /**
+     * 显示小圆点
+     */
+    const showDot = computed(() =>
+      notificationList.value
+        .filter((item) => item.userId === userId.value)
+        .some((item) => !item.isRead),
     );
-  }
 
-  function removeMessage(item: NotificationItem) {
-    notificationList.value = notificationList.value.filter(
-      (i) => i.id !== item.id,
-    );
-  }
-
-  /**
-   * 只需要空实现即可
-   * 否则会在退出登录清空所有
-   */
-  function $reset() {
-    // notificationList.value = [];
-  }
-  /**
-   * 显示小圆点
-   */
-  const showDot = computed(() =>
-    notificationList.value
-      .filter((item) => item.userId === userId.value)
-      .some((item) => !item.isRead),
-  );
-
-  return {
-    $reset,
-    clearAllMessage,
-    notificationList,
-    notifications,
-    setAllRead,
-    setRead,
-    showDot,
-    startListeningMessage,
-    removeMessage,
-  };
-});
+    return {
+      $reset,
+      clearAllMessage,
+      notifications,
+      readMessageMap,
+      setAllRead,
+      setRead,
+      showDot,
+      startListeningMessage,
+      removeMessage,
+    };
+  },
+  {
+    persist: {
+      pick: ['readMessageMap'],
+    },
+  },
+);
