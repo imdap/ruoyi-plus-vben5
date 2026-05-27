@@ -188,6 +188,7 @@
     "global": "Global",
     "search": "Global Search",
     "logout": "Logout",
+    "escape": "Close Current Window",
     "preferences": "Preferences"
   },
   "widget": {
