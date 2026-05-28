@@ -58,6 +58,8 @@ export function useNotification() {
   const { NoticePreviewModal } = useNotificationMitt();
 
   function handleNotificationClick(item: NotificationItem) {
+    // 设置为已读
+    notifyStore.setRead(item);
     // 预览通知公告
     if (item.type === 'notice' && item.extra) {
       // 改为发送消息

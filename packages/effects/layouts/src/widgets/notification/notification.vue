@@ -147,8 +147,10 @@ const computedNotificationList = computed(() => {
                 >
                   <slot name="action" :item="item">
                     <slot name="action-prepend" :item="item"></slot>
+                    <!-- !item.isRead -->
+                    <!-- 已读已经放到外部整体调用 不需要在右侧显示确认已读按钮 -->
                     <VbenIconButton
-                      v-if="!item.isRead"
+                      v-if="false"
                       size="xs"
                       variant="ghost"
                       class="h-6 px-2"
