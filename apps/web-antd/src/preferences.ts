@@ -102,8 +102,8 @@ export const overridesPreferences = defineOverridesPreferences({
    *
    * !!! 更改配置后请清空浏览器缓存
    */
-  // logo: {
-  //   enable: true,
-  //   source: '',
-  // },
+  logo: {
+    enable: true,
+    source: '/plus-vben.png',
+  },
 });
