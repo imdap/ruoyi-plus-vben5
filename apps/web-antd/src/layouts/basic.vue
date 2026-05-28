@@ -167,7 +167,7 @@ useVersionUpdate();
       >
         <Notification
           :dot="false"
-          :notifications="notifyStore.notifications"
+          :notifications="notifyStore.notificationList"
           :tab-list="notificationTabList"
           v-model:current-tab="currentTab"
           @click="handleNotificationClick"

@@ -8,7 +8,6 @@ import { computed, ref, watch } from 'vue';
 
 import { SvgMessageUrl } from '@vben/icons';
 import { $t } from '@vben/locales';
-import { useUserStore } from '@vben/stores';
 
 import dayjs from 'dayjs';
 import { flattenDeep } from 'lodash-es';
@@ -19,21 +18,17 @@ import { useSseMessage } from '#/utils/message';
 
 function backNotificationToVbenNotification(
   m: NoticeList | SystemList | WorkflowList,
-  userId: number | string,
   readIds: (number | string)[],
 ) {
   const item: NotificationItem = {
-    // avatar: `https://api.multiavatar.com/${random(0, 10_000)}.png`, 随机头像
     avatar: SvgMessageUrl,
     date: m.createTime,
     isRead: readIds.includes(m.messageId),
     message: m.message,
     title: $t('component.notice.title'),
-    userId,
     type: m.category,
     id: m.messageId,
     link: m.path,
-    // 拓展 存储消息公告
     extra: m?.data,
   };
   return item;
@@ -48,37 +43,18 @@ export const useNotifyStore = defineStore(
     const notificationList = ref<NotificationItem[]>([]);
 
     /**
-     * 已读消息映射(持久化) uid: [messageId]
+     * 已读消息ID列表(持久化)
      */
-    const readMessageMap = ref<Record<string, (number | string)[]>>({});
-
-    const userStore = useUserStore();
-    const userId = computed(() => {
-      return userStore.userInfo?.userId || '0';
-    });
-
-    function getReadIds(): (number | string)[] {
-      return readMessageMap.value[String(userId.value)] || [];
-    }
+    const readIds = ref<(number | string)[]>([]);
 
     function addReadId(messageId: number | string) {
-      const key = String(userId.value);
-      if (!readMessageMap.value[key]) {
-        readMessageMap.value[key] = [];
-      }
-      if (!readMessageMap.value[key].includes(messageId)) {
-        readMessageMap.value[key].push(messageId);
+      if (!readIds.value.includes(messageId)) {
+        readIds.value.push(messageId);
       }
     }
 
-    const notifications = computed(() => {
-      return notificationList.value.filter(
-        (item) => item.userId === userId.value,
-      );
-    });
-
     const unreadNotifications = computed(() => {
-      return notifications.value.filter((item) => !item.isRead);
+      return notificationList.value.filter((item) => !item.isRead);
     });
 
     /**
@@ -97,9 +73,8 @@ export const useNotifyStore = defineStore(
         return;
       }
       // 获取后端持久化消息
-      const notifications = await getNotificationList();
-      const readIds = getReadIds();
-      flattenDeep(Object.values(notifications))
+      const notificationResp = await getNotificationList();
+      flattenDeep(Object.values(notificationResp))
         .toSorted(
           (a, b) =>
             dayjs(b.createTime).valueOf() - dayjs(a.createTime).valueOf(),
@@ -107,8 +82,7 @@ export const useNotifyStore = defineStore(
         .forEach((m) => {
           const item = backNotificationToVbenNotification(
             m,
-            userId.value,
-            readIds,
+            readIds.value,
           );
           notificationList.value.push(item);
         });
@@ -130,13 +104,11 @@ export const useNotifyStore = defineStore(
         });
 
         notificationList.value.unshift({
-          // avatar: `https://api.multiavatar.com/${random(0, 10_000)}.png`, 随机头像
           avatar: SvgMessageUrl,
           date: dayjs(m.timestamp).format('YYYY-MM-DD HH:mm:ss'),
           isRead: false,
           message: m.message,
           title: $t('component.notice.title'),
-          userId: userId.value,
           type: m.type,
           id: m.messageId,
           link: m.path,
@@ -151,14 +123,12 @@ export const useNotifyStore = defineStore(
      * 设置全部已读
      */
     function setAllRead() {
-      notificationList.value
-        .filter((item) => item.userId === userId.value)
-        .forEach((item) => {
-          if (!item.isRead) {
-            item.isRead = true;
-            addReadId(item.id);
-          }
-        });
+      notificationList.value.forEach((item) => {
+        if (!item.isRead) {
+          item.isRead = true;
+          addReadId(item.id);
+        }
+      });
     }
 
     /**
@@ -176,9 +146,7 @@ export const useNotifyStore = defineStore(
      * 清空全部消息
      */
     function clearAllMessage() {
-      notificationList.value = notificationList.value.filter(
-        (item) => item.userId !== userId.value,
-      );
+      notificationList.value = [];
     }
 
     function removeMessage(item: NotificationItem) {
@@ -187,27 +155,19 @@ export const useNotifyStore = defineStore(
       );
     }
 
-    /**
-     * 只需要空实现即可
-     * 否则会在退出登录清空所有
-     */
     function $reset() {
-      // notificationList.value = [];
+      notificationList.value = [];
     }
     /**
      * 显示小圆点
      */
-    const showDot = computed(() =>
-      notificationList.value
-        .filter((item) => item.userId === userId.value)
-        .some((item) => !item.isRead),
-    );
+    const showDot = computed(() => unreadNotifications.value.length > 0);
 
     return {
       $reset,
       clearAllMessage,
-      notifications,
-      readMessageMap,
+      notificationList,
+      readIds,
       setAllRead,
       setRead,
       showDot,
@@ -218,7 +178,7 @@ export const useNotifyStore = defineStore(
   },
   {
     persist: {
-      pick: ['readMessageMap'],
+      pick: ['readIds'],
     },
   },
 );

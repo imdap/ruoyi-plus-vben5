@@ -21,7 +21,7 @@ export function useNotification() {
 
   const notificationTabList = computed(() => {
     return tabConfig.map((tab) => {
-      const count = notifyStore.notifications.filter(
+      const count = notifyStore.notificationList.filter(
         (item) => item.type === tab.value,
       ).length;
       return {
