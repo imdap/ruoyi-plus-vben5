@@ -28,12 +28,6 @@
     background-color: #f4f7f9;
   }
 
-  /* .loading.hidden {
-    visibility: hidden;
-    opacity: 0;
-    transition: all 0.6s ease-out;
-  } */
-
   .loading .title {
     margin-top: 36px;
     font-size: 30px;
@@ -49,241 +43,216 @@
   }
 
   /** 下面是自定义 **/
-  /* From Uiverse.io by Admin12121 */
-  .content {
-    width: 300px;
-    height: 300px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  /** 正常接入会只有一种主题色 在这直接改就行
+  并没有做动态跟随主题色是因为在vue挂载前(css变量)未生效前拿不到对应的主题色
+  自己把主题色确认之后 在这直接改
+  **/
+  :root {
+    --loading-primary: #1677ff;
+    --loading-primary-dark: color-mix(
+      in oklch,
+      var(--loading-primary) 88%,
+      black
+    );
+    --loading-primary-light: color-mix(
+      in oklch,
+      var(--loading-primary) 39%,
+      white
+    );
+    --loading-primary-medium: color-mix(
+      in oklch,
+      var(--loading-primary) 64%,
+      white
+    );
   }
 
-  .content .planet {
-    width: 65%;
-    height: 65%;
-    background-color: #546c8c;
-    border-radius: 100%;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    transform-origin: center center;
-    box-shadow: inset 2px -10px 0px rgba(0, 0, 0, 0.1);
-    animation: planet 5s ease infinite alternate;
-    /* planet ring */
-    /* to cover the back of the ring */
-    /* planet spots */
+  .container {
+    background-color: #414141;
   }
-
-  @keyframes planet {
-    0% {
-      transform: rotate(10deg);
-    }
-
+  @keyframes bounce {
+    0%,
     100% {
-      transform: rotate(-10deg);
+      translate: 0px 36px;
     }
-  }
-
-  .content .planet .ring {
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    border-radius: 100%;
-    background-color: #bacbd9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform-origin: 33% center;
-    box-shadow:
-      2px -10px 0px rgba(0, 0, 0, 0.1),
-      inset -5px -10px 0px rgba(0, 0, 0, 0.1);
-    animation: ring 3s ease infinite;
-    /* small ball */
-    /* inner ring */
-  }
-
-  @keyframes ring {
-    0% {
-      transform: rotateX(110deg) rotateZ(0deg) translate(-50px, 5px);
-    }
-
-    100% {
-      transform: rotateX(110deg) rotateZ(360deg) translate(-50px, 5px);
-    }
-  }
-
-  .content .planet .ring:before {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 30px;
-    border-radius: 100%;
-    background-color: #7ea1bf;
-    z-index: 2;
-    left: calc(0px - 5px);
-    box-shadow: inset -3px 3px 0px rgba(0, 0, 0, 0.2);
-  }
-
-  .content .planet .ring:after {
-    content: '';
-    position: absolute;
-    width: 240px;
-    height: 240px;
-    border-radius: 100%;
-    background-color: #7ea1bf;
-    box-shadow: inset 2px -10px 0px rgba(0, 0, 0, 0.1);
-  }
-
-  .content .planet .cover-ring {
-    position: absolute;
-    width: 100%;
-    height: 50%;
-    border-bottom-left-radius: 80%;
-    border-bottom-right-radius: 80%;
-    border-top-left-radius: 100px;
-    border-top-right-radius: 100px;
-    transform: translate(0px, -17px);
-    background-color: #546c8c;
-    z-index: 2;
-    box-shadow: inset 0px -2px 0px rgba(0, 0, 0, 0.1);
-  }
-
-  .content .planet .spots {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    z-index: 2;
-  }
-
-  .content .planet .spots span {
-    width: 30px;
-    height: 30px;
-    background-color: #3c4359;
-    position: absolute;
-    border-radius: 100%;
-    box-shadow: inset -2px 3px 0px rgba(0, 0, 0, 0.3);
-    animation: dots 5s ease infinite alternate;
-  }
-
-  @keyframes dots {
-    0% {
-      box-shadow: inset -3px 3px 0px rgba(0, 0, 0, 0.3);
-    }
-
-    100% {
-      box-shadow: inset 3px 3px 0px rgba(0, 0, 0, 0.3);
-    }
-  }
-
-  .content .planet .spots span:nth-child(1) {
-    top: 20px;
-    right: 50px;
-  }
-
-  .content .planet .spots span:nth-child(2) {
-    top: 40px;
-    left: 50px;
-    width: 15px;
-    height: 15px;
-  }
-
-  .content .planet .spots span:nth-child(3) {
-    top: 80px;
-    left: 20px;
-    width: 25px;
-    height: 25px;
-  }
-
-  .content .planet .spots span:nth-child(4) {
-    top: 80px;
-    left: 90px;
-    width: 40px;
-    height: 40px;
-  }
-
-  .content .planet .spots span:nth-child(5) {
-    top: 160px;
-    left: 70px;
-    width: 15px;
-    height: 15px;
-  }
-
-  .content .planet .spots span:nth-child(6) {
-    top: 165px;
-    left: 125px;
-    width: 10px;
-    height: 10px;
-  }
-
-  .content .planet .spots span:nth-child(7) {
-    top: 90px;
-    left: 150px;
-    width: 15px;
-    height: 15px;
-  }
-
-  .content p {
-    color: #bacbd9;
-    font-size: 14px;
-    z-index: 2;
-    position: absolute;
-    bottom: -20px;
-    font-family: 'Roboto Mono', monospace;
-    animation: text 4s ease infinite;
-    width: 100px;
-    text-align: center;
-  }
-
-  @keyframes text {
-    0% {
-      transform: translateX(-30px);
-      letter-spacing: 0px;
-      color: #bacbd9;
-    }
-
-    25% {
-      letter-spacing: 3px;
-      color: #7ea1bf;
-    }
-
     50% {
-      transform: translateX(30px);
-      letter-spacing: 0px;
-      color: #bacbd9;
+      translate: 0px 46px;
     }
-
-    75% {
-      letter-spacing: 3px;
-      color: #7ea1bf;
-    }
-
+  }
+  @keyframes bounce2 {
+    0%,
     100% {
-      transform: translateX(-30px);
-      letter-spacing: 0px;
-      color: #bacbd9;
+      translate: 0px 46px;
     }
+    50% {
+      translate: 0px 56px;
+    }
+  }
+
+  @keyframes umbral {
+    0%,
+    100% {
+      stop-opacity: 0.18;
+    }
+    50% {
+      stop-opacity: 0.52;
+    }
+  }
+  @keyframes partciles {
+    0%,
+    100% {
+      translate: 0px 16px;
+    }
+    50% {
+      translate: 0px 6px;
+    }
+  }
+  #particles {
+    animation: partciles 4s ease-in-out infinite;
+  }
+  #animatedStop {
+    animation: umbral 4s infinite;
+  }
+  #bounce {
+    animation: bounce 4s ease-in-out infinite;
+    translate: 0px 36px;
+  }
+  #bounce2 {
+    animation: bounce2 4s ease-in-out infinite;
+    translate: 0px 46px;
+    animation-delay: 0.5s;
   }
 </style>
 <div class="loading" id="__app-loading__">
-  <div class="content">
-    <div class="planet">
-      <div class="ring"></div>
-      <div class="cover-ring"></div>
-      <div class="spots">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  </div>
+  <!-- From Uiverse.io by Juanes200122 -->
+  <svg xmlns="http://www.w3.org/2000/svg" height="200" width="200">
+    <g style="order: -1">
+      <polygon
+        transform="rotate(45 100 100)"
+        stroke-width="1"
+        style="stroke: var(--loading-primary)"
+        fill="none"
+        points="70,70 148,50 130,130 50,150"
+        id="bounce"
+      ></polygon>
+      <polygon
+        transform="rotate(45 100 100)"
+        stroke-width="1"
+        style="stroke: var(--loading-primary)"
+        fill="none"
+        points="70,70 148,50 130,130 50,150"
+        id="bounce2"
+      ></polygon>
+      <polygon
+        transform="rotate(45 100 100)"
+        stroke-width="2"
+        fill="#414750"
+        points="70,70 150,50 130,130 50,150"
+      ></polygon>
+      <polygon
+        stroke-width="2"
+        fill="url(#gradiente)"
+        points="100,70 150,100 100,130 50,100"
+      ></polygon>
+      <defs>
+        <linearGradient y2="100%" x2="10%" y1="0%" x1="0%" id="gradiente">
+          <stop
+            style="stop-color: #1e2026; stop-opacity: 1"
+            offset="20%"
+          ></stop>
+          <stop
+            style="stop-color: #414750; stop-opacity: 1"
+            offset="60%"
+          ></stop>
+        </linearGradient>
+      </defs>
+      <polygon
+        transform="translate(20, 31)"
+        stroke-width="2"
+        stroke=""
+        style="fill: var(--loading-primary-dark)"
+        points="80,50 80,75 80,99 40,75"
+      ></polygon>
+      <polygon
+        transform="translate(20, 31)"
+        stroke-width="2"
+        fill="url(#gradiente2)"
+        points="40,-40 80,-40 80,99 40,75"
+      ></polygon>
+      <defs>
+        <linearGradient y2="100%" x2="0%" y1="-17%" x1="10%" id="gradiente2">
+          <stop
+            style="stop-color: var(--loading-primary); stop-opacity: 0"
+            offset="20%"
+          ></stop>
+          <stop
+            style="stop-color: var(--loading-primary); stop-opacity: 0.33"
+            offset="100%"
+            id="animatedStop"
+          ></stop>
+        </linearGradient>
+      </defs>
+      <polygon
+        transform="rotate(180 100 100) translate(20, 20)"
+        stroke-width="2"
+        stroke=""
+        style="fill: var(--loading-primary)"
+        points="80,50 80,75 80,99 40,75"
+      ></polygon>
+      <polygon
+        transform="rotate(0 100 100) translate(60, 20)"
+        stroke-width="2"
+        fill="url(#gradiente3)"
+        points="40,-40 80,-40 80,85 40,110.2"
+      ></polygon>
+      <defs>
+        <linearGradient y2="100%" x2="10%" y1="0%" x1="0%" id="gradiente3">
+          <stop
+            style="stop-color: var(--loading-primary); stop-opacity: 0"
+            offset="20%"
+          ></stop>
+          <stop
+            style="stop-color: var(--loading-primary); stop-opacity: 0.33"
+            offset="100%"
+            id="animatedStop"
+          ></stop>
+        </linearGradient>
+      </defs>
+      <polygon
+        transform="rotate(45 100 100) translate(80, 95)"
+        stroke-width="2"
+        stroke=""
+        style="fill: var(--loading-primary-light)"
+        points="5,0 5,5 0,5 0,0"
+        id="particles"
+      ></polygon>
+      <polygon
+        transform="rotate(45 100 100) translate(80, 55)"
+        stroke-width="2"
+        stroke=""
+        style="fill: var(--loading-primary-medium)"
+        points="6,0 6,6 0,6 0,0"
+        id="particles"
+      ></polygon>
+      <polygon
+        transform="rotate(45 100 100) translate(70, 80)"
+        stroke-width="2"
+        fill="#fff"
+        points="2,0 2,2 0,2 0,0"
+        id="particles"
+      ></polygon>
+      <polygon
+        stroke-width="2"
+        fill="#292d34"
+        points="29.5,99.8 100,142 100,172 29.5,130"
+      ></polygon>
+      <polygon
+        transform="translate(50, 92)"
+        stroke-width="2"
+        fill="#1f2127"
+        points="50,50 120.5,8 120.5,35 50,80"
+      ></polygon>
+    </g>
+  </svg>
 
   <div class="title">%VITE_APP_TITLE%</div>
 </div>
