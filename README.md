@@ -24,8 +24,8 @@ v5版本采用分仓(包)目录结构, 具体开发路径为: `根目录/apps/we
 
 | 组件/框架  | 版本   |
 | :--------- | :----- |
-| vben       | 5.5.9  |
-| antdv-next | 4.2.6  |
+| vben       | 5.6.0  |
+| antdv-next | 1.3.0  |
 | vue        | 3.5.13 |
 
 对应后端项目: **(分布式 5.X 分支 微服务 2.分支)**
@@ -33,6 +33,10 @@ v5版本采用分仓(包)目录结构, 具体开发路径为: `根目录/apps/we
 分布式 [RuoYi-Vue-Plus](https://gitee.com/dromara/RuoYi-Vue-Plus/tree/5.X/)
 
 微服务 [RuoYi-Cloud-Plus](https://gitee.com/dromara/RuoYi-Cloud-Plus/tree/2.X/)
+
+## 赞助商
+
+- 万级算力服务 https://ku0.com/
 
 ## 预览
 
