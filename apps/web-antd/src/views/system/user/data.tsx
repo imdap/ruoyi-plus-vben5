@@ -20,7 +20,7 @@ export const querySchema: FormSchemaGetter = () => [
   },
   {
     component: 'Input',
-    fieldName: 'phonenumber',
+    fieldName: 'phoneNumber',
     label: '手机号码',
   },
   {
@@ -63,7 +63,7 @@ export const columns: VxeGridProps['columns'] = [
     minWidth: 120,
   },
   {
-    field: 'phonenumber',
+    field: 'phoneNumber',
     title: '手机号',
     formatter({ cellValue }) {
       return cellValue || '暂无';
@@ -128,7 +128,7 @@ export const drawerSchema: FormSchemaGetter = () => [
   },
   {
     component: 'Input',
-    fieldName: 'phonenumber',
+    fieldName: 'phoneNumber',
     label: '手机号码',
     defaultValue: undefined,
     rules: z

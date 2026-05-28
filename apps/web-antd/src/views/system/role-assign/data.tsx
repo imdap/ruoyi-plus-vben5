@@ -9,7 +9,7 @@ export const querySchema: FormSchemaGetter = () => [
   },
   {
     component: 'Input',
-    fieldName: 'phonenumber',
+    fieldName: 'phoneNumber',
     label: '手机号码',
   },
 ];
@@ -30,7 +30,7 @@ export const columns: VxeGridProps['columns'] = [
   },
   {
     title: '手机号',
-    field: 'phonenumber',
+    field: 'phoneNumber',
   },
   {
     field: 'action',

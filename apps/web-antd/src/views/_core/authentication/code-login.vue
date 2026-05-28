@@ -71,7 +71,7 @@ const authStore = useAuthStore();
 async function handleLogin(values: LoginCodeParams) {
   try {
     const requestParams: any = {
-      phonenumber: values.phoneNumber,
+      phoneNumber: values.phoneNumber,
       smsCode: values.code,
       grantType: 'sms',
     };

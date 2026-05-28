@@ -2,12 +2,12 @@ import { alovaInstance } from '#/utils/http';
 
 /**
  * 发送短信验证码
- * @param phonenumber 手机号
+ * @param phoneNumber 手机号
  * @returns void
  */
-export function sendSmsCode(phonenumber: string) {
+export function sendSmsCode(phoneNumber: string) {
   return alovaInstance.get<void>('/resource/sms/code', {
-    params: { phonenumber },
+    params: { phoneNumber },
   });
 }
 

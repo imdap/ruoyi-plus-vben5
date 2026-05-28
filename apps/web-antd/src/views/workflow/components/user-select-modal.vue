@@ -308,7 +308,7 @@ function handleSubmit() {
               <div class="flex flex-col items-baseline text-[12px]">
                 <div>{{ row.nickName }}</div>
                 <div class="opacity-50">
-                  {{ row.phonenumber || '暂无手机号' }}
+                  {{ row.phoneNumber || '暂无手机号' }}
                 </div>
               </div>
             </div>
@@ -340,7 +340,7 @@ function handleSubmit() {
                   {{ row.nickName }}
                 </div>
                 <div class="opacity-50">
-                  {{ row.phonenumber || '暂无手机号' }}
+                  {{ row.phoneNumber || '暂无手机号' }}
                 </div>
               </div>
             </div>

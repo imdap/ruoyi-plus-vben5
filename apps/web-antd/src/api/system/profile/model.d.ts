@@ -34,7 +34,7 @@ export interface User {
   nickName: string;
   userType: string;
   email: string;
-  phonenumber: string;
+  phoneNumber: string;
   sex: string;
   avatar: string;
   status: string;

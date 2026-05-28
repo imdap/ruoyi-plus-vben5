@@ -20,7 +20,7 @@ export interface User {
   loginDate: string;
   loginIp: string;
   nickName: string;
-  phonenumber: string;
+  phoneNumber: string;
   remark: string;
   roles: Role[];
   sex: string;

@@ -40,7 +40,7 @@ const items = computed<DescriptionsProps['items']>(() => {
       label: '账号',
     },
     {
-      content: profile.user.phonenumber || '未绑定手机号',
+      content: profile.user.phoneNumber || '未绑定手机号',
       label: '手机号码',
     },
     {

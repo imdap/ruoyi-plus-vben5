@@ -67,7 +67,7 @@ const [BasicForm, formApi] = useVbenForm({
     },
     {
       component: 'Input',
-      fieldName: 'phonenumber',
+      fieldName: 'phoneNumber',
       label: '电话',
       rules: z.string().regex(/^1[3-9]\d{9}$/, '请输入正确的电话'),
     },
@@ -105,7 +105,7 @@ onMounted(() => {
     'userId',
     'nickName',
     'email',
-    'phonenumber',
+    'phoneNumber',
     'sex',
   ]);
   formApi.setValues(data);

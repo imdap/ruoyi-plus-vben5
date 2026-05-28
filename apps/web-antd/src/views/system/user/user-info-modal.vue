@@ -100,7 +100,7 @@ const items = computed<DescriptionsProps['items']>(() => {
       content: <DictTag dicts={statusOptions} value={status} />,
     },
     { label: '用户信息', content: mixInfo.value },
-    { label: '手机号', content: currentUser.value.phonenumber || '-' },
+    { label: '手机号', content: currentUser.value.phoneNumber || '-' },
     { label: '邮箱', content: currentUser.value.email || '-' },
     {
       label: '岗位',
