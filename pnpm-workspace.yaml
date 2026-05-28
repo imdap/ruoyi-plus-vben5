@@ -229,5 +229,5 @@ allowBuilds:
   core-js: true
   esbuild: true
   json-editor-vue: false
-  lefthook: true
+  lefthook: false
   vue-demi: true
