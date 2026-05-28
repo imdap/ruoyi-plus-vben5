@@ -134,7 +134,7 @@ defineExpose({
       </span>
     </div>
     <VbenButton
-      :class="cn({ 'cursor-wait': loading }, 'h-10')"
+      :class="cn({ 'cursor-wait': loading }, 'h-10 rounded-lg')"
       :loading="loading"
       aria-label="login"
       class="w-full"
