@@ -233,8 +233,8 @@ const alovaInstance = createAlova({
         throw new Error($t('http.apiRequestFailed'));
       }
 
-      // 后端并没有采用严格的{code, msg, data}模式
-      const { code, data, msg, ...other } = axiosResponseData;
+      // 后端v6已经采用严格的{code, msg, data}模式
+      const { code, data, msg } = axiosResponseData;
 
       // 业务状态码为200 则请求成功
       const hasSuccess =
@@ -256,14 +256,7 @@ const alovaInstance = createAlova({
             type: 'success',
           });
         }
-        // 分页情况下为code msg rows total 并没有data字段
-        // 如果有data 直接返回data 没有data将剩余参数(...other)封装为data返回
-        // 需要考虑data为null的情况(比如查询为空) 所以这里直接判断undefined
-        if (data !== undefined) {
-          return data;
-        }
-        // 没有data 将其他参数包装为data
-        return other;
+        return data;
       }
       // 在此处根据自己项目的实际情况对不同的code执行不同的操作
       // 如果不希望中断当前请求，请return数据，否则直接抛出异常即可
