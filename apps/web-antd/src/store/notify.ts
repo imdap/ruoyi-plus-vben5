@@ -80,10 +80,7 @@ export const useNotifyStore = defineStore(
             dayjs(b.createTime).valueOf() - dayjs(a.createTime).valueOf(),
         )
         .forEach((m) => {
-          const item = backNotificationToVbenNotification(
-            m,
-            readIds.value,
-          );
+          const item = backNotificationToVbenNotification(m, readIds.value);
           notificationList.value.push(item);
         });
 
@@ -111,7 +108,8 @@ export const useNotifyStore = defineStore(
           title: $t('component.notice.title'),
           type: m.type,
           id: m.messageId,
-          link: m.path,
+          // notice不需要跳转 不需要存link
+          link: m.type === 'notice' ? undefined : m.path,
         });
 
         // 需要手动置空 vue3在值相同时不会触发watch
