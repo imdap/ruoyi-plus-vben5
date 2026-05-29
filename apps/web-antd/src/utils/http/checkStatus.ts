@@ -2,6 +2,8 @@ import type { AxiosRequestConfig } from 'axios';
 
 import { $t } from '@vben/locales';
 
+import { handleUnauthorizedLogout } from '#/api/helper';
+
 import { showAntdMessage } from './popup';
 
 export function checkStatus(
@@ -17,7 +19,10 @@ export function checkStatus(
       break;
     }
     case 401: {
-      errorMessage = $t('ui.fallback.http.unauthorized');
+      // errorMessage = $t('ui.fallback.http.unauthorized');
+      // 这个函数会抛出UnauthorizedException异常 走不到下面的break
+      // 内部已经处理了message
+      handleUnauthorizedLogout();
       break;
     }
     case 403: {

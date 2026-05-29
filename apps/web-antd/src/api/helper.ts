@@ -54,7 +54,7 @@ let lockLogoutRequest = false;
  * @throws UnauthorizedException 抛出特定的异常
  */
 export function handleUnauthorizedLogout() {
-  const timeoutMsg = $t('http.loginTimeout');
+  const timeoutMsg = $t('ui.fallback.http.unauthorized');
   /**
    * lock 不再请求logout接口
    * 这里已经算异常情况了
