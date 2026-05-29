@@ -101,6 +101,7 @@ const {
   currentTab,
   handleViewAll,
   handleNotificationClick,
+  isPreviewOpen,
   NoticePreviewModal,
 } = useNotification();
 
@@ -167,6 +168,7 @@ useVersionUpdate();
       >
         <Notification
           :dot="false"
+          :keep-open="isPreviewOpen"
           :notifications="notifyStore.notificationList"
           :tab-list="notificationTabList"
           v-model:current-tab="currentTab"

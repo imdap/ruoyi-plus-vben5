@@ -1,6 +1,6 @@
 import type { Notice } from '#/api/system/notice/model';
 
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { mitt } from '@vben/utils';
@@ -19,8 +19,14 @@ export const notificationMitt = mitt<NotificationEvent>();
  * @returns
  */
 export function useNotificationMitt() {
+  // 预览 Modal 的打开状态, 用于让消息通知 Popover 在 Modal 打开期间保持显示
+  const isPreviewOpen = ref(false);
+
   const [NoticePreviewModal, previewModalApi] = useVbenModal({
     connectedComponent: noticePreviewModal,
+    onOpenChange(isOpen) {
+      isPreviewOpen.value = isOpen;
+    },
   });
 
   onMounted(() => {
@@ -34,6 +40,7 @@ export function useNotificationMitt() {
   });
 
   return {
+    isPreviewOpen,
     NoticePreviewModal,
   };
 }

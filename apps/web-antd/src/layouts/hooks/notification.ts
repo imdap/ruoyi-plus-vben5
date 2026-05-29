@@ -55,7 +55,7 @@ export function useNotification() {
     }
   }
 
-  const { NoticePreviewModal } = useNotificationMitt();
+  const { isPreviewOpen, NoticePreviewModal } = useNotificationMitt();
 
   function handleNotificationClick(item: NotificationItem) {
     // 设置为已读
@@ -80,6 +80,7 @@ export function useNotification() {
     currentTab,
     handleViewAll,
     handleNotificationClick,
+    isPreviewOpen,
     NoticePreviewModal,
   };
 }

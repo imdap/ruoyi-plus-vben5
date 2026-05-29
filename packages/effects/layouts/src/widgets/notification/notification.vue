@@ -22,6 +22,11 @@ const props = withDefaults(
   defineProps<{
     /** 显示圆点 */
     dot?: boolean;
+    /**
+     * 锁定打开状态: 为 true 时忽略 Popover 的自动关闭(失焦/点击外部),
+     * 用于点击通知打开预览 Modal 时, 让消息列表保持显示在 Modal 下方
+     */
+    keepOpen?: boolean;
     /** 消息列表 */
     notifications?: NotificationItem[];
     /** 分段器 */
@@ -32,6 +37,7 @@ const props = withDefaults(
   }>(),
   {
     dot: false,
+    keepOpen: false,
     notifications: () => [],
     tabList: () => [],
   },
@@ -50,6 +56,15 @@ const [open, toggle] = useToggle();
 
 const close = () => {
   open.value = false;
+};
+
+const handleOpenUpdate = (val: boolean) => {
+  // keepOpen 为 true 时(例如从通知点开了预览 Modal), 忽略 Popover 的自动关闭请求,
+  // 避免与 Modal 的焦点陷阱争抢导致消息列表消失; 铃铛按钮 toggle 仍可正常开关
+  if (!val && props.keepOpen) {
+    return;
+  }
+  open.value = val;
 };
 
 const handleViewAll = () => {
@@ -75,8 +90,9 @@ const computedNotificationList = computed(() => {
 </script>
 <template>
   <VbenPopover
-    v-model:open="open"
+    :open="open"
     content-class="relative right-2 !z-[1998] w-90 p-0"
+    @update:open="handleOpenUpdate"
   >
     <template #trigger>
       <div class="mr-2 flex-center h-full" @click.stop="toggle()">
