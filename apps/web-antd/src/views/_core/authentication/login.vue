@@ -8,7 +8,7 @@ import { computed, markRaw, onMounted, ref, useTemplateRef } from 'vue';
 import { AuthenticationLogin, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { Input, InputPassword } from 'antdv-next';
+import { Button, Checkbox, Input, InputPassword } from 'antdv-next';
 import { omit } from 'lodash-es';
 
 import { captchaImage } from '#/api/core/captcha';
@@ -129,6 +129,11 @@ async function handleAccountLogin(values: LoginAndRegisterParams) {
     :loading="authStore.loginLoading"
     :show-register="false"
     :show-third-party-login="true"
+    :checkbox-component="Checkbox"
+    :button-component="Button"
+    :submit-btn-extra-props="{ type: 'primary', size: 'large' }"
+    :mobile-login-btn-extra-props="{ size: 'large' }"
+    :qrcode-login-btn-extra-props="{ size: 'large' }"
     @submit="handleAccountLogin"
   >
     <!-- 可通过show-third-party-login控制是否显示第三方登录 -->
