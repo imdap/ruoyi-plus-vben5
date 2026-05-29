@@ -89,7 +89,12 @@ const [BasicDrawer, drawerApi] = useVbenDrawer({
       const record = await clientInfo(id);
       // 不能禁用id为1的记录
       formApi.updateSchema(getStatusSchema(record.id === 1));
-      await formApi.setValues(record);
+      // accessPath/ipWhitelist 在表单中以 tags 形式编辑, 回显时使用后端返回的数组
+      await formApi.setValues({
+        ...record,
+        accessPath: record.accessPathList ?? [],
+        ipWhitelist: record.ipWhitelistList ?? [],
+      });
     } else {
       // 新增模式: 确保状态字段可用
       formApi.updateSchema(getStatusSchema(false));
@@ -108,6 +113,13 @@ async function handleConfirm() {
       return;
     }
     const data = cloneDeep(await formApi.getValues());
+    // tags 形式的数组转回字符串提交给后端
+    if (Array.isArray(data.accessPath)) {
+      data.accessPath = data.accessPath.join('\n');
+    }
+    if (Array.isArray(data.ipWhitelist)) {
+      data.ipWhitelist = data.ipWhitelist.join('\n');
+    }
     await (isUpdate.value ? clientUpdate(data) : clientAdd(data));
     resetInitialized();
     emit('reload');
