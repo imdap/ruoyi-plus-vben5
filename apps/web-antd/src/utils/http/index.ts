@@ -201,6 +201,7 @@ const alovaInstance = createAlova({
           const resp = response.data as unknown as HttpResponse;
           // 抛出异常 不再执行
           if (
+            resp &&
             typeof resp === 'object' &&
             Reflect.has(resp, 'code') &&
             resp.code === UNAUTHORIZED_CODE
