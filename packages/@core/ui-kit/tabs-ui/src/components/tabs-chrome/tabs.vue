@@ -78,7 +78,7 @@ function onMouseDown(e: MouseEvent, tab: TabConfig) {
     ref="contentRef"
     :class="contentClass"
     :style="style"
-    class="tabs-chrome flex! h-full w-max overflow-y-hidden pr-6"
+    class="tabs-chrome flex! h-full w-max pr-6"
   >
     <TransitionGroup name="slide-left">
       <div
@@ -99,7 +99,12 @@ function onMouseDown(e: MouseEvent, tab: TabConfig) {
         @click="active = tab.key"
         @mousedown="onMouseDown($event, tab)"
       >
-        <VbenContextMenu :handler-data="tab" :menus="contextMenus" :modal="false" item-class="pr-6">
+        <VbenContextMenu
+          :handler-data="tab"
+          :menus="contextMenus"
+          :modal="false"
+          item-class="pr-6"
+        >
           <div class="relative size-full px-1">
             <!-- divider -->
             <div
@@ -174,7 +179,9 @@ function onMouseDown(e: MouseEvent, tab: TabConfig) {
   @apply cursor-pointer;
 }
 
-.tabs-chrome__item:not(.dragging):hover:not(.is-active) + .tabs-chrome__item .tabs-chrome__divider {
+.tabs-chrome__item:not(.dragging):hover:not(.is-active)
+  + .tabs-chrome__item
+  .tabs-chrome__divider {
   @apply opacity-0;
 }
 
@@ -182,11 +189,13 @@ function onMouseDown(e: MouseEvent, tab: TabConfig) {
   @apply opacity-0;
 }
 
-.tabs-chrome__item:not(.dragging):hover:not(.is-active) .tabs-chrome__background {
+.tabs-chrome__item:not(.dragging):hover:not(.is-active)
+  .tabs-chrome__background {
   @apply pb-0.5;
 }
 
-.tabs-chrome__item:not(.dragging):hover:not(.is-active) .tabs-chrome__background-content {
+.tabs-chrome__item:not(.dragging):hover:not(.is-active)
+  .tabs-chrome__background-content {
   @apply bg-accent mx-0.5 rounded-md;
 }
 
@@ -194,7 +203,9 @@ function onMouseDown(e: MouseEvent, tab: TabConfig) {
   @apply z-[2];
 }
 
-.tabs-chrome__item:not(.dragging).is-active + .tabs-chrome__item .tabs-chrome__divider {
+.tabs-chrome__item:not(.dragging).is-active
+  + .tabs-chrome__item
+  .tabs-chrome__divider {
   @apply opacity-0!;
 }
 </style>
