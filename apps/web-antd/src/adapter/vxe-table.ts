@@ -48,6 +48,14 @@ setupVbenVxeTable({
           isHover: true,
           // 点击行高亮
           isCurrent: false,
+          /**
+           * @warning
+           * vxe和popconfirm混合使用 即删除操作 会一直获取第一页的对应row 而非当前页对应的row
+           * 在dev是正常的 打包后会复现
+           * 必须给row设置key来解决 暂时未知到底是vxe还是antdv或者vite的问题
+           * 经过测试antdv降级到1.0.1不加这个参数也能解决
+           */
+          useKey: true,
         },
         columnConfig: {
           // 可拖拽列宽
