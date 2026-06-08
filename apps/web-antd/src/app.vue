@@ -6,11 +6,13 @@ import { computed } from 'vue';
 import { useAntdDesignTokens } from '@vben/hooks';
 import { preferences, usePreferences } from '@vben/preferences';
 
-import { App, ConfigProvider, theme } from 'antdv-next';
+import { App, ConfigProvider, Spin, theme } from 'antdv-next';
+import { storeToRefs } from 'pinia';
 
 import { antdLocale } from '#/locales';
 
 import { waveConfigs } from './components/global/button-wave';
+import { useGlobalLoadingStore } from './store/loading';
 import { PopupContext } from './utils/context';
 
 defineOptions({ name: 'App' });
@@ -50,6 +52,9 @@ const otherProps = computed<
     drawer: { mask: { blur: false } },
   };
 });
+
+const loadingStore = useGlobalLoadingStore();
+const { globalLoading } = storeToRefs(loadingStore);
 </script>
 
 <template>
@@ -62,6 +67,13 @@ const otherProps = computed<
     <App :message="{ maxCount: 1 }">
       <RouterView />
       <PopupContext />
+      <!-- 全局loading遮罩 -->
+      <Spin
+        :fullscreen="true"
+        :spinning="globalLoading"
+        :delay="300"
+        size="large"
+      />
     </App>
   </ConfigProvider>
 </template>

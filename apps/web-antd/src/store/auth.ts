@@ -18,6 +18,7 @@ import {
 import { $t } from '#/locales';
 
 import { useDictStore } from './dict';
+import { useGlobalLoadingStore } from './loading';
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
@@ -80,8 +81,10 @@ export const useAuthStore = defineStore('auth', () => {
     };
   }
 
+  const loadingStore = useGlobalLoadingStore();
   async function logout(redirect: boolean = true) {
     try {
+      loadingStore.globalLoading = true;
       // 这两个接口不依赖 不需要await sseClose
       await Promise.all([seeConnectionClose(), doLogout()]);
     } catch (error) {
@@ -95,6 +98,7 @@ export const useAuthStore = defineStore('auth', () => {
         throw new ImpossibleReturn401Exception(error.message);
       }
     } finally {
+      loadingStore.globalLoading = false;
       resetAllStores();
       accessStore.setLoginExpired(false);
 
