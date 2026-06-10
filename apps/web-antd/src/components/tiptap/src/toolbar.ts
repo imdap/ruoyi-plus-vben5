@@ -4,6 +4,7 @@ import type { Ref } from 'vue';
 
 import { computed, ref } from 'vue';
 
+import { prompt } from '@vben/common-ui';
 import { cn } from '@vben/utils';
 
 export type ToolbarBlock =
@@ -27,7 +28,7 @@ export type ToolbarNode =
 export type ToolbarTextAlign = '' | 'center' | 'left' | 'right';
 
 export interface ToolbarItem {
-  action: () => void;
+  action: () => Promise<void> | void;
   icon: string;
   isActive: () => boolean;
   isDisabled?: () => boolean;
@@ -222,23 +223,36 @@ export function useTiptapToolbar(options: UseTiptapToolbarOptions) {
     });
   }
 
-  function setLink() {
-    runCommand((target) => {
-      const previousHref = target.getAttributes('link').href as
-        | string
-        | undefined;
-      const href = window.prompt('请输入链接地址', previousHref ?? 'https://');
+  async function setLink() {
+    const target = options.getEditor();
+    if (!target || options.isDisabled()) {
+      return;
+    }
 
-      if (href === null) {
-        return;
-      }
+    const previousHref = target.getAttributes('link').href as
+      | string
+      | undefined;
+    let href: string | undefined;
 
-      const nextHref = href.trim();
-      if (!nextHref) {
+    try {
+      href = await prompt<string>({
+        content: '请输入链接地址',
+        defaultValue: previousHref ?? 'https://',
+        title: '链接地址',
+      });
+    } catch {
+      return;
+    }
+
+    const nextHref = href?.trim() ?? '';
+    if (!nextHref) {
+      runCommand((target) => {
         target.chain().focus().extendMarkRange('link').unsetLink().run();
-        return;
-      }
+      });
+      return;
+    }
 
+    runCommand((target) => {
       target
         .chain()
         .focus()
@@ -286,19 +300,25 @@ export function useTiptapToolbar(options: UseTiptapToolbarOptions) {
     });
   }
 
-  function insertImageByUrl() {
+  async function insertImageByUrl() {
+    let src: string | undefined;
+
+    try {
+      src = await prompt<string>({
+        content: '请输入图片地址',
+        defaultValue: 'https://',
+        title: '图片地址',
+      });
+    } catch {
+      return;
+    }
+
+    const nextSrc = src?.trim() ?? '';
+    if (!nextSrc) {
+      return;
+    }
+
     runCommand((target) => {
-      const src = window.prompt('请输入图片地址', 'https://');
-
-      if (src === null) {
-        return;
-      }
-
-      const nextSrc = src.trim();
-      if (!nextSrc) {
-        return;
-      }
-
       target.chain().focus().setImage({ src: nextSrc }).run();
     });
   }

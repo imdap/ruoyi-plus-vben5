@@ -1,5 +1,4 @@
 import type { Editor } from '@tiptap/core';
-import type { EditorProps } from '@tiptap/pm/view';
 import type { UploadProps } from 'antdv-next';
 
 import type { Ref } from 'vue';
@@ -23,6 +22,8 @@ interface UploadAndInsertImagesOptions {
   onUploaded: (editor: Editor) => void;
   target: Editor;
 }
+
+type HandlePaste = (view: unknown, event: ClipboardEvent) => boolean;
 
 export async function defaultUploadImage(
   file: File,
@@ -98,6 +99,7 @@ function attachOssIdToImagesBySrc(target: Editor, src: string, ossId: string) {
 function getClipboardImageFiles(event: ClipboardEvent): File[] {
   const items = [...(event.clipboardData?.items ?? [])];
 
+  // eslint-disable-next-line unicorn/no-array-reduce
   return items.reduce<File[]>((files, item) => {
     if (item.kind !== 'file' || !item.type.startsWith('image/')) {
       return files;
@@ -173,10 +175,7 @@ export function useTiptapUpload({
     }
   };
 
-  const handlePaste: NonNullable<EditorProps['handlePaste']> = (
-    _view,
-    event,
-  ) => {
+  const handlePaste: HandlePaste = (_view, event) => {
     const target = getEditor();
     if (!target || isDisabled() || isUploading.value) {
       return false;
