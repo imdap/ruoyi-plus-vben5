@@ -17,8 +17,7 @@ import { Form, FormItem, Input, RadioGroup } from 'antdv-next';
 import { pick } from 'lodash-es';
 
 import { noticeAdd, noticeInfo, noticeUpdate } from '#/api/system/notice';
-import { contentWithOssIdTransform } from '#/components/tinymce/src/helper';
-import { Tiptap } from '#/components/tiptap';
+import { contentWithOssIdTransform, Tiptap } from '#/components/tiptap';
 import { getDictOptions } from '#/utils/dict';
 import { useBeforeCloseDiff } from '#/utils/popup';
 

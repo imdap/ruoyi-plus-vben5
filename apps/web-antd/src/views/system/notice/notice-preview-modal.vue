@@ -6,7 +6,7 @@ import { shallowRef } from 'vue';
 import { useAccess } from '@vben/access';
 import { useVbenModal } from '@vben/common-ui';
 
-import { contentWithOssIdTransform } from '#/components/tinymce/src/helper';
+import { contentWithOssIdTransform } from '#/components/tiptap';
 
 const currentNotice = shallowRef<Notice | null>(null);
 const { hasAccessByCodes } = useAccess();

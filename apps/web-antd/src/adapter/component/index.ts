@@ -37,7 +37,7 @@ import type {
 } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
 
-import type { TinymceProps } from '#/components/tinymce/src/type';
+import type { TiptapProps } from '#/components/tiptap/index';
 import type { BaseUploadProps } from '#/components/upload/src/props';
 
 import { computed, defineAsyncComponent, defineComponent, h, ref } from 'vue';
@@ -46,7 +46,7 @@ import { ApiComponent, globalShareState, IconPicker } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 const RichTextarea = defineAsyncComponent(() =>
-  import('#/components/tinymce/index').then((res) => res.Tinymce),
+  import('#/components/tiptap/index').then((res) => res.Tiptap),
 );
 
 const FileUpload = defineAsyncComponent(() =>
@@ -230,7 +230,7 @@ interface ComponentPropsMapDef {
   RadioGroup: RadioGroupProps;
   RangePicker: RangePickerProps;
   Rate: RateProps;
-  RichTextarea: TinymceProps;
+  RichTextarea: TiptapProps;
   Select: SelectProps;
   Space: SpaceProps;
   Switch: SwitchProps;
