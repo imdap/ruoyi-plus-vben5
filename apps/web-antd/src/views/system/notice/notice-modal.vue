@@ -17,8 +17,8 @@ import { Form, FormItem, Input, RadioGroup } from 'antdv-next';
 import { pick } from 'lodash-es';
 
 import { noticeAdd, noticeInfo, noticeUpdate } from '#/api/system/notice';
-import { Tinymce } from '#/components/tinymce';
 import { contentWithOssIdTransform } from '#/components/tinymce/src/helper';
+import { Tiptap } from '#/components/tiptap';
 import { getDictOptions } from '#/utils/dict';
 import { useBeforeCloseDiff } from '#/utils/popup';
 
@@ -180,7 +180,7 @@ async function handleClosed() {
         name="noticeContent"
         :rules="formRules.noticeContent"
       >
-        <Tinymce v-model="formData.noticeContent" />
+        <Tiptap v-model="formData.noticeContent" />
       </FormItem>
     </Form>
   </BasicModal>

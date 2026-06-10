@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import type { Editor, JSONContent } from '@tiptap/core';
 
-import type {
-  TiptapModelValue,
-  TiptapProps,
-  TiptapUploadImage,
-} from './type';
+import type { TiptapModelValue, TiptapProps, TiptapUploadImage } from './type';
 
 import { shallowRef, watch } from 'vue';
 
@@ -195,11 +191,11 @@ defineExpose({
     >
       <Select
         :value="currentBlock"
-        class="w-[112px]"
         size="small"
         :options="blockOptions"
         :disabled="disabled || isUploading"
         aria-label="段落格式"
+        :styles="{ root: { width: '112px' } }"
         @change="setBlock"
       />
 
