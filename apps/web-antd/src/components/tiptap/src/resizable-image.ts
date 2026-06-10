@@ -16,7 +16,7 @@ function getSizeValue(value: unknown) {
   return undefined;
 }
 
-function parseSizeValue(value: string | null) {
+function parseSizeValue(value: null | string) {
   if (!value) {
     return null;
   }

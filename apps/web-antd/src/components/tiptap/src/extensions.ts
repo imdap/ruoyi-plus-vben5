@@ -10,6 +10,7 @@ import Underline from '@tiptap/extension-underline';
 import StarterKit from '@tiptap/starter-kit';
 
 import { ResizableImage } from './resizable-image';
+import { TextStyle } from './text-style';
 
 export function createExtensions(props: TiptapProps): AnyExtension[] {
   return [
@@ -22,6 +23,7 @@ export function createExtensions(props: TiptapProps): AnyExtension[] {
     Highlight.configure({
       multicolor: false,
     }),
+    TextStyle,
     Link.configure({
       HTMLAttributes: {
         rel: 'noopener noreferrer nofollow',

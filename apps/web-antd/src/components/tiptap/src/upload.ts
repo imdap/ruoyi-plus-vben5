@@ -1,19 +1,27 @@
 import type { Editor } from '@tiptap/core';
+import type { EditorProps } from '@tiptap/pm/view';
 import type { UploadProps } from 'antdv-next';
+
 import type { Ref } from 'vue';
 
-import type {
-  TiptapImageUploadResult,
-  TiptapUploadImage,
-} from './type';
+import type { TiptapImageUploadResult, TiptapUploadImage } from './type';
 
 import { uploadApi } from '#/api';
 
-interface CreateImageUploadRequestOptions {
+interface UseTiptapUploadOptions {
   getEditor: () => Editor | null;
+  getUploadImage: () => TiptapUploadImage;
+  isDisabled: () => boolean | undefined;
+  isUploading: Ref<boolean>;
+  onUploaded: (editor: Editor) => void;
+}
+
+interface UploadAndInsertImagesOptions {
+  files: File[];
   getUploadImage: () => TiptapUploadImage;
   isUploading: Ref<boolean>;
   onUploaded: (editor: Editor) => void;
+  target: Editor;
 }
 
 export async function defaultUploadImage(
@@ -28,7 +36,7 @@ export async function defaultUploadImage(
   };
 }
 
-export function insertImageByUploadResult(
+function insertImageByUploadResult(
   target: Editor,
   result: string | TiptapImageUploadResult,
 ) {
@@ -49,33 +57,179 @@ export function insertImageByUploadResult(
     .focus()
     .setImage(attrs as Parameters<Editor['commands']['setImage']>[0])
     .run();
+
+  if (typeof result !== 'string' && result.ossId) {
+    attachOssIdToImagesBySrc(target, result.url, result.ossId);
+  }
 }
 
-export function createImageUploadRequest({
-  getEditor,
+function attachOssIdToImagesBySrc(target: Editor, src: string, ossId: string) {
+  target
+    .chain()
+    .command(({ state, tr }) => {
+      let changed = false;
+
+      state.doc.descendants((node, position) => {
+        if (
+          node.type.name !== 'image' ||
+          node.attrs.src !== src ||
+          node.attrs.ossId
+        ) {
+          return;
+        }
+
+        tr.setNodeMarkup(
+          position,
+          undefined,
+          {
+            ...node.attrs,
+            ossId,
+          },
+          node.marks,
+        );
+        changed = true;
+      });
+
+      return changed;
+    })
+    .run();
+}
+
+function getClipboardImageFiles(event: ClipboardEvent): File[] {
+  const items = [...(event.clipboardData?.items ?? [])];
+
+  return items.reduce<File[]>((files, item) => {
+    if (item.kind !== 'file' || !item.type.startsWith('image/')) {
+      return files;
+    }
+
+    const file = item.getAsFile();
+    if (!file) {
+      return files;
+    }
+
+    files.push(normalizeClipboardImageFile(file));
+    return files;
+  }, []);
+}
+
+async function uploadAndInsertImages({
+  files,
   getUploadImage,
   isUploading,
   onUploaded,
-}: CreateImageUploadRequestOptions): UploadProps['customRequest'] {
-  return async (info) => {
+  target,
+}: UploadAndInsertImagesOptions) {
+  if (files.length === 0) {
+    return [];
+  }
+
+  const uploadImage = getUploadImage();
+  isUploading.value = true;
+  const results: Array<string | TiptapImageUploadResult> = [];
+
+  try {
+    for (const file of files) {
+      const result = await uploadImage(file);
+      insertImageByUploadResult(target, result);
+      results.push(result);
+    }
+
+    onUploaded(target);
+    return results;
+  } finally {
+    isUploading.value = false;
+  }
+}
+
+export function useTiptapUpload({
+  getEditor,
+  getUploadImage,
+  isDisabled,
+  isUploading,
+  onUploaded,
+}: UseTiptapUploadOptions) {
+  const handleImageUploadRequest: UploadProps['customRequest'] = async (
+    info,
+  ) => {
     const target = getEditor();
     if (!target) {
       return;
     }
 
-    const uploadImage = getUploadImage();
-    isUploading.value = true;
-
     try {
-      const result = await uploadImage(info.file as File);
-      insertImageByUploadResult(target, result);
-      onUploaded(target);
-      info.onSuccess?.(result);
+      const results = await uploadAndInsertImages({
+        files: [info.file as File],
+        getUploadImage,
+        isUploading,
+        onUploaded,
+        target,
+      });
+      info.onSuccess?.(results[0]);
     } catch (error) {
       console.error('tiptap上传图片失败:', error);
+      window.message?.error?.('图片上传失败');
       info.onError?.(error as Error);
-    } finally {
-      isUploading.value = false;
     }
   };
+
+  const handlePaste: NonNullable<EditorProps['handlePaste']> = (
+    _view,
+    event,
+  ) => {
+    const target = getEditor();
+    if (!target || isDisabled() || isUploading.value) {
+      return false;
+    }
+
+    const files = getClipboardImageFiles(event);
+    if (files.length === 0) {
+      return false;
+    }
+
+    event.preventDefault();
+
+    void uploadAndInsertImages({
+      files,
+      getUploadImage,
+      isUploading,
+      onUploaded,
+      target,
+    }).catch((error) => {
+      console.error('tiptap粘贴上传图片失败:', error);
+      window.message?.error?.('图片上传失败');
+    });
+
+    return true;
+  };
+
+  return {
+    handleImageUploadRequest,
+    handlePaste,
+  };
+}
+
+function normalizeClipboardImageFile(file: File): File {
+  if (file.name) {
+    return file;
+  }
+
+  const extension = getImageExtension(file.type);
+  return new File([file], `clipboard-image.${extension}`, {
+    type: file.type || 'image/png',
+  });
+}
+
+function getImageExtension(type: string) {
+  const extension = type.split('/')[1] || 'png';
+
+  if (extension === 'jpeg') {
+    return 'jpg';
+  }
+
+  if (extension === 'svg+xml') {
+    return 'svg';
+  }
+
+  return extension;
 }

@@ -1,11 +1,16 @@
 import type { Editor } from '@tiptap/core';
+
 import type { Ref } from 'vue';
 
 import { computed, ref } from 'vue';
 
 import { cn } from '@vben/utils';
 
-export type ToolbarBlock = 'heading-1' | 'heading-2' | 'heading-3' | 'paragraph';
+export type ToolbarBlock =
+  | 'heading-1'
+  | 'heading-2'
+  | 'heading-3'
+  | 'paragraph';
 export type ToolbarMark =
   | 'bold'
   | 'code'
@@ -14,7 +19,11 @@ export type ToolbarMark =
   | 'link'
   | 'strike'
   | 'underline';
-export type ToolbarNode = 'blockquote' | 'bulletList' | 'codeBlock' | 'orderedList';
+export type ToolbarNode =
+  | 'blockquote'
+  | 'bulletList'
+  | 'codeBlock'
+  | 'orderedList';
 export type ToolbarTextAlign = '' | 'center' | 'left' | 'right';
 
 export interface ToolbarItem {
@@ -29,6 +38,7 @@ export interface ToolbarItem {
 interface ToolbarState {
   align: ToolbarTextAlign;
   block: ToolbarBlock;
+  color: string;
   marks: Record<ToolbarMark, boolean>;
   nodes: Record<ToolbarNode, boolean>;
 }
@@ -42,6 +52,7 @@ interface UseTiptapToolbarOptions {
 const defaultToolbarState: ToolbarState = {
   align: '' as ToolbarTextAlign,
   block: 'paragraph' as ToolbarBlock,
+  color: '',
   marks: {
     bold: false,
     code: false,
@@ -85,6 +96,10 @@ export function useTiptapToolbar(options: UseTiptapToolbarOptions) {
     return toolbarState.value.block;
   });
 
+  const currentTextColor = computed(() => {
+    return toolbarState.value.color;
+  });
+
   function getCurrentBlock(target: Editor): ToolbarBlock {
     if (target.isActive('heading', { level: 1 })) {
       return 'heading-1';
@@ -126,6 +141,7 @@ export function useTiptapToolbar(options: UseTiptapToolbarOptions) {
     toolbarState.value = {
       align: getCurrentTextAlign(target),
       block: getCurrentBlock(target),
+      color: (target.getAttributes('textStyle').color as string) || '',
       marks: {
         bold: target.isActive('bold'),
         code: target.isActive('code'),
@@ -152,7 +168,11 @@ export function useTiptapToolbar(options: UseTiptapToolbarOptions) {
   }
 
   function isToolbarItemDisabled(item: ToolbarItem) {
-    return !!options.isDisabled() || options.isUploading.value || !!item.isDisabled?.();
+    return (
+      !!options.isDisabled() ||
+      options.isUploading.value ||
+      !!item.isDisabled?.()
+    );
   }
 
   function isMarkActive(mark: ToolbarMark) {
@@ -228,6 +248,44 @@ export function useTiptapToolbar(options: UseTiptapToolbarOptions) {
     });
   }
 
+  function getColorValue(value: unknown, css?: string) {
+    if (css?.trim()) {
+      return css.trim();
+    }
+
+    if (typeof value === 'string') {
+      return value.trim();
+    }
+
+    if (typeof value === 'object' && value !== null) {
+      const color = value as {
+        toCssString?: () => string;
+        toHexString?: () => string;
+      };
+
+      return color.toCssString?.() || color.toHexString?.() || '';
+    }
+
+    return '';
+  }
+
+  function setTextColor(value: unknown, css?: string) {
+    const color = getColorValue(value, css);
+    if (!color) {
+      return;
+    }
+
+    runCommand((target) => {
+      target.chain().focus().setMark('textStyle', { color }).run();
+    });
+  }
+
+  function unsetTextColor() {
+    runCommand((target) => {
+      target.chain().focus().unsetMark('textStyle').run();
+    });
+  }
+
   function insertImageByUrl() {
     runCommand((target) => {
       const src = window.prompt('请输入图片地址', 'https://');
@@ -248,72 +306,101 @@ export function useTiptapToolbar(options: UseTiptapToolbarOptions) {
   const toolbarGroups: ToolbarItem[][] = [
     [
       {
-        action: () => runCommand((target) => target.chain().focus().toggleBold().run()),
+        action: () =>
+          runCommand((target) => target.chain().focus().toggleBold().run()),
         icon: 'icon-[lucide--bold]',
         isActive: () => isMarkActive('bold'),
         key: 'bold',
         label: '加粗',
       },
       {
-        action: () => runCommand((target) => target.chain().focus().toggleItalic().run()),
+        action: () =>
+          runCommand((target) => target.chain().focus().toggleItalic().run()),
         icon: 'icon-[lucide--italic]',
         isActive: () => isMarkActive('italic'),
         key: 'italic',
         label: '斜体',
       },
       {
-        action: () => runCommand((target) => target.chain().focus().toggleUnderline().run()),
+        action: () =>
+          runCommand((target) =>
+            target.chain().focus().toggleUnderline().run(),
+          ),
         icon: 'icon-[lucide--underline]',
         isActive: () => isMarkActive('underline'),
         key: 'underline',
         label: '下划线',
       },
       {
-        action: () => runCommand((target) => target.chain().focus().toggleStrike().run()),
+        action: () =>
+          runCommand((target) => target.chain().focus().toggleStrike().run()),
         icon: 'icon-[lucide--strikethrough]',
         isActive: () => isMarkActive('strike'),
         key: 'strike',
         label: '删除线',
       },
       {
-        action: () => runCommand((target) => target.chain().focus().toggleCode().run()),
+        action: () =>
+          runCommand((target) => target.chain().focus().toggleCode().run()),
         icon: 'icon-[lucide--code]',
         isActive: () => isMarkActive('code'),
         key: 'code',
         label: '行内代码',
       },
       {
-        action: () => runCommand((target) => target.chain().focus().toggleHighlight().run()),
+        action: () =>
+          runCommand((target) =>
+            target.chain().focus().toggleHighlight().run(),
+          ),
         icon: 'icon-[lucide--highlighter]',
         isActive: () => isMarkActive('highlight'),
         key: 'highlight',
         label: '高亮',
       },
+      {
+        action: noop,
+        icon: 'icon-[lucide--paintbrush]',
+        isActive: () => !!currentTextColor.value,
+        key: 'textColor',
+        label: '文字颜色',
+      },
     ],
     [
       {
-        action: () => runCommand((target) => target.chain().focus().toggleBulletList().run()),
+        action: () =>
+          runCommand((target) =>
+            target.chain().focus().toggleBulletList().run(),
+          ),
         icon: 'icon-[lucide--list]',
         isActive: () => isNodeActive('bulletList'),
         key: 'bulletList',
         label: '无序列表',
       },
       {
-        action: () => runCommand((target) => target.chain().focus().toggleOrderedList().run()),
+        action: () =>
+          runCommand((target) =>
+            target.chain().focus().toggleOrderedList().run(),
+          ),
         icon: 'icon-[lucide--list-ordered]',
         isActive: () => isNodeActive('orderedList'),
         key: 'orderedList',
         label: '有序列表',
       },
       {
-        action: () => runCommand((target) => target.chain().focus().toggleBlockquote().run()),
+        action: () =>
+          runCommand((target) =>
+            target.chain().focus().toggleBlockquote().run(),
+          ),
         icon: 'icon-[lucide--quote]',
         isActive: () => isNodeActive('blockquote'),
         key: 'blockquote',
         label: '引用',
       },
       {
-        action: () => runCommand((target) => target.chain().focus().toggleCodeBlock().run()),
+        action: () =>
+          runCommand((target) =>
+            target.chain().focus().toggleCodeBlock().run(),
+          ),
         icon: 'icon-[lucide--square-code]',
         isActive: () => isNodeActive('codeBlock'),
         key: 'codeBlock',
@@ -322,21 +409,30 @@ export function useTiptapToolbar(options: UseTiptapToolbarOptions) {
     ],
     [
       {
-        action: () => runCommand((target) => target.chain().focus().setTextAlign('left').run()),
+        action: () =>
+          runCommand((target) =>
+            target.chain().focus().setTextAlign('left').run(),
+          ),
         icon: 'icon-[lucide--align-left]',
         isActive: () => isTextAlignActive('left'),
         key: 'alignLeft',
         label: '左对齐',
       },
       {
-        action: () => runCommand((target) => target.chain().focus().setTextAlign('center').run()),
+        action: () =>
+          runCommand((target) =>
+            target.chain().focus().setTextAlign('center').run(),
+          ),
         icon: 'icon-[lucide--align-center]',
         isActive: () => isTextAlignActive('center'),
         key: 'alignCenter',
         label: '居中',
       },
       {
-        action: () => runCommand((target) => target.chain().focus().setTextAlign('right').run()),
+        action: () =>
+          runCommand((target) =>
+            target.chain().focus().setTextAlign('right').run(),
+          ),
         icon: 'icon-[lucide--align-right]',
         isActive: () => isTextAlignActive('right'),
         key: 'alignRight',
@@ -379,14 +475,16 @@ export function useTiptapToolbar(options: UseTiptapToolbarOptions) {
     ],
     [
       {
-        action: () => runCommand((target) => target.chain().focus().undo().run()),
+        action: () =>
+          runCommand((target) => target.chain().focus().undo().run()),
         icon: 'icon-[lucide--undo-2]',
         isActive: () => false,
         key: 'undo',
         label: '撤销',
       },
       {
-        action: () => runCommand((target) => target.chain().focus().redo().run()),
+        action: () =>
+          runCommand((target) => target.chain().focus().redo().run()),
         icon: 'icon-[lucide--redo-2]',
         isActive: () => false,
         key: 'redo',
@@ -409,10 +507,13 @@ export function useTiptapToolbar(options: UseTiptapToolbarOptions) {
   return {
     buttonClass,
     currentBlock,
+    currentTextColor,
     isToolbarItemDisabled,
     runCommand,
     setBlock,
+    setTextColor,
     syncToolbarState,
     toolbarGroups,
+    unsetTextColor,
   };
 }

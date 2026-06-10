@@ -12,13 +12,13 @@ import { shallowRef, watch } from 'vue';
 import { cn } from '@vben/utils';
 
 import { EditorContent, useEditor } from '@tiptap/vue-3';
-import { Button, Select, Tooltip, Upload } from 'antdv-next';
+import { Button, ColorPicker, Select, Spin, Tooltip, Upload } from 'antdv-next';
 
 import { createExtensions } from './extensions';
 import { getComparableValue, getEditorValue } from './helpers';
 import { useTiptapStyles } from './styles';
 import { blockOptions, useTiptapToolbar } from './toolbar';
-import { createImageUploadRequest, defaultUploadImage } from './upload';
+import { defaultUploadImage, useTiptapUpload } from './upload';
 
 defineOptions({
   name: 'Tiptap',
@@ -52,11 +52,14 @@ const isUploading = shallowRef(false);
 const {
   buttonClass,
   currentBlock,
+  currentTextColor,
   isToolbarItemDisabled,
   runCommand,
   setBlock,
+  setTextColor,
   syncToolbarState,
   toolbarGroups,
+  unsetTextColor,
 } = useTiptapToolbar({
   getEditor,
   isDisabled: () => props.disabled,
@@ -65,9 +68,10 @@ const {
 
 const { editorContentClass, editorStyle, rootClass } = useTiptapStyles(props);
 
-const handleImageUploadRequest = createImageUploadRequest({
+const { handleImageUploadRequest, handlePaste } = useTiptapUpload({
   getEditor,
   getUploadImage,
+  isDisabled: () => props.disabled,
   isUploading,
   onUploaded: syncToolbarState,
 });
@@ -76,6 +80,9 @@ const editor = useEditor({
   autofocus: props.autofocus,
   content: content.value || '',
   editable: !props.disabled,
+  editorProps: {
+    handlePaste,
+  },
   extensions: createExtensions(props),
   onBlur: ({ editor }) => {
     emit('blur', editor);
@@ -203,14 +210,14 @@ defineExpose({
           aria-hidden="true"
         ></span>
         <template v-for="item in group" :key="item.key">
-          <Tooltip :title="item.label">
-            <Upload
-              v-if="item.key === 'imageUpload'"
-              accept="image/*"
-              :custom-request="handleImageUploadRequest"
-              :disabled="isToolbarItemDisabled(item)"
-              :show-upload-list="false"
-            >
+          <Upload
+            v-if="item.key === 'imageUpload'"
+            accept="image/*"
+            :custom-request="handleImageUploadRequest"
+            :disabled="isToolbarItemDisabled(item)"
+            :show-upload-list="false"
+          >
+            <Tooltip :title="item.label">
               <Button
                 html-type="button"
                 :class="buttonClass(item.isActive())"
@@ -226,9 +233,46 @@ defineExpose({
                   aria-hidden="true"
                 ></span>
               </Button>
-            </Upload>
+            </Tooltip>
+          </Upload>
+          <ColorPicker
+            v-else-if="item.key === 'textColor'"
+            :value="currentTextColor || '#1677ff'"
+            allow-clear
+            disabled-alpha
+            disabled-format
+            :disabled="isToolbarItemDisabled(item)"
+            size="small"
+            @change="setTextColor"
+            @clear="unsetTextColor"
+          >
+            <Tooltip :title="item.label">
+              <Button
+                html-type="button"
+                :class="
+                  cn(buttonClass(item.isActive()), 'relative overflow-hidden')
+                "
+                :disabled="isToolbarItemDisabled(item)"
+                :aria-label="item.label"
+                :aria-pressed="item.isActive()"
+                size="small"
+                type="default"
+              >
+                <span
+                  :class="cn('size-4', item.icon)"
+                  aria-hidden="true"
+                ></span>
+                <span
+                  v-if="currentTextColor"
+                  class="absolute inset-x-1 bottom-1 h-0.5 rounded-full"
+                  :style="{ backgroundColor: currentTextColor }"
+                  aria-hidden="true"
+                ></span>
+              </Button>
+            </Tooltip>
+          </ColorPicker>
+          <Tooltip v-else :title="item.label">
             <Button
-              v-else
               html-type="button"
               :class="buttonClass(item.isActive())"
               :disabled="isToolbarItemDisabled(item)"
@@ -245,6 +289,12 @@ defineExpose({
       </template>
     </div>
 
-    <EditorContent v-if="editor" :editor="editor" :class="editorContentClass" />
+    <Spin :spinning="isUploading" tip="图片上传中...">
+      <EditorContent
+        v-if="editor"
+        :editor="editor"
+        :class="editorContentClass"
+      />
+    </Spin>
   </div>
 </template>

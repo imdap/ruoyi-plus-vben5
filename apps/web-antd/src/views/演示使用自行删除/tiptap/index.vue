@@ -23,14 +23,7 @@ const previewModeOptions = [
 ];
 
 const content = ref(`
-<h2>产品发布记录</h2>
-<p>本次发布整理了通知编辑、图片上传和内容预览相关流程。</p>
-<ul>
-  <li><p>运营公告模板已完成初稿。</p></li>
-  <li><p>帮助中心内容已同步更新。</p></li>
-</ul>
-<blockquote><p>上线窗口：本周五 20:00 - 22:00。</p></blockquote>
-`);
+<h2>产品发布记录</h2><p>本次发布整理了通知编辑、图片上传和内容预览相关流程。</p><ul><li><p>运营公告模板已完成初稿。</p></li><li><p>帮助中心内容已同步更新。</p></li></ul><blockquote><p>上线窗口：本周五 20:00 - 22:00。</p></blockquote><p>大萨达撒</p>`);
 
 const controlBarClass = cn(
   'flex flex-wrap items-center justify-between gap-3',
