@@ -40,8 +40,6 @@ catalog:
   '@antdv-next/auto-import-resolver': 1.0.7
   '@antdv-next/happy-work-theme': ^1.0.0
   '@antdv-next/icons': 1.0.5
-  '@antdv-next/x': ^1.1.0
-  '@antdv-next/x-markdown': ^0.1.0
   '@ast-grep/napi': ^0.42.0
   '@changesets/changelog-github': ^0.6.0
   '@changesets/cli': ^2.30.0
@@ -73,15 +71,12 @@ catalog:
   '@tanstack/vue-store': ^0.10.0
   '@tinymce/tinymce-vue': ^6.0.1
   '@tiptap/core': ^3.22.3
-  '@tiptap/extension-document': ^3.22.3
   '@tiptap/extension-highlight': ^3.22.3
   '@tiptap/extension-image': ^3.22.3
   '@tiptap/extension-link': ^3.22.3
   '@tiptap/extension-placeholder': ^3.22.3
   '@tiptap/extension-text-align': ^3.22.3
-  '@tiptap/extension-text-style': ^3.22.3
   '@tiptap/extension-underline': ^3.22.3
-  '@tiptap/pm': ^3.22.3
   '@tiptap/starter-kit': ^3.22.3
   '@tiptap/vue-3': ^3.22.3
   '@tsdown/css': ^0.21.8
