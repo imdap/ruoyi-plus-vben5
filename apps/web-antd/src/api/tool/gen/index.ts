@@ -10,7 +10,6 @@ enum Api {
   columnList = '/tool/gen/column',
   dataSourceNames = '/tool/gen/getDataNames',
   download = '/tool/gen/download',
-  genCode = '/tool/gen/genCode',
   generatedList = '/tool/gen/list',
   importTable = '/tool/gen/importTable',
   preview = '/tool/gen/preview',
@@ -74,11 +73,6 @@ export function previewCode(tableId: ID) {
 // 生成代码（下载方式）
 export function genDownload(tableId: ID) {
   return alovaInstance.get<Blob>(`${Api.download}/${tableId}`);
-}
-
-// 生成代码（自定义路径）
-export function genWithPath(tableId: ID) {
-  return alovaInstance.get<void>(`${Api.genCode}/${tableId}`);
 }
 
 // 同步数据库

@@ -17,7 +17,6 @@ import {
   batchGenCode,
   generatedList,
   genRemove,
-  genWithPath,
   getDataSourceNames,
   syncDb,
 } from '#/api/tool/gen';
@@ -25,6 +24,7 @@ import { downloadByData } from '#/utils/file/download';
 
 import codePreviewModal from './code-preview-modal.vue';
 import { columns, querySchema } from './data';
+import howToUseModal from './md/how-to-use-modal.vue';
 import tableImportModal from './table-import-modal.vue';
 
 const formOptions: VbenFormProps = {
@@ -141,13 +141,6 @@ async function handleBatchGen() {
 async function handleDownload(record: Recordable<any>) {
   const hideLoading = window.message.loading('加载中...');
   try {
-    // 路径生成
-    if (record.genType === '1' && record.genPath) {
-      await genWithPath(record.tableId);
-      window.message.success(`生成成功: ${record.genPath}`);
-      return;
-    }
-    // zip生成
     const blob = await batchGenCode(record.tableId);
     const filename = `代码生成_${record.tableName}_${dayjs().valueOf()}.zip`;
     downloadByData(blob, filename);
@@ -189,7 +182,6 @@ function handleImport() {
   tableImportModalApi.open();
 }
 
-import howToUseModal from './md/how-to-use-modal.vue';
 const [HowToUseModal, howToUseModalApi] = useVbenModal({
   connectedComponent: howToUseModal,
 });

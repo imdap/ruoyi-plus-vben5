@@ -147,6 +147,25 @@ export const formSchema: FormSchemaGetter = () => [
     componentProps: {
       buttonStyle: 'solid',
       options: [
+        { label: 'Vue', value: 'vue' },
+        { label: 'React', value: 'react' },
+      ],
+      optionType: 'button',
+    },
+    defaultValue: 'vue',
+    fieldName: 'frontendType',
+    help: '对应后端 resources/vm 下的模板目录，例如 vue、react',
+    label: '前端模板',
+    rules: z
+      .string()
+      .min(1, '请选择前端模板')
+      .regex(/^[\w-]+$/, '仅支持字母、数字、下划线和中划线'),
+  },
+  {
+    component: 'RadioGroup',
+    componentProps: {
+      buttonStyle: 'solid',
+      options: [
         { label: 'modal弹窗', value: 'modal' },
         { label: 'drawer抽屉', value: 'drawer' },
       ],
@@ -173,35 +192,146 @@ export const formSchema: FormSchemaGetter = () => [
     label: '生成表单类型',
   },
   {
-    component: 'RadioGroup',
+    component: 'Divider',
     componentProps: {
-      buttonStyle: 'solid',
-      options: [
-        { label: 'zip压缩包', value: '0' },
-        { label: '自定义路径', value: '1' },
-      ],
-      optionType: 'button',
+      orientation: 'left',
     },
-    defaultValue: '0',
-    fieldName: 'genType',
-    help: '默认为zip压缩包下载, 也可以自定义生成路径',
-    label: '生成代码方式',
+    fieldName: 'divider3',
+    formItemClass: 'col-span-2',
+    label: '增强选项',
+  },
+  {
+    component: 'Switch',
+    componentProps: {
+      class: 'w-fit',
+    },
+    defaultValue: true,
+    fieldName: 'enableExport',
+    help: '关闭后将不生成 export 接口与前端导出按钮',
+    label: '导出能力',
+  },
+  {
+    component: 'Switch',
+    componentProps: {
+      class: 'w-fit',
+    },
+    defaultValue: false,
+    fieldName: 'enableStatus',
+    help: '开启后生成 changeStatus 接口与列表状态开关列',
+    label: '状态切换',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      allowClear: true,
+      getPopupContainer,
+      optionFilterProp: 'label',
+      showSearch: true,
+    },
+    dependencies: {
+      show: (values) => values.enableStatus,
+      triggerFields: ['enableStatus'],
+    },
+    fieldName: 'statusField',
+    label: '状态字段',
+    rules: 'selectRequired',
+  },
+  {
+    component: 'Switch',
+    defaultValue: false,
+    componentProps: {
+      class: 'w-fit',
+    },
+    fieldName: 'enableUnique',
+    help: '开启后按选中的字段生成组合唯一校验，新增和修改都会校验',
+    label: '组合唯一校验',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      allowClear: true,
+      getPopupContainer,
+      mode: 'multiple',
+      optionFilterProp: 'label',
+      showSearch: true,
+    },
+    dependencies: {
+      show: (values) => values.enableUnique,
+      triggerFields: ['enableUnique'],
+    },
+    fieldName: 'uniqueFields',
+    label: '唯一字段',
+    rules: 'selectRequired',
+  },
+  {
+    component: 'Switch',
+    componentProps: {
+      class: 'w-fit',
+    },
+    defaultValue: false,
+    fieldName: 'enableSort',
+    help: '开启后生成 updateSort 接口，并在列表中以输入框形式快速调整排序字段',
+    label: '排序调整',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      allowClear: true,
+      getPopupContainer,
+      optionFilterProp: 'label',
+      showSearch: true,
+    },
+    dependencies: {
+      show: (values) => values.enableSort,
+      triggerFields: ['enableSort'],
+    },
+    fieldName: 'sortField',
+    label: '排序字段',
+    rules: 'selectRequired',
   },
   {
     component: 'Input',
-    defaultValue: '/',
+    defaultValue: '0',
     dependencies: {
-      show: (model) => model.genType === '1',
-      triggerFields: ['genType'],
+      show: (values) => values.tplCategory === 'tree',
+      triggerFields: ['tplCategory'],
     },
-    fieldName: 'genPath',
-    help: '输入绝对路径, 不支持"./"相对路径',
-    label: '代码生成路径',
-    rules: z
-      .string()
-      .regex(/^(?:[a-z]:)?(?:\/|(?:\\|\/)[^\\/:*?"<>|\r\n]+)*(?:\\|\/)?$/i, {
-        message: '请输入合法的路径',
-      }),
+    fieldName: 'treeRootValue',
+    help: '默认是 0，用于根节点 parentId 的默认值',
+    label: '根节点值',
+    rules: 'required',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      allowClear: true,
+      getPopupContainer,
+      optionFilterProp: 'label',
+      showSearch: true,
+    },
+    dependencies: {
+      show: (values) => values.tplCategory === 'tree',
+      triggerFields: ['tplCategory'],
+    },
+    fieldName: 'treeAncestorsField',
+    help: '选择 ancestors 一类字段后，生成器会自动维护祖级链',
+    label: '祖级字段',
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      allowClear: true,
+      getPopupContainer,
+      optionFilterProp: 'label',
+      showSearch: true,
+    },
+    dependencies: {
+      show: (values) => values.tplCategory === 'tree',
+      triggerFields: ['tplCategory'],
+    },
+    fieldName: 'treeOrderField',
+    help: '树列表默认按祖级、父节点、树排序字段、主键升序排列',
+    label: '树排序字段',
   },
   {
     component: 'Textarea',

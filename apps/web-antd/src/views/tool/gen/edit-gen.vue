@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// oxlint-disable typescript/no-non-null-assertion
 import type { GenInfo } from '#/api/tool/gen/model';
 
 import { onMounted, provide, ref, unref, useTemplateRef } from 'vue';
@@ -57,15 +58,6 @@ async function handleSave() {
     Object.assign(requestData, formValues);
     // 从表格获取最新的
     requestData.columns = genConfigRef.value?.getTableRecords() ?? [];
-    // 树表需要添加这个参数
-    if (requestData && requestData.tplCategory === 'tree') {
-      const { treeCode, treeName, treeParentCode } = requestData;
-      requestData.params = {
-        treeCode,
-        treeName,
-        treeParentCode,
-      };
-    }
     // 需要进行参数转化
     if (requestData) {
       const transform = (ret: boolean) => (ret ? '1' : '0');
@@ -77,12 +69,26 @@ async function handleSave() {
         column.isQuery = transform(query);
         column.isRequired = transform(required);
       });
-      // 需要手动添加父级菜单 弹窗类型
+      delete (requestData as any).genPath;
+      delete (requestData as any).genType;
+      // 需要手动添加生成参数
       requestData.params = {
-        ...requestData.params,
+        enableExport: requestData.enableExport,
+        enableSort: requestData.enableSort,
+        enableStatus: requestData.enableStatus,
+        enableUnique: requestData.enableUnique,
+        formComponent: requestData.formComponent,
         parentMenuId: requestData.parentMenuId,
         popupComponent: requestData.popupComponent,
-        formComponent: requestData.formComponent,
+        sortField: requestData.enableSort ? requestData.sortField : '',
+        statusField: requestData.enableStatus ? requestData.statusField : '',
+        treeAncestors: requestData.treeAncestorsField,
+        treeCode: requestData.treeCode,
+        treeName: requestData.treeName,
+        treeOrderField: requestData.treeOrderField,
+        treeParentCode: requestData.treeParentCode,
+        treeRootValue: requestData.treeRootValue,
+        uniqueFields: requestData.enableUnique ? requestData.uniqueFields : [],
       };
     }
     // 保存
@@ -97,12 +103,8 @@ async function handleSave() {
 </script>
 
 <template>
-  <Page :auto-content-height="true">
-    <Card
-      class="h-full"
-      v-if="genInfoData"
-      :body-style="{ padding: '0 16px 16px' }"
-    >
+  <Page>
+    <Card v-if="genInfoData" :body-style="{ padding: '0 16px 16px' }">
       <Tabs v-model:active-key="currentTab" size="middle">
         <template #rightExtra>
           <!-- 因为编辑表格判断点击单元格之外的元素会取消编辑状态，此时需要事件拦截 -->

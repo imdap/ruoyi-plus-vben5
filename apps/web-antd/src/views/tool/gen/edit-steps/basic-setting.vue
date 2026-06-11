@@ -41,6 +41,17 @@ async function initTreeSelect(columns: Column[]) {
     const label = `${item.columnName} | ${item.columnComment}`;
     return { label, value: item.columnName };
   });
+  const sortableOptions = columns
+    .filter((item) =>
+      ['BigDecimal', 'Double', 'Integer', 'LocalDateTime', 'Long'].includes(
+        item.javaType,
+      ),
+    )
+    .map((item) => {
+      const label = `${item.columnName} | ${item.columnComment}`;
+      return { label, value: item.columnName };
+    });
+
   formApi.updateSchema([
     {
       componentProps: {
@@ -59,6 +70,36 @@ async function initTreeSelect(columns: Column[]) {
         options,
       },
       fieldName: 'treeName',
+    },
+    {
+      componentProps: {
+        options,
+      },
+      fieldName: 'statusField',
+    },
+    {
+      componentProps: {
+        options,
+      },
+      fieldName: 'uniqueFields',
+    },
+    {
+      componentProps: {
+        options: sortableOptions,
+      },
+      fieldName: 'sortField',
+    },
+    {
+      componentProps: {
+        options,
+      },
+      fieldName: 'treeAncestorsField',
+    },
+    {
+      componentProps: {
+        options: sortableOptions,
+      },
+      fieldName: 'treeOrderField',
     },
   ]);
 }
@@ -106,10 +147,20 @@ async function initMenuSelect() {
 
 onMounted(async () => {
   const info = genInfoData.value;
-  await formApi.setValues(info);
+  const options = info.options ? JSON.parse(info.options) : {};
+  await formApi.setValues({
+    ...info,
+    enableExport: info.enableExport ?? true,
+    enableSort: info.enableSort ?? false,
+    enableStatus: info.enableStatus ?? false,
+    enableUnique: info.enableUnique ?? false,
+    frontendType: info.frontendType || 'vue',
+    treeRootValue: info.treeRootValue || '0',
+    uniqueFields: info.uniqueFields ?? [],
+  });
   // 弹出框类型需要手动赋值
   if (info.options) {
-    const { popupComponent, formComponent } = JSON.parse(info.options);
+    const { formComponent, popupComponent } = options;
     if (popupComponent) {
       formApi.setFieldValue('popupComponent', popupComponent);
     }

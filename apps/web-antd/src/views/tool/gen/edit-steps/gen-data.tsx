@@ -29,15 +29,21 @@ const queryTypeOptions = [
 
 const componentsOptions = [
   { label: '文本框', value: 'input' },
+  { label: '数字输入', value: 'inputNumber' },
   { label: '文本域', value: 'textarea' },
   { label: '下拉框', value: 'select' },
   { label: '单选框', value: 'radio' },
   { label: '复选框', value: 'checkbox' },
+  { label: '开关', value: 'switch' },
   { label: '日期控件', value: 'datetime' },
   { label: '图片上传', value: 'imageUpload' },
   { label: '文件上传', value: 'fileUpload' },
   { label: '富文本', value: 'editor' },
 ];
+
+function supportsDictHtmlType(htmlType?: string) {
+  return ['checkbox', 'radio', 'select', 'switch'].includes(htmlType ?? '');
+}
 
 function renderBooleanTag(row: Recordable<any>, field: string) {
   const value = row[field] ? '是' : '否';
@@ -247,10 +253,16 @@ export const vxeTableColumns: (
         return htmlType;
       },
       edit: ({ row }) => {
+        const onChange = () => {
+          if (!supportsDictHtmlType(row.htmlType)) {
+            row.dictType = '';
+          }
+        };
         return (
           <Select
             class="w-full"
             getPopupContainer={() => document.body}
+            onChange={onChange}
             options={componentsOptions}
             v-model:value={row.htmlType}
           ></Select>
@@ -266,7 +278,7 @@ export const vxeTableColumns: (
     minWidth: 230,
     align: 'center',
     titlePrefix: {
-      message: `仅'下拉框', '单选框', '复选框'支持字典类型`,
+      message: `仅'下拉框', '单选框', '复选框', '开关'支持字典类型`,
     },
     slots: {
       default: ({ row }) => {
@@ -282,10 +294,7 @@ export const vxeTableColumns: (
         const onDeselect = () => {
           row.dictType = '';
         };
-        const disabled =
-          row.htmlType !== 'select' &&
-          row.htmlType !== 'radio' &&
-          row.htmlType !== 'checkbox';
+        const disabled = !supportsDictHtmlType(row.htmlType);
         return (
           <Select
             allowClear={true}
