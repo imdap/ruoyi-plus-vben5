@@ -32,19 +32,25 @@ const matchVbenCoreChunk = createChunkMatcher([
   '/node_modules/@vben/types/',
   '/node_modules/@vben/utils/',
 ]);
-const matchVbenUiChunk = createChunkMatcher([
+const matchVbenUiCoreChunk = createChunkMatcher([
   '/packages/@core/ui-kit/',
-  '/packages/effects/common-ui/',
-  '/packages/icons/',
-  '/packages/styles/',
   '/node_modules/@vben-core/form-ui/',
   '/node_modules/@vben-core/layout-ui/',
   '/node_modules/@vben-core/menu-ui/',
   '/node_modules/@vben-core/popup-ui/',
   '/node_modules/@vben-core/shadcn-ui/',
   '/node_modules/@vben-core/tabs-ui/',
+]);
+const matchVbenCommonUiChunk = createChunkMatcher([
+  '/packages/effects/common-ui/',
   '/node_modules/@vben/common-ui/',
+]);
+const matchVbenIconsChunk = createChunkMatcher([
+  '/packages/icons/',
   '/node_modules/@vben/icons/',
+]);
+const matchVbenStylesChunk = createChunkMatcher([
+  '/packages/styles/',
   '/node_modules/@vben/styles/',
 ]);
 const matchVbenLayoutChunk = createChunkMatcher([
@@ -144,23 +150,38 @@ function createApplicationCodeSplitting() {
         test: matchVbenCoreChunk,
       },
       {
-        name: 'vben-ui',
+        name: 'vben-ui-core',
         priority: 23,
-        test: matchVbenUiChunk,
+        test: matchVbenUiCoreChunk,
+      },
+      {
+        name: 'vben-common-ui',
+        priority: 22,
+        test: matchVbenCommonUiChunk,
+      },
+      {
+        name: 'vben-icons',
+        priority: 21,
+        test: matchVbenIconsChunk,
+      },
+      {
+        name: 'vben-styles',
+        priority: 20,
+        test: matchVbenStylesChunk,
       },
       {
         name: 'vben-layout',
-        priority: 22,
+        priority: 19,
         test: matchVbenLayoutChunk,
       },
       {
         name: 'vben-state',
-        priority: 21,
+        priority: 18,
         test: matchVbenStateChunk,
       },
       {
         name: 'vben-request',
-        priority: 20,
+        priority: 17,
         test: matchVbenRequestChunk,
       },
       {
