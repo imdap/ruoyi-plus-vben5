@@ -5,6 +5,12 @@ const createChunkMatcher = (patterns: string[]) => {
   };
 };
 
+const matchAntdvNextIconsChunk = createChunkMatcher([
+  '/node_modules/.pnpm/@ant-design+icons-svg@',
+  '/node_modules/.pnpm/@antdv-next+icons@',
+  '/node_modules/@ant-design/icons-svg/',
+  '/node_modules/@antdv-next/icons/',
+]);
 const matchAntdvNextChunk = createChunkMatcher(['antdv-next']);
 const matchFrameworkChunk = createChunkMatcher([
   '/node_modules/.pnpm/@vue+',
@@ -41,9 +47,45 @@ const matchVbenUiCoreChunk = createChunkMatcher([
   '/node_modules/@vben-core/shadcn-ui/',
   '/node_modules/@vben-core/tabs-ui/',
 ]);
-const matchVbenCommonUiChunk = createChunkMatcher([
-  '/packages/effects/common-ui/',
-  '/node_modules/@vben/common-ui/',
+const matchVbenCommonUiAuthChunk = createChunkMatcher([
+  '/packages/effects/common-ui/src/ui/authentication/',
+  '/packages/effects/common-ui/src/ui/fallback/',
+  '/node_modules/@vben/common-ui/src/ui/authentication/',
+  '/node_modules/@vben/common-ui/src/ui/fallback/',
+]);
+const matchVbenCommonUiDashboardChunk = createChunkMatcher([
+  '/packages/effects/common-ui/src/ui/about/',
+  '/packages/effects/common-ui/src/ui/dashboard/',
+  '/packages/effects/common-ui/src/ui/profile/',
+  '/node_modules/@vben/common-ui/src/ui/about/',
+  '/node_modules/@vben/common-ui/src/ui/dashboard/',
+  '/node_modules/@vben/common-ui/src/ui/profile/',
+]);
+const matchVbenCommonUiCaptchaChunk = createChunkMatcher([
+  '/packages/effects/common-ui/src/components/captcha/',
+  '/node_modules/@vben/common-ui/src/components/captcha/',
+]);
+const matchVbenCommonUiEditorChunk = createChunkMatcher([
+  '/packages/effects/common-ui/src/components/code-mirror/',
+  '/packages/effects/common-ui/src/components/json-preview/',
+  '/packages/effects/common-ui/src/components/json-viewer/',
+  '/packages/effects/common-ui/src/components/markdown/',
+  '/packages/effects/common-ui/src/components/tippy/',
+  '/node_modules/@vben/common-ui/es/tippy',
+  '/node_modules/@vben/common-ui/src/components/code-mirror/',
+  '/node_modules/@vben/common-ui/src/components/json-preview/',
+  '/node_modules/@vben/common-ui/src/components/json-viewer/',
+  '/node_modules/@vben/common-ui/src/components/markdown/',
+  '/node_modules/@vben/common-ui/src/components/tippy/',
+]);
+const matchVbenCommonUiWidgetsChunk = createChunkMatcher([
+  '/packages/effects/common-ui/src/components/',
+  '/packages/effects/common-ui/src/index.ts',
+  '/packages/effects/common-ui/src/ui/index.ts',
+  '/node_modules/@vben/common-ui/es/loading',
+  '/node_modules/@vben/common-ui/src/components/',
+  '/node_modules/@vben/common-ui/src/index.ts',
+  '/node_modules/@vben/common-ui/src/ui/index.ts',
 ]);
 const matchVbenIconsChunk = createChunkMatcher([
   '/packages/icons/',
@@ -135,6 +177,11 @@ function createApplicationCodeSplitting() {
   return {
     groups: [
       {
+        name: 'antdv-icons',
+        priority: 41,
+        test: matchAntdvNextIconsChunk,
+      },
+      {
         name: 'antdv-next',
         priority: 40,
         test: matchAntdvNextChunk,
@@ -155,33 +202,53 @@ function createApplicationCodeSplitting() {
         test: matchVbenUiCoreChunk,
       },
       {
-        name: 'vben-common-ui',
+        name: 'vben-common-ui-auth',
         priority: 22,
-        test: matchVbenCommonUiChunk,
+        test: matchVbenCommonUiAuthChunk,
+      },
+      {
+        name: 'vben-common-ui-dashboard',
+        priority: 21,
+        test: matchVbenCommonUiDashboardChunk,
+      },
+      {
+        name: 'vben-common-ui-captcha',
+        priority: 20,
+        test: matchVbenCommonUiCaptchaChunk,
+      },
+      {
+        name: 'vben-common-ui-editor',
+        priority: 19,
+        test: matchVbenCommonUiEditorChunk,
+      },
+      {
+        name: 'vben-common-ui-widgets',
+        priority: 18,
+        test: matchVbenCommonUiWidgetsChunk,
       },
       {
         name: 'vben-icons',
-        priority: 21,
+        priority: 17,
         test: matchVbenIconsChunk,
       },
       {
         name: 'vben-styles',
-        priority: 20,
+        priority: 16,
         test: matchVbenStylesChunk,
       },
       {
         name: 'vben-layout',
-        priority: 19,
+        priority: 15,
         test: matchVbenLayoutChunk,
       },
       {
         name: 'vben-state',
-        priority: 18,
+        priority: 14,
         test: matchVbenStateChunk,
       },
       {
         name: 'vben-request',
-        priority: 17,
+        priority: 13,
         test: matchVbenRequestChunk,
       },
       {
