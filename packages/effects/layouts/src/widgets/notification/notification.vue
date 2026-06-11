@@ -128,7 +128,7 @@ const computedNotificationList = computed(() => {
         :key="currentTab"
       >
         <ul class="!flex max-h-[360px] w-full flex-col">
-          <template v-for="item in computedNotificationList" :key="item.title">
+          <template v-for="item in computedNotificationList" :key="item.id">
             <li
               class="relative flex w-full cursor-pointer items-start gap-5 border-t border-border p-3 hover:bg-accent"
               @click="emit('click', item)"

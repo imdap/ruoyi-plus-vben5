@@ -34,6 +34,34 @@ function backNotificationToVbenNotification(
   return item;
 }
 
+function getSseNotificationCategory(m: SSEMessage) {
+  if (m.source === 'workflow') {
+    return 'workflow';
+  }
+
+  if (m.type === 'notice' || m.source === 'notice') {
+    return 'notice';
+  }
+
+  return 'system';
+}
+
+function sseMessageToVbenNotification(m: SSEMessage): NotificationItem {
+  const type = getSseNotificationCategory(m);
+
+  return {
+    avatar: SvgMessageUrl,
+    date: dayjs(m.timestamp).format('YYYY-MM-DD HH:mm:ss'),
+    extra: m.data,
+    id: m.messageId,
+    isRead: false,
+    link: type === 'notice' ? undefined : m.path,
+    message: m.message,
+    title: $t('component.notice.title'),
+    type,
+  };
+}
+
 export const useNotifyStore = defineStore(
   'app-notify',
   () => {
@@ -100,17 +128,10 @@ export const useNotifyStore = defineStore(
           title: $t('component.notice.received'),
         });
 
-        notificationList.value.unshift({
-          avatar: SvgMessageUrl,
-          date: dayjs(m.timestamp).format('YYYY-MM-DD HH:mm:ss'),
-          isRead: false,
-          message: m.message,
-          title: $t('component.notice.title'),
-          type: m.type,
-          id: m.messageId,
-          // notice不需要跳转 不需要存link
-          link: m.type === 'notice' ? undefined : m.path,
-        });
+        notificationList.value = [
+          sseMessageToVbenNotification(m),
+          ...notificationList.value,
+        ];
 
         // 需要手动置空 vue3在值相同时不会触发watch
         data.value = null;
