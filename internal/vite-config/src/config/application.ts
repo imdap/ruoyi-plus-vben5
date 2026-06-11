@@ -12,6 +12,7 @@ import { defineConfig, loadEnv, mergeConfig } from "vite";
 import { defaultImportmapOptions, getDefaultPwaOptions } from "../options";
 import { loadApplicationPlugins } from "../plugins";
 import { loadAndConvertEnv } from "../utils/env";
+import { createApplicationCodeSplitting } from "./code-split";
 import { getCommonConfig } from "./common";
 
 function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
@@ -62,13 +63,8 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
           output: {
             assetFileNames: "[ext]/[name]-[hash].[ext]",
             chunkFileNames: "js/[name]-[hash].js",
+            codeSplitting: createApplicationCodeSplitting(),
             entryFileNames: "jse/index-[name]-[hash].js",
-            // experimentalMinChunkSize: 20 * 1024,
-            manualChunks(id) {
-              if (id.includes("antdv-next")) {
-                return "antdv-next";
-              }
-            },
             minify: isBuild
               ? {
                   compress: {
