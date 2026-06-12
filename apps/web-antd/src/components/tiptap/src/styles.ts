@@ -9,6 +9,7 @@ import { normalizeSize } from './helpers';
 export function useTiptapStyles(props: TiptapProps) {
   const rootClass = computed(() => {
     return cn(
+      'tiptap-root',
       'bg-card border-border text-card-foreground overflow-hidden rounded-md border',
       props.disabled && 'opacity-80',
     );

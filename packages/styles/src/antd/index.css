@@ -54,7 +54,7 @@ body {
   /** select 选择器的样式 */
   --vben-form-error-shadow: 0 0 0 2px rgba(255, 35, 5, 0.1);
 
-  .ant-select:not(.valid-success) .ant-select-selector:not(.valid-success) {
+  .ant-select:not(.valid-success) {
     border-color: hsl(var(--destructive)) !important;
   }
 
@@ -77,7 +77,9 @@ body {
     box-shadow: var(--vben-form-error-shadow);
   }
 
-  .ant-input:not(.valid-success) {
+  /** 兼容input/inputNumber选择 */
+  .ant-input,
+  .ant-input-affix-wrapper {
     border-color: hsl(var(--destructive)) !important;
   }
 
@@ -108,6 +110,13 @@ body {
   .ant-input-outlined:focus-within {
     --ant-input-active-border-color: hsl(var(--destructive));
     --ant-input-active-shadow: var(--vben-form-error-shadow);
+  }
+  /** 时间/日期类型的选择兼容 **/
+  .ant-picker-outlined {
+    --ant-color-border: hsl(var(--destructive));
+  }
+  .ant-picker-outlined:hover {
+    --ant-date-picker-hover-border-color: hsl(var(--destructive));
   }
 }
 
