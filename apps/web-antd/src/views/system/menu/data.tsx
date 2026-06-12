@@ -319,7 +319,7 @@ export const drawerSchema: FormSchemaGetter = () => [
       options: getDictOptions(DictEnum.SYS_YES_NO),
       optionType: 'button',
     },
-    defaultValue: '1',
+    defaultValue: 'N',
     dependencies: {
       // 类型不为按钮时显示
       show: (values) => values.menuType !== 'F',
@@ -398,7 +398,7 @@ export const drawerSchema: FormSchemaGetter = () => [
       options: getDictOptions(DictEnum.SYS_YES_NO),
       optionType: 'button',
     },
-    defaultValue: '0',
+    defaultValue: 'Y',
     dependencies: {
       // 类型为菜单时显示
       show: (values) => values.menuType === 'C',
