@@ -83,7 +83,7 @@ const gridOptions: VxeGridProps = {
     reserve: true,
     // 点击行选中
     trigger: 'default',
-    checkMethod: ({ row }) => row?.userId !== 1,
+    checkMethod: ({ row }) => row?.userId !== SUPERADMIN_USER_ID,
   },
   columns,
   height: 'auto',

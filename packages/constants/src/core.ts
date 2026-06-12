@@ -35,8 +35,8 @@ export const UNAUTHORIZED_CODE = 401;
 /**
  * 超管用户ID
  */
-export const SUPERADMIN_USER_ID = 1;
-export const SUPERADMIN_ROLE_ID = 1;
+export const SUPERADMIN_USER_ID = '1761100000000000001';
+export const SUPERADMIN_ROLE_ID = '1761300000000000001';
 
 /**
  * 超管角色key
@@ -50,7 +50,7 @@ export const ADMIN_ROLE_KEY = 'admin';
 /**
  * 默认客户端ID
  */
-export const DEFAULT_CLIENT_ID = 1;
+export const DEFAULT_CLIENT_ID = '1762000000000000001';
 
 /**
  * 对应 字典-S系统开关的状态

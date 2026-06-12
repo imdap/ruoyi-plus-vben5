@@ -44,7 +44,7 @@ const gridOptions: VxeGridProps = {
     reserve: true,
     // 点击行选中
     // trigger: 'row',
-    checkMethod: ({ row }) => (row as Client)?.id !== 1,
+    checkMethod: ({ row }) => (row as Client)?.id !== DEFAULT_CLIENT_ID,
   },
   columns,
   height: 'auto',

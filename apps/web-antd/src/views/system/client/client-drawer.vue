@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
+import { DEFAULT_CLIENT_ID } from '@vben/constants';
 import { $t } from '@vben/locales';
 import { cloneDeep } from '@vben/utils';
 
@@ -87,8 +88,8 @@ const [BasicDrawer, drawerApi] = useVbenDrawer({
     setupForm(isUpdate.value);
     if (isUpdate.value && id) {
       const record = await clientInfo(id);
-      // 不能禁用id为1的记录
-      formApi.updateSchema(getStatusSchema(record.id === 1));
+      // 不能禁用默认客户端的记录
+      formApi.updateSchema(getStatusSchema(record.id === DEFAULT_CLIENT_ID));
       // accessPath/ipWhitelist 在表单中以 tags 形式编辑, 回显时使用后端返回的数组
       await formApi.setValues({
         ...record,

@@ -5,6 +5,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type { SysConfig } from '#/api/system/config/model';
 
 import { Page, useVbenModal } from '@vben/common-ui';
+import { YesNo } from '@vben/constants';
 
 import { Popconfirm, Space } from 'antdv-next';
 
@@ -45,6 +46,7 @@ const gridOptions: VxeGridProps = {
     highlight: true,
     // 翻页时保留选中状态
     reserve: true,
+    checkMethod: ({ row }) => row.configType === YesNo.No,
   },
   columns,
   height: 'auto',
