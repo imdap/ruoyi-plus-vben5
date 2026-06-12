@@ -25,6 +25,7 @@ body {
   }
 }
 
+/* useVbenForm对错误边框的兼容 */
 .form-valid-error {
   --vben-form-error-shadow: 0 0 0 2px rgba(255, 35, 5, 0.1);
 
@@ -81,25 +82,4 @@ body {
 
 .dot-before-green {
   @apply before:relative before:top-[-2px] before:mr-[5px] before:inline-block before:size-[6px] before:rounded-full before:content-[''] before:bg-green-500;
-}
-
-/**
-vxe表格右上角toolbar元素之间的间距
-*/
-.vxe-button + .vxe-button.type--button {
-  margin-left: 8px !important;
-}
-
-/**
-vxe默认圆角
-*/
-html {
-  --vxe-ui-border-radius: 8px !important;
-}
-
-/**
-vxe表格loading 只加载表格 不加载上面的表单
-*/
-.vxe-grid.is--loading::before {
-  content: none !important;
 }
