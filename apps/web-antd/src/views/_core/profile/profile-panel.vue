@@ -87,7 +87,7 @@ const items = computed<DescriptionsProps['items']>(() => {
           <img :src="poetrySrc" />
         </div>
       </div>
-      <div class="px-[24px]">
+      <div class="px-6 w-full">
         <Descriptions :column="1" :items="items" />
       </div>
     </div>
