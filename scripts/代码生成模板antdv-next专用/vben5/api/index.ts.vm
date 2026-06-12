@@ -21,7 +21,7 @@ export function ${businessName}List(params?: ${BusinessName}Query) {
   #end
 }
 
-#if($tplCategory != 'tree')
+#if($tplCategory != 'tree' && $enableExport)
 /**
  * 导出${functionName}列表
  * @param params
@@ -58,6 +58,21 @@ export function ${businessName}Add(data: ${BusinessName}Form) {
 export function ${businessName}Update(data: ${BusinessName}Form) {
   return alovaInstance.putWithMsg<void>('/${moduleName}/${businessName}', data);
 }
+
+#if($enableStatus)
+/**
+ * 修改${functionName}状态
+ * @param data 包含主键与状态的数据
+ * @returns void
+ */
+export function ${businessName}ChangeStatus(data: Partial<${BusinessName}Form>) {
+  const requestData = {
+    ${pkColumn.javaField}: data.${pkColumn.javaField},
+    ${statusField}: data.${statusField},
+  };
+  return alovaInstance.putWithMsg<void>('/${moduleName}/${businessName}/changeStatus', requestData);
+}
+#end
 
 /**
  * 删除${functionName}

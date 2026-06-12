@@ -1,21 +1,52 @@
 ﻿<script setup lang="ts">
 import type { VbenFormProps } from '@vben/common-ui';
 import type { VxeGridProps } from '#/adapter/vxe-table';
+#if($enableStatus)
+import type { SwitchProps } from 'antdv-next';
+#end
 
 import { Page, useVben${PopupComponent} } from '@vben/common-ui';
+#if($enableStatus)
+import { useAccess } from '@vben/access';
+#end
 import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import {
+#if($enableStatus)
+  ${businessName}ChangeStatus,
+#end
+#if($enableExport)
   ${businessName}Export,
+#end
   ${businessName}List,
   ${businessName}Remove,
 } from '#/api/${moduleName}/${businessName}';
 import type { ${BusinessName}Form } from '#/api/${moduleName}/${businessName}/model';
+#if($enableStatus)
+import { ApiSwitch } from '#/components/global';
+#end
+#if($enableExport)
 import { useBlobExport } from '#/utils/file/export';
+#end
 
 import ${businessName}${PopupComponent} from './${businessName}-${popupComponent}.vue';
 import { columns, querySchema } from './data';
+
+#if($enableStatus)
+#if($statusColumn.javaType == "Boolean")
+const ${statusField}ActiveValue = true;
+const ${statusField}InactiveValue = false;
+#elseif($statusColumn.javaType == "Integer" || $statusColumn.javaType == "Long")
+const ${statusField}ActiveValue = 0;
+const ${statusField}InactiveValue = 1;
+#else
+const ${statusField}ActiveValue = '0';
+const ${statusField}InactiveValue = '1';
+#end
+
+const { hasAccessByCodes } = useAccess();
+#end
 
 const formOptions: VbenFormProps = {
   commonConfig: {
@@ -108,6 +139,19 @@ function handleMultiDelete() {
   });
 }
 
+#if($enableStatus)
+async function handleChangeStatus(
+  checked: SwitchProps['checked'],
+  row: Required<${BusinessName}Form>,
+) {
+  await ${businessName}ChangeStatus({
+    ${pkColumn.javaField}: row.${pkColumn.javaField},
+    ${statusField}: checked ? ${statusField}ActiveValue : ${statusField}InactiveValue,
+  });
+}
+#end
+
+#if($enableExport)
 const { exportBlob, exportLoading, buildExportFileName } = useBlobExport(${businessName}Export);
 
 async function handleExport() {
@@ -115,6 +159,7 @@ async function handleExport() {
   const fileName = buildExportFileName('${functionName}数据');
   exportBlob({ data: formValues, fileName });
 }
+#end
 </script>
 
 <template>
@@ -122,6 +167,7 @@ async function handleExport() {
     <BasicTable table-title="${functionName}列表">
       <template #toolbar-tools>
         <Space>
+#if($enableExport)
           <a-button
             v-access:code="['${permissionPrefix}:export']"
             :loading="exportLoading"
@@ -130,6 +176,7 @@ async function handleExport() {
           >
             {{ $t('pages.common.export') }}
           </a-button>
+#end
           <a-button
             :disabled="!vxeCheckboxChecked(tableApi)"
             danger
@@ -148,6 +195,17 @@ async function handleExport() {
           </a-button>
         </Space>
       </template>
+#if($enableStatus)
+      <template #status="{ row }">
+        <!-- value只能接收boolean值 -->
+        <ApiSwitch
+          :value="row.${statusField} === ${statusField}ActiveValue"
+          :api="(checked) => handleChangeStatus(checked, row)"
+          :disabled="!hasAccessByCodes(['${permissionPrefix}:edit'])"
+          @reload="() => tableApi.query()"
+        />
+      </template>
+#end
       <template #action="{ row }">
         <Space>
           <action-button

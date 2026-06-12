@@ -1,19 +1,49 @@
 ﻿<script setup lang="ts">
 import type { VbenFormProps } from '@vben/common-ui';
 import type { VxeGridProps } from '#/adapter/vxe-table';
+#if($enableStatus)
+import type { SwitchProps } from 'antdv-next';
+#end
 
 import { nextTick } from 'vue';
 
 import { Page, useVben${PopupComponent} } from '@vben/common-ui';
+#if($enableStatus)
+import { useAccess } from '@vben/access';
+#end
 
 import { Popconfirm, Space } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { ${businessName}List, ${businessName}Remove } from '#/api/${moduleName}/${businessName}';
+import {
+#if($enableStatus)
+  ${businessName}ChangeStatus,
+#end
+  ${businessName}List,
+  ${businessName}Remove,
+} from '#/api/${moduleName}/${businessName}';
 import type { ${BusinessName}Form } from '#/api/${moduleName}/${businessName}/model';
+#if($enableStatus)
+import { ApiSwitch } from '#/components/global';
+#end
 
 import { columns, querySchema } from './data';
 import ${businessName}${PopupComponent} from './${businessName}-${popupComponent}.vue';
+
+#if($enableStatus)
+#if($statusColumn.javaType == "Boolean")
+const ${statusField}ActiveValue = true;
+const ${statusField}InactiveValue = false;
+#elseif($statusColumn.javaType == "Integer" || $statusColumn.javaType == "Long")
+const ${statusField}ActiveValue = 0;
+const ${statusField}InactiveValue = 1;
+#else
+const ${statusField}ActiveValue = '0';
+const ${statusField}InactiveValue = '1';
+#end
+
+const { hasAccessByCodes } = useAccess();
+#end
 
 const formOptions: VbenFormProps = {
   commonConfig: {
@@ -100,6 +130,18 @@ function expandAll() {
 function collapseAll() {
   tableApi.grid?.setAllTreeExpand(false);
 }
+#if($enableStatus)
+
+async function handleChangeStatus(
+  checked: SwitchProps['checked'],
+  row: Required<${BusinessName}Form>,
+) {
+  await ${businessName}ChangeStatus({
+    ${pkColumn.javaField}: row.${pkColumn.javaField},
+    ${statusField}: checked ? ${statusField}ActiveValue : ${statusField}InactiveValue,
+  });
+}
+#end
 </script>
 
 <template>
@@ -122,6 +164,17 @@ function collapseAll() {
           </a-button>
         </Space>
       </template>
+#if($enableStatus)
+      <template #status="{ row }">
+        <!-- value只能接收boolean值 -->
+        <ApiSwitch
+          :value="row.${statusField} === ${statusField}ActiveValue"
+          :api="(checked) => handleChangeStatus(checked, row)"
+          :disabled="!hasAccessByCodes(['${permissionPrefix}:edit'])"
+          @reload="() => tableApi.query()"
+        />
+      </template>
+#end
       <template #action="{ row }">
         <Space>
           <action-button

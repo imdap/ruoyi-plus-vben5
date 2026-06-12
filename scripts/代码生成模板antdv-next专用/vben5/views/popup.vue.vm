@@ -60,6 +60,14 @@ const [Basic${PopupComponent}, ${popupComponent}Api] = useVben${PopupComponent}(
 
     if (isUpdate.value && id) {
       const record = await ${businessName}Info(id);
+#foreach($column in $columns)
+#if($column.htmlType == "checkbox" && ($column.insert || $column.edit))
+      // 多选字段后端以字符串存储 回显时拆分为数组
+      (record as any).${column.javaField} = (record as any).${column.javaField}
+        ? (record as any).${column.javaField}.split(',')
+        : [];
+#end
+#end
       await formApi.setValues(record);
     }
     await markInitialized();
@@ -77,6 +85,14 @@ async function handleConfirm() {
     }
     // getValues获取为一个readonly的对象 需要修改必须先深拷贝一次
     const data = cloneDeep(await formApi.getValues());
+#foreach($column in $columns)
+#if($column.htmlType == "checkbox" && ($column.insert || $column.edit))
+    // 多选字段提交时拼接为字符串
+    (data as any).${column.javaField} = Array.isArray((data as any).${column.javaField})
+      ? (data as any).${column.javaField}.join(',')
+      : (data as any).${column.javaField};
+#end
+#end
     await (isUpdate.value ? ${businessName}Update(data) : ${businessName}Add(data));
     resetInitialized();
     emit('reload');
@@ -116,8 +132,10 @@ import {
   Form,
   FormItem,
   Input,
+  InputNumber,
   RadioGroup,
   Select,
+  Switch,
   TextArea,
 } from 'antdv-next';
 import { ImageUpload, FileUpload } from '#/components/upload';
@@ -220,6 +238,14 @@ const [Basic${PopupComponent}, ${popupComponent}Api] = useVben${PopupComponent}(
       const record = await ${businessName}Info(id);
       // 只赋值存在的字段
       const filterRecord = pick(record, Object.keys(defaultValues));
+#foreach($column in $columns)
+#if($column.htmlType == "checkbox" && ($column.insert || $column.edit))
+      // 多选字段后端以字符串存储 回显时拆分为数组
+      (filterRecord as any).${column.javaField} = (filterRecord as any).${column.javaField}
+        ? (filterRecord as any).${column.javaField}.split(',')
+        : [];
+#end
+#end
       formData.value = filterRecord;
     }
     await markInitialized();
@@ -234,6 +260,14 @@ async function handleConfirm() {
     await formInstance.value?.validate();
     // 可能会做数据处理 使用cloneDeep深拷贝
     const data = cloneDeep(formData.value);
+#foreach($column in $columns)
+#if($column.htmlType == "checkbox" && ($column.insert || $column.edit))
+    // 多选字段提交时拼接为字符串
+    (data as any).${column.javaField} = Array.isArray((data as any).${column.javaField})
+      ? (data as any).${column.javaField}.join(',')
+      : (data as any).${column.javaField};
+#end
+#end
     await (isUpdate.value ? ${businessName}Update(data) : ${businessName}Add(data));
     resetInitialized();
     emit('reload');
@@ -268,6 +302,26 @@ async function handleClosed() {
 #if($column.htmlType == "input")
       <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
         <Input v-model:value="formData.${field}" :placeholder="$t('ui.formRules.required')" />
+      </FormItem>
+#elseif($column.htmlType == "inputNumber")
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <InputNumber v-model:value="formData.${field}" class="w-full" :placeholder="$t('ui.formRules.required')" />
+      </FormItem>
+#elseif($column.htmlType == "switch")
+      <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">
+        <Switch
+          v-model:checked="formData.${field}"
+#if($column.javaType == "Boolean")
+          :checked-value="true"
+          :un-checked-value="false"
+#elseif($column.javaType == "Integer" || $column.javaType == "Long")
+          :checked-value="0"
+          :un-checked-value="1"
+#else
+          checked-value="0"
+          un-checked-value="1"
+#end
+        />
       </FormItem>
 #elseif($column.htmlType == "imageUpload")
       <FormItem label="${comment}" name="${field}" :rules="formRules.${field}">

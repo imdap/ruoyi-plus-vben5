@@ -26,8 +26,12 @@ export const querySchema: FormSchemaGetter = () => [
         #set($component="TextArea")
       #elseif($column.htmlType == "select")
         #set($component="Select")
+      #elseif($column.htmlType == "switch")
+        #set($component="Select")
       #elseif($column.htmlType == "radio")
         #set($component="RadioGroup")
+      #elseif($column.htmlType == "inputNumber")
+        #set($component="InputNumber")
       #elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
         #set($component="DatePicker")
       #elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
@@ -87,7 +91,11 @@ export const columns: VxeGridProps['columns'] = [
     #if( $foreach.count == 1 && $tplCategory == 'tree')
     treeNode: true,
     #end
-    #if($dictType != "")
+    #if($enableStatus && $statusField == $column.javaField)
+    slots: { default: 'status' },
+    #elseif($column.htmlType == "imageUpload")
+    cellRender: { name: 'CellImage' },
+    #elseif($dictType != "")
     slots: {
       default: ({ row }) => {
         // 可选从DictEnum中获取 DictEnum.${dictType.toUpperCase()} 便于维护
@@ -132,6 +140,10 @@ export const ${popupComponent}Schema: FormSchemaGetter = () => [
         #set($component="RadioGroup")
       #elseif($column.htmlType == "checkbox")
         #set($component="Checkbox")
+      #elseif($column.htmlType == "switch")
+        #set($component="Switch")
+      #elseif($column.htmlType == "inputNumber")
+        #set($component="InputNumber")
       #elseif($column.htmlType == "imageUpload")
         #set($component="ImageUpload")
       #elseif($column.htmlType == "fileUpload")
@@ -192,6 +204,19 @@ export const ${popupComponent}Schema: FormSchemaGetter = () => [
       #if($component == "RadioGroup")
       buttonStyle: 'solid',
       optionType: 'button',
+      #end
+    },
+    #elseif($component == "Switch")
+    componentProps: {
+      #if($column.javaType == "Boolean")
+      checkedValue: true,
+      unCheckedValue: false,
+      #elseif($column.javaType == "Integer" || $column.javaType == "Long")
+      checkedValue: 0,
+      unCheckedValue: 1,
+      #else
+      checkedValue: '0',
+      unCheckedValue: '1',
       #end
     },
     #end
