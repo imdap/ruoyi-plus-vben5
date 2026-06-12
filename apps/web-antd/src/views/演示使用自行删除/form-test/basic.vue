@@ -1,17 +1,20 @@
 <script lang="ts" setup>
-import type { UploadFile } from 'antdv-next';
-
-import { h, ref, toRaw } from 'vue';
+import { h, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
 import { useDebounceFn } from '@vueuse/core';
-import { Button, Card, message, Spin, Tag } from 'antdv-next';
-import dayjs from 'dayjs';
+import { Button, Card } from 'antdv-next';
 
 import { useVbenForm, z } from '#/adapter/form';
 import { getAllMenusApi } from '#/api';
-import { $t } from '#/locales';
+
+/**
+ * 该页面用于「校验边框样式」验证：
+ * schema 覆盖 adapter/component/index.ts 中 StrictComponentType 的全部组件，
+ * 其中所有 outlined 输入类组件均加上校验规则，
+ * 点击顶部「校验全部」即可让未填写的字段统一飘红，直观比对边框/聚焦阴影效果。
+ */
 
 const keyword = ref('');
 const fetching = ref(false);
@@ -30,270 +33,163 @@ function fetchRemoteOptions({ keyword = '选项' }: Record<string, any>) {
   });
 }
 
+// Cascader / TreeSelect 静态数据
+const treeData = [
+  {
+    label: '浙江',
+    value: 'zhejiang',
+    children: [
+      {
+        label: '杭州',
+        value: 'hangzhou',
+        children: [
+          { label: '西湖', value: 'xihu' },
+          { label: '余杭', value: 'yuhang' },
+        ],
+      },
+    ],
+  },
+  {
+    label: '江苏',
+    value: 'jiangsu',
+    children: [
+      {
+        label: '南京',
+        value: 'nanjing',
+        children: [{ label: '中华门', value: 'zhonghuamen' }],
+      },
+    ],
+  },
+];
+
+const simpleOptions = [
+  { label: '选项一', value: '1' },
+  { label: '选项二', value: '2' },
+  { label: '选项三', value: '3' },
+];
+
 const [BaseForm, baseFormApi] = useVbenForm({
-  // 所有表单项共用，可单独在表单内覆盖
   commonConfig: {
-    // 在label后显示一个冒号
     colon: true,
-    // 所有表单项
     componentProps: {
       class: 'w-full',
     },
   },
-  fieldMappingTime: [['rangePicker', ['startTime', 'endTime'], 'YYYY-MM-DD']],
-  // 提交函数
-  handleSubmit: onSubmit,
-  handleValuesChange(_values, fieldsChanged) {
-    message.info(`表单以下字段发生变化：${fieldsChanged.join('，')}`);
-  },
-
-  // 垂直布局，label和input在不同行，值为vertical
-  // 水平布局，label和input在同一行
   layout: 'horizontal',
+  // 全部字段默认 required，方便一键飘红验证边框
   schema: [
     {
-      // 组件需要在 #/adapter.ts内注册，并加上类型
       component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '请输入用户名',
-      },
-      // 字段名
-      fieldName: 'username',
-      // 界面显示的label
-      label: '字符串',
-      rules: 'required',
-    },
-    {
-      component: 'Input',
-      fieldName: 'desc',
-      // 界面显示的description
-      description: '这是表单描述',
-      label: '字符串(带描述)',
-    },
-    {
-      // 组件需要在 #/adapter.ts内注册，并加上类型
-      component: 'ApiSelect',
-      // 对应组件的参数
-      componentProps: {
-        // 菜单接口转options格式
-        afterFetch: (data: { name: string; path: string }[]) => {
-          return data.map((item: any) => ({
-            label: item.name,
-            value: item.path,
-          }));
-        },
-        // 菜单接口
-        api: getAllMenusApi,
-        autoSelect: 'first',
-      },
-      // 字段名
-      fieldName: 'api',
-      // 界面显示的label
-      label: 'ApiSelect',
-    },
-    {
-      component: 'ApiSelect',
-      // 对应组件的参数
-      componentProps: () => {
-        return {
-          api: fetchRemoteOptions,
-          // 禁止本地过滤
-          filterOption: false,
-          // 如果正在获取数据，使用插槽显示一个loading
-          notFoundContent: fetching.value ? undefined : null,
-          // 搜索词变化时记录下来， 使用useDebounceFn防抖。
-          onSearch: useDebounceFn((value: string) => {
-            keyword.value = value;
-          }, 300),
-          // 远程搜索参数。当搜索词变化时，params也会更新
-          params: {
-            keyword: keyword.value || undefined,
-          },
-          // 远程搜索判断。当为true时，才允许调用api
-          shouldFetch: (params: any) => {
-            return !!params?.keyword;
-          },
-          showSearch: true,
-        };
-      },
-      // 字段名
-      fieldName: 'remoteSearch',
-      // 界面显示的label
-      label: '远程搜索',
-      help: '远程查询，仅有输入时方进行查询',
-      renderComponentContent: () => {
-        return {
-          notFoundContent: fetching.value ? h(Spin) : undefined,
-        };
-      },
-      rules: 'selectRequired',
-    },
-    {
-      component: 'ApiTreeSelect',
-      // 对应组件的参数
-      componentProps: {
-        // 菜单接口
-        api: getAllMenusApi,
-        // 菜单接口转options格式
-        labelField: 'name',
-        valueField: 'path',
-        childrenField: 'children',
-      },
-      // 字段名
-      fieldName: 'apiTree',
-      // 界面显示的label
-      label: 'ApiTreeSelect',
+      componentProps: { placeholder: '请输入' },
+      fieldName: 'input',
+      label: 'Input',
     },
     {
       component: 'InputPassword',
-      componentProps: {
-        placeholder: '请输入密码',
-      },
-      fieldName: 'password',
-      label: '密码',
+      componentProps: { placeholder: '请输入密码' },
+      fieldName: 'inputPassword',
+      label: 'InputPassword',
     },
     {
       component: 'InputNumber',
-      componentProps: {
-        placeholder: '请输入',
-      },
-      fieldName: 'number',
-      label: '数字(带后缀)',
-      suffix: () => '¥',
+      componentProps: { placeholder: '请输入', suffix: () => '¥' },
+      fieldName: 'inputNumber',
+      label: 'InputNumber',
     },
     {
-      component: 'IconPicker',
-      fieldName: 'icon',
-      label: '图标',
-    },
-    {
-      colon: false,
-      component: 'Select',
-      componentProps: {
-        allowClear: true,
-        filterOption: true,
-        options: [
-          {
-            label: '选项1',
-            value: '1',
-          },
-          {
-            label: '选项2',
-            value: '2',
-          },
-        ],
-        placeholder: '请选择',
-        showSearch: true,
-      },
-      fieldName: 'options',
-      label: () => h(Tag, { color: 'warning' }, () => '😎自定义：'),
-    },
-    {
-      component: 'RadioGroup',
-      componentProps: {
-        options: [
-          {
-            label: '选项1',
-            value: '1',
-          },
-          {
-            label: '选项2',
-            value: '2',
-          },
-        ],
-      },
-      fieldName: 'radioGroup',
-      label: '单选组',
-    },
-    {
-      component: 'Radio',
-      fieldName: 'radio',
-      label: '',
-      renderComponentContent: () => {
-        return {
-          default: () => ['Radio'],
-        };
-      },
-    },
-    {
-      component: 'CheckboxGroup',
-      componentProps: {
-        name: 'cname',
-        options: [
-          {
-            label: '选项1',
-            value: '1',
-          },
-          {
-            label: '选项2',
-            value: '2',
-          },
-        ],
-      },
-      fieldName: 'checkboxGroup',
-      label: '多选组',
-    },
-    {
-      component: 'Checkbox',
-      fieldName: 'checkbox',
-      label: '',
-      renderComponentContent: () => {
-        return {
-          default: () => ['我已阅读并同意'],
-        };
-      },
-      rules: z
-        .boolean()
-        .refine((v) => v, { message: '为什么不同意？勾上它！' }),
+      component: 'Textarea',
+      componentProps: { placeholder: '请输入', rows: 2 },
+      fieldName: 'textarea',
+      label: 'Textarea',
     },
     {
       component: 'Mentions',
       componentProps: {
         options: [
-          {
-            label: 'afc163',
-            value: 'afc163',
-          },
-          {
-            label: 'zombieJ',
-            value: 'zombieJ',
-          },
+          { label: 'afc163', value: 'afc163' },
+          { label: 'zombieJ', value: 'zombieJ' },
         ],
-        placeholder: '请输入',
+        placeholder: '输入 @ 触发提及',
       },
       fieldName: 'mentions',
-      label: '提及',
+      label: 'Mentions',
     },
     {
-      component: 'Rate',
-      fieldName: 'rate',
-      label: '评分',
-    },
-    {
-      component: 'Switch',
+      component: 'AutoComplete',
       componentProps: {
-        class: 'w-auto',
+        options: simpleOptions,
+        placeholder: '请输入',
       },
-      fieldName: 'switch',
-      help: () =>
-        ['这是一个多行帮助信息', '第二行', '第三行'].map((v) => h('p', v)),
-      label: '开关',
+      fieldName: 'autoComplete',
+      label: 'AutoComplete',
     },
     {
-      component: 'DatePicker',
-      fieldName: 'datePicker',
-      label: '日期选择框',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: simpleOptions,
+        placeholder: '请选择',
+        showSearch: true,
+      },
+      fieldName: 'select',
+      label: 'Select',
+      rules: 'selectRequired',
     },
     {
-      component: 'RangePicker',
-      fieldName: 'rangePicker',
-      label: '范围选择器',
+      component: 'ApiSelect',
+      componentProps: {
+        afterFetch: (data: { name: string; path: string }[]) =>
+          data.map((item: any) => ({ label: item.name, value: item.path })),
+        api: getAllMenusApi,
+      },
+      fieldName: 'apiSelect',
+      label: 'ApiSelect',
+      rules: 'selectRequired',
     },
     {
-      component: 'TimePicker',
-      fieldName: 'timePicker',
-      label: '时间选择框',
+      component: 'ApiSelect',
+      componentProps: () => ({
+        api: fetchRemoteOptions,
+        filterOption: false,
+        notFoundContent: fetching.value ? undefined : null,
+        onSearch: useDebounceFn((value: string) => {
+          keyword.value = value;
+        }, 300),
+        params: { keyword: keyword.value || undefined },
+        shouldFetch: (params: any) => !!params?.keyword,
+        showSearch: true,
+      }),
+      fieldName: 'remoteSearch',
+      label: '远程搜索',
+      help: '远程查询，仅有输入时方进行查询',
+      rules: 'selectRequired',
+    },
+    {
+      component: 'Cascader',
+      componentProps: {
+        allowClear: true,
+        options: treeData,
+        placeholder: '请选择',
+        showSearch: true,
+      },
+      fieldName: 'cascader',
+      label: 'Cascader',
+      rules: 'selectRequired',
+    },
+    {
+      component: 'ApiCascader',
+      componentProps: {
+        api: getAllMenusApi,
+        afterFetch: (data: { name: string; path: string }[]) =>
+          data.map((item: any) => ({
+            label: item.name,
+            value: item.path,
+            children: [],
+          })),
+      },
+      fieldName: 'apiCascader',
+      label: 'ApiCascader',
+      rules: 'selectRequired',
     },
     {
       component: 'TreeSelect',
@@ -301,161 +197,151 @@ const [BaseForm, baseFormApi] = useVbenForm({
         allowClear: true,
         placeholder: '请选择',
         showSearch: true,
-        treeData: [
-          {
-            label: 'root 1',
-            value: 'root 1',
-            children: [
-              {
-                label: 'parent 1',
-                value: 'parent 1',
-                children: [
-                  {
-                    label: 'parent 1-0',
-                    value: 'parent 1-0',
-                    children: [
-                      {
-                        label: 'my leaf',
-                        value: 'leaf1',
-                      },
-                      {
-                        label: 'your leaf',
-                        value: 'leaf2',
-                      },
-                    ],
-                  },
-                  {
-                    label: 'parent 1-1',
-                    value: 'parent 1-1',
-                  },
-                ],
-              },
-              {
-                label: 'parent 2',
-                value: 'parent 2',
-              },
-            ],
-          },
-        ],
+        treeData,
         treeNodeFilterProp: 'label',
       },
       fieldName: 'treeSelect',
-      label: '树选择',
+      label: 'TreeSelect',
+      rules: 'selectRequired',
+    },
+    {
+      component: 'ApiTreeSelect',
+      componentProps: {
+        api: getAllMenusApi,
+        labelField: 'name',
+        valueField: 'path',
+        childrenField: 'children',
+      },
+      fieldName: 'apiTreeSelect',
+      label: 'ApiTreeSelect',
+      rules: 'selectRequired',
+    },
+    {
+      component: 'DatePicker',
+      fieldName: 'datePicker',
+      label: 'DatePicker',
+      rules: 'selectRequired',
+    },
+    {
+      component: 'RangePicker',
+      fieldName: 'rangePicker',
+      label: 'RangePicker',
+      rules: 'selectRequired',
+    },
+    {
+      component: 'TimePicker',
+      fieldName: 'timePicker',
+      label: 'TimePicker',
+      rules: 'selectRequired',
+    },
+    {
+      component: 'TimeRangePicker',
+      fieldName: 'timeRangePicker',
+      label: 'TimeRangePicker',
+      rules: 'selectRequired',
+    },
+    {
+      component: 'IconPicker',
+      fieldName: 'iconPicker',
+      label: 'IconPicker',
+      rules: 'selectRequired',
+    },
+    {
+      component: 'Rate',
+      fieldName: 'rate',
+      label: 'Rate',
+    },
+    {
+      component: 'Switch',
+      componentProps: { class: 'w-auto' },
+      fieldName: 'switch',
+      label: 'Switch',
+    },
+    {
+      component: 'Radio',
+      fieldName: 'radio',
+      label: 'Radio',
+      renderComponentContent: () => ({ default: () => ['单个 Radio'] }),
+    },
+    {
+      component: 'RadioGroup',
+      componentProps: { options: simpleOptions },
+      fieldName: 'radioGroup',
+      label: 'RadioGroup',
+    },
+    {
+      component: 'Checkbox',
+      fieldName: 'checkbox',
+      label: 'Checkbox',
+      renderComponentContent: () => ({ default: () => ['我已阅读并同意'] }),
+      rules: z.boolean().refine((v) => v, { message: '请勾选' }),
+    },
+    {
+      component: 'CheckboxGroup',
+      componentProps: { options: simpleOptions },
+      fieldName: 'checkboxGroup',
+      label: 'CheckboxGroup',
+    },
+    {
+      component: 'ImageUpload',
+      fieldName: 'imageUpload',
+      label: 'ImageUpload',
+      rules: 'selectRequired',
+    },
+    {
+      component: 'FileUpload',
+      fieldName: 'fileUpload',
+      label: 'FileUpload',
+      rules: 'selectRequired',
+    },
+    {
+      component: 'Upload',
+      fieldName: 'upload',
+      label: 'Upload',
+      renderComponentContent: () => ({
+        default: () => [h(Button, () => '点击上传')],
+      }),
     },
     {
       component: 'RichTextarea',
-      fieldName: 'richEditor',
-      label: '富文本',
-      formItemClass: 'col-span-3 items-baseline',
+      fieldName: 'richTextarea',
+      label: 'RichTextarea',
+      formItemClass: 'col-span-1 items-baseline md:col-span-2 lg:col-span-3',
     },
-  ].map((i) => ({ ...i, rules: 'required' })),
-  // 大屏一行显示3个，中屏一行显示2个，小屏一行显示1个
+  ].map((item) => {
+    // 纯展示型组件(无值)不参与校验
+    const displayOnly = ['Divider', 'DefaultButton', 'PrimaryButton'];
+    if (displayOnly.includes(item.component)) {
+      return item;
+    }
+    // 其余统一补 required，已显式声明 rules 的不覆盖
+    return { rules: 'required', ...item };
+  }),
+  showDefaultActions: false,
   wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
 });
 
-function onSubmit(values: Record<string, any>) {
-  const files = toRaw(values.files) as UploadFile[];
-  const cropImage = (toRaw(values.cropImage) ?? []) as UploadFile[];
-  const doneFiles = files.filter((file) => file.status === 'done');
-  const failedFiles = files.filter((file) => file.status !== 'done');
-  const doneCrop = cropImage.filter((file) => file.status === 'done');
-  const failedCrop = cropImage.filter((file) => file.status !== 'done');
-
-  const msg = [
-    ...doneFiles.map((file) => file.response?.url || file.url),
-    ...failedFiles.map((file) => file.name),
-  ].join(', ');
-  const msgCrop = [
-    ...doneCrop.map((file) => file.response?.url || file.url),
-    ...failedCrop.map((file) => file.name),
-  ].join(', ');
-
-  if (failedFiles.length === 0) {
-    message.success({
-      content: `${$t('examples.form.upload-urls')}: ${msg}`,
-    });
-  } else {
-    message.error({
-      content: `${$t('examples.form.upload-error')}: ${msg}`,
-    });
-    return;
-  }
-  if (doneCrop.length > 0 && failedCrop.length === 0) {
-    message.success({
-      content: `${$t('examples.form.upload-urls')}: ${msgCrop}`,
-    });
-  } else if (failedCrop.length > 0) {
-    message.error({
-      content: `${$t('examples.form.upload-error')}: ${msgCrop}`,
-    });
-    return;
-  }
-  // 如果需要可提交前替换为需要的urls
-  values.files = doneFiles.map((file) => file.response?.url || file.url);
-  values.cropImage = doneCrop.map((file) => file.response?.url || file.url);
-  message.success({
-    content: `form values: ${JSON.stringify(values)}`,
-  });
+async function handleValidate() {
+  await baseFormApi.validate();
 }
 
-function handleSetFormValue() {
-  /**
-   * 设置表单值(多个)
-   */
-  baseFormApi.setValues({
-    checkboxGroup: ['1'],
-    datePicker: dayjs('2022-01-01'),
-    files: [
-      {
-        name: 'example.png',
-        status: 'done',
-        uid: '-1',
-        url: 'https://unpkg.com/@vbenjs/static-source@0.1.7/source/logo-v1.webp',
-      },
-    ],
-    mentions: '@afc163',
-    number: 3,
-    options: '1',
-    password: '2',
-    radioGroup: '1',
-    rangePicker: [dayjs('2022-01-01'), dayjs('2022-01-02')],
-    rate: 3,
-    switch: true,
-    timePicker: dayjs('2022-01-01 12:00:00'),
-    treeSelect: 'leaf1',
-    username: '1',
-    richEditor: `
-      <h1>Vben Tiptap</h1>
-      <p>这个编辑器已经被封装在 <code>packages/effects/plugins/src/tiptap</code> 中。</p>
-      <p>你可以直接在各个 app 里通过 <code>@vben/plugins/tiptap</code> 引入。</p>
-      <blockquote>默认内置 StarterKit、Underline、TextAlign、Placeholder。</blockquote>
-    `,
-  });
-
-  // 设置单个表单值
-  baseFormApi.setFieldValue('checkbox', true);
+function handleReset() {
+  baseFormApi.resetForm();
 }
 </script>
 
 <template>
   <Page
     content-class="flex flex-col gap-4"
-    description="表单组件基础示例，请注意，该页面用到的参数代码会添加一些简单注释，方便理解，请仔细查看。"
-    title="表单组件"
+    description="覆盖 StrictComponentType 全部组件，用于验证表单校验失败时的边框/聚焦阴影样式。测试使用"
+    title="表单组件 - 边框校验验证"
   >
-    <template #description>
-      <div class="text-muted-foreground">
-        <p>
-          表单组件基础示例，请注意，该页面用到的参数代码会添加一些简单注释，方便理解，请仔细查看。
-        </p>
-      </div>
-    </template>
-    <template #extra>
-      <DocButton class="mb-2" path="/components/common-ui/vben-form" />
-    </template>
-    <Card title="基础示例">
+    <Card title="全部组件">
       <template #extra>
-        <Button type="primary" @click="handleSetFormValue">设置表单值</Button>
+        <div class="flex gap-2">
+          <Button type="primary" @click="handleValidate">校验全部</Button>
+          <Button @click="handleReset">重置</Button>
+        </div>
       </template>
       <BaseForm />
     </Card>

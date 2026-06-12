@@ -13,34 +13,9 @@ body {
 .ant-app {
   width: 100%;
   height: 100%;
-  /* 会导致页面无法滚动 */
-  /* overscroll-behavior: none; */
+  overscroll-behavior: none;
   color: inherit;
 }
-
-/* .ant-btn {
-  .anticon {
-    display: inline-flex;
-  }
-
-  > svg {
-    display: inline-block;
-  }
-
-  > svg + span {
-    margin-inline-start: 6px;
-  }
-} */
-
-/* .ant-tag {
-  > svg {
-    display: inline-block;
-  }
-
-  > svg + span {
-    margin-inline-start: 4px;
-  }
-} */
 
 .ant-message-notice-content,
 .ant-notification-notice {
@@ -51,83 +26,48 @@ body {
 }
 
 .form-valid-error {
-  /** select 选择器的样式 */
   --vben-form-error-shadow: 0 0 0 2px rgba(255, 35, 5, 0.1);
 
-  .ant-select:not(.valid-success) {
+  /*
+   * 红色边框:直接覆盖各 outlined 组件「带边框根元素」的 border-color。
+   * 用 !important 让 静态 / hover / focus 三态都保持红 —— antd 自身边框走
+   * --ant-*-border-color 变量,与 vben 的 border-destructive 工具类同特异性,
+   * 但 antd 样式后加载会盖掉工具类,所以必须 !important。
+   * .ant-input-outlined 同时覆盖 Input / Textarea / 密码框(其 wrapper 也带此类)。
+   */
+  .ant-input-outlined,
+  .ant-input-number-outlined,
+  .ant-mentions-outlined,
+  .ant-picker-outlined,
+  .ant-select.ant-select-outlined:not(.valid-success) {
     border-color: hsl(var(--destructive)) !important;
   }
 
-  .ant-select-focused .ant-select-selector {
+  /*
+   * 聚焦阴影:antd 的 :focus 规则用 var(--ant-*-active-shadow) 画蓝色阴影,
+   * 该变量在组件自身 css-var 作用域、祖先无法覆盖,故直接写 box-shadow + !important。
+   * :focus-within 兼容密码框/数字框「焦点在内层 input」的结构。
+   */
+  .ant-input-outlined:focus,
+  .ant-input-outlined:focus-within,
+  .ant-input-number-outlined:focus,
+  .ant-input-number-outlined:focus-within,
+  .ant-mentions-outlined:focus,
+  .ant-mentions-outlined:focus-within,
+  .ant-picker-outlined:focus,
+  .ant-picker-outlined:focus-within {
     box-shadow: var(--vben-form-error-shadow) !important;
   }
 
-  /** 数字输入框样式 */
-  .ant-input-number-focused {
-    box-shadow: var(--vben-form-error-shadow);
+  /* Select 系聚焦阴影(antdv-next 边框/阴影画在 .ant-select 容器自身) */
+  .ant-select.ant-select-outlined.ant-select-focused:not(.valid-success) {
+    box-shadow: var(--vben-form-error-shadow) !important;
   }
 
-  .ant-input-number.ant-input-number-mode-input {
-    border-color: hsl(var(--destructive));
+  /* 区间选择器下方来回切换时的指示条 */
+  .ant-picker-active-bar {
+    background-color: hsl(var(--destructive));
   }
-
-  /** 密码输入框样式 */
-  .ant-input-affix-wrapper:hover {
-    border-color: hsl(var(--destructive));
-    box-shadow: var(--vben-form-error-shadow);
-  }
-
-  /** 兼容input/inputNumber选择 */
-  .ant-input,
-  .ant-input-affix-wrapper {
-    border-color: hsl(var(--destructive)) !important;
-  }
-
-  /* select focus-within样式 */
-  .ant-picker-outlined:focus,
-  .ant-picker-outlined:focus-within {
-    border-color: hsl(var(--destructive));
-  }
-  /* focus样式 shadow */
-  .ant-select.ant-select-outlined:not(.ant-select-disabled).ant-select-focused {
-    /* --ant-select-active-outline-color: var(--vben-form-error-shadow); */
-    box-shadow: var(--vben-form-error-shadow);
-  }
-
-  /* InputNumber */
-  .ant-input-number-outlined:focus,
-  .ant-input-number-outlined:focus-within {
-    --ant-input-number-active-border-color: hsl(var(--destructive));
-  }
-
-  .ant-mentions-outlined:focus,
-  .ant-mentions-outlined:focus-within {
-    --ant-mentions-active-border-color: hsl(var(--destructive));
-    --ant-mentions-active-shadow: var(--vben-form-error-shadow);
-  }
-
-  .ant-input-outlined:focus,
-  .ant-input-outlined:focus-within {
-    --ant-input-active-border-color: hsl(var(--destructive));
-    --ant-input-active-shadow: var(--vben-form-error-shadow);
-  }
-  /** 时间/日期类型的选择兼容 **/
-  .ant-picker-outlined {
-    --ant-color-border: hsl(var(--destructive));
-  }
-  .ant-picker-outlined:hover {
-    --ant-date-picker-hover-border-color: hsl(var(--destructive));
-  }
-}
-
-/** 区间选择器下面来回切换时的样式 */
-.form-valid-error .ant-picker-active-bar {
-  background-color: hsl(var(--destructive));
-}
-
-/** 时间选择器的样式 */
-.form-valid-error .ant-picker-focused {
-  box-shadow: var(--vben-form-error-shadow);
 }
 
 /** 前后置小圆点样式 */
