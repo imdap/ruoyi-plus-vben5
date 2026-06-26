@@ -123,7 +123,7 @@ export const drawerSchema: FormSchemaGetter = () => [
   },
   {
     component: 'Input',
-    fieldName: 'domain',
+    fieldName: 'domainUrl',
     label: '自定义域名',
   },
   {
