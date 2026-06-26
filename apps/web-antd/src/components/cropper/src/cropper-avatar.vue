@@ -17,20 +17,6 @@ const props = defineProps({
   btnText: { default: '', type: String },
   showBtn: { default: true, type: Boolean },
   size: { default: 5, type: Number },
-  uploadApi: {
-    required: true,
-    type: Function as PropType<
-      ({
-        file,
-        filename,
-        name,
-      }: {
-        file: Blob;
-        filename: string;
-        name: string;
-      }) => Promise<any>
-    >,
-  },
   value: { default: '', type: String },
 
   width: { default: '200px', type: [String, Number] },
@@ -69,9 +55,9 @@ watch(
   },
 );
 
-function handleUploadSuccess({ data, source }: any) {
+function handleUploadSuccess({ data, ossId, source }: any) {
   sourceValue.value = source;
-  emit('change', { data, source });
+  emit('change', { data, ossId, source });
   window.message.success(t('component.cropper.uploadSuccess'));
 }
 
@@ -115,7 +101,6 @@ defineExpose({
     <CropperModal
       :size="size"
       :src="sourceValue"
-      :upload-api="uploadApi"
       @upload-success="handleUploadSuccess"
     />
   </div>

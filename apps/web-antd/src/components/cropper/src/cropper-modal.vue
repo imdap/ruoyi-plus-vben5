@@ -1,21 +1,18 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue';
-
 import type { CropendResult, Cropper } from './typing';
 
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { $t as t } from '@vben/locales';
+import { buildUUID } from '@vben/utils';
 
 import { Avatar, Space, Tooltip, Upload } from 'antdv-next';
-import { isFunction } from 'lodash-es';
 
+import { uploadApi } from '#/api';
 import { dataURLtoBlob } from '#/utils/file/base64Conver';
 
 import CropperImage from './cropper.vue';
-
-type apiFunParams = { file: Blob; filename: string; name: string };
 
 defineOptions({ name: 'CropperModal' });
 
@@ -23,10 +20,6 @@ const props = defineProps({
   circled: { default: true, type: Boolean },
   size: { default: 0, type: Number },
   src: { default: '', type: String },
-  uploadApi: {
-    required: true,
-    type: Function as PropType<(params: apiFunParams) => Promise<any>>,
-  },
 });
 
 const emit = defineEmits(['uploadSuccess', 'uploadError', 'register']);
@@ -99,21 +92,26 @@ function handlerToolbar(event: string, arg?: number) {
 }
 
 async function handleOk() {
-  const uploadApi = props.uploadApi;
-  if (uploadApi && isFunction(uploadApi)) {
-    if (!previewSource.value) {
-      window.message.warning('未选择图片');
-      return;
-    }
-    const blob = dataURLtoBlob(previewSource.value);
-    try {
-      modalLoading(true);
-      const result = await uploadApi({ file: blob, filename, name: 'file' });
-      emit('uploadSuccess', { data: result.url, source: previewSource.value });
-      modalApi.close();
-    } finally {
-      modalLoading(false);
-    }
+  if (!previewSource.value) {
+    window.message.warning('未选择图片');
+    return;
+  }
+  const blob = dataURLtoBlob(previewSource.value);
+  // Blob转File类型，保证文件名存在
+  const file = filename
+    ? new File([blob], filename)
+    : new File([blob], `${buildUUID()}.png`);
+  try {
+    modalLoading(true);
+    const result = await uploadApi(file);
+    emit('uploadSuccess', {
+      data: result.url,
+      ossId: result.ossId,
+      source: previewSource.value,
+    });
+    modalApi.close();
+  } finally {
+    modalLoading(false);
   }
 }
 </script>

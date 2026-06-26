@@ -9,15 +9,22 @@ import { preferences, usePreferences } from '@vben/preferences';
 
 import { Card, Descriptions, Tag, Tooltip } from 'antdv-next';
 
-import { userUpdateAvatar } from '#/api/system/profile';
+import { userProfileUpdate } from '#/api/system/profile';
 import { CropperAvatar } from '#/components/cropper';
 
 const props = defineProps<{ profile?: UserProfile }>();
 
-defineEmits<{
+const emit = defineEmits<{
   // 头像上传完毕
   uploadFinish: [];
 }>();
+
+async function handleAvatarChange({ ossId }: { ossId: string }) {
+  if (ossId) {
+    await userProfileUpdate({ avatar: ossId });
+    emit('uploadFinish');
+  }
+}
 
 const avatar = computed(
   () => props.profile?.user.avatar || preferences.app.defaultAvatar,
@@ -73,10 +80,9 @@ const items = computed<DescriptionsProps['items']>(() => {
         <Tooltip title="点击上传头像">
           <CropperAvatar
             :show-btn="false"
-            :upload-api="userUpdateAvatar"
             :value="avatar"
             width="120"
-            @change="$emit('uploadFinish')"
+            @change="handleAvatarChange"
           />
         </Tooltip>
         <div class="flex flex-col items-center gap-[8px]">
