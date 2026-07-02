@@ -20,26 +20,13 @@ const route = useRoute();
 
 const code = route.query.code as string;
 const state = route.query.state as string;
-const stateJson = JSON.parse(atob(state));
-// 来源
 const source = route.query.source as string;
-const domain = stateJson.domain as string;
 
 const accessStore = useAccessStore();
 const authStore = useAuthStore();
 
 const router = useRouter();
-
 onMounted(async () => {
-  // 如果域名不相等 则重定向处理
-  const host = window.location.host;
-  if (domain !== host) {
-    const urlFull = new URL(window.location.href);
-    urlFull.host = domain;
-    window.location.href = urlFull.toString();
-    return;
-  }
-
   try {
     // 已经实现的平台
     const currentClient = accountBindList.find(
