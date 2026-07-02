@@ -17,7 +17,7 @@ import { useAccessStore, useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
 import { GithubOutlined, UserOutlined } from '@antdv-next/icons';
-import { Badge } from 'antdv-next';
+import { Alert, Badge } from 'antdv-next';
 
 import { $t } from '#/locales';
 import { resetRoutes } from '#/router';
@@ -149,6 +149,30 @@ useVersionUpdate();
 
 <template>
   <BasicLayout @clear-preferences-and-logout="handleLogout">
+    <template #header-right-1>
+      <Alert
+        class="hidden lg:block"
+        type="warning"
+        :show-icon="true"
+        :style="{
+          '--ant-alert-default-padding': '4px 12px',
+          marginRight: '16px',
+        }"
+      >
+        <template #title>
+          当前分支为兼容版且 <strong>不再更新</strong> 最新版本前往
+          <a-button
+            type="link"
+            size="small"
+            href="https://gitee.com/dapppp/bell-plus"
+            target="_blank"
+            :style="{ '--ant-button-padding-inline-sm': '0' }"
+          >
+            仓库地址
+          </a-button>
+        </template>
+      </Alert>
+    </template>
     <template #user-dropdown>
       <UserDropdown
         :avatar
