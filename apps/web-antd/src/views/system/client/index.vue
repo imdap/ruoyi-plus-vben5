@@ -122,7 +122,7 @@ async function handleChangeStatus(
   row: Client,
 ) {
   await clientChangeStatus({
-    clientId: row.id,
+    clientId: row.clientId,
     status: checked ? EnableStatus.Enable : EnableStatus.Disable,
   });
 }
