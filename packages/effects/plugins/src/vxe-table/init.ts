@@ -12,6 +12,7 @@ import { usePreferences } from '@vben/preferences';
  * @see https://vxeui.com/other4/#/plugin-render-antd/start/full/npmInstall
  * @see https://vxetable.cn/other4/#/table/other/antd
  */
+import { VxeUI } from '@vxe-ui/core';
 import VxeUIPluginRenderAntd from '@vxe-ui/plugin-render-antd';
 import {
   VxeButton,
@@ -25,11 +26,10 @@ import {
   VxeRadioGroup,
   VxeSelect,
   VxeTooltip,
-  VxeUI,
   VxeUpload,
 } from 'vxe-pc-ui';
-import enUS from 'vxe-pc-ui/lib/language/en-US'; // 导入默认的语言
-import zhCN from 'vxe-pc-ui/lib/language/zh-CN';
+import enUS from 'vxe-pc-ui/es/language/en-US'; // 导入默认的语言
+import zhCN from 'vxe-pc-ui/es/language/zh-CN';
 import {
   VxeColgroup,
   VxeColumn,
@@ -41,22 +41,17 @@ import {
 import { injectPluginsOptions } from '../plugins-context';
 import { extendsDefaultFormatter } from './extends'; // 是否加载过
 
+// VxeUI 直接从 @vxe-ui/core 导入时不会触发 vxe-pc-ui / vxe-table 入口的副作用，
+// 这里显式加载，用于初始化全局配置（如 table.resizable）和版本信息
+import 'vxe-pc-ui/es/ui';
+import 'vxe-table/es/ui';
+
 import '@vxe-ui/plugin-render-antd/dist/style.css';
 
 // 是否加载过
 let isInit = false;
 
 let tableFormFactory: ((...args: any[]) => any) | undefined;
-
-function normalizeVxeLocale<T extends Record<string, any>>(localeModule: T) {
-  return (
-    localeModule &&
-    typeof localeModule === 'object' &&
-    'default' in localeModule
-      ? localeModule.default
-      : localeModule
-  ) as T;
-}
 
 export function useTableForm(...args: any[]) {
   const pluginsOptions = injectPluginsOptions();
@@ -132,8 +127,8 @@ export function setupVbenVxeTable(setupOptions: SetupVxeTable) {
   const { isDark, locale } = usePreferences();
 
   const localMap = {
-    'zh-CN': normalizeVxeLocale(zhCN),
-    'en-US': normalizeVxeLocale(enUS),
+    'zh-CN': zhCN,
+    'en-US': enUS,
   };
 
   watch(
